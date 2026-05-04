@@ -2,49 +2,74 @@
 
 Skills.sh-compatible repository for the `baseline-docs` skill.
 
-## Skills
-
-### `baseline-docs`
-
-Creates and maintains a resumable baseline documentation pack for a codebase. Use it when you need docs that reflect the current implementation state and can be resumed without relying on prior conversation memory.
-
-The generated docs pack includes:
-
-- `<prefix>.introduction.md`
-- `<prefix>.roadmap.md`
-- `<prefix>.hallucination.md`
-- `<prefix>.sourcecode.md`
-- `<prefix>.useguide.md`
+`baseline-docs` helps agents create and continuously sync a baseline documentation pack for a codebase. The goal is to keep docs aligned with the actual implementation, business decisions, API contracts, diagrams, and current roadmap so work can resume without prior conversation memory.
 
 ## Install
 
-Install from this local repository:
+Install from GitHub:
 
 ```bash
-npx skills add .
-```
-
-Install only this skill:
-
-```bash
-npx skills add . --skill baseline-docs
+npx skills add https://github.com/the-khiem7/Baselinedocs-Skills.git --skill baseline-docs
 ```
 
 Install globally without prompts:
 
 ```bash
-npx skills add . --skill baseline-docs --global --yes
+npx skills add https://github.com/the-khiem7/Baselinedocs-Skills.git --skill baseline-docs --global --yes
 ```
 
-After publishing this repository to Git, install from the repo URL:
+Install from the default branch without selecting a skill:
 
 ```bash
-npx skills add <repo-url> --skill baseline-docs
+npx skills add https://github.com/the-khiem7/Baselinedocs-Skills.git
 ```
 
-## Verify
+## Local Install
 
-List skills available in this repository:
+From a cloned copy of this repository:
+
+```bash
+npx skills add . --skill baseline-docs
+```
+
+List available skills:
+
+```bash
+npx skills add . --list
+```
+
+## Skill: `baseline-docs`
+
+Use this skill when you need to:
+
+- create a baseline documentation pack for a codebase
+- sync docs after code changes
+- make an implementation roadmap that can be resumed later
+- document unresolved business or technical decisions
+- write source-code diagrams for implemented or planned behavior
+- write API contracts for frontend or mobile developers
+
+The docs pack contains:
+
+- `<prefix>.introduction.md` - target, current status, implementation direction
+- `<prefix>.roadmap.md` - progress tracker, evidence, next resume step
+- `<prefix>.hallucination.md` - unresolved decisions and closed decision records
+- `<prefix>.sourcecode.md` - class diagrams and sequence diagrams
+- `<prefix>.useguide.md` - API contracts, request/response examples, black-box usage notes
+
+## Repository Layout
+
+```text
+baseline-docs/
+  SKILL.md
+  agents/
+    openai.yaml
+README.md
+```
+
+## Compatibility
+
+This repository is structured for the Skills.sh CLI. The skill folder contains a `SKILL.md` file with `name` and `description` frontmatter, which is the format detected by:
 
 ```bash
 npx skills add . --list
