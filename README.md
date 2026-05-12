@@ -1,6 +1,6 @@
-# Baselinedocs Skills
+![Baselinedocs](logo.png)
 
-Skills.sh-compatible repository for the `baseline-docs` skill.
+**Skills.sh-compatible repository for the `baseline-docs` skill.**
 
 `baseline-docs` helps agents create and continuously sync a baseline documentation pack for a codebase. The goal is to keep docs aligned with the actual implementation, business decisions, API contracts, diagrams, and current roadmap so work can resume without prior conversation memory.
 
