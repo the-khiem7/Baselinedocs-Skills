@@ -1,0 +1,4 @@
+interface:
+  display_name: "Baseline Docs Maintain Archive"
+  short_description: "Archive completed baseline history"
+  default_prompt: "Archive completed baseline phases or tasks while preserving history and cleaning the active pack."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Baseline Docs Audit Drift"
+  short_description: "Audit code and docs drift"
+  default_prompt: "Audit drift between the codebase, baseline documentation pack, and decision records without necessarily modifying files."

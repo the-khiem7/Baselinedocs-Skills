@@ -1,4 +1,0 @@
-interface:
-  display_name: "Baseline Docs"
-  short_description: "Sync resumable baseline docs"
-  default_prompt: "Create or sync the baseline documentation pack for this codebase."

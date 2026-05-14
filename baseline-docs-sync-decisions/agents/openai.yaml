@@ -1,0 +1,4 @@
+interface:
+  display_name: "Baseline Docs Sync Decisions"
+  short_description: "Propagate closed decisions across the pack"
+  default_prompt: "Propagate closed hallucination risks or other decisions across the existing baseline documentation pack."

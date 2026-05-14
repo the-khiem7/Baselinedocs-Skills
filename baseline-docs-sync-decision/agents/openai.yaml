@@ -1,0 +1,4 @@
+interface:
+  display_name: "Baseline Docs Sync Decision"
+  short_description: "Apply one closed decision precisely"
+  default_prompt: "Apply one specific closed decision to the exact baseline files and sections it affects."

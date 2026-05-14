@@ -1,0 +1,4 @@
+interface:
+  display_name: "Baseline Docs Resume Handoff"
+  short_description: "Prepare a concise handoff brief"
+  default_prompt: "Prepare a concise operational handoff from the existing baseline pack for another agent or person."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Baseline Docs Sync Codebase"
+  short_description: "Sync baseline docs from code changes"
+  default_prompt: "Synchronize the existing baseline documentation pack with the current codebase state."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Baseline Docs Resume Snapshot"
+  short_description: "Create a resume-ready baseline snapshot"
+  default_prompt: "Create a canonical resume-ready snapshot from the existing baseline documentation pack."

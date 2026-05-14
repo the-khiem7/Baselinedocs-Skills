@@ -1,0 +1,4 @@
+interface:
+  display_name: "Baseline Docs Resume Continue"
+  short_description: "Recover where work should continue"
+  default_prompt: "Read the existing baseline pack, recover the current truth, and determine how the work should continue now."

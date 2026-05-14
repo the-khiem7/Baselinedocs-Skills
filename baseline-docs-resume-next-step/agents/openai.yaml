@@ -1,0 +1,4 @@
+interface:
+  display_name: "Baseline Docs Resume Next Step"
+  short_description: "Extract one exact next action"
+  default_prompt: "Read the current baseline state and extract one precise next action to continue the work."

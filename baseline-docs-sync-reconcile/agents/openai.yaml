@@ -1,0 +1,4 @@
+interface:
+  display_name: "Baseline Docs Sync Reconcile"
+  short_description: "Reconcile contradictions inside the pack"
+  default_prompt: "Reconcile contradictions inside the existing baseline documentation pack and restore one canonical truth."

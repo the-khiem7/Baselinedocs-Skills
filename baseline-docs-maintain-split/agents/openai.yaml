@@ -1,0 +1,4 @@
+interface:
+  display_name: "Baseline Docs Maintain Split"
+  short_description: "Split an overloaded baseline pack"
+  default_prompt: "Split one overloaded baseline documentation pack into multiple smaller packs by topic, feature, or workstream."

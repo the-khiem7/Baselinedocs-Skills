@@ -1,0 +1,4 @@
+interface:
+  display_name: "Baseline Docs Maintain Compact"
+  short_description: "Compact noisy baseline docs"
+  default_prompt: "Compact the existing baseline pack by reducing repetition and verbosity while preserving factual truth."

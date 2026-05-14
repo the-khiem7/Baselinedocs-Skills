@@ -1,0 +1,4 @@
+interface:
+  display_name: "Baseline Docs Audit Verify"
+  short_description: "Verify baseline claims by evidence"
+  default_prompt: "Verify whether claims in the baseline documentation pack are supported by code or explicit user decisions."
