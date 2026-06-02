@@ -25,18 +25,20 @@ Extract these from the user request, existing repo docs, or nearby context:
 - `topic`: business or implementation topic; infer it when possible
 - `task_list`: requested tasks; create a starter roadmap if missing
 - `business_target`: desired outcome and constraints
-- `docs_dir`: folder where the pack should live; default to `docs/baseline` if unspecified and no pack exists
-- `prefix`: filename prefix; default to a short kebab-case slug from `topic`, fallback to `baseline`
+- `docs_dir`: root folder where baseline packs live; default to `docs/baseline` if unspecified and no pack exists
+- `prefix`: pack name and filename prefix; default to a short kebab-case slug from `topic`, fallback to `baseline`
 
 ## File Contract
 
-Create exactly this English documentation pack inside `docs_dir`:
+Create exactly this English documentation pack inside `docs_dir/<prefix>/`:
 
-- `<prefix>.introduction.md`
-- `<prefix>.roadmap.md`
-- `<prefix>.hallucination.md`
-- `<prefix>.sourcecode.md`
-- `<prefix>.useguide.md`
+- `<prefix>/<prefix>.introduction.md`
+- `<prefix>/<prefix>.roadmap.md`
+- `<prefix>/<prefix>.hallucination.md`
+- `<prefix>/<prefix>.sourcecode.md`
+- `<prefix>/<prefix>.useguide.md`
+
+Each pack lives in its own subfolder named after its prefix so that multiple baseline packs can coexist without file collision.
 
 ## Initialization Workflow
 
@@ -50,7 +52,7 @@ Create exactly this English documentation pack inside `docs_dir`:
 ## Writing Rules
 
 - Keep all docs factual and tied to observed code or explicit user decisions.
-- Use Mermaid when diagrams improve understanding.
+- Use Mermaid v8.8.0 syntax when diagrams improve understanding. Only use node shapes, arrow types, subgraphs, and styling features available in v8.8.0. Avoid features introduced in later versions (e.g. `direction` on subgraphs, `classDef` default, `packet`, `quadrantChart`, `xychart`, `block`, `mindmap`, `timeline`, `zenuml`, `sankey`, `gitGraph`). Prefer `graph`/`flowchart`, `sequenceDiagram`, `classDiagram`, `stateDiagram`, `erDiagram`, `gantt`, and `pie` diagram types.
 - Mark planned or unknown behavior explicitly.
 - Do not present guesses as implemented facts.
 

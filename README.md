@@ -55,13 +55,15 @@ The skill family turns those situations into explicit workflows instead of forci
 
 ## Baseline Pack Contract
 
-Most skills in this family operate on a baseline documentation pack containing these five files:
+Most skills in this family operate on a baseline documentation pack containing these five files, stored in a subfolder named after the pack prefix:
 
-- `<prefix>.introduction.md` - target, current status, implementation direction
-- `<prefix>.roadmap.md` - progress tracker, evidence, changed files, risks, next resume step
-- `<prefix>.hallucination.md` - unresolved decisions and closed decision records
-- `<prefix>.sourcecode.md` - class diagrams, sequence diagrams, and implementation flow notes
-- `<prefix>.useguide.md` - API contracts, request/response examples, black-box usage notes
+- `<prefix>/<prefix>.introduction.md` - target, current status, implementation direction
+- `<prefix>/<prefix>.roadmap.md` - progress tracker, evidence, changed files, risks, next resume step
+- `<prefix>/<prefix>.hallucination.md` - unresolved decisions and closed decision records
+- `<prefix>/<prefix>.sourcecode.md` - class diagrams, sequence diagrams, and implementation flow notes
+- `<prefix>/<prefix>.useguide.md` - API contracts, request/response examples, black-box usage notes
+
+Each pack lives in its own `docs_dir/<prefix>/` subfolder so multiple packs can coexist without collision.
 
 The pack is designed to be factual, resumable, and maintainable over time.
 
