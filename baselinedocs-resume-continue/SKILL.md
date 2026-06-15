@@ -1,5 +1,5 @@
 ---
-name: baseline_docs_resume_continue
+name: baselinedocs-resume-continue
 description: Recover where work left off and determine how to continue from an existing baseline pack. Use when the user returns after a long gap and the agent no longer has prior conversation memory.
 ---
 

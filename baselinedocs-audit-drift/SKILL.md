@@ -1,5 +1,5 @@
 ---
-name: baseline_docs_audit_drift
+name: baselinedocs-audit-drift
 description: Audit drift between the codebase, baseline docs, and decisions without necessarily modifying files. Use when the user wants to inspect staleness or inconsistency before syncing.
 ---
 

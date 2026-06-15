@@ -1,5 +1,5 @@
 ---
-name: baseline_docs_sync_reconcile
+name: baselinedocs-sync-reconcile
 description: Reconcile contradictions inside an existing baseline pack. Use when roadmap, useguide, sourcecode, or introduction disagree about the current truth.
 ---
 

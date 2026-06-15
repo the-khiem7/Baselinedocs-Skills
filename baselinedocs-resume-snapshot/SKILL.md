@@ -1,5 +1,5 @@
 ---
-name: baseline_docs_resume_snapshot
+name: baselinedocs-resume-snapshot
 description: Create a canonical resume-ready snapshot from a long or messy baseline pack. Use when the pack became noisy, mixed, or difficult for future agents to resume from efficiently.
 ---
 

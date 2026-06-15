@@ -1,5 +1,5 @@
 ---
-name: baseline_docs_init
+name: baselinedocs-init
 description: Create the first baseline documentation pack for a codebase, task, feature, or initiative. Use when no baseline pack exists yet and you need an initial introduction, roadmap, hallucination log, sourcecode doc, and use guide.
 ---
 

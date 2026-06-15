@@ -1,5 +1,5 @@
 ---
-name: baseline_docs_maintain_prune
+name: baselinedocs-maintain-prune
 description: Prune obsolete, superseded, or misleading content from an active baseline pack. Use when outdated sections cause confusion during sync or resume.
 ---
 

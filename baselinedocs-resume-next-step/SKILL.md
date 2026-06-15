@@ -1,5 +1,5 @@
 ---
-name: baseline_docs_resume_next_step
+name: baselinedocs-resume-next-step
 description: Reduce an existing baseline state into one precise next action. Use when the user asks what to do next and does not need a full resume analysis.
 ---
 

@@ -1,5 +1,5 @@
 ---
-name: baseline_docs_audit_verify
+name: baselinedocs-audit-verify
 description: Verify whether claims in the baseline pack are supported by code or explicit user decisions. Use when documentation trust is low and claims need evidence review.
 ---
 

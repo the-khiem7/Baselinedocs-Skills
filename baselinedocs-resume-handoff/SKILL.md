@@ -1,5 +1,5 @@
 ---
-name: baseline_docs_resume_handoff
+name: baselinedocs-resume-handoff
 description: Prepare a concise handoff from an existing baseline pack for another agent or person. Use when ownership changes and the next actor needs a short operational brief.
 ---
 

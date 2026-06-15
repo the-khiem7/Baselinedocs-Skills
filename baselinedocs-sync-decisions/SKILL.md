@@ -1,5 +1,5 @@
 ---
-name: baseline_docs_sync_decisions
+name: baselinedocs-sync-decisions
 description: Propagate one or more closed decisions across an existing baseline pack. Use when hallucination risks were resolved but the rest of the baseline docs still reflect old uncertainty.
 ---
 

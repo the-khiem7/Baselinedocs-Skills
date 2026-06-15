@@ -1,5 +1,5 @@
 ---
-name: baseline_docs_sync_codebase
+name: baselinedocs-sync-codebase
 description: Synchronize an existing baseline documentation pack with the current codebase after implementation changes. Use when code changed but the related baseline docs were not updated.
 ---
 

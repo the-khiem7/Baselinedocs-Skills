@@ -1,5 +1,5 @@
 ---
-name: baseline_docs_maintain_compact
+name: baselinedocs-maintain-compact
 description: Compact an existing baseline pack by reducing repetition and verbosity while preserving factual truth. Use when the pack became too long or noisy to resume efficiently.
 ---
 

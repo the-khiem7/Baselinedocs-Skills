@@ -1,5 +1,5 @@
 ---
-name: baseline_docs_maintain_split
+name: baselinedocs-maintain-split
 description: Split one overloaded baseline pack into multiple smaller packs by topic, feature, or workstream. Use when one pack covers too many unrelated tasks and resume quality is poor.
 ---
 

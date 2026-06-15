@@ -1,5 +1,5 @@
 ---
-name: baseline_docs_sync_decision
+name: baselinedocs-sync-decision
 description: Apply one specific closed decision to the exact baseline files it affects. Use when a narrow, atomic update is safer than pack-wide synchronization.
 ---
 

@@ -1,5 +1,5 @@
 ---
-name: baseline_docs_maintain_archive
+name: baselinedocs-maintain-archive
 description: Archive completed baseline phases or tasks to preserve history without cluttering the active pack. Use when live docs should focus on unfinished work only.
 ---
 

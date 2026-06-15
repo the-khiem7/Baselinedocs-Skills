@@ -9,13 +9,13 @@
 Install from GitHub:
 
 ```bash
-npx skills add https://github.com/the-khiem7/Baselinedocs-Skills.git --skill baseline_docs_init
+npx skills add https://github.com/the-khiem7/Baselinedocs-Skills.git --skill baselinedocs-init
 ```
 
 Install globally without prompts:
 
 ```bash
-npx skills add https://github.com/the-khiem7/Baselinedocs-Skills.git --skill baseline_docs_init --global --yes
+npx skills add https://github.com/the-khiem7/Baselinedocs-Skills.git --skill baselinedocs-init --global --yes
 ```
 
 Install from the default branch without selecting a skill:
@@ -29,7 +29,7 @@ npx skills add https://github.com/the-khiem7/Baselinedocs-Skills.git
 From a cloned copy of this repository:
 
 ```bash
-npx skills add . --skill baseline_docs_init
+npx skills add . --skill baselinedocs-init
 ```
 
 List available skills:
@@ -84,12 +84,12 @@ Examples:
 
 ### Frontmatter Names
 
-Every `SKILL.md` frontmatter `name` stays in snake-case:
+Every skill folder and `SKILL.md` frontmatter `name` uses this format:
 
-- `baseline_docs_init`
-- `baseline_docs_sync_codebase`
-- `baseline_docs_resume_snapshot`
-- `baseline_docs_maintain_compact`
+- `baselinedocs-init`
+- `baselinedocs-sync_codebase`
+- `baselinedocs-resume_snapshot`
+- `baselinedocs-maintain_compact`
 
 ## Skill Families
 
@@ -107,7 +107,7 @@ The skill family is organized into 5 groups:
 
 #### `Baseline Docs Init`
 
-**Frontmatter name:** `baseline_docs_init`
+**Frontmatter name:** `baselinedocs-init`
 
 **Role**
 
@@ -131,7 +131,7 @@ This is the entrypoint skill for creating the first baseline pack for a task, fe
 
 #### `Baseline Docs Sync Codebase`
 
-**Frontmatter name:** `baseline_docs_sync_codebase`
+**Frontmatter name:** `baselinedocs-sync_codebase`
 
 **Role**
 
@@ -153,7 +153,7 @@ Synchronize an existing baseline pack with the latest codebase state.
 
 #### `Baseline Docs Sync Decisions`
 
-**Frontmatter name:** `baseline_docs_sync_decisions`
+**Frontmatter name:** `baselinedocs-sync_decisions`
 
 **Role**
 
@@ -175,7 +175,7 @@ Propagate one or more closed decisions across the whole baseline pack.
 
 #### `Baseline Docs Sync Reconcile`
 
-**Frontmatter name:** `baseline_docs_sync_reconcile`
+**Frontmatter name:** `baselinedocs-sync_reconcile`
 
 **Role**
 
@@ -197,7 +197,7 @@ Repair contradictions between baseline files and restore one canonical truth.
 
 #### `Baseline Docs Sync Decision`
 
-**Frontmatter name:** `baseline_docs_sync_decision`
+**Frontmatter name:** `baselinedocs-sync_decision`
 
 **Role**
 
@@ -221,7 +221,7 @@ Apply one specific closed decision as a narrow, atomic update.
 
 #### `Baseline Docs Resume Continue`
 
-**Frontmatter name:** `baseline_docs_resume_continue`
+**Frontmatter name:** `baselinedocs-resume_continue`
 
 **Role**
 
@@ -243,7 +243,7 @@ Recover where work left off and determine how to continue now.
 
 #### `Baseline Docs Resume Snapshot`
 
-**Frontmatter name:** `baseline_docs_resume_snapshot`
+**Frontmatter name:** `baselinedocs-resume_snapshot`
 
 **Role**
 
@@ -265,7 +265,7 @@ Create a canonical resume-ready snapshot from a long or messy baseline pack.
 
 #### `Baseline Docs Resume Next Step`
 
-**Frontmatter name:** `baseline_docs_resume_next_step`
+**Frontmatter name:** `baselinedocs-resume_next_step`
 
 **Role**
 
@@ -287,7 +287,7 @@ Reduce a large baseline state into one exact next action.
 
 #### `Baseline Docs Resume Handoff`
 
-**Frontmatter name:** `baseline_docs_resume_handoff`
+**Frontmatter name:** `baselinedocs-resume_handoff`
 
 **Role**
 
@@ -311,7 +311,7 @@ Prepare a concise operational handoff for another agent or another person.
 
 #### `Baseline Docs Audit Drift`
 
-**Frontmatter name:** `baseline_docs_audit_drift`
+**Frontmatter name:** `baselinedocs-audit_drift`
 
 **Role**
 
@@ -333,7 +333,7 @@ Inspect drift between the codebase, baseline docs, and decisions without necessa
 
 #### `Baseline Docs Audit Verify`
 
-**Frontmatter name:** `baseline_docs_audit_verify`
+**Frontmatter name:** `baselinedocs-audit_verify`
 
 **Role**
 
@@ -357,7 +357,7 @@ Verify whether claims in the baseline pack are actually supported by code or exp
 
 #### `Baseline Docs Maintain Compact`
 
-**Frontmatter name:** `baseline_docs_maintain_compact`
+**Frontmatter name:** `baselinedocs-maintain_compact`
 
 **Role**
 
@@ -379,7 +379,7 @@ Compact an existing baseline pack by reducing repetition and verbosity while pre
 
 #### `Baseline Docs Maintain Archive`
 
-**Frontmatter name:** `baseline_docs_maintain_archive`
+**Frontmatter name:** `baselinedocs-maintain_archive`
 
 **Role**
 
@@ -401,7 +401,7 @@ Archive completed phases or tasks while preserving history outside the active fl
 
 #### `Baseline Docs Maintain Split`
 
-**Frontmatter name:** `baseline_docs_maintain_split`
+**Frontmatter name:** `baselinedocs-maintain_split`
 
 **Role**
 
@@ -423,7 +423,7 @@ Split one overloaded baseline pack into several smaller packs.
 
 #### `Baseline Docs Maintain Prune`
 
-**Frontmatter name:** `baseline_docs_maintain_prune`
+**Frontmatter name:** `baselinedocs-maintain_prune`
 
 **Role**
 
@@ -519,44 +519,44 @@ Use this quick guide:
 
 ## Default Skill
 
-The default entrypoint skill is `baseline_docs_init`.
+The default entrypoint skill is `baselinedocs-init`.
 
 Use it when there is no existing baseline pack and the work needs its first structured documentation state.
 
 ## Repository Layout
 
 ```text
-baseline_docs_init/
+baselinedocs-init/
   SKILL.md
   agents/
     openai.yaml
-baseline-docs-sync-codebase/
+baselinedocs-sync-codebase/
   SKILL.md
-baseline-docs-sync-decisions/
+baselinedocs-sync-decisions/
   SKILL.md
-baseline-docs-sync-reconcile/
+baselinedocs-sync-reconcile/
   SKILL.md
-baseline-docs-sync-decision/
+baselinedocs-sync-decision/
   SKILL.md
-baseline-docs-resume-continue/
+baselinedocs-resume-continue/
   SKILL.md
-baseline-docs-resume-snapshot/
+baselinedocs-resume-snapshot/
   SKILL.md
-baseline-docs-resume-next-step/
+baselinedocs-resume-next-step/
   SKILL.md
-baseline-docs-resume-handoff/
+baselinedocs-resume-handoff/
   SKILL.md
-baseline-docs-audit-drift/
+baselinedocs-audit-drift/
   SKILL.md
-baseline-docs-audit-verify/
+baselinedocs-audit-verify/
   SKILL.md
-baseline-docs-maintain-compact/
+baselinedocs-maintain-compact/
   SKILL.md
-baseline-docs-maintain-archive/
+baselinedocs-maintain-archive/
   SKILL.md
-baseline-docs-maintain-split/
+baselinedocs-maintain-split/
   SKILL.md
-baseline-docs-maintain-prune/
+baselinedocs-maintain-prune/
   SKILL.md
 README.md
 REFACTOR.md
