@@ -1,6 +1,6 @@
 ---
 name: baselinedocs-resume-continue
-description: Recover where work left off and determine how to continue from an existing baseline pack. Use when the user returns after a long gap and the agent no longer has prior conversation memory.
+description: Recover where work left off from an existing baseline pack or initiative index. Use automatically after inactivity, context loss, compaction, or an unclear continuation point.
 ---
 
 # Baseline Docs Resume Continue
@@ -17,10 +17,11 @@ Determine the current state and the correct continuation point.
 
 ## Core Behavior
 
-1. Read the baseline pack as operational memory.
-2. Identify current truth, unresolved items, and stale sections.
-3. Summarize status, blockers, and risks.
-4. End with an exact continuation path.
+1. Read initiative routing and document frontmatter before deep content.
+2. Read only the active pack sections needed to recover operational memory.
+3. Identify current truth, unresolved items, and stale sections.
+4. Summarize status, blockers, and risks.
+5. End with an exact continuation path.
 
 ## Primary Output
 

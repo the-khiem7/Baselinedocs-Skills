@@ -1,6 +1,6 @@
 ---
 name: baselinedocs-sync-decision
-description: Apply one specific closed decision to the exact baseline files it affects. Use when a narrow, atomic update is safer than pack-wide synchronization.
+description: Apply one specific closed decision to the exact baseline files it affects. Use automatically when a narrow atomic decision update is safer than pack-wide synchronization.
 ---
 
 # Baseline Docs Sync Decision
@@ -20,6 +20,7 @@ Apply one specific decision with minimal, targeted changes.
 1. Read the chosen decision.
 2. Identify only the directly impacted files and sections.
 3. Patch those sections without broad unrelated rewrites.
+4. Refresh frontmatter only in documents that changed.
 
 ## Primary Output
 

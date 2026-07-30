@@ -1,0 +1,6 @@
+interface:
+  display_name: "Baseline Docs Internal: Extract Wiki"
+  short_description: "Extract reusable guidance from a baseline pack"
+  default_prompt: "Use $baselinedocs-extract-wiki to extract reusable guidance from a baseline pack into the project wiki."
+policy:
+  allow_implicit_invocation: true

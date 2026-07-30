@@ -1,73 +1,48 @@
 ---
 name: baselinedocs-init
-description: Create the first baseline documentation pack for a codebase, task, feature, or initiative. Use when no baseline pack exists yet and you need an initial introduction, roadmap, hallucination log, sourcecode doc, and use guide.
+description: Create the first adaptive baseline documentation pack for a new task, feature, initiative, or coordinated multi-domain workflow. Use explicitly when no suitable pack exists and the user wants durable planning and operational memory from the start.
 ---
 
 # Baseline Docs Init
 
-## Purpose
-
-Create a new baseline documentation pack from scratch.
-
-This skill is the initialization entrypoint for the Baseline Docs skill family. It should be used when a task, feature, or initiative does not yet have a baseline pack.
-
-## Use When
-
-- the user starts a new task and no baseline pack exists yet
-- the user wants an initial implementation roadmap
-- the user wants a first-pass introduction, decision log, code diagrams, and API/use guide
-- the existing baseline is missing most or all required files
+Create the first factual, resumable documentation state.
 
 ## Inputs
 
-Extract these from the user request, existing repo docs, or nearby context:
+Infer when safe:
 
-- `topic`: business or implementation topic; infer it when possible
-- `task_list`: requested tasks; create a starter roadmap if missing
-- `business_target`: desired outcome and constraints
-- `docs_dir`: root folder where baseline packs live; default to `docs/baseline` if unspecified and no pack exists
-- `prefix`: pack name and filename prefix; default to a short kebab-case slug from `topic`, fallback to `baseline`
+- topic, business outcome, constraints, and task list
+- `docs_dir`, defaulting to `docs/baseline`
+- kebab-case `prefix`
+- single-domain or multi-domain scope
 
-## File Contract
+Read `references/pack-contract.md` before creating files.
 
-Create exactly this English documentation pack inside `docs_dir/<prefix>/`:
+## Workflow
 
-- `<prefix>/<prefix>.introduction.md`
-- `<prefix>/<prefix>.roadmap.md`
-- `<prefix>/<prefix>.hallucination.md`
-- `<prefix>/<prefix>.sourcecode.md`
-- `<prefix>/<prefix>.useguide.md`
-
-Each pack lives in its own subfolder named after its prefix so that multiple baseline packs can coexist without file collision.
-
-## Initialization Workflow
-
-1. Confirm that a suitable baseline pack does not already exist.
-2. Inspect the current codebase before writing.
-3. Identify current implemented state relevant to the topic.
-4. Generate the five baseline files with factual, dated content.
-5. Make the roadmap resumable from a cold start.
-6. Record unresolved decisions only when the code and business context do not support a safe choice.
+1. Confirm that no suitable pack already exists.
+2. Inspect current code, canonical docs, repository state, and explicit decisions.
+3. Choose the layout:
+   - one pack for a bounded domain
+   - an initiative index plus directly linked domain packs for dependent multi-domain work
+4. Create the three core documents.
+5. Add `sourcecode` and `useguide` only when their roles are applicable.
+6. Write roadmap phases with dependencies, acceptance criteria, verification gates, and one exact next action.
+7. Record unresolved decisions only when evidence and business context do not support a safe choice.
+8. Mark every claim as implemented, planned, unverified, or decided as appropriate.
 
 ## Writing Rules
 
-- Keep all docs factual and tied to observed code or explicit user decisions.
-- Use Mermaid v8.8.0 syntax when diagrams improve understanding. Only use node shapes, arrow types, subgraphs, and styling features available in v8.8.0. Avoid features introduced in later versions (e.g. `direction` on subgraphs, `classDef` default, `packet`, `quadrantChart`, `xychart`, `block`, `mindmap`, `timeline`, `zenuml`, `sankey`, `gitGraph`). Prefer `graph`/`flowchart`, `sequenceDiagram`, `classDiagram`, `stateDiagram`, `erDiagram`, `gantt`, and `pie` diagram types.
-- Mark planned or unknown behavior explicitly.
-- Do not present guesses as implemented facts.
+- Write English documentation unless the repository requires another language.
+- Keep task history separate from reusable wiki guidance.
+- Record final evidence instead of every attempt.
+- Use Mermaid v8.8.0-compatible syntax when a diagram materially improves understanding.
+- Never present build, formatting, or static inspection as proof of live integration behavior.
 
-## Non-Goals
+## Output
 
-This init skill is not the primary owner for:
+Create the pack rather than returning only a chat plan. Report paths, open risks, and the first executable step.
 
-- syncing docs after later code changes
-- propagating closed decisions into an existing pack
-- reconciling contradictions inside an existing pack
-- compacting, pruning, splitting, or archiving an existing pack
-- resuming a stale task after long inactivity
+## Boundaries
 
-Use the other Baseline Docs micro-skills for those lifecycle tasks.
-
-## Output Behavior
-
-When asked to create a plan for a new task, create or initialize the baseline pack instead of only replying in chat. In the final response, report the docs path, files created, open risks, and the first next step.
+Use `baselinedocs-save` when work is already underway and the user wants a durable capture. Use lifecycle skills for later sync, resume, audit, maintenance, or wiki extraction.

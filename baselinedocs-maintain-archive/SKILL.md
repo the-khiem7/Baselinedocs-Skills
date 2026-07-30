@@ -1,6 +1,6 @@
 ---
 name: baselinedocs-maintain-archive
-description: Archive completed baseline phases or tasks to preserve history without cluttering the active pack. Use when live docs should focus on unfinished work only.
+description: Archive completed baseline phases or tasks to preserve history without cluttering active operational memory. Use automatically when live docs should focus on unfinished work.
 ---
 
 # Baseline Docs Maintain Archive
@@ -20,6 +20,7 @@ Move completed history out of the active baseline flow.
 1. Identify completed sections.
 2. Preserve them in an archive-friendly form.
 3. Clean the active pack so only current work remains emphasized.
+4. Set archived documents or sections to `status: archived` and keep direct links from the active roadmap when history is still relevant.
 
 ## Primary Output
 

@@ -1,4 +1,6 @@
 interface:
-  display_name: "Baseline Docs Sync Decision"
+  display_name: "Baseline Docs Internal: Sync Decision"
   short_description: "Apply one closed decision precisely"
-  default_prompt: "Apply one specific closed decision to the exact baseline files and sections it affects."
+  default_prompt: "Use $baselinedocs-sync-decision to apply one closed decision precisely."
+policy:
+  allow_implicit_invocation: true

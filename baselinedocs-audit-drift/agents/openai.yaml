@@ -1,4 +1,6 @@
 interface:
-  display_name: "Baseline Docs Audit Drift"
+  display_name: "Baseline Docs Internal: Audit Drift"
   short_description: "Audit code and docs drift"
-  default_prompt: "Audit drift between the codebase, baseline documentation pack, and decision records without necessarily modifying files."
+  default_prompt: "Use $baselinedocs-audit-drift to audit drift without modifying files."
+policy:
+  allow_implicit_invocation: true

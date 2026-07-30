@@ -1,4 +1,6 @@
 interface:
-  display_name: "Baseline Docs Sync Codebase"
+  display_name: "Baseline Docs Internal: Sync Codebase"
   short_description: "Sync baseline docs from code changes"
-  default_prompt: "Synchronize the existing baseline documentation pack with the current codebase state."
+  default_prompt: "Use $baselinedocs-sync-codebase to synchronize the pack with current code."
+policy:
+  allow_implicit_invocation: true

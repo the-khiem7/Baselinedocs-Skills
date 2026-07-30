@@ -1,6 +1,6 @@
 ---
 name: baselinedocs-sync-reconcile
-description: Reconcile contradictions inside an existing baseline pack. Use when roadmap, useguide, sourcecode, or introduction disagree about the current truth.
+description: Reconcile contradictions inside an existing adaptive baseline pack. Use automatically when core or conditional documents disagree about current truth or status.
 ---
 
 # Baseline Docs Sync Reconcile
@@ -21,6 +21,7 @@ Restore one canonical truth across the baseline pack.
 2. Detect contradictions.
 3. Prefer code evidence and explicit user decisions.
 4. Rewrite conflicting sections to converge on one truth.
+5. Use frontmatter as routing metadata, but verify body claims before changing status.
 
 ## Primary Output
 

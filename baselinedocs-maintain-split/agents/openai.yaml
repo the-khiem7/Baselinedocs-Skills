@@ -1,4 +1,6 @@
 interface:
-  display_name: "Baseline Docs Maintain Split"
+  display_name: "Baseline Docs Internal: Split"
   short_description: "Split an overloaded baseline pack"
-  default_prompt: "Split one overloaded baseline documentation pack into multiple smaller packs by topic, feature, or workstream."
+  default_prompt: "Use $baselinedocs-maintain-split to split an overloaded pack with direct routing."
+policy:
+  allow_implicit_invocation: true

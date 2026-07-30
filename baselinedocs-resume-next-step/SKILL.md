@@ -1,6 +1,6 @@
 ---
 name: baselinedocs-resume-next-step
-description: Reduce an existing baseline state into one precise next action. Use when the user asks what to do next and does not need a full resume analysis.
+description: Reduce an existing baseline state into one precise next action. Use automatically when the user asks what to do next and does not need a full resume analysis.
 ---
 
 # Baseline Docs Resume Next Step
@@ -17,7 +17,7 @@ Extract one immediately actionable next move.
 
 ## Core Behavior
 
-1. Inspect the active baseline state.
+1. Inspect the active roadmap or initiative index and its dependency edges.
 2. Identify the highest-value executable next move.
 3. Return one action with minimal rationale.
 

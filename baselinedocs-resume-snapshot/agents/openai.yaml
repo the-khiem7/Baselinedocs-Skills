@@ -1,4 +1,6 @@
 interface:
-  display_name: "Baseline Docs Resume Snapshot"
+  display_name: "Baseline Docs Internal: Resume Snapshot"
   short_description: "Create a resume-ready baseline snapshot"
-  default_prompt: "Create a canonical resume-ready snapshot from the existing baseline documentation pack."
+  default_prompt: "Use $baselinedocs-resume-snapshot to create a compact resume-ready snapshot."
+policy:
+  allow_implicit_invocation: true

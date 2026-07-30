@@ -1,4 +1,6 @@
 interface:
-  display_name: "Baseline Docs Maintain Prune"
+  display_name: "Baseline Docs Internal: Prune"
   short_description: "Remove obsolete baseline content"
-  default_prompt: "Prune obsolete, superseded, or misleading content from the active baseline documentation pack."
+  default_prompt: "Use $baselinedocs-maintain-prune to remove obsolete baseline content."
+policy:
+  allow_implicit_invocation: true

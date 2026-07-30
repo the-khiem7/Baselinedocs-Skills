@@ -1,6 +1,6 @@
 ---
 name: baselinedocs-maintain-split
-description: Split one overloaded baseline pack into multiple smaller packs by topic, feature, or workstream. Use when one pack covers too many unrelated tasks and resume quality is poor.
+description: Split one overloaded baseline pack into directly addressable domain packs with an initiative index. Use automatically when mixed workstreams or cross-domain dependencies reduce resume quality.
 ---
 
 # Baseline Docs Maintain Split
@@ -20,6 +20,8 @@ Break one overloaded baseline into clearer bounded packs.
 1. Identify natural split boundaries.
 2. Group content by topic, feature, or workstream.
 3. Produce smaller packs with clearer scope and ownership.
+4. Create an initiative index containing direct links, status, and dependency edges.
+5. Move shared reusable guidance to the wiki instead of a general wrapper pack.
 
 ## Primary Output
 
@@ -28,3 +30,4 @@ Break one overloaded baseline into clearer bounded packs.
 ## Non-Goals
 
 - not for simple pruning or compaction alone
+- not for hiding child packs behind a duplicated general pack

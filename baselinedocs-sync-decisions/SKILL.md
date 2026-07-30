@@ -1,6 +1,6 @@
 ---
 name: baselinedocs-sync-decisions
-description: Propagate one or more closed decisions across an existing baseline pack. Use when hallucination risks were resolved but the rest of the baseline docs still reflect old uncertainty.
+description: Propagate one or more closed decisions across an existing baseline pack. Use automatically when resolved risks or business decisions have not reached every affected document.
 ---
 
 # Baseline Docs Sync Decisions
@@ -21,6 +21,7 @@ Apply already-closed decisions across the full baseline pack.
 2. Identify every affected baseline file and section.
 3. Propagate the chosen direction into the pack.
 4. Preserve decision history while removing active ambiguity.
+5. Refresh `updated` and `code_ref` where implementation evidence was rechecked.
 
 ## Primary Output
 

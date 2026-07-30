@@ -1,4 +1,6 @@
 interface:
-  display_name: "Baseline Docs Resume Continue"
+  display_name: "Baseline Docs Internal: Resume Continue"
   short_description: "Recover where work should continue"
-  default_prompt: "Read the existing baseline pack, recover the current truth, and determine how the work should continue now."
+  default_prompt: "Use $baselinedocs-resume-continue to recover the current continuation point."
+policy:
+  allow_implicit_invocation: true

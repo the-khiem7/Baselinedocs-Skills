@@ -1,4 +1,6 @@
 interface:
-  display_name: "Baseline Docs Audit Verify"
+  display_name: "Baseline Docs Internal: Audit Verify"
   short_description: "Verify baseline claims by evidence"
-  default_prompt: "Verify whether claims in the baseline documentation pack are supported by code or explicit user decisions."
+  default_prompt: "Use $baselinedocs-audit-verify to verify baseline claims against evidence."
+policy:
+  allow_implicit_invocation: true

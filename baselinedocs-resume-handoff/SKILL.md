@@ -1,6 +1,6 @@
 ---
 name: baselinedocs-resume-handoff
-description: Prepare a concise handoff from an existing baseline pack for another agent or person. Use when ownership changes and the next actor needs a short operational brief.
+description: Prepare a concise handoff from an existing baseline pack or initiative index. Use automatically when ownership changes and the next actor needs a short operational brief.
 ---
 
 # Baseline Docs Resume Handoff
@@ -21,6 +21,7 @@ Create a short handoff so another actor can continue safely.
 2. Summarize open risks and unfinished work.
 3. State the next expected action.
 4. Highlight pitfalls or assumptions the new owner must know.
+5. Link reusable wiki guidance instead of copying it into the handoff.
 
 ## Primary Output
 

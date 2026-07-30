@@ -1,6 +1,6 @@
 ---
 name: baselinedocs-audit-drift
-description: Audit drift between the codebase, baseline docs, and decisions without necessarily modifying files. Use when the user wants to inspect staleness or inconsistency before syncing.
+description: Audit drift between code, baseline docs, frontmatter provenance, and decisions without modifying files by default. Use automatically when staleness or alignment is uncertain.
 ---
 
 # Baseline Docs Audit Drift
@@ -17,10 +17,13 @@ Report where baseline truth drift exists.
 
 ## Core Behavior
 
-1. Compare code, baseline docs, and decision records.
-2. Identify mismatch categories.
-3. Report affected files and likely impact.
-4. Recommend follow-up actions.
+1. Read `status`, `updated`, and `code_ref` frontmatter to prioritize likely stale documents.
+2. Compare scoped code changes after `code_ref`, document claims, and decision records.
+3. Identify mismatch categories.
+4. Report affected files and likely impact.
+5. Recommend follow-up actions.
+
+Treat a newer commit as a drift signal, not automatic proof that every document is stale.
 
 ## Primary Output
 

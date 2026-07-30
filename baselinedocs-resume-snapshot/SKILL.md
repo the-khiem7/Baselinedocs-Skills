@@ -1,6 +1,6 @@
 ---
 name: baselinedocs-resume-snapshot
-description: Create a canonical resume-ready snapshot from a long or messy baseline pack. Use when the pack became noisy, mixed, or difficult for future agents to resume from efficiently.
+description: Create a canonical resume-ready snapshot from a long or messy baseline pack. Use automatically when current truth is obscured by history, retries, or repeated conversation checkpoints.
 ---
 
 # Baseline Docs Resume Snapshot
@@ -21,6 +21,7 @@ Produce a cleaner, resume-friendly snapshot from an existing pack.
 2. Distill what is true now.
 3. Separate active truth from historical noise.
 4. Produce a concise resume-ready snapshot.
+5. Preserve final evidence and material unresolved failures; remove attempt-by-attempt narration.
 
 ## Primary Output
 

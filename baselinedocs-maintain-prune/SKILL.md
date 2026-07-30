@@ -1,6 +1,6 @@
 ---
 name: baselinedocs-maintain-prune
-description: Prune obsolete, superseded, or misleading content from an active baseline pack. Use when outdated sections cause confusion during sync or resume.
+description: Prune obsolete, superseded, or misleading content from an active adaptive baseline pack. Use automatically when outdated or inapplicable sections cause confusion.
 ---
 
 # Baseline Docs Maintain Prune
@@ -20,6 +20,7 @@ Remove obsolete noise from the active pack.
 1. Detect obsolete or misleading sections.
 2. Remove or rewrite them.
 3. Keep only content that still serves active truth.
+4. Remove an optional `sourcecode` or `useguide` document only after preserving any unique useful content or obtaining sufficient evidence that it is obsolete.
 
 ## Primary Output
 

@@ -1,0 +1,6 @@
+interface:
+  display_name: "Baseline Docs Save"
+  short_description: "Capture durable context during existing work"
+  default_prompt: "Use $baselinedocs-save to capture the current conversation and code state as a durable baseline pack."
+policy:
+  allow_implicit_invocation: false

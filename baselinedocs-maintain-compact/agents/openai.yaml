@@ -1,4 +1,6 @@
 interface:
-  display_name: "Baseline Docs Maintain Compact"
+  display_name: "Baseline Docs Internal: Compact"
   short_description: "Compact noisy baseline docs"
-  default_prompt: "Compact the existing baseline pack by reducing repetition and verbosity while preserving factual truth."
+  default_prompt: "Use $baselinedocs-maintain-compact to reduce noise while preserving truth."
+policy:
+  allow_implicit_invocation: true

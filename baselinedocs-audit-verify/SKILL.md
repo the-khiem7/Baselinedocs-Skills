@@ -1,6 +1,6 @@
 ---
 name: baselinedocs-audit-verify
-description: Verify whether claims in the baseline pack are supported by code or explicit user decisions. Use when documentation trust is low and claims need evidence review.
+description: Verify whether claims in an adaptive baseline pack are supported by code or explicit decisions. Use automatically when documentation trust or evidence quality is low.
 ---
 
 # Baseline Docs Audit Verify
@@ -20,6 +20,7 @@ Check whether baseline claims are actually supported.
 1. Collect factual claims from the pack.
 2. Compare them with code and explicit decisions.
 3. Classify them as verified, unverified, or false/outdated.
+4. Update no files unless the user also asks for synchronization.
 
 ## Primary Output
 
