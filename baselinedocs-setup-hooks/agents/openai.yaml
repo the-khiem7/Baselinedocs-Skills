@@ -1,0 +1,7 @@
+interface:
+  display_name: "Baseline Docs Setup Hooks"
+  short_description: "Install checkpoint hooks in one repository"
+  default_prompt: "Use $baselinedocs-setup-hooks to install the checkpoint hook safely in this repository."
+
+policy:
+  allow_implicit_invocation: false

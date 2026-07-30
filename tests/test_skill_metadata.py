@@ -4,7 +4,12 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).parents[1]
-ENTRYPOINTS = {"baselinedocs-init", "baselinedocs-save", "baselinedocs-run"}
+ENTRYPOINTS = {
+    "baselinedocs-init",
+    "baselinedocs-save",
+    "baselinedocs-run",
+    "baselinedocs-setup-hooks",
+}
 
 
 class SkillMetadataTests(unittest.TestCase):
