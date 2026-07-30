@@ -1,8 +1,8 @@
 # Phase Checkpoint Hooks
 
-The hook in `hooks/checkpoint.py` is an advisory guardrail. It looks for an active `*.roadmap.md` and implementation changes that are newer than baseline doc changes. When a turn stops, it asks the agent to update the pack with a compact checkpoint.
+The hook in `hooks/checkpoint.py` is a prompt-centric Stop adapter. On the first Stop event for a turn, it sends the instruction in `hooks/prompts/checkpoint.md` back to the agent so the agent can decide from the current thread whether one clearly identified pack needs a checkpoint.
 
-It does not edit documentation automatically.
+Python does not search for roadmaps, inspect Git state, compare timestamps, select a pack, or edit documentation.
 
 ## Install in a target repository
 
@@ -22,7 +22,7 @@ Use $baselinedocs-setup-hooks to preview installing the checkpoint hook for Code
 
 Manual fallback:
 
-1. Copy `hooks/checkpoint.py` to `.baseline/hooks/checkpoint.py`.
+1. Copy `hooks/checkpoint.py` to `.baseline/hooks/checkpoint.py` and `hooks/prompts/checkpoint.md` to `.baseline/hooks/prompts/checkpoint.md`.
 2. Merge and adapt one example configuration:
    - Codex: `hooks/examples/codex.hooks.json` to `.codex/hooks.json`
    - Claude Code: merge `hooks/examples/claude.settings.json` into `.claude/settings.json`
@@ -41,29 +41,29 @@ Use a JSON payload containing `cwd`, `hook_event_name`, and the host stop-loop f
 
 The hook stays silent when:
 
-- no active roadmap exists
-- no implementation files appear newer than baseline docs
 - the host already continued the same stop event
+- the event payload is invalid
+- the prompt file is missing or empty
 
-When a checkpoint is needed, it asks the agent to record only:
+Otherwise it creates at most one continuation and asks the agent to:
 
-- current phase status
-- final evidence
-- changed files
-- open risks
-- exact next action
-- refreshed frontmatter
+- identify a pack only from the current thread
+- avoid global roadmap discovery
+- make no changes when the pack is absent, ambiguous, or already current
+- checkpoint only work attributable to the current thread
+- avoid changes owned by parallel threads in a shared working tree
+- leave all changes uncommitted
 
-## Strict mode
+This adds one model continuation to each initial Stop event in a repository where the hook is installed. The loop marker prevents a second continuation for the same turn.
 
-Add `--strict` to return a continuation or block decision where the host supports it. Strict mode can prevent a turn from finishing until the checkpoint is written.
+## Compatibility
 
-Do not enable strict `PreCompact` blocking by default. Both Codex and Claude Code expose compaction lifecycle hooks, but interrupting automatic compaction near the context limit can cause the active request to fail. A Stop checkpoint plus post-compaction resume metadata is safer for general use.
+The command still accepts `--strict` for compatibility with existing local configurations, but the flag has no separate behavior and is no longer part of the public setup instructions.
 
 ## Host boundaries
 
-- Codex loads project hooks from `.codex/hooks.json` after trust review. `Stop` can create one continuation prompt.
-- Claude Code supports `Stop`, `TaskCompleted`, and `PreCompact`; the example uses `Stop` for portable semantics.
+- Codex loads project hooks from `.codex/hooks.json` after trust review. The command returns a JSON continuation reason because plain text is invalid for `Stop`.
+- Claude Code uses the same prompt through its `Stop` command handler.
 - Cursor uses lowercase `stop` and a `followup_message`.
 
 Hook schemas evolve independently. Treat the examples as versioned templates and verify them against the installed agent version before organization-wide rollout.

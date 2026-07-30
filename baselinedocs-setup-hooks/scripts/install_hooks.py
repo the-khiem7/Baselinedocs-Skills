@@ -6,7 +6,6 @@ from __future__ import annotations
 import argparse
 import json
 import os
-import shutil
 import tempfile
 from pathlib import Path
 from typing import Any
@@ -117,32 +116,56 @@ def atomic_write(path: Path, text: str) -> None:
         raise
 
 
+def atomic_write_bytes(path: Path, content: bytes) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    descriptor, temporary_name = tempfile.mkstemp(
+        prefix=f".{path.name}.", suffix=".tmp", dir=path.parent
+    )
+    try:
+        with os.fdopen(descriptor, "wb") as stream:
+            stream.write(content)
+        os.replace(temporary_name, path)
+    except BaseException:
+        Path(temporary_name).unlink(missing_ok=True)
+        raise
+
+
 def install(agent: str, repo: Path, dry_run: bool = False) -> dict[str, Any]:
     repo = repo.resolve()
     if not repo.is_dir():
         raise ValueError(f"Repository directory does not exist: {repo}")
 
     skill_root = Path(__file__).parents[1]
-    source_hook = skill_root / "assets" / "checkpoint.py"
-    target_hook = repo / ".baseline" / "hooks" / "checkpoint.py"
+    asset_pairs = (
+        (
+            skill_root / "assets" / "checkpoint.py",
+            repo / ".baseline" / "hooks" / "checkpoint.py",
+        ),
+        (
+            skill_root / "assets" / "prompts" / "checkpoint.md",
+            repo / ".baseline" / "hooks" / "prompts" / "checkpoint.md",
+        ),
+    )
     config_path = repo / CONFIG_PATHS[agent]
 
+    asset_contents = [(target, source.read_bytes()) for source, target in asset_pairs]
     config = load_config(config_path)
     config_changed = merge_handler(config, agent)
-    hook_changed = (
-        not target_hook.exists()
-        or target_hook.read_bytes() != source_hook.read_bytes()
-    )
+    asset_changes = [
+        (target, not target.exists() or target.read_bytes() != content, content)
+        for target, content in asset_contents
+    ]
 
     changes: list[str] = []
     unchanged: list[str] = []
-    for changed, path in ((hook_changed, target_hook), (config_changed, config_path)):
+    for path, changed, _ in asset_changes:
         (changes if changed else unchanged).append(str(path.relative_to(repo)))
+    (changes if config_changed else unchanged).append(str(config_path.relative_to(repo)))
 
     if not dry_run:
-        if hook_changed:
-            target_hook.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copyfile(source_hook, target_hook)
+        for target, changed, content in asset_changes:
+            if changed:
+                atomic_write_bytes(target, content)
         if config_changed:
             atomic_write(config_path, json.dumps(config, indent=2) + "\n")
 

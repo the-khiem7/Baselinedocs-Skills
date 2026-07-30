@@ -21,6 +21,18 @@ class InstallHooksTests(unittest.TestCase):
         ).read_bytes()
         self.assertEqual(canonical, packaged)
 
+        canonical_prompt = (
+            ROOT / "hooks" / "prompts" / "checkpoint.md"
+        ).read_bytes()
+        packaged_prompt = (
+            ROOT
+            / "baselinedocs-setup-hooks"
+            / "assets"
+            / "prompts"
+            / "checkpoint.md"
+        ).read_bytes()
+        self.assertEqual(canonical_prompt, packaged_prompt)
+
     def test_installs_each_host_and_is_idempotent(self):
         cases = {
             "codex": Path(".codex/hooks.json"),
@@ -31,15 +43,18 @@ class InstallHooksTests(unittest.TestCase):
             with self.subTest(agent=agent), tempfile.TemporaryDirectory() as directory:
                 repo = Path(directory)
                 result = INSTALL_HOOKS.install(agent, repo)
-                self.assertEqual(2, len(result["changes"]))
+                self.assertEqual(3, len(result["changes"]))
 
                 config = json.loads((repo / relative_config).read_text(encoding="utf-8"))
                 self.assertTrue(INSTALL_HOOKS.contains_handler(config, agent))
                 self.assertTrue((repo / ".baseline/hooks/checkpoint.py").exists())
+                self.assertTrue(
+                    (repo / ".baseline/hooks/prompts/checkpoint.md").exists()
+                )
 
                 repeated = INSTALL_HOOKS.install(agent, repo)
                 self.assertEqual([], repeated["changes"])
-                self.assertEqual(2, len(repeated["unchanged"]))
+                self.assertEqual(3, len(repeated["unchanged"]))
 
     def test_preserves_existing_configuration(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -77,7 +92,7 @@ class InstallHooksTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             repo = Path(directory)
             result = INSTALL_HOOKS.install("cursor", repo, dry_run=True)
-            self.assertEqual(2, len(result["changes"]))
+            self.assertEqual(3, len(result["changes"]))
             self.assertFalse((repo / ".baseline").exists())
             self.assertFalse((repo / ".cursor").exists())
 

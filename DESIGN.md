@@ -9,7 +9,7 @@ This version separates deliberate user workflow starts, one-time administration,
 | Skill overload | Expose three primary user entrypoints and visually label lifecycle skills as internal |
 | Brownfield capture | Add `baselinedocs-save` |
 | Long-running execution | Add `baselinedocs-run` with phase checkpoints |
-| Context compaction | Add advisory Stop hooks and an optional strict gate |
+| Context compaction | Add a prompt-centric Stop continuation with a loop guard |
 | Hook administration | Add an explicit per-repository setup skill that safely merges host configuration |
 | Pack bloat | Store outcomes and material failures, not attempt history |
 | Inconsistent formatting | Add schema, status, date, and code provenance frontmatter |
@@ -64,7 +64,9 @@ A semantic checkpoint belongs in the roadmap and contains:
 - open risk
 - exact next action
 
-Hooks cannot safely infer business outcomes from a diff. They only detect a likely missing checkpoint and return model-visible guidance. The default hook is advisory and avoids endless continuations by honoring each host's stop-loop marker. Strict mode is opt-in because blocking automatic compaction can interrupt a request near its context limit.
+Hooks cannot safely infer pack ownership or business outcomes from repository-wide Git state. The command adapter therefore performs no roadmap discovery, Git inspection, timestamp comparison, or semantic completion check. On the first Stop event it returns a concise prompt to the same thread; the agent identifies a pack only from that thread and makes no change when the pack is absent, ambiguous, or already current.
+
+This prompt-centric design intentionally spends at most one additional continuation per turn in exchange for avoiding global roadmap guesses and shared runtime markers. Each host's stop-loop field prevents repeated continuation. Parallel threads keep separate conversation context, while the prompt explicitly warns that a shared working tree still contains changes from other threads.
 
 ## Evidence Retention
 
@@ -117,7 +119,7 @@ It is not a general introduction or roadmap that duplicates child content. This 
 
 - Package-level installation profiles could hide internal helpers more completely, but Skills.sh does not currently provide a portable hidden-skill category.
 - Organization-wide hook rollout remains deferred. The setup skill handles one repository at a time and preserves unknown configuration rather than replacing it.
-- Automated semantic doc writing from transcripts is intentionally rejected until a trustworthy evidence extraction and review gate exists.
+- Blind semantic writing from transcript or repository-wide candidates remains rejected. The agent may checkpoint only a pack unambiguously established in its current thread.
 
 ## Research Basis
 

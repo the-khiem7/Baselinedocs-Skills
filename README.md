@@ -121,7 +121,7 @@ The index contains direct links, status, and dependency edges. It routes work wi
 
 ## Phase Checkpoint Hooks
 
-The repository includes a portable advisory hook and configuration examples for Codex, Claude Code, and Cursor. It detects changed implementation files while an active baseline roadmap exists and asks the agent to checkpoint before stopping.
+The repository includes a portable prompt-centric Stop hook for Codex, Claude Code, and Cursor. It creates one thread-local continuation and lets the agent decide whether the clearly identified pack in that thread needs a checkpoint. Python never searches globally for roadmaps or infers ownership from Git state.
 
 Use `$baselinedocs-setup-hooks` to install or update it without copying files or replacing existing hook configuration. See [HOOKS.md](HOOKS.md) for behavior and manual fallback instructions. Hooks are a safety net; the roadmap workflow remains the source of truth.
 

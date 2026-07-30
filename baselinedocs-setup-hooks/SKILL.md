@@ -41,6 +41,7 @@ Prefer an agent host named explicitly by the user. Otherwise infer it only when 
 The installer:
 
 - copies `assets/checkpoint.py` to `.baseline/hooks/checkpoint.py`
+- copies the bundled checkpoint prompt to `.baseline/hooks/prompts/checkpoint.md`
 - merges one handler into `.codex/hooks.json`, `.claude/settings.json`, or `.cursor/hooks.json`
 - preserves unknown keys and existing hook entries
 - refuses invalid existing JSON before making any change
