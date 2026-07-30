@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python .baseline/hooks/checkpoint.py --agent claude --event Stop",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

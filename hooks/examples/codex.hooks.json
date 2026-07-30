@@ -1,0 +1,18 @@
+{
+  "description": "Advisory Baseline Docs phase checkpoint.",
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"$(git rev-parse --show-toplevel)/.baseline/hooks/checkpoint.py\" --agent codex --event Stop",
+            "commandWindows": "powershell.exe -NoProfile -Command \"$root = git rev-parse --show-toplevel; python (Join-Path $root '.baseline/hooks/checkpoint.py') --agent codex --event Stop\"",
+            "statusMessage": "Checking Baseline Docs checkpoint",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}
