@@ -2,7 +2,7 @@
 
 ## Decision Summary
 
-This version separates deliberate user workflow starts from lifecycle behavior that an agent can select automatically.
+This version separates deliberate user workflow starts, one-time administration, and lifecycle behavior that an agent can select automatically.
 
 | Concern | Decision |
 |---|---|
@@ -10,6 +10,7 @@ This version separates deliberate user workflow starts from lifecycle behavior t
 | Brownfield capture | Add `baselinedocs-save` |
 | Long-running execution | Add `baselinedocs-run` with phase checkpoints |
 | Context compaction | Add advisory Stop hooks and an optional strict gate |
+| Hook administration | Add an explicit per-repository setup skill that safely merges host configuration |
 | Pack bloat | Store outcomes and material failures, not attempt history |
 | Inconsistent formatting | Add schema, status, date, and code provenance frontmatter |
 | Reusable knowledge | Add a separate wiki extraction workflow |
@@ -19,13 +20,14 @@ This version separates deliberate user workflow starts from lifecycle behavior t
 
 ## Trigger Architecture
 
-Codex supports explicit and implicit skill invocation and allows `agents/openai.yaml` to disable implicit invocation per skill. The three user entrypoints set `allow_implicit_invocation: false`. Lifecycle skills keep it enabled.
+Codex supports explicit and implicit skill invocation and allows `agents/openai.yaml` to disable implicit invocation per skill. The three user entrypoints and the one-time `baselinedocs-setup-hooks` utility set `allow_implicit_invocation: false`. Lifecycle skills keep it enabled.
 
 This policy does not hide internal skills from every picker and is not a portable Agent Skills field. Therefore:
 
 - UI names mark helpers as `Baseline Docs Internal: ...`
 - descriptions state automatic trigger contexts
 - the README teaches only the three entrypoints
+- hook administration is documented separately as a one-time utility
 
 This is progressive disclosure rather than a claim that every host can maintain two physically separate skill registries.
 
@@ -96,7 +98,7 @@ If no consumer exists, omit the file. Reusable procedures that apply across task
 
 ## Loop Engineering
 
-`baselinedocs-run` defaults to phase approval and no commits. Continuous execution and per-phase commits require explicit current-turn authorization.
+`baselinedocs-run` has no silent execution-policy defaults. Before implementation, it asks for any missing `approval_policy` and `commit_policy`. Selecting `per-phase` in the user's reply is explicit commit authorization for that run.
 
 After initial completion, feedback is assigned to the phase whose acceptance criteria it refines. A new phase requires a new outcome, dependency, release gate, deployable unit, or independently reviewable body of work.
 
@@ -114,7 +116,7 @@ It is not a general introduction or roadmap that duplicates child content. This 
 ## Deferred Work
 
 - Package-level installation profiles could hide internal helpers more completely, but Skills.sh does not currently provide a portable hidden-skill category.
-- Hook installation is documented and template-based. Automatic merging into user config is deferred because overwriting existing hook configuration is unsafe.
+- Organization-wide hook rollout remains deferred. The setup skill handles one repository at a time and preserves unknown configuration rather than replacing it.
 - Automated semantic doc writing from transcripts is intentionally rejected until a trustworthy evidence extraction and review gate exists.
 
 ## Research Basis

@@ -13,26 +13,46 @@ Resolve from the current request and pack:
 
 - active pack or initiative index
 - phase order and dependencies
-- `approval_policy`: `phase` by default; `continuous` only when explicitly requested
-- `commit_policy`: `none` by default; `per-phase` only when explicitly authorized in the current request
+- `approval_policy`: `phase` or `continuous`
+- `commit_policy`: `none` or `per-phase`
 - verification commands and release gates
 
 Read `references/execution-contract.md` before execution.
 
+## Policy Selection Gate
+
+Before implementation, determine whether the user's current request clearly answers both execution questions, regardless of invocation style or whether internal policy names are used.
+
+If either answer is missing or ambiguous, stop and ask only for the unclear choice:
+
+```text
+Before I begin, how would you like me to work through this roadmap?
+
+- Should I stop after each completed phase for your approval, or continue through every phase that is ready?
+- Should I leave the changes uncommitted, or create a separate commit after each verified phase?
+```
+
+Ask in the user's language and adapt the wording to the conversation. Do not expose internal policy identifiers unless the user asks for technical details.
+
+Apply this gate to every invocation style. `$baselinedocs-run @docpack` is only one example where both questions are unanswered. Do not silently apply defaults, infer the choices from an earlier turn, or begin implementation while waiting.
+
+Selecting `per-phase` in the user's reply is explicit commit authorization for that run. Selecting the skill by itself is not.
+
 ## Workflow
 
-1. Validate that the roadmap has executable phases, acceptance criteria, and dependency order.
-2. Confirm current repository state and preserve unrelated user changes.
-3. Execute the next ready phase.
-4. Verify the phase in proportion to risk.
-5. Checkpoint the pack before starting another phase:
+1. Complete the policy selection gate.
+2. Validate that the roadmap has executable phases, acceptance criteria, and dependency order.
+3. Confirm current repository state and preserve unrelated user changes.
+4. Execute the next ready phase.
+5. Verify the phase in proportion to risk.
+6. Checkpoint the pack before starting another phase:
    - current phase status
    - final evidence and affected files
    - open risks and exact next action
    - document frontmatter
-6. If `approval_policy` is `phase`, stop for approval after the checkpoint.
-7. If `commit_policy` is `per-phase`, commit only phase-related code and docs after verification. Follow the requested convention and never add co-author trailers unless explicitly requested.
-8. Continue until all authorized phases are complete or a real blocker requires the user.
+7. If `approval_policy` is `phase`, stop for approval after the checkpoint.
+8. If `commit_policy` is `per-phase`, commit only phase-related code and docs after verification. Follow the requested convention and never add co-author trailers unless explicitly requested.
+9. Continue until all authorized phases are complete or a real blocker requires the user.
 
 ## Revision Policy
 
@@ -44,5 +64,6 @@ Aggregate small revisions under a `Revision summary` entry. Do not create one ph
 
 - Selecting this skill is not permission to commit.
 - Do not commit unless the current user request explicitly authorizes it.
+- Do not start implementation until every missing policy has been selected.
 - Do not mark runtime, deployment, integration, or external-service behavior verified from build or formatting checks alone.
 - Do not begin a dependent phase when its prerequisite is unverified.

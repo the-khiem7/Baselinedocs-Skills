@@ -4,15 +4,26 @@
 
 | Policy | Behavior |
 |---|---|
-| `phase` | Implement and verify one phase, update the pack, then wait for approval. This is the default. |
-| `continuous` | Continue through ready phases, checkpointing after each one. Use only when explicitly requested. |
+| `phase` | Implement and verify one phase, update the pack, then wait for approval. |
+| `continuous` | Continue through ready phases, checkpointing after each one. |
 
 ## Commit policies
 
 | Policy | Behavior |
 |---|---|
-| `none` | Leave changes uncommitted. This is the default. |
+| `none` | Leave changes uncommitted. |
 | `per-phase` | After verification and the docs checkpoint, commit only files belonging to that phase. Requires explicit authorization in the current request. |
+
+## Selection gate
+
+Both policies must be unambiguous before implementation begins. For every invocation style, when the user's request does not clearly determine one or both choices, ask for the unclear choices instead of applying defaults.
+
+For example, `$baselinedocs-run @docpack` leaves both choices unclear, so ask naturally in the user's language:
+
+- whether to pause for approval after each phase or continue through every ready phase
+- whether to leave changes uncommitted or create a commit after each verified phase
+
+Do not present internal policy identifiers as a configuration form unless the user requests technical details. Do not infer policy from earlier turns. A reply requesting a commit after each phase provides explicit commit authorization for that run.
 
 ## Phase checkpoint
 

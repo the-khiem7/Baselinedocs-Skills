@@ -6,8 +6,24 @@ It does not edit documentation automatically.
 
 ## Install in a target repository
 
+Install `baselinedocs-setup-hooks`, then ask the agent:
+
+```text
+Use $baselinedocs-setup-hooks to install the checkpoint hook for Codex in this repository.
+```
+
+The skill detects the repository, copies the handler, safely merges the selected host configuration, validates JSON, and checks that a repeated install makes no changes. Run it once for every repository that needs checkpoint reminders.
+
+For a preview:
+
+```text
+Use $baselinedocs-setup-hooks to preview installing the checkpoint hook for Codex in this repository. Do not change files.
+```
+
+Manual fallback:
+
 1. Copy `hooks/checkpoint.py` to `.baseline/hooks/checkpoint.py`.
-2. Copy and adapt one example configuration:
+2. Merge and adapt one example configuration:
    - Codex: `hooks/examples/codex.hooks.json` to `.codex/hooks.json`
    - Claude Code: merge `hooks/examples/claude.settings.json` into `.claude/settings.json`
    - Cursor: `hooks/examples/cursor.hooks.json` to `.cursor/hooks.json`
