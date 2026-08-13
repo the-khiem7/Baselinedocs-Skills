@@ -1,0 +1,6 @@
+interface:
+  display_name: "Baseline Docs Adopt"
+  short_description: "Adopt existing documents into baseline packs"
+  default_prompt: "Use $baselinedocs-adopt to convert this source into a complete baseline documentation pack."
+policy:
+  allow_implicit_invocation: false
