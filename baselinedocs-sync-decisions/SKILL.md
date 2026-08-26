@@ -1,17 +1,18 @@
 ---
 name: baselinedocs-sync-decisions
-description: Propagate one or more closed decisions across an existing baseline pack. Use automatically when resolved risks or business decisions have not reached every affected document.
+description: Apply closed decisions to every baseline document they affect, from one targeted section to the whole pack. Use automatically when a resolved risk or business decision has not reached every affected document, including a single atomic decision update.
 ---
 
 # Baseline Docs Sync Decisions
 
 ## Purpose
 
-Apply already-closed decisions across the full baseline pack.
+Apply already-closed decisions to the documents they affect, whether that is one section or the whole pack.
 
 ## Use When
 
 - one or more hallucination risks were closed
+- exactly one decision was just closed and only a narrow patch is needed
 - decisions are recorded but not reflected elsewhere
 - multiple baseline files still describe outdated options or uncertainty
 
@@ -20,10 +21,11 @@ Read `references/pack-contract.md` in full before creating or editing any pack f
 ## Core Behavior
 
 1. Read the closed decisions.
-2. Identify every affected baseline file and section.
+2. Identify every affected baseline file and section, whether that is one section or many.
 3. Propagate the chosen direction into the pack.
-4. Preserve decision history while removing active ambiguity.
-5. Refresh `updated` and `code_ref` where implementation evidence was rechecked.
+4. Patch only the sections the decision reaches. An agent that has just read the pack will see other things worth fixing; folding them into this pass makes the change impossible to review against the decision that motivated it.
+5. Preserve decision history while removing active ambiguity.
+6. Refresh `updated` and `code_ref` only in documents that changed, and only where implementation evidence was rechecked.
 
 ## Primary Output
 
@@ -32,4 +34,3 @@ Read `references/pack-contract.md` in full before creating or editing any pack f
 ## Non-Goals
 
 - not for code drift syncing
-- not for a single targeted atomic decision update when a smaller patch is enough

@@ -37,6 +37,14 @@ A closed decision records four things: what was decided, why, what breaks if it 
 
 `roadmap` records the outcome: what happened, the final evidence, and the next action. `hallucination` records the why: a defect's cause, rejected alternatives, the reasoning behind a fix. When a roadmap entry needs to explain why something happened, link to the matching hallucination entry instead of restating its reasoning. Duplicating the same narrative in both documents means every later correction has to be made twice, and they drift when it isn't.
 
+## Disproven claims
+
+A claim that code or an explicit decision has disproven moves into `hallucination` as a closed entry recording what was believed and what disproved it. The document whose role is current truth stops asserting it. The claim is not deleted.
+
+Owners: `sync-codebase` when code disproved it, `sync-decisions` when a decision closed it, `save` when the current thread established it.
+
+Deleting the claim loses the only record that the belief was ever held, and a later agent re-derives it from the same evidence that produced it the first time. `hallucination` is a journal, and a defeated approach kept beside what defeated it is what stops that approach being proposed again. Nothing in an active pack is removed on the grounds that it is no longer true. It is relocated.
+
 ## Conditional documents
 
 - `sourcecode` (`<prefix>.sourcecode.md`): architecture, code topology, execution flow. Include when that shape will help later work.
