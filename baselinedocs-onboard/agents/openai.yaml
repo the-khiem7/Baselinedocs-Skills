@@ -1,0 +1,6 @@
+interface:
+  display_name: "Baseline Docs Onboard"
+  short_description: "Load a baseline pack fully into context"
+  default_prompt: "Use $baselinedocs-onboard to read an existing baseline pack completely into working context."
+policy:
+  allow_implicit_invocation: false

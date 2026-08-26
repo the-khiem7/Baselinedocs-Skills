@@ -1,6 +1,0 @@
-interface:
-  display_name: "Baseline Docs Internal: Handoff"
-  short_description: "Prepare a concise handoff brief"
-  default_prompt: "Use $baselinedocs-resume-handoff to prepare a concise operational handoff."
-policy:
-  allow_implicit_invocation: true

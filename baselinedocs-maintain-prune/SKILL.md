@@ -15,12 +15,16 @@ Remove obsolete noise from the active pack.
 - assumptions were invalidated
 - outdated content is confusing sync or resume work
 
+Read `references/pack-contract.md` in full before creating or editing any pack file, every time. It is the only definition of which document owns which content; do not infer that from a filename, from an earlier session, or from memory.
+
 ## Core Behavior
 
 1. Detect obsolete or misleading sections.
 2. Remove or rewrite them.
 3. Keep only content that still serves active truth.
 4. Remove an optional `sourcecode` or `useguide` document only after preserving any unique useful content or obtaining sufficient evidence that it is obsolete.
+
+A lesson entry describing a resolved mistake is not obsolete or misleading merely because the mistake is fixed - the mistake happening, and how it was caught, remains true and reusable. Do not prune it.
 
 ## Primary Output
 

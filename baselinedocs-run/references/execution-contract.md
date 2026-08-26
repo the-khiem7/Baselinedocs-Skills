@@ -14,6 +14,8 @@
 | `none` | Leave changes uncommitted. |
 | `per-phase` | After verification and the docs checkpoint, commit only files belonging to that phase. Requires explicit authorization in the current request. |
 
+A phase commit follows the repository's existing commit message convention and must be indistinguishable in form from the repository's own commits. Do not add authorship, attribution, or tool-generated trailers that the repository's history does not already use. A trailer nobody asked for turns every phase commit into a permanent, unremovable record of how the work was produced rather than what it changed.
+
 ## Selection gate
 
 Both policies must be unambiguous before implementation begins. For every invocation style, when the user's request does not clearly determine one or both choices, ask for the unclear choices instead of applying defaults.
@@ -36,6 +38,10 @@ Keep one compact record:
 - next ready phase
 
 Do not keep a diary of every fixture or command attempt. Preserve an intermediate failure only when it remains actionable or explains the final design.
+
+A lesson entry - a mistake, why it looked reasonable, what disproved it, and the fix - is not a diary entry. Preserve it in full even after the mistake is resolved; it is what prevents the same mistake recurring.
+
+When a checkpoint's evidence includes a defect's cause or a rejected alternative, record that reasoning in `hallucination.md` and link to it from the checkpoint. Do not restate it in the roadmap - a phase checkpoint reports outcome and evidence, not the reasoning behind them.
 
 ## Post-initial revisions
 

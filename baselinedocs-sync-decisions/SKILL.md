@@ -15,6 +15,8 @@ Apply already-closed decisions across the full baseline pack.
 - decisions are recorded but not reflected elsewhere
 - multiple baseline files still describe outdated options or uncertainty
 
+Read `references/pack-contract.md` in full before creating or editing any pack file, every time. It is the only definition of which document owns which content; do not infer that from a filename, from an earlier session, or from memory.
+
 ## Core Behavior
 
 1. Read the closed decisions.

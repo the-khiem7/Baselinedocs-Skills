@@ -7,6 +7,8 @@ description: Extract reusable implementation guidance from a baseline pack or co
 
 Turn reusable knowledge into a task-independent article.
 
+Read `references/pack-contract.md` in full before creating or editing any pack file, every time. It is the only definition of which document owns which content; do not infer that from a filename, from an earlier session, or from memory.
+
 ## Workflow
 
 1. Identify a pattern that can be applied outside the originating task.

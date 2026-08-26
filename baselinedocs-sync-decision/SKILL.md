@@ -15,6 +15,8 @@ Apply one specific decision with minimal, targeted changes.
 - only a small part of the pack needs updating
 - an atomic decision patch is preferable to a wider sync
 
+Read `references/pack-contract.md` in full before creating or editing any pack file, every time. It is the only definition of which document owns which content; do not infer that from a filename, from an earlier session, or from memory.
+
 ## Core Behavior
 
 1. Read the chosen decision.

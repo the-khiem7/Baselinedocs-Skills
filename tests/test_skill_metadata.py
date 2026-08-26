@@ -6,6 +6,9 @@ from pathlib import Path
 ROOT = Path(__file__).parents[1]
 ENTRYPOINTS = {
     "baselinedocs-init",
+    "baselinedocs-adopt",
+    "baselinedocs-onboard",
+    "baselinedocs-brief",
     "baselinedocs-save",
     "baselinedocs-run",
     "baselinedocs-setup-hooks",

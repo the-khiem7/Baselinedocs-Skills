@@ -15,6 +15,8 @@ Update an existing baseline pack so it reflects the actual current codebase.
 - routes, models, config, auth, jobs, or behavior drifted from the baseline pack
 - roadmap evidence must reflect recent implementation changes
 
+Read `references/pack-contract.md` in full before creating or editing any pack file, every time. It is the only definition of which document owns which content; do not infer that from a filename, from an earlier session, or from memory.
+
 ## Core Behavior
 
 1. Inspect the codebase first.
@@ -40,4 +42,4 @@ Update an existing baseline pack so it reflects the actual current codebase.
 
 - not for creating a brand new pack
 - not for atomic one-decision propagation
-- not for long-gap resume recovery
+- not for reloading a pack after a long gap; `baselinedocs-onboard` reads it in a fresh thread

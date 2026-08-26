@@ -17,7 +17,7 @@ Determine or confirm:
 - the source-retention decision: retain, archive separately, or remove after validation
 - the source's authority and the meaning of its claims
 
-Read `baselinedocs-init` when creating a new pack. Read the relevant lifecycle skill when updating an existing pack.
+Read `references/pack-contract.md` in full before creating or editing any pack file, every time. It is the only definition of which document owns which content; do not infer that from a filename, from an earlier session, or from memory.
 
 ## Workflow
 
@@ -32,15 +32,11 @@ Read `baselinedocs-init` when creating a new pack. Read the relevant lifecycle s
 9. If source removal was authorized, remove it only after coverage validation succeeds. If retention was required, follow the agreed retention method. Never infer either choice.
 10. Report changed paths, coverage result, unresolved gaps, source-retention result, and the next executable action.
 
-## Document Roles
+## Distribution
 
-Use the smallest applicable set:
+Distribute the source by the document roles in `references/pack-contract.md`, using the smallest applicable set. Add `*.index.md` for initiative navigation and cross-domain relationships when multiple packs are necessary.
 
-- `*.introduction.md`: purpose, scope, stakeholders, boundaries, vocabulary, decisions, and known risks.
-- `*.sourcecode.md`: code-inspected architecture, integrations, data/control flow, and evidence boundaries.
-- `*.useguide.md`: user and operator workflows, expected behavior, limitations, and operational guidance.
-- `*.roadmap.md`: ordered work, dependencies, acceptance criteria, verification gates, unresolved decisions, and one exact next action.
-- `*.index.md`: initiative navigation and cross-domain relationships when multiple packs are necessary.
+A source document usually mixes decisions and open questions into its narrative. Both belong in `hallucination`, not in `introduction` alongside scope: a decision filed under scope loses its reasoning and its rejected alternatives, which is what makes it reversible later by someone who cannot see what it protected.
 
 Do not force content into a file whose role does not fit. Add a narrowly scoped domain pack when separation improves discoverability without duplicating truth.
 

@@ -1,0 +1,6 @@
+interface:
+  display_name: "Baseline Docs Brief"
+  short_description: "Report where work stands without loading the pack"
+  default_prompt: "Use $baselinedocs-brief to report where work stands from the pack without loading it."
+policy:
+  allow_implicit_invocation: false

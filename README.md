@@ -6,53 +6,90 @@ Baseline Docs stores current implementation truth, decisions, evidence, dependen
 
 ## Install
 
-Install one user entrypoint:
-
 ```bash
-npx skills add https://github.com/the-khiem7/Baselinedocs-Skills.git --skill baselinedocs-init
-npx skills add https://github.com/the-khiem7/Baselinedocs-Skills.git --skill baselinedocs-adopt
-npx skills add https://github.com/the-khiem7/Baselinedocs-Skills.git --skill baselinedocs-save
-npx skills add https://github.com/the-khiem7/Baselinedocs-Skills.git --skill baselinedocs-run
-npx skills add https://github.com/the-khiem7/Baselinedocs-Skills.git --skill baselinedocs-setup-hooks
-```
-
-List or install the complete family:
-
-```bash
-npx skills add https://github.com/the-khiem7/Baselinedocs-Skills.git --list
 npx skills add https://github.com/the-khiem7/Baselinedocs-Skills.git
 ```
 
-From a local clone, replace the repository URL with `.`.
+From a local clone, replace the repository URL with `.`. To see what the install contains first, add `--list`.
 
-## Four User Entrypoints
+Install the family, not individual skills. The skills hand off to each other by name: `baselinedocs-onboard` names `baselinedocs-sync-reconcile` for a contradiction it must not repair itself, and `baselinedocs-brief` names `baselinedocs-save` for a delta it must not write itself. A pointer to a skill that was never installed is a dead end the agent reaches only after the user has already asked for something.
 
-| User intent                            | Skill                 | Outcome                                                   |
-| -------------------------------------- | --------------------- | --------------------------------------------------------- |
-| Start durable docs with a new workflow | `baselinedocs-init` | Create an adaptive pack or multi-pack initiative          |
-| Adopt an existing source format        | `baselinedocs-adopt` | Convert it into a complete, traceable baseline pack       |
-| Capture work already in progress       | `baselinedocs-save` | Save current brownfield context without restarting        |
-| Execute an initialized roadmap         | `baselinedocs-run`  | Run phases with checkpoints and requested approval policy |
+## Workflow
 
-These entrypoints set `policy.allow_implicit_invocation: false` for Codex so they remain deliberate user actions. Use `$baselinedocs-init`, `$baselinedocs-adopt`, `$baselinedocs-save`, or `$baselinedocs-run`.
+```mermaid
+flowchart TD
+    HOOK["$baselinedocs-setup-hooks<br/>optional, once per repository"]
+    HOOK -.-> Q0
 
-When `$baselinedocs-run` is invoked without both execution policies, it asks naturally whether to pause after each phase and whether to commit each verified phase. It does not silently choose defaults or expose configuration-style identifiers unless requested.
+    Q0{"What do you<br/>already have?"}
+    Q0 -->|"nothing yet"| INIT["$baselinedocs-init"]
+    Q0 -->|"a document or spec"| ADOPT["$baselinedocs-adopt"]
+    Q0 -->|"work already underway"| SAVE1["$baselinedocs-save"]
 
-`baselinedocs-setup-hooks` is a separate one-time administration utility. Invoke it explicitly in each repository where automatic checkpoint reminders are wanted; it is not part of the daily four-entrypoint workflow.
+    INIT --> RUN
+    ADOPT --> RUN
+    SAVE1 --> RUN
 
-The remaining lifecycle skills are agent-selected helpers. Their UI names start with `Baseline Docs Internal:` and implicit invocation remains enabled. Other agent hosts may not enforce the Codex-specific policy, so the classification is also documented in each skill description.
+    RUN["$baselinedocs-run<br/>checkpoints the roadmap each phase"]
+    RUN --> Q1{"Context under<br/>pressure?"}
+
+    Q1 -->|"no"| SAVE2["$baselinedocs-save<br/>decision closed, question opened,<br/>scope moved, run stopped mid-phase"]
+    SAVE2 --> RUN
+
+    Q1 -->|"yes"| GATE["$baselinedocs-save<br/>always save before branching"]
+    GATE --> Q2{"Stay in<br/>this thread?"}
+
+    Q2 -->|"Stay"| CMP["host /compact"]
+    CMP --> BRIEF["$baselinedocs-brief<br/>is the pack behind this thread?"]
+    BRIEF -->|"no delta"| RUN
+    BRIEF -->|"delta"| SAVE2
+    BRIEF -->|"need full detail"| ONB
+
+    Q2 -->|"Leave"| NEW["new conversation thread"]
+    NEW --> ONB["$baselinedocs-onboard"]
+    ONB --> RUN
+```
+
+`baselinedocs-save` before the branch is the step the rest rests on. Both branches lose the thread, A keeping a lossy summary and B keeping none, so the pack is the only thing that survives either.
+
+| Branch             | Sources of truth afterwards                                       | Choose it when                                                                                       |
+| ------------------ | ----------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| Stay in the thread | two: the pack, and a compaction summary that can disagree with it | the thread still holds something unwritable, a half-formed approach or a debugging session in flight |
+| New thread         | one: the pack                                                     | the pack is current, which after a save it is                                                        |
+
+| Trap                               | What is actually true                                                                                                                                                                                                 |
+| ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `brief` recovers detail          | It is a diagnostic, not a restore. It reads frontmatter and the active roadmap sections, and says so. It reports where work stands and whether the pack fell behind;`onboard` is what reads every document in full. |
+| `save` is the step after `run` | `run` already checkpoints the roadmap each phase. `save` owns what a phase checkpoint does not: decisions closed, questions opened, scope moved.                                                                  |
+| one thing is called compact        | Two are. Host`/compact` shrinks the conversation. `baselinedocs-maintain-compact` shrinks the pack, on a different axis: not a full window, but a pack gone noisy over months.                                    |
+
+## Six User Entrypoints
+
+| User intent                            | Skill                    | Outcome                                                   |
+| -------------------------------------- | ------------------------ | --------------------------------------------------------- |
+| Start durable docs with a new workflow | `baselinedocs-init`    | Create an adaptive pack or multi-pack initiative          |
+| Adopt an existing source format        | `baselinedocs-adopt`   | Convert it into a complete, traceable baseline pack       |
+| Capture work already in progress       | `baselinedocs-save`    | Save current brownfield context without restarting        |
+| Execute an initialized roadmap         | `baselinedocs-run`     | Run phases with checkpoints and requested approval policy |
+| Load an existing pack before working   | `baselinedocs-onboard` | Read the selected pack in full into working context       |
+| Ask where the work stands mid-task     | `baselinedocs-brief`   | Report position cheaply, without loading the pack         |
+
+All six set `policy.allow_implicit_invocation: false` for Codex, so they stay deliberate user actions. Three behaviors are worth knowing before you meet them:
+
+- `onboard` writes nothing, and on a multi-pack initiative it routes before it loads: it reads the index, takes one domain pack rather than the whole set, and reports every point where a loaded document leaned on something that was not loaded.
+- `run` invoked without both execution policies asks whether to pause after each phase and whether to commit each verified phase. It never chooses defaults silently.
+- `setup-hooks` is a one-time per-repository administration utility, not part of the daily loop.
 
 ## Agent-Selected Skills
 
 | Family    | Skills                                                                             |
 | --------- | ---------------------------------------------------------------------------------- |
 | Sync      | `sync-codebase`, `sync-decision`, `sync-decisions`, `sync-reconcile`       |
-| Resume    | `resume-continue`, `resume-snapshot`, `resume-next-step`, `resume-handoff` |
 | Audit     | `audit-drift`, `audit-verify`                                                  |
 | Maintain  | `maintain-compact`, `maintain-archive`, `maintain-split`, `maintain-prune` |
 | Knowledge | `extract-wiki`                                                                   |
 
-All skill IDs use lowercase kebab-case, for example `baselinedocs-sync-codebase`.
+All skill IDs use lowercase kebab-case, for example `baselinedocs-sync-codebase`. These are agent-selected helpers: their UI names start with `Baseline Docs Internal:` and implicit invocation stays enabled. Some hosts do not enforce the Codex-specific policy, so each skill description states the classification too.
 
 ## Adaptive Pack Contract
 
@@ -100,6 +137,8 @@ Use `docs/wiki/<topic>.md` for reusable patterns such as migrations, conversions
 - Baseline pack: task-specific state, decisions, evidence, roadmap.
 - Wiki: task-independent instructions that can be injected into later work.
 
+A pack is internal operational memory. Never reference a pack filename or section from inside code, configuration, or infrastructure resource descriptions. Those strings ship outside the repository, where an internal filename means nothing to the reader and can expose internal planning to anyone with access to the deployed resource.
+
 `baselinedocs-extract-wiki` removes task chronology and links the reusable article back from the pack.
 
 ## Multi-Domain Work
@@ -126,10 +165,6 @@ The index contains direct links, status, and dependency edges. It routes work wi
 The repository includes a portable prompt-centric Stop hook for Codex, Claude Code, and Cursor. It creates one thread-local continuation and lets the agent decide whether the clearly identified pack in that thread needs a checkpoint. Python never searches globally for roadmaps or infers ownership from Git state.
 
 Use `$baselinedocs-setup-hooks` to install or update it without copying files or replacing existing hook configuration. See [HOOKS.md](HOOKS.md) for behavior and manual fallback instructions. Hooks are a safety net; the roadmap workflow remains the source of truth.
-
-## Design Notes
-
-See [DESIGN.md](DESIGN.md) for the decisions, tradeoffs, migration behavior, and host capability boundaries behind this version.
 
 ## Compatibility
 

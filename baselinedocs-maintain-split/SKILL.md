@@ -15,6 +15,8 @@ Break one overloaded baseline into clearer bounded packs.
 - roadmap scope became too large
 - multiple workstreams are mixed together and hard to resume
 
+Read `references/pack-contract.md` in full before creating or editing any pack file, every time. It is the only definition of which document owns which content; do not infer that from a filename, from an earlier session, or from memory.
+
 ## Core Behavior
 
 1. Identify natural split boundaries.

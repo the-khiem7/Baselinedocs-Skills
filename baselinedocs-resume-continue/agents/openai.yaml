@@ -1,6 +1,0 @@
-interface:
-  display_name: "Baseline Docs Internal: Resume Continue"
-  short_description: "Recover where work should continue"
-  default_prompt: "Use $baselinedocs-resume-continue to recover the current continuation point."
-policy:
-  allow_implicit_invocation: true

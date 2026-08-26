@@ -15,6 +15,8 @@ Restore one canonical truth across the baseline pack.
 - one file says implemented while another still says planned
 - the pack has internal truth drift even before checking the codebase
 
+Read `references/pack-contract.md` in full before creating or editing any pack file, every time. It is the only definition of which document owns which content; do not infer that from a filename, from an earlier session, or from memory.
+
 ## Core Behavior
 
 1. Compare files inside the pack.

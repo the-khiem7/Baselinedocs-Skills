@@ -16,7 +16,7 @@ Infer when safe:
 - kebab-case `prefix`
 - single-domain or multi-domain scope
 
-Read `references/pack-contract.md` before creating files.
+Read `references/pack-contract.md` in full before creating or editing any pack file, every time. It is the only definition of which document owns which content; do not infer that from a filename, from an earlier session, or from memory.
 
 ## Workflow
 
@@ -45,4 +45,4 @@ Create the pack rather than returning only a chat plan. Report paths, open risks
 
 ## Boundaries
 
-Use `baselinedocs-save` when work is already underway and the user wants a durable capture. Use lifecycle skills for later sync, resume, audit, maintenance, or wiki extraction.
+Use `baselinedocs-save` when work is already underway and the user wants a durable capture. Use lifecycle skills for later sync, audit, maintenance, or wiki extraction.

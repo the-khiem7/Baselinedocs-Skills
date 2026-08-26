@@ -1,6 +1,0 @@
-interface:
-  display_name: "Baseline Docs Internal: Next Step"
-  short_description: "Extract one exact next action"
-  default_prompt: "Use $baselinedocs-resume-next-step to extract one precise next action."
-policy:
-  allow_implicit_invocation: true

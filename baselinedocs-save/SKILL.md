@@ -7,6 +7,8 @@ description: Capture durable baseline documentation in the middle of an existing
 
 Capture the current truth without pretending the work started with Baseline Docs.
 
+Read `references/pack-contract.md` in full before creating or editing any pack file, every time. It is the only definition of which document owns which content; do not infer that from a filename, from an earlier session, or from memory.
+
 ## Workflow
 
 1. Inspect the conversation, repository, current diff, existing docs, and relevant decisions.
@@ -34,6 +36,8 @@ Capture the current truth without pretending the work started with Baseline Docs
 - Store outcomes, not a transcript of attempts.
 - Keep one final verification result per claim or phase.
 - Retain a failed attempt only when it explains a remaining risk, changes the chosen approach, or is needed to reproduce a defect.
+- Keep a lesson entry in full - a mistake, why it looked reasonable, what disproved it, and the fix - even after the mistake is resolved. It is not a transcript of an attempt; it is what stops the same mistake recurring.
+- When an outcome needs its reasoning explained (a defect's cause, a rejected alternative), record that once in `hallucination` and link to it from `roadmap`. Do not restate the reasoning in both documents.
 - Link reusable guidance to the project wiki instead of duplicating it inside the pack.
 
 ## Output
