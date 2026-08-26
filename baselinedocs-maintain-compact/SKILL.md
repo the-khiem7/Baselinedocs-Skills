@@ -1,6 +1,6 @@
 ---
 name: baselinedocs-maintain-compact
-description: Compact an existing baseline pack by reducing repetition, retries, and verbosity while preserving factual truth. Use automatically when the pack is too noisy to resume efficiently.
+description: Compact an existing baseline pack by reducing repetition, retries, and verbosity, keeping its informational performance unchanged. Use automatically when the pack is too noisy to resume efficiently.
 ---
 
 # Baseline Docs Maintain Compact
@@ -19,14 +19,21 @@ Read `references/pack-contract.md` in full before creating or editing any pack f
 
 ## Core Behavior
 
-1. Detect repeated and low-value content.
+1. Detect repeated and redundant content.
 2. Merge duplicates.
 3. Preserve evidence and canonical truth.
 4. Produce a denser, cleaner pack.
 
 Collapse repeated fixture or command attempts into one final evidence entry. Retain only failures that remain actionable or explain a material change in approach.
 
-Do not collapse a lesson entry - a mistake with why it looked reasonable, what disproved it, and the fix - into a shorter summary. Compacting it away, or trimming it to just the final state, discards the reason it exists.
+## Gate
+
+Compaction succeeds only when the document is shorter and its informational performance is unchanged. Before accepting a compacted document, check both:
+
+- is every detail the original carried still recoverable from the shorter text
+- can any passage now be read in more than one way
+
+Either check failing means revert, not adjust. A long file costs less than a hallucination produced from a short one, so length is the cheap side of this trade and detail is not.
 
 ## Primary Output
 
@@ -36,3 +43,4 @@ Do not collapse a lesson entry - a mistake with why it looked reasonable, what d
 
 - not for archiving completed phases
 - not for splitting unrelated workstreams
+- not for removing a claim that turned out false; the contract's relocation rule owns that

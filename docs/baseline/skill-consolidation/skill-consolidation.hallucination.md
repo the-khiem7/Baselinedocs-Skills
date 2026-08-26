@@ -98,6 +98,18 @@ The lesson-entry exception already in the skill body does not patch this. The co
 
 **Decided.** Rewriting descriptions for pairs that share triggers but differ in outcome is its own batch, not part of this one. The audit rename in D3 is excluded from that split, because a rename cannot be done without writing the new description.
 
+## D10: the remaining duplicate rule statements are removed inside P6
+
+**Decided.** The two further wordings of the lesson-entry rule, in `baselinedocs-run/references/execution-contract.md` and `baselinedocs-save/SKILL.md`, are removed as part of P6 rather than in a phase of their own.
+
+**Why.** Both are one sentence in one file, and P6 is already the phase that makes the repository's written rules agree with each other.
+
+**What breaks if ignored.** A rule stated three times in three wordings drifts on the next edit, and `test_references.py` cannot see it: that test only compares contract copies against the canonical file, so a fourth paraphrase written somewhere else passes.
+
+**Rejected: a separate P7.** It would have given the removal its own verification step, and mixing skill-body edits into a documentation phase does put two kinds of change in one place. Rejected as too small a scope to justify the phase.
+
+**Order, carried from D7's execution.** Both duplicates state one thing the canonical sentence does not: a lesson entry stays even after the mistake is resolved. Widen the canonical sentence to cover that, re-copy it, and only then delete the two. Deleting first drops the rule for as long as it takes to notice.
+
 ## Open questions
 
 **Q1: what is the archive destination?** D6 keeps `maintain-archive` on condition that its destination is stated, and the path was never named. Candidates include a subdirectory such as `<pack>/archive/` holding one file per archived phase, or an in-place section marked `status: archived`. Blocks the archive phase and nothing else.

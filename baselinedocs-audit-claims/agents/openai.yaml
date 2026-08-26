@@ -1,0 +1,6 @@
+interface:
+  display_name: "Baseline Docs Internal: Audit Claims"
+  short_description: "Check baseline claims against evidence"
+  default_prompt: "Use $baselinedocs-audit-claims to check whether baseline claims are supported by evidence."
+policy:
+  allow_implicit_invocation: true

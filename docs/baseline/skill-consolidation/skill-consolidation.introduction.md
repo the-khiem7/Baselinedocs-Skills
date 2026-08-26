@@ -24,7 +24,7 @@ Out of scope: the pack schema (`2.0` is unchanged), hook behavior, and the detec
 | skills on disk | 16: 7 entrypoints, 9 lifecycle. 18 at `cded242`, before P1 |
 | pack-writing skills shipping `references/pack-contract.md` | 11, byte-identical, pinned by `tests/test_references.py`. 13 at `cded242` |
 | `contract/pack-contract.md` | 82 lines. 74 at `cded242`, before the P2 `Disproven claims` section |
-| `AGENTS.md` claim about that count | states 14 in two places; wrong at `cded242` and still wrong. P6 corrects it |
+| `AGENTS.md` claim about that count | corrected to 11 in both places by P6. It said 14 at `cded242`, when the real figure was 13 |
 | test command | `uvx pytest tests/ -q` |
 | existing baseline packs | none before this one |
 

@@ -39,7 +39,7 @@ Keep one compact record:
 
 Do not keep a diary of every fixture or command attempt. Preserve an intermediate failure only when it remains actionable or explains the final design.
 
-A lesson entry - a mistake, why it looked reasonable, what disproved it, and the fix - is not a diary entry. Preserve it in full even after the mistake is resolved; it is what prevents the same mistake recurring.
+A lesson entry is not a diary entry. `pack-contract.md` states what it is and how long it stays.
 
 When a checkpoint's evidence includes a defect's cause or a rejected alternative, record that reasoning in `hallucination.md` and link to it from the checkpoint. Do not restate it in the roadmap - a phase checkpoint reports outcome and evidence, not the reasoning behind them.
 

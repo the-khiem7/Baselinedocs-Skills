@@ -85,7 +85,7 @@ All six set `policy.allow_implicit_invocation: false` for Codex, so they stay de
 | Family    | Skills                                                                             |
 | --------- | ---------------------------------------------------------------------------------- |
 | Sync      | `sync-codebase`, `sync-decisions`, `sync-reconcile`       |
-| Audit     | `audit-drift`, `audit-verify`                                                  |
+| Audit     | `audit-drift`, `audit-claims`                                                  |
 | Maintain  | `maintain-compact`, `maintain-archive`, `maintain-split` |
 | Knowledge | `extract-wiki`                                                                   |
 

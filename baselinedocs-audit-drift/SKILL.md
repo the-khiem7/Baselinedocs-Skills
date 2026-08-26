@@ -1,6 +1,6 @@
 ---
 name: baselinedocs-audit-drift
-description: Audit drift between code, baseline docs, frontmatter provenance, and decisions without modifying files by default. Use automatically when staleness or alignment is uncertain.
+description: Audit which baseline documents have fallen behind the code, ranked by `code_ref` frontmatter provenance, and report without modifying files. Use automatically when staleness or alignment between docs, code, and decisions is uncertain. For whether an individual statement is supported by evidence, use `baselinedocs-audit-claims` instead.
 ---
 
 # Baseline Docs Audit Drift
@@ -32,3 +32,4 @@ Treat a newer commit as a drift signal, not automatic proof that every document 
 ## Non-Goals
 
 - audit-first, not auto-fix-first
+- not a claim-level evidence check; `baselinedocs-audit-claims` does that

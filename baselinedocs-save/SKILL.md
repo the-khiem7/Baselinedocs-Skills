@@ -36,7 +36,7 @@ Read `references/pack-contract.md` in full before creating or editing any pack f
 - Store outcomes, not a transcript of attempts.
 - Keep one final verification result per claim or phase.
 - Retain a failed attempt only when it explains a remaining risk, changes the chosen approach, or is needed to reproduce a defect.
-- Keep a lesson entry in full - a mistake, why it looked reasonable, what disproved it, and the fix - even after the mistake is resolved. It is not a transcript of an attempt; it is what stops the same mistake recurring.
+- A lesson entry is not a transcript of an attempt. `references/pack-contract.md` states what it is and how long it stays.
 - When an outcome needs its reasoning explained (a defect's cause, a rejected alternative), record that once in `hallucination` and link to it from `roadmap`. Do not restate the reasoning in both documents.
 - Link reusable guidance to the project wiki instead of duplicating it inside the pack.
 

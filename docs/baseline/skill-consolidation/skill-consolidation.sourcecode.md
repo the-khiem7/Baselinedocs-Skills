@@ -39,7 +39,7 @@ A skill may rely only on files inside its own folder, because `npx skills add --
 
 | Carries a copy | Does not |
 |---|---|
-| `init`, `adopt`, `save`, `run`, `sync-codebase`, `sync-decisions`, `sync-reconcile`, `maintain-compact`, `maintain-archive`, `maintain-split`, `extract-wiki` | `onboard`, `brief`, `setup-hooks`, `audit-drift`, `audit-verify` |
+| `init`, `adopt`, `save`, `run`, `sync-codebase`, `sync-decisions`, `sync-reconcile`, `maintain-compact`, `maintain-archive`, `maintain-split`, `extract-wiki` | `onboard`, `brief`, `setup-hooks`, `audit-drift`, `audit-claims` |
 
 Skills that only read a pack carry no copy. Each of the 11 also carries one gate sentence sending the agent to read the contract; that gate cannot live in the contract, because an agent that skipped the file never reaches the sentence telling it not to skip the file.
 
@@ -54,7 +54,7 @@ The sync and audit families are not two overlapping families. They are one detec
 | Comparison scope | Detect, read-only | Repair, writes |
 |---|---|---|
 | pack against code | `audit-drift` | `sync-codebase` |
-| claim against evidence | `audit-verify` | none |
+| claim against evidence | `audit-claims` | none |
 | pack against itself | none | `sync-reconcile` |
 | closed decision against the rest of the pack | none | `sync-decisions` |
 
@@ -71,11 +71,14 @@ Which skills are named inside another skill's shipped text. Recorded as topology
 | `brief` | `onboard` |
 | `adopt` | `onboard` |
 | `sync-reconcile` | `brief`, `onboard` |
-| `audit-drift` | `brief`, `onboard` |
+| `audit-drift` | `brief`, `onboard`, `audit-claims` |
+| `audit-claims` | `audit-drift` |
 | `maintain-split` | `onboard` |
-| `init`, `run`, `setup-hooks`, `sync-codebase`, `sync-decisions`, `audit-verify`, `maintain-compact`, `maintain-archive`, `extract-wiki` | nothing |
+| `init`, `run`, `setup-hooks`, `sync-codebase`, `sync-decisions`, `maintain-compact`, `maintain-archive`, `extract-wiki` | nothing |
 
-At `cded242` the deleted `sync-decision` appeared here too, named only by `sync-decisions` in a mutual `Non-Goals` reference between the pair being merged. That is the shape to watch for: two skills whose only inbound pointer is each other disclaiming one another.
+At `cded242` the deleted `sync-decision` appeared here too, named only by `sync-decisions` in a mutual `Non-Goals` reference between the pair being merged.
+
+The audit pair now carries a mutual reference of its own, added by P3, and it does not mean the same thing. `sync-decision` and `sync-decisions` pointed at each other because neither description could settle which one applied; the pointers were a symptom of an undecidable pair. `audit-drift` and `audit-claims` point at each other to state the boundary in the surface that selects them, so the pointers are what makes the pair decidable. Same shape, opposite meaning: read a mutual disclaimer as a merge signal only when neither description states what separates the two.
 
 `README.md` names `maintain-compact` in its trap table, but the README does not ship, so that reference does not exist at runtime.
 
@@ -87,6 +90,8 @@ At `cded242` the deleted `sync-decision` appeared here too, named only by `sync-
 | `code_ref` | every pack-writing skill | `audit-drift`, `onboard` |
 
 The single-producer, single-consumer shape of `archived` is what D6 turns on.
+
+`audit-claims` is absent from the `code_ref` row by rule, not by omission. P3 forbids it from ranking or filtering claims by provenance, because a current `code_ref` does not make a claim supported and a stale one does not make it false. That rule is what keeps the audit pair on separate axes rather than on the same axis at two zoom levels.
 
 ## Test surface
 

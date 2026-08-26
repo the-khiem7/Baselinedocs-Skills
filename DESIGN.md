@@ -24,6 +24,9 @@ This version separates deliberate user workflow starts, one-time administration,
 | Unwritten sequence | Write the intended workflow down: save before any context branch, and prefer a new thread over staying through a compaction |
 | Teaching the workflow | Lead the README with the ordered workflow; the entrypoint table cannot express order or branching |
 | Install granularity | Teach only the whole-family install, because the skills route to each other by name |
+| Skill fragmentation | Merge only on a two-condition test; delete `sync-decision` and `maintain-prune`, rename `audit-verify` to `audit-claims` |
+| Removing a false claim | Relocate it into `hallucination`; nothing in an active pack is deleted for being untrue |
+| Compaction correctness | Give `maintain-compact` a pass-or-revert gate instead of a goal |
 
 ## Trigger Architecture
 
@@ -187,13 +190,114 @@ The three remaining skills went in a second pass, and nothing replaced them.
 
 | Skill | Why it was deleted |
 |---|---|
-| `resume-snapshot` | `baselinedocs-maintain-compact` covers it and covers it better. The triggers were the same (a long, noisy, chat-driven pack), the steps were the same (distill what is true now, drop attempt-by-attempt narration), and compact additionally forbids compressing a lesson entry away, which snapshot never mentioned. Snapshot also never said where the snapshot goes, while carrying the contract gate that only makes sense for a skill that writes pack files, so what it actually produced was never settled |
+| `resume-snapshot` | `baselinedocs-maintain-compact` covers it and covers it better. The triggers were the same (a long, noisy, chat-driven pack), the steps were the same (distill what is true now, drop attempt-by-attempt narration), and compact carries a pass-or-revert gate that snapshot never had. Snapshot also never said where the snapshot goes, while carrying the contract gate that only makes sense for a skill that writes pack files, so what it actually produced was never settled |
 | `resume-next-step` | `baselinedocs-brief` reports the recorded next action verbatim. What next-step added on top of that was permission to substitute its own judgment for what the pack records, with no way to know the recorded action was stale and no obligation to say it had substituted, which is the failure `brief`'s delta rule exists to prevent. It was also the least guarded skill in the repository, with no contradiction handling, no read-against-skipped disclosure, and no statement that it is not a load, while producing the most command-shaped output of any of them |
 | `resume-handoff` | A pack that needs a separate handoff artifact is a pack failing at its stated purpose. Baseline Docs exists so another conversation or agent can resume without chat history, so the pack is the handoff and a fresh thread with `baselinedocs-onboard` is how it gets read. This is the same reasoning that made "returning after weeks" an anti-pattern in the table above, applied to a second reader rather than the same one |
 
 Keeping `resume-handoff` for the reader who will not run an agent at all was considered and rejected. It was the only skill in the family whose output was meant to leave the thread, which is a real distinction, but the only rule it carried that an agent would not have followed anyway was a single line about linking wiki guidance rather than copying it. A skill that exists to carry one line still spends a whole description competing for selection against every neighbor, which is what the fragmentation problem is made of.
 
 What remains is one owner per question: `brief` answers where the work stands, `onboard` loads the pack, `save` writes the delta down, and `maintain-compact` cleans the pack up.
+
+## Skill Consolidation
+
+The family went from 18 skills to 16. What matters more than the count is the test used to get there, because the two tests tried first would each have produced a different and worse answer.
+
+### The criterion
+
+Two skills merge only when both conditions hold: their trigger space overlaps in a way that survives a good-faith rewrite of both descriptions, and their bodies produce the same post-state.
+
+The rewrite clause is what stops the criterion firing on a text problem. `audit-drift` and `audit-verify` read as near-synonyms, but that was sloppy wording rather than shared identity, and renaming separated them. `sync-decision` and `sync-decisions` cannot be separated by any rewrite, because "one specific closed decision" sits literally inside "one or more". Nested concepts merge; nested wording gets rewritten.
+
+The post-state condition keeps a read-only reporter from being merged into a writer. That boundary is visible to the user, and a flag is not the same thing as a name.
+
+**Rejected: pointer reachability.** An earlier revision of this file held that a skill absent from the documented workflow should be reached by a pointer rather than by competing for a description match. Rejected because description match is a first-class host selection mechanism, not a fallback, while pointer reachability is a convention local to this repository: it measures only whether some other skill's prose happens to name the skill, which is an artifact of who wrote what. `extract-wiki` is the counterexample. Nothing points at it and no other skill contests its trigger vocabulary, so under the rejected criterion it looked endangered and under the current one it is among the healthiest skills present. The observation keeps one narrow use, as a signal that a pointer is missing, never that a skill is unnecessary.
+
+**Rejected: merging by family prefix.** Collapsing `sync-*`, `audit-*`, and `maintain-*` into one skill each was proposed and rejected. A prefix is a naming artifact, not a property of the operation. `maintain-split` produces new packs plus an index and `maintain-archive` relocates content and sets a status `onboard` depends on; neither shares a post-state with `maintain-compact`, so neither satisfies the criterion. The proposal reached a written plan before the contradiction was caught, which is why it is recorded rather than dropped.
+
+### What changed
+
+| Skill | Outcome | Reason |
+|---|---|---|
+| `sync-decision` | deleted, folded into `sync-decisions` | descriptions strictly nested, post-states identical |
+| `maintain-prune` | deleted, no replacement skill | its success test attacked the journal |
+| `audit-verify` | renamed `audit-claims`, kept separate | different unit of analysis |
+| `maintain-archive` | kept, output location still owed | does more than set a status |
+| `maintain-compact` | kept, gained a pass-or-revert gate | had no success test at all |
+
+A deleted folder takes its description with it, so the absorbed skill's trigger vocabulary was carried into the survivor. The words "atomic", "targeted", and "one specific" were the only route to the narrow decision case on hosts where `description` drives selection; dropping them with the folder would have removed a reachable behavior while appearing to remove only a duplicate.
+
+Removal is a direct delete with no deprecation stub. The accepted cost: skills install one folder at a time and users delete manually, so a deleted skill already installed elsewhere stays there and keeps competing for selection. Deleting from this repository cannot reach it.
+
+### Why prune was deleted rather than fixed
+
+`hallucination` is a journal. It holds rejected options and failed approaches so a later agent does not re-propose a defeated one. Prune's success test is "is this still relevant?", and on a journal that test returns remove for exactly the content the journal exists to hold: a rejected alternative is obsolete by construction, because it was rejected, and a closed question reads as resolved and therefore removable.
+
+The skill already carried an exception protecting lesson entries, and the exception was not enough. The conflict is with the operation's success test, not its edge-case list, and the exception covered only content written in the shape of a lesson entry. A rejected alternative written any other way was unprotected. An exception cannot patch a success test that points the wrong way.
+
+The one legitimate case prune served, a disproven assumption still asserted as current truth, is now a contract rule instead of a skill: the claim moves into `hallucination` as a closed entry recording what was believed and what disproved it, and nothing in an active pack is removed on the grounds that it is no longer true. Owners are `sync-codebase` when code disproved it, `sync-decisions` when a decision closed it, and `save` when the current thread established it. Without that rule the deletion would leave the case ownerless, and the gap would be closed later by re-adding prune.
+
+### Why the audit pair stays separate
+
+| Skill | Unit | Question | Driven by |
+|---|---|---|---|
+| `audit-drift` | document | is this document behind the code? | `code_ref` provenance |
+| `audit-claims` | claim | is this statement supported by evidence? | evidence quality, no provenance |
+
+A document with a current `code_ref` can still be full of claims that were never true, and those did not go stale. Merging would fold a provenance-free question into a provenance-driven one, so a claim that was never supported would be reported as stale, pointing the reader at the wrong repair.
+
+`audit-claims` is therefore forbidden from ranking or filtering claims by `code_ref`. Without that rule the two skills sit on one axis at two zoom levels, which is the state the split exists to prevent, and the rename alone would not have separated them. Its verdict vocabulary changed for the same reason: a claim is now "contradicted by evidence" rather than "false or outdated", because "outdated" implies a claim was once true.
+
+Each description names the other skill for the question it does not answer. A routing pointer in the description reaches the surface where the wrong choice is actually made; the same sentence in the body is read only after the choice is already wrong.
+
+That leaves the pair with a mutual reference, the same shape `sync-decision` and `sync-decisions` had, and it does not mean the same thing. That pair pointed at each other because neither description could settle which applied, so the pointers were a symptom. This pair points to state the boundary in the surface that selects them, so the pointers are the cure. Read a mutual disclaimer as a merge signal only when neither description states what separates the two.
+
+### Why archive was kept
+
+`maintain-archive` is not only a status flag. Three of its four steps relocate content. But it never said where the archive goes, which is the defect recorded above as the reason `resume-snapshot` was deleted, so what it produces has never been settled. It is kept on condition that the destination is specified, and until then that is open work rather than a working skill.
+
+It is also the only producer of `status: archived`, and `onboard` is its only consumer, using it as a default scope exclusion. Deleting the skill would leave `onboard` excluding something nothing can produce.
+
+**Rejected: delete archive and give the relocation right to `maintain-compact`.** Relocation is legal under compact's information-preservation gate, since moving a completed phase into a linked file leaves the active document shorter with nothing lost, so the alternative was real. Rejected because it gives compact two mechanisms and an escape hatch from its own gate: an agent unable to compress far enough could relocate instead, satisfying "shorter" without doing the work the gate asks for.
+
+### The compact gate
+
+Compaction succeeds only when the document is shorter and its informational performance is unchanged. Any detail lost, or any passage that can now be read two ways, means revert rather than adjust. A long file costs less than a hallucination produced from a short one, so length is the cheap side of the trade and detail is not.
+
+The gate is stated in the body with that cost comparison because an agent compacting always has a further cut available that looks locally harmless, and a gate without the comparison reads as advice. The description states the same standard: it previously promised to preserve "factual truth", which survives while detail is lost and a passage turns ambiguous, and the description is what selects the skill.
+
+With prune gone, compact is the only skill that reduces an active document, so its own wording had to stop authorizing what prune was deleted for. Its first step said "repeated and low-value content", and "low-value" was the last phrase in the family permitting removal on grounds other than redundancy.
+
+### One rule, one place
+
+The lesson-entry rule was stated in five wordings: once in the contract and four times elsewhere. `tests/test_references.py` could not see them drift, because it compares contract copies against the canonical file and knows nothing about a paraphrase written somewhere else. Each removal followed the same order: widen the canonical sentence to cover what the duplicate uniquely said, re-copy it to all 11 skills, and only then delete. Deleting first drops the rule for as long as it takes to notice.
+
+`maintain-compact` uniquely said "do not compress it", `run` and `save` uniquely said "even after the mistake is resolved", and all three now live in the one canonical sentence. Where a local signpost was doing real work beside a neighbouring instruction it was replaced by a pointer rather than deleted outright: "a lesson entry is not a diary entry" sits next to "do not keep a diary", and removing it entirely would have left the neighbour over-applied.
+
+This file states the rule too, under `Evidence Retention`. That is not the same duplication. `DESIGN.md` does not ship and no agent can open it, so it explains rules rather than enforcing them; the constraint is on files a running agent reads.
+
+## Detect And Repair
+
+The `sync` and `audit` families are not two overlapping families. They are one detect and repair axis applied unevenly across comparison scopes.
+
+| Comparison scope | Detect, read-only | Repair, writes |
+|---|---|---|
+| pack against code | `audit-drift` | `sync-codebase` |
+| claim against evidence | `audit-claims` | none |
+| pack against itself | none | `sync-reconcile` |
+| closed decision against the rest of the pack | none | `sync-decisions` |
+
+Only one row is complete, which is why `audit-drift` and `sync-codebase` read as an overlapping pair: they are the only filled row, so the split is visible there and invisible in the other three.
+
+Two architectures are open, and the choice is deferred rather than made.
+
+| | Approach | For | Against |
+|---|---|---|---|
+| a | Keep the split, complete the matrix | the write boundary is a name, which an agent cannot misread the way it can misread a flag | more skills, not fewer |
+| b | One skill per comparison scope, detect becomes a report-only mode | `audit-drift` already describes itself as audit-first rather than auto-fix-first, which is a default, and a default is a flag | collapses a boundary the user can currently see |
+
+Terraform separates `plan` from `apply` as two commands rather than one flag, on the grounds that the consequences are asymmetric. That is the strongest argument for (a).
+
+Whichever wins decides whether the name `baselinedocs-sync` is needed for the code-sync skill, which is why the merged decision skill kept the longer `baselinedocs-sync-decisions` rather than claiming that namespace early.
 
 ## Evidence Retention
 
@@ -250,7 +354,8 @@ It is not a general introduction or roadmap that duplicates child content. This 
 - Package-level installation profiles could hide internal helpers more completely, but Skills.sh does not currently provide a portable hidden-skill category.
 - Organization-wide hook rollout remains deferred. The setup skill handles one repository at a time and preserves unknown configuration rather than replacing it.
 - Blind semantic writing from transcript or repository-wide candidates remains rejected. The agent may checkpoint only a pack unambiguously established in its current thread.
-- Collapsing the `sync`, `maintain`, and `audit` families into one skill each remains under review. Skill selection happens with only descriptions in context, so near neighbors can be undecidable at the moment of choice: `sync-decision` claims "one specific closed decision" and `sync-decisions` claims "one or more", which logically includes one. Moving the choice inside a single loaded skill would put it where the full text of every mode is visible, which is also what stops the choice from depending on how strong the selecting agent is. The cost is that one description then has to cover several operations, trading precision between families for precision within one. A second piece of evidence: the intended workflow, drawn out in full, invokes exactly the seven entrypoints and none of the eleven lifecycle skills. That is not proof the eleven are unnecessary, since `baselinedocs-onboard` and `baselinedocs-brief` reach `sync-reconcile` and `audit-drift` by naming them in already-loaded text, but it does say a skill absent from the workflow should be reached by a pointer rather than by competing for a description match.
+- The detect and repair split across the `sync` and `audit` families is unresolved. See `Detect And Repair` above.
+- The archive destination is unresolved. `baselinedocs-maintain-archive` is kept on condition that its output location is stated, and it is not yet stated. See `Skill Consolidation` above.
 
 ## Research Basis
 

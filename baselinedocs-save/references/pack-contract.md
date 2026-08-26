@@ -56,7 +56,7 @@ Omit a conditional document when it would contain only `not applicable` filler. 
 
 Record final evidence and material unresolved failures. Do not retain every failed fixture run, retry, or intermediate command.
 
-A lesson entry - a mistake with why it looked reasonable, what disproved it, and the fix applied - is not a retry or an intermediate command. Keep it in full: it is what prevents the same mistake recurring later.
+A lesson entry - a mistake with why it looked reasonable, what disproved it, and the fix applied - is not a retry or an intermediate command. Keep it in full even after the mistake is resolved, both when writing it and when compacting the document later. Trimming it to its final state, or dropping it because it is fixed, discards the reason it exists, which is what prevents the same mistake recurring.
 
 Do not present a build, a formatter, a static check, or a documentation review as proof of live runtime, integration, or deployment behavior. Record what was observed running.
 
