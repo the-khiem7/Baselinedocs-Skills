@@ -33,4 +33,4 @@ Read `references/pack-contract.md` in full before creating or editing any pack f
 
 ## Non-Goals
 
-- not for code drift syncing
+- not for code drift syncing; `baselinedocs-sync-codebase` does that

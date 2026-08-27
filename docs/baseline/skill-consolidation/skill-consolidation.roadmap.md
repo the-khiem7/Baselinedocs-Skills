@@ -2,7 +2,7 @@
 baseline_schema: "2.0"
 pack: "skill-consolidation"
 document: "roadmap"
-status: "active"
+status: "complete"
 updated: "2026-08-27"
 code_ref: "uncommitted"
 ---
@@ -23,6 +23,8 @@ Reasoning for each phase lives in `skill-consolidation.hallucination.md` under t
 | P4 | `maintain-compact` carries the revert gate | D7 | - | complete |
 | P5 | `maintain-archive` deleted, with `status: archived` and its only consumer | D11 | Q1 | complete |
 | P6 | `DESIGN.md`, `AGENTS.md`, `README.md` aligned to the end state, and the last duplicate rule statements removed | D1, D8, D9, D10 | P1, P2, P3, P4 | complete |
+| P7 | the sync and audit model corrected, and the routing pointers it exposed added | D12 | Q3 | complete |
+| P8 | installed skills replaced on this machine, and the stale-count class of defect given a test | D8 | P7 | complete |
 
 ## P1: fold sync-decision into sync-decisions
 
@@ -276,18 +278,107 @@ Revision summary: the acceptance criterion requiring the rule to be stated once 
 
 `AGENTS.md` gained a pointer beyond the stated deliverables. Two of the alternatives rejected in D1 are the kind a contributor would propose again on sight, and `AGENTS.md` is what a contributor reads before touching a skill folder, so a one-line pointer there is what makes the rejection reachable at the moment it matters.
 
+## P7: correct the sync and audit model, add the pointers it exposed
+
+Opened when Q3 was answered. No skill is merged, added, or renamed; the change is to the model and to four routing pointers. Reasoning is in D12.
+
+Deliverables:
+
+- replace the comparison-scope matrix in `DESIGN.md` and in this pack's `sourcecode` with the two-axis model
+- `audit-drift` step 5 names the repair skill for each finding
+- `sync-codebase`, `sync-decisions`, `sync-reconcile` non-goals name the skill they route to
+- `audit-drift` description widened to match its own body, which already compares decision records
+
+Acceptance criteria:
+
+- no document describes the five skills as one axis across comparison scopes
+- every empty cell has a recorded reason it stays empty, and the reasons are not the same reason
+- `sync-codebase` and `sync-decisions` are named in shipped text by at least one other skill
+- no skill folder is added or removed
+
+### Checkpoint: complete
+
+| Item | Result |
+|---|---|
+| Evidence | `uvx pytest tests/ -q`: 20 passed, 23 subtests passed |
+| Skills on disk | 15, unchanged |
+| Packaged contract copies | 10, untouched. No contract edit in this phase |
+| Inbound pointers, shipped text | `sync-codebase` and `sync-decisions` went from none to one each, both from `audit-drift` |
+| Q3 | closed by D12. The namespace half of Q2 closed with it |
+
+Affected files:
+
+- `baselinedocs-audit-drift/SKILL.md`: description, `Core Behavior` step 5, new provenance limit after the drift-signal line
+- `baselinedocs-sync-codebase/SKILL.md`: `Non-Goals`
+- `baselinedocs-sync-decisions/SKILL.md`: `Non-Goals`
+- `baselinedocs-sync-reconcile/SKILL.md`: `Non-Goals`
+- `DESIGN.md`: `Decision Summary` row, `Detect And Repair` rewritten, `Deferred Work` bullet replaced
+- `skill-consolidation.sourcecode.md`: matrix section replaced
+
+The `audit-drift` description said the skill audits documents that have fallen behind "the code", while its own second step compares decision records and its own second sentence names decisions. The body was right and the first sentence was narrow. Widening it also fills the matrix cell that looked empty, which is why the model correction and the description fix belong in one phase.
+
+The added provenance limit is the reason that fix is not cosmetic: a document whose `code_ref` is current can still describe an option a decision rejected, and it sorts to the bottom of a provenance-ordered list. Ranking by `code_ref` would therefore hide exactly the drift the widened description promises to find.
+
+### Finding: one flagged defect was not a defect
+
+`sync-reconcile` was flagged for not pointing back at `onboard` and `brief`, which both point at it. Checked and left alone. A pointer earns its place at the surface where a wrong choice is made, and nobody who has already selected `sync-reconcile` needs sending to `onboard`. The asymmetry is correct: `onboard` writes nothing so it must hand off, while `sync-reconcile` detects and repairs in one pass, so it has nothing to hand off. Recorded so the same flag is not raised again by the next reference sweep.
+
+## P8: replace the installed skills, and pin the count
+
+Two unrelated items, joined because both are what a repository change does not reach on its own: one is outside the repository, the other is prose the tests could not see.
+
+Deliverables:
+
+- delete every `baselinedocs-*` folder from each host skills directory, then install from the local clone
+- state the pack-writing skill count in one sentence in `AGENTS.md` and phrase the rest count-free
+- add a test pinning that sentence against `CONTRACT_SKILLS`, failing on a second sentence as well as on a wrong number
+- record the rule in `AGENTS.md` conventions, where a contributor meets it before writing a second count
+
+Acceptance criteria:
+
+- every host directory holds exactly the 15 skills this repository defines, with no deleted skill remaining
+- installed contract copies are byte-identical to `contract/pack-contract.md`
+- the new test fails when the count is wrong, verified by making it wrong on purpose
+- skills belonging to other families in those directories are untouched
+
+### Checkpoint: complete
+
+| Item | Result |
+|---|---|
+| Evidence | `uvx pytest tests/ -q`: 21 passed, 23 subtests passed. Negative check run: setting the count to 99 failed the new test, then restored |
+| Host directories updated | `.claude`, `.agents`, `.kilocode`, `.kiro`, each independently holding a full copy. `.codex/skills` exists but was empty before and after |
+| Installed before | 19 baselinedocs skills per directory, including all four `resume-*` and the four deleted here. Missing `adopt`, `onboard`, `brief`, `audit-claims`. Contract 46 lines |
+| Installed after | 15 per directory, contract 82 lines, `cmp` identical to canonical |
+| Preserved | the `terraform-*` skills in each directory, untouched |
+
+The installed set was worse than the recorded risk described. It was not one generation behind: it predated the dissolution of the `resume` family, which `DESIGN.md` had recorded as finished before this pack opened, and it was missing two of the six user entrypoints entirely. `onboard` and `brief` could not have fired on this machine at all.
+
+Two host quirks worth recording. The directories are independent copies, not symlinks into a shared store, so each needed its own delete; `--copy` versus the default made no difference to that. Global install is refused by two hosts the installer knows about, which is reported per skill and is not a failure of the others.
+
+Deleting before installing was deliberate. The installer adds and overwrites but does not remove, so an install alone would have left all eight deleted skills in place, still competing for selection. That is the D8 cost made concrete: a repository delete cannot reach an installed machine, and only an explicit delete on that machine can.
+
+Revision summary: the pack was set to `status: complete` in this phase. Q2 and Q4 remain open and do not block it, because neither is in this pack's scope: Q2 is a naming question the pack narrowed but never owned, and Q4 was surfaced by P5 as a consequence to record rather than a deliverable. A pack whose declared scope is delivered is complete even while it names questions for someone else.
+
 ## Risks
 
 | Risk | Detail |
 |---|---|
-| Installed skills are stale | The skills installed on this machine are an older generation than this repository. The installed `baselinedocs-init` routes to a `resume` family that no longer exists here and ships a 44-line contract against this repository's 74-line canonical file. A `baselinedocs` skill invoked in a later thread reads the installed copy. Verify any pack file written that way against `contract/pack-contract.md` here. |
-| Direct delete cannot reach installed machines | Accepted under D8. A removed skill already installed elsewhere keeps competing for selection there. |
-| The separate description batch may be empty | D9 splits description sharpening into its own batch. After P2 deletes `maintain-prune`, the only overlapping-trigger pair left is `sync-codebase` against `audit-drift`, which Q3 covers. Revisit after P6 rather than assuming the batch still has content. |
+| Installed skills are stale | Closed by P8 on this machine, all four host directories. It stays live everywhere else, and it returns here the moment the repository changes again: an install is a snapshot, so this repository and any machine drift apart from the next edit onward. |
+| Direct delete cannot reach installed machines | Accepted under D8, and confirmed by P8, which had to delete eight obsolete folders by hand in each of four directories because the installer adds and overwrites but never removes. |
+| Uncommitted work is the only copy | Every change in this pack lives in one working tree, per the commit policy chosen for this run, and P8 installed from that working tree rather than from a commit. Losing the tree loses the repository state and leaves four machines running skills that no source matches. |
+| The separate description batch closed empty | D9 split description sharpening into its own batch. Its last candidate pair was `sync-codebase` against `audit-drift`, and D12 established the two are not on one axis. P7 gave each side a pointer to the other instead of rewriting either description to compete. No batch remains. |
 
 ## Next action
 
-All six phases are complete. 15 skills, 10 packaged contract copies, 20 tests passing, nothing committed, per the commit policy chosen for this run.
+Commit. Every change this pack made lives in one uncommitted working tree, and P8 installed four machine copies from it, so the tree is now the only source those installs match. That was the policy chosen when the run started and it has outlived its purpose.
 
-Nothing in this pack is blocked. Three questions stay open and none of them belong to it: Q2 and Q3 were deferred by decision before P1, and Q4 was surfaced by P5 and deliberately not built. The next piece of work is whichever of those the user opens, and Q3 is the one that changes skill names, so it should go first if any of them do.
+All eight phases are complete. 15 skills, 10 packaged contract copies, 21 tests passing.
 
-The D9 description batch is the one item still owed by this pack's own scope. Check whether it has content before opening it: the only overlapping-trigger pair left after P1 and P2 is `sync-codebase` against `audit-drift`, which Q3 already covers, so the batch may be empty.
+Nothing is blocked. Two questions stay open, both narrow and neither belonging to this pack's scope:
+
+| | Question | Size |
+|---|---|---|
+| Q2 | rename `sync-reconcile` to name what it reconciles | one skill, and the rename cost in D8 is the whole argument |
+| Q4 | a pack-level finished marker `onboard` can skip | three lines plus a contract re-copy, and it only pays off on a multi-pack initiative |
+
+The D9 description batch closes empty. It existed for pairs sharing triggers while producing different outcomes; the last candidate was `sync-codebase` against `audit-drift`, and D12 established they are not on one axis and gave each a pointer to the other side of the work.

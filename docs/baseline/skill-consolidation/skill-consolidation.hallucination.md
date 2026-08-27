@@ -2,7 +2,7 @@
 baseline_schema: "2.0"
 pack: "skill-consolidation"
 document: "hallucination"
-status: "active"
+status: "complete"
 updated: "2026-08-27"
 code_ref: "uncommitted"
 ---
@@ -136,10 +136,37 @@ The flag does not survive either. `onboard` excludes by document, while every pr
 
 **D1 and D6 are left as written.** Both cite `maintain-archive` as a live skill, D1 using it as an example of a post-state `maintain-compact` does not share. That is what was argued at the time and the journal keeps it. Read those two entries as history; D11 is the current position. `DESIGN.md` carries the corrected version, because it states current design rather than recording a sequence.
 
+## D12: the sync and audit skills all stay, and the matrix that questioned them was wrong
+
+**Decided.** Keep all five. Merge nothing, add nothing, rename nothing. Replace the detect/repair matrix in this pack and in `DESIGN.md` with the model below. Closes Q3, and closes the namespace half of Q2.
+
+**Why the old model was wrong.** It assumed four distinct comparison scopes. The bodies say otherwise: `audit-drift` compares code changes, document claims and decision records; `audit-claims` compares each claim against code and explicit decisions; `sync-reconcile` prefers code evidence and explicit user decisions to break a tie. Three of five consult the same two sources, so scope does not separate them, and a matrix on that axis reports holes that are artifacts of the axis.
+
+**The two real axes.**
+
+| Group | Separated by | Members |
+|---|---|---|
+| report-only | unit of analysis | `audit-drift` document, `audit-claims` claim |
+| writes | trigger event, which fixes blast radius | `sync-codebase` whole pack, `sync-decisions` only sections the decision reaches, `sync-reconcile` only conflicting sections |
+
+**Why each empty cell stays empty.** Different reason per cell, which is itself the evidence that the matrix was not describing one phenomenon.
+
+| Cell | Verdict |
+|---|---|
+| repair for claim against evidence | occupied by the contract. D5 names three owners. A skill here is a fourth owner of a rule that names three |
+| detect for pack against itself | occupied by `onboard` and `brief`, which report contradictions and route to `sync-reconcile` without repairing. A separate skill serves only "show contradictions without loading the pack", which nothing has asked for |
+| detect for decision against pack | occupied by `audit-drift` step 2, which already compares decision records |
+
+**What breaks if ignored.** Completing the matrix adds up to three skills to a family being trimmed, and each would either duplicate a contract rule or claim work an existing skill already does. Collapsing it costs the cheap screen, below.
+
+**Rejected: one skill per comparison scope, detect as a report-only mode.** Rejected on cost asymmetry, a stronger objection than the boundary-visibility one recorded when Q3 was framed. `audit-drift` is doc-first: read frontmatter, narrow, then compare scoped code changes. `sync-codebase` is code-first and unscoped, opening with "inspect the codebase first". Report-only mode on the merged skill still pays the full inspection cost, so the family trades a cheap screen plus an expensive fix for one expensive skill with a flag, and the screen is the half used most often.
+
+**Rejected: complete the matrix.** See the cell table above. A matrix with holes is a diagnostic, not a specification, and this one was drawn on the wrong axis.
+
+**Consequence for D2.** `baselinedocs-sync` is not needed as a namespace, because no merge happens. `sync-decisions` keeps its longer name for the original reason: a bare `sync` would attract every code-sync request through the name alone.
+
 ## Open questions
 
-**Q2: does the rename sweep cover the whole family?** D3 renames one skill. Whether `sync-codebase`, `sync-reconcile`, `maintain-compact` and the rest get the same treatment for name directness was asked and not answered. Not blocking.
-
-**Q3: detect versus repair, one axis or two families?** `audit-drift` reports what `sync-codebase` repairs, and `sync-reconcile` repairs what nothing reports. The two families are one detect/repair axis applied unevenly across comparison scopes, not two overlapping families. Two architectures are open: keep the split and complete the matrix, or collapse each comparison scope into one skill with a report-only mode. `audit-drift` already states that it is audit-first rather than auto-fix-first, which describes a default and therefore argues for a flag; Terraform's separation of plan from apply argues for keeping two commands where consequences are asymmetric. Deferred by decision, not blocking, but it decides whether the `baselinedocs-sync` namespace is needed for code-sync.
+**Q2: does the rename sweep cover the whole family?** Narrowed twice and nearly empty. D3 renamed one skill on the principle that a name should carry the unit the skill operates on. Applied to the rest, `sync-codebase`, `sync-decisions`, `audit-claims` and `extract-wiki` already name their object; `maintain-compact` and `maintain-split` name an operation whose object is unambiguous, since a pack is the only thing they act on; `audit-drift` keeps its name because three inbound pointers in shipped text use it. That leaves `sync-reconcile`, which names an operation without naming what it reconciles. D12 closed the namespace half: `baselinedocs-sync` is not needed. Weigh a rename against D8: an installed copy cannot be reached, so a rename reads to that user as one skill vanishing and an unfamiliar one appearing. Not blocking.
 
 **Q4: can a whole pack be marked finished and skipped by `onboard`?** The `status: archived` value D11 removed was per-document and per-section, and the per-section reading is what made it inert. A pack-level equivalent is a different proposition: it needs no skill, since any write-able skill can set it and `onboard` already excludes by document, and it would partly answer the cost D11 accepted. Not built, because re-adding the enum value before a consumer exists recreates the orphaned affordance D11 removed. Surfaced during P5 and not blocking.

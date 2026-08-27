@@ -2,7 +2,7 @@
 baseline_schema: "2.0"
 pack: "skill-consolidation"
 document: "introduction"
-status: "active"
+status: "complete"
 updated: "2026-08-27"
 code_ref: "uncommitted"
 ---
@@ -15,7 +15,7 @@ Reduce the `baselinedocs` skill family by removing skills whose operation duplic
 
 In scope: skill folders in this repository, `contract/pack-contract.md` and its packaged copies, `tests/`, and `README.md` / `DESIGN.md` / `AGENTS.md`.
 
-Out of scope: the pack schema (`2.0` is unchanged), hook behavior, and the detect/repair architecture question, which is deferred to its own research.
+Out of scope: the pack schema, which is unchanged apart from the one enum removal D11 records, and hook behavior.
 
 ## Current truth
 

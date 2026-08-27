@@ -41,5 +41,5 @@ Read `references/pack-contract.md` in full before creating or editing any pack f
 ## Non-Goals
 
 - not for creating a brand new pack
-- not for atomic one-decision propagation
+- not for propagating a closed decision; `baselinedocs-sync-decisions` does that, whether it reaches one section or the whole pack
 - not for reloading a pack after a long gap; `baselinedocs-onboard` reads it in a fresh thread

@@ -51,6 +51,33 @@ class ContractCopyTests(unittest.TestCase):
                 GATE, text, f"{name} ships the contract but never requires reading it"
             )
 
+    # The count of pack-writing skills is stated in prose in AGENTS.md, and prose
+    # is not re-derived when CONTRACT_SKILLS changes. It went stale twice: it read
+    # 14 when the real figure was 13, and a later pass corrected two of the four
+    # mentions because it searched for the sentence it remembered instead of for
+    # the number. The cure is one statement, pinned. Keep the count in the
+    # `The N pack-writing skills` sentence only; say "every pack-writing skill"
+    # everywhere else, so there is nothing else to update and nothing to disagree.
+    def test_agents_md_states_the_skill_count_once_and_correctly(self):
+        text = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
+        stated = re.findall(r"The (\d+) pack-writing skills", text)
+        self.assertEqual(
+            len(stated),
+            1,
+            "state the pack-writing skill count in exactly one sentence in AGENTS.md",
+        )
+        self.assertEqual(
+            int(stated[0]),
+            len(CONTRACT_SKILLS),
+            "AGENTS.md disagrees with CONTRACT_SKILLS about how many skills ship the contract",
+        )
+        strays = re.findall(r"\ball (\d+)\b|\bEach of the (\d+)\b", text)
+        self.assertEqual(
+            strays,
+            [],
+            "phrase these count-free: the count belongs in one sentence, checked above",
+        )
+
     def test_no_typographic_dashes(self):
         offenders = []
         for path in sorted(ROOT.rglob("*.md")):

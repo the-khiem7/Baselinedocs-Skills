@@ -2,14 +2,14 @@
 baseline_schema: "2.0"
 pack: "skill-consolidation"
 document: "sourcecode"
-status: "active"
+status: "complete"
 updated: "2026-08-27"
 code_ref: "uncommitted"
 ---
 
 # Skill Family Topology
 
-The shape the consolidation acts on. Baseline measured at `cded242`; counts below track the working tree and are marked where P1 moved them. This is the input to Q3.
+The shape the consolidation acts on. Baseline measured at `cded242`; counts below track the working tree and are marked where a phase moved them.
 
 ## Folder shape
 
@@ -47,18 +47,28 @@ Editing the canonical file means re-copying it to all 10. P2 added a section, P4
 
 `baselinedocs-run` additionally ships `references/execution-contract.md`, which has no second copy anywhere.
 
-## Detect and repair matrix
+## The sync and audit skills
 
-The sync and audit families are not two overlapping families. They are one detect/repair axis applied unevenly across comparison scopes.
+Two groups on two different axes, not one detect/repair axis across comparison scopes. The earlier comparison-scope matrix is recorded as disproven in D12; what follows is the shape the bodies actually have.
 
-| Comparison scope | Detect, read-only | Repair, writes |
+Report-only, separated by unit of analysis:
+
+| Skill | Unit | Sources consulted |
 |---|---|---|
-| pack against code | `audit-drift` | `sync-codebase` |
-| claim against evidence | `audit-claims` | none |
-| pack against itself | none | `sync-reconcile` |
-| closed decision against the rest of the pack | none | `sync-decisions` |
+| `audit-drift` | document | code changes after `code_ref`, document claims, decision records |
+| `audit-claims` | claim | code, explicit decisions. Forbidden from using `code_ref` |
 
-Only one row is complete. That is why `audit-drift` and `sync-codebase` read as an overlapping pair: they are the only filled row, so the split is visible there and invisible in the other three.
+Writes, separated by trigger, which fixes blast radius:
+
+| Skill | Triggered by | Touches | Sources consulted |
+|---|---|---|---|
+| `sync-codebase` | code changed | whole pack, one pass | code, inspected first |
+| `sync-decisions` | a decision closed | only sections that decision reaches | the closed decisions |
+| `sync-reconcile` | pack contradicts itself | only conflicting sections | the pack, with code and decisions as tiebreak |
+
+Three of the five consult code and decisions both, which is why a comparison-scope axis cannot separate them.
+
+Detect for a pack against itself has no dedicated skill because `onboard` and `brief` both report contradictions and route to `sync-reconcile`. Repair for a claim against evidence has none because the contract's disproven-claim rule already names its three owners.
 
 ## Pointer graph
 
@@ -70,11 +80,15 @@ Which skills are named inside another skill's shipped text. Recorded as topology
 | `onboard` | `brief`, `sync-codebase` |
 | `brief` | `onboard` |
 | `adopt` | `onboard` |
-| `sync-reconcile` | `brief`, `onboard` |
+| `sync-reconcile` | `brief`, `onboard`, `audit-drift` |
+| `sync-codebase` | `audit-drift`, `sync-decisions`, `sync-reconcile` |
+| `sync-decisions` | `audit-drift`, `sync-codebase` |
 | `audit-drift` | `brief`, `onboard`, `audit-claims` |
 | `audit-claims` | `audit-drift` |
 | `maintain-split` | `onboard` |
-| `init`, `run`, `setup-hooks`, `sync-codebase`, `sync-decisions`, `maintain-compact`, `extract-wiki` | nothing |
+| `init`, `run`, `setup-hooks`, `maintain-compact`, `extract-wiki` | nothing |
+
+`sync-codebase` and `sync-decisions` moved out of the last row in P7. Both were named by nothing, which under D1 is a signal that a pointer is missing rather than that a skill is unnecessary, and P7 acted on it that way: `audit-drift` now names all three repair skills when it recommends follow-up actions, and the write trio names whichever sibling owns the case it refuses.
 
 At `cded242` the deleted `sync-decision` appeared here too, named only by `sync-decisions` in a mutual `Non-Goals` reference between the pair being merged.
 
@@ -96,7 +110,7 @@ The audit pair now carries a mutual reference of its own, added by P3, and it do
 
 | File | Pins |
 |---|---|
-| `test_references.py` | contract copies byte-identical to canonical, the gate sentence present in each, no typographic dashes in any `*.md` under the root |
+| `test_references.py` | contract copies byte-identical to canonical, the gate sentence present in each, the pack-writing skill count stated once in `AGENTS.md` and matching `CONTRACT_SKILLS`, no typographic dashes in any `*.md` under the root |
 | `test_skill_metadata.py` | skill id matches folder name, `openai.yaml` names its own skill, only entrypoints disable implicit invocation |
 | `test_checkpoint.py` | the Stop hook adapter contains no repository detection logic, and the prompt keeps its thread boundaries |
 | `test_install_hooks.py` | packaged hook assets match canonical, installs are idempotent, existing host configuration preserved |

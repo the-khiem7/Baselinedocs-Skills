@@ -32,4 +32,4 @@ Read `references/pack-contract.md` in full before creating or editing any pack f
 ## Non-Goals
 
 - not for creating a new pack
-- not for code-first syncing after implementation changes
+- not for code-first syncing after implementation changes; `baselinedocs-sync-codebase` does that

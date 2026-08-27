@@ -28,6 +28,7 @@ This version separates deliberate user workflow starts, one-time administration,
 | Removing a false claim | Relocate it into `hallucination`; nothing in an active pack is deleted for being untrue |
 | Compaction correctness | Give `maintain-compact` a pass-or-revert gate instead of a goal |
 | Archived material | Delete `maintain-archive`, the `status: archived` enum value, and `onboard`'s exclusion together, rather than keep an affordance nothing performs |
+| Sync against audit | Keep all five. The comparison-scope matrix that made them look overlapping was drawn on an axis that does not separate them |
 
 ## Trigger Architecture
 
@@ -278,7 +279,7 @@ With prune gone, compact is the only skill that reduces an active document, so i
 
 ### One rule, one place
 
-The lesson-entry rule was stated in five wordings: once in the contract and four times elsewhere. `tests/test_references.py` could not see them drift, because it compares contract copies against the canonical file and knows nothing about a paraphrase written somewhere else. Each removal followed the same order: widen the canonical sentence to cover what the duplicate uniquely said, re-copy it to all 11 skills, and only then delete. Deleting first drops the rule for as long as it takes to notice.
+The lesson-entry rule was stated in five wordings: once in the contract and four times elsewhere. `tests/test_references.py` could not see them drift, because it compares contract copies against the canonical file and knows nothing about a paraphrase written somewhere else. Each removal followed the same order: widen the canonical sentence to cover what the duplicate uniquely said, re-copy it to every packaged copy, and only then delete. Deleting first drops the rule for as long as it takes to notice.
 
 `maintain-compact` uniquely said "do not compress it", `run` and `save` uniquely said "even after the mistake is resolved", and all three now live in the one canonical sentence. Where a local signpost was doing real work beside a neighbouring instruction it was replaced by a pointer rather than deleted outright: "a lesson entry is not a diary entry" sits next to "do not keep a diary", and removing it entirely would have left the neighbour over-applied.
 
@@ -286,27 +287,54 @@ This file states the rule too, under `Evidence Retention`. That is not the same 
 
 ## Detect And Repair
 
-The `sync` and `audit` families are not two overlapping families. They are one detect and repair axis applied unevenly across comparison scopes.
+All five skills stay, and nothing is merged. The question that framed this as a choice between two architectures was built on a model of the family that reading the five bodies disproved.
 
-| Comparison scope | Detect, read-only | Repair, writes |
+### The comparison-scope axis does not exist
+
+An earlier revision here modelled `sync` and `audit` as one detect and repair axis applied across four comparison scopes, with only one row filled. The scopes are not distinct. `audit-drift` compares code changes, document claims, and decision records. `audit-claims` compares each claim against code and explicit decisions. `sync-reconcile` prefers code evidence and explicit user decisions to break a tie. Three of the five consult the same two sources, so scope is not what separates them, and a matrix drawn on that axis reports holes that are artifacts of the axis.
+
+Two axes separate them, and they are not the same axis:
+
+| Group | Separated by | Members |
 |---|---|---|
-| pack against code | `audit-drift` | `sync-codebase` |
-| claim against evidence | `audit-claims` | none |
-| pack against itself | none | `sync-reconcile` |
-| closed decision against the rest of the pack | none | `sync-decisions` |
+| report-only | unit of analysis | `audit-drift` at document level, `audit-claims` at claim level |
+| writes | the event that triggered the write, which fixes the blast radius | `sync-codebase`, `sync-decisions`, `sync-reconcile` |
 
-Only one row is complete, which is why `audit-drift` and `sync-codebase` read as an overlapping pair: they are the only filled row, so the split is visible there and invisible in the other three.
+The first is the split recorded above under the audit pair. The second is stated in each body already, and the three differ:
 
-Two architectures are open, and the choice is deferred rather than made.
+| Skill | Triggered by | Touches |
+|---|---|---|
+| `sync-codebase` | code changed | the whole pack in one pass |
+| `sync-decisions` | a decision closed | only the sections that decision reaches, under an explicit rule against widening |
+| `sync-reconcile` | the pack contradicts itself | only the conflicting sections |
 
-| | Approach | For | Against |
-|---|---|---|---|
-| a | Keep the split, complete the matrix | the write boundary is a name, which an agent cannot misread the way it can misread a flag | more skills, not fewer |
-| b | One skill per comparison scope, detect becomes a report-only mode | `audit-drift` already describes itself as audit-first rather than auto-fix-first, which is a default, and a default is a flag | collapses a boundary the user can currently see |
+Blast radius is visible to the user and is set by the trigger, which is why an agent cannot pick the wrong one by accident the way it could pick a wrong mode.
 
-Terraform separates `plan` from `apply` as two commands rather than one flag, on the grounds that the consequences are asymmetric. That is the strongest argument for (a).
+### Why the matrix is not completed
 
-Whichever wins decides whether the name `baselinedocs-sync` is needed for the code-sync skill, which is why the merged decision skill kept the longer `baselinedocs-sync-decisions` rather than claiming that namespace early.
+Each apparently empty cell was checked, and each turned out occupied or unwanted, for a different reason in each case.
+
+| Cell | Verdict |
+|---|---|
+| repair for claim against evidence | occupied by the contract. The disproven-claim rule already names three owners: `sync-codebase` when code disproved it, `sync-decisions` when a decision closed it, `save` when the thread established it. A skill here would be a fourth owner of a rule that names three |
+| detect for pack against itself | occupied by `onboard` and `brief`. Both report a contradiction and route to `sync-reconcile` without repairing it. A separate skill would serve only "show contradictions without loading the pack", which nothing has asked for |
+| detect for decision against pack | occupied by `audit-drift`, whose second step already compares decision records. Its description was narrower than its body and now says so |
+
+A matrix with holes is not evidence that the holes should be filled. It is a diagnostic, and a diagnostic drawn on the wrong axis manufactures work.
+
+### Rejected: one skill per comparison scope, with detect as a report-only mode
+
+Rejected on cost asymmetry, which is a stronger objection than the boundary-visibility one that was recorded first.
+
+`audit-drift` is doc-first: it reads frontmatter to narrow to the documents worth checking, then compares scoped code changes. `sync-codebase` is code-first and unscoped, opening with "inspect the codebase first". Running the merged skill in report-only mode still pays the full inspection cost, so the family would trade a cheap screen plus an expensive fix for one expensive skill with a flag. The screen is the part that gets used most and it is the part that would be lost.
+
+Terraform separating `plan` from `apply` as two commands is the same shape of argument from consequence rather than cost, and it points the same way.
+
+### Consequences
+
+`baselinedocs-sync` is not needed as a namespace, because no merge happens. `baselinedocs-sync-decisions` keeps its longer name for the reason it was given: a bare `sync` would attract every request to sync docs against code through the name alone.
+
+`sync-codebase` and `sync-decisions` were named by nothing in shipped text. That is the one narrow use the pointer observation retains under the merge criterion, a missing pointer rather than an unnecessary skill, and `audit-drift` now names all three repair skills when it recommends follow-up actions. A detect skill naming its repair skill is the pointer at the surface where the reader is actually deciding what to do next.
 
 ## Evidence Retention
 
@@ -363,7 +391,7 @@ It is not a general introduction or roadmap that duplicates child content. This 
 - Package-level installation profiles could hide internal helpers more completely, but Skills.sh does not currently provide a portable hidden-skill category.
 - Organization-wide hook rollout remains deferred. The setup skill handles one repository at a time and preserves unknown configuration rather than replacing it.
 - Blind semantic writing from transcript or repository-wide candidates remains rejected. The agent may checkpoint only a pack unambiguously established in its current thread.
-- The detect and repair split across the `sync` and `audit` families is unresolved. See `Detect And Repair` above.
+- Whether any skill name outside the audit pair should be made more direct is open. `sync-reconcile` is the only remaining candidate, since it names an operation without naming what it operates on. Weighed against a rename's cost: an installed copy cannot be reached, so a rename reads to that user as one skill vanishing and an unfamiliar one appearing.
 - Whether a whole pack can be marked finished and skipped by `onboard` is open. The deleted `status: archived` was per-document and per-section, and a pack-level equivalent would need no skill, since any write-able skill can set it and `onboard` already excludes by document. Recorded rather than built, because re-adding the value before a consumer exists recreates the orphaned affordance the deletion removed. See `Skill Consolidation` above.
 
 ## Research Basis
