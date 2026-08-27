@@ -14,7 +14,7 @@ Determine or confirm:
 - the pack root or the initiative index path
 - the scope. For an initiative the default is one domain pack, not the whole set
 - whether linked wiki articles are in scope
-- whether archived documents and retained source material are in scope
+- whether retained source material is in scope
 
 ## Workflow
 
@@ -40,8 +40,7 @@ Determine or confirm:
 - An unresolved reference is a stated gap. Report it, say that an answer touching it is unbacked, and offer to load what it names. Do not load unasked, and do not answer around the gap as though it were closed.
 - Dependency edges and the cross-pack checkpoint live only in the index. Without one they are missing, not derivable: do not infer them from directory names, alphabetical order, or the import graph.
 - Do not resolve a contradiction found while reading; report it. `baselinedocs-sync-reconcile` owns the repair. Index status disagreeing with a pack's own `status` is one of these: do not treat the index as authoritative and do not prefer the newer `updated`.
-- Archived material is out of scope unless the user includes it; reading history back spends the budget active work needs.
-- Retained source material is out of scope on the same terms: a `sources/` directory, or any file in the pack without baseline frontmatter. `baselinedocs-adopt` already distributed its information into the documents, so reading both loads the same content twice, and the source is usually the largest file present.
+- Retained source material is out of scope unless the user includes it: a `sources/` directory, or any file in the pack without baseline frontmatter. `baselinedocs-adopt` already distributed its information into the documents, so reading both loads the same content twice, and the source is usually the largest file present.
 - List anything excluded rather than dropping it silently, so the user can pull it in.
 - Do not update frontmatter, dates, or status. Onboard writes nothing, including the index it just reported missing.
 

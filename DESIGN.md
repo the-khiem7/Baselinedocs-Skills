@@ -27,6 +27,7 @@ This version separates deliberate user workflow starts, one-time administration,
 | Skill fragmentation | Merge only on a two-condition test; delete `sync-decision` and `maintain-prune`, rename `audit-verify` to `audit-claims` |
 | Removing a false claim | Relocate it into `hallucination`; nothing in an active pack is deleted for being untrue |
 | Compaction correctness | Give `maintain-compact` a pass-or-revert gate instead of a goal |
+| Archived material | Delete `maintain-archive`, the `status: archived` enum value, and `onboard`'s exclusion together, rather than keep an affordance nothing performs |
 
 ## Trigger Architecture
 
@@ -137,8 +138,6 @@ Silent truncation is the failure being designed out: an agent that read half a p
 
 The gate fires on the agent's own uncertainty rather than on a share of the context window. An agent cannot measure that share, so a threshold phrased that way is settled by guess; "can you state with confidence that this fits" is a question it can answer, and it resolves toward asking.
 
-Archived material sits outside the default scope. `baselinedocs-maintain-archive` exists to move finished history out of the active flow, so reading it straight back in spends the context budget the active pack needs and undoes that maintenance. The exclusion is reported rather than applied quietly, because an unreported exclusion fails the same way a silent truncation does: the user cannot tell what the agent is actually holding.
-
 An initiative routes before it loads. An index is routing metadata, so onboard reads the index, stops, and selects one sub-pack; it does not treat the index as a manifest of everything to pull in. Loading a whole initiative by default would spend the context an index exists to conserve, and it would trip the size gate on nearly every real initiative, turning the gate into noise. One domain pack is therefore the default scope.
 
 The routing question is skipped only on evidence, never on judgement. When the index marks exactly one sub-pack in progress, asking the user to repeat what the index already states wastes a turn, so onboard loads that pack and names the evidence that selected it, which leaves the user able to redirect. Two candidates, or none, means asking. "Which pack looks most important" is not evidence and is exactly the guess this rule exists to block.
@@ -159,7 +158,7 @@ The output leads with state, not with bookkeeping. First real use returned a cor
 
 This does not turn onboard into a brief. Onboard reports what the documents record from a complete read; `baselinedocs-brief` reports position from a deliberately partial one. The rule keeping onboard descriptive is explicit, because a skill that has just read everything is well placed to start assessing progress and recommending action, which is a different job on a different reading strategy.
 
-Retained source material is excluded by default, on the same reasoning as archived content. `baselinedocs-adopt` promises a pack collectively equivalent in information to its source, so loading both loads the same information twice. It is not a marginal cost: in the first real run, `sources/PROPOSAL.md` was 2415 of the 3460 lines read, seventy percent of the budget spent on content the pack already carried. Files without baseline frontmatter identify this material without needing a naming convention.
+Retained source material is excluded by default. `baselinedocs-adopt` promises a pack collectively equivalent in information to its source, so loading both loads the same information twice. It is not a marginal cost: in the first real run, `sources/PROPOSAL.md` was 2415 of the 3460 lines read, seventy percent of the budget spent on content the pack already carried. Files without baseline frontmatter identify this material without needing a naming convention. The exclusion is reported rather than applied quietly, because an unreported exclusion fails the same way a silent truncation does: the user cannot tell what the agent is actually holding.
 
 Provenance is recorded, not adjudicated. `code_ref` may be a commit, `uncommitted`, or `unknown`, and only the first is comparable; even then a moved repository is reported as a signal. An onboard that starts investigating drift stops being a bounded read and turns into `baselinedocs-audit-drift` without its scope limit.
 
@@ -200,7 +199,7 @@ What remains is one owner per question: `brief` answers where the work stands, `
 
 ## Skill Consolidation
 
-The family went from 18 skills to 16. What matters more than the count is the test used to get there, because the two tests tried first would each have produced a different and worse answer.
+The family went from 18 skills to 15. What matters more than the count is the test used to get there, because the two tests tried first would each have produced a different and worse answer.
 
 ### The criterion
 
@@ -212,7 +211,7 @@ The post-state condition keeps a read-only reporter from being merged into a wri
 
 **Rejected: pointer reachability.** An earlier revision of this file held that a skill absent from the documented workflow should be reached by a pointer rather than by competing for a description match. Rejected because description match is a first-class host selection mechanism, not a fallback, while pointer reachability is a convention local to this repository: it measures only whether some other skill's prose happens to name the skill, which is an artifact of who wrote what. `extract-wiki` is the counterexample. Nothing points at it and no other skill contests its trigger vocabulary, so under the rejected criterion it looked endangered and under the current one it is among the healthiest skills present. The observation keeps one narrow use, as a signal that a pointer is missing, never that a skill is unnecessary.
 
-**Rejected: merging by family prefix.** Collapsing `sync-*`, `audit-*`, and `maintain-*` into one skill each was proposed and rejected. A prefix is a naming artifact, not a property of the operation. `maintain-split` produces new packs plus an index and `maintain-archive` relocates content and sets a status `onboard` depends on; neither shares a post-state with `maintain-compact`, so neither satisfies the criterion. The proposal reached a written plan before the contradiction was caught, which is why it is recorded rather than dropped.
+**Rejected: merging by family prefix.** Collapsing `sync-*`, `audit-*`, and `maintain-*` into one skill each was proposed and rejected. A prefix is a naming artifact, not a property of the operation. `maintain-split` produces new packs plus an index, which is not a post-state `maintain-compact` shares, so it does not satisfy the criterion. The proposal reached a written plan before the contradiction was caught, which is why it is recorded rather than dropped.
 
 ### What changed
 
@@ -221,7 +220,7 @@ The post-state condition keeps a read-only reporter from being merged into a wri
 | `sync-decision` | deleted, folded into `sync-decisions` | descriptions strictly nested, post-states identical |
 | `maintain-prune` | deleted, no replacement skill | its success test attacked the journal |
 | `audit-verify` | renamed `audit-claims`, kept separate | different unit of analysis |
-| `maintain-archive` | kept, output location still owed | does more than set a status |
+| `maintain-archive` | deleted, taking `status: archived` with it | specifying the destination showed there was almost nothing to move |
 | `maintain-compact` | kept, gained a pass-or-revert gate | had no success test at all |
 
 A deleted folder takes its description with it, so the absorbed skill's trigger vocabulary was carried into the survivor. The words "atomic", "targeted", and "one specific" were the only route to the narrow decision case on hosts where `description` drives selection; dropping them with the folder would have removed a reachable behavior while appearing to remove only a duplicate.
@@ -251,13 +250,23 @@ Each description names the other skill for the question it does not answer. A ro
 
 That leaves the pair with a mutual reference, the same shape `sync-decision` and `sync-decisions` had, and it does not mean the same thing. That pair pointed at each other because neither description could settle which applied, so the pointers were a symptom. This pair points to state the boundary in the surface that selects them, so the pointers are the cure. Read a mutual disclaimer as a merge signal only when neither description states what separates the two.
 
-### Why archive was kept
+### Why archive was deleted
 
-`maintain-archive` is not only a status flag. Three of its four steps relocate content. But it never said where the archive goes, which is the defect recorded above as the reason `resume-snapshot` was deleted, so what it produces has never been settled. It is kept on condition that the destination is specified, and until then that is open work rather than a working skill.
+`maintain-archive` survived the first round on the condition that its destination be specified, and writing that specification is what killed it. Naming where content goes forces the question of what may be moved, and the answer left almost nothing.
 
-It is also the only producer of `status: archived`, and `onboard` is its only consumer, using it as a default scope exclusion. Deleting the skill would leave `onboard` excluding something nothing can produce.
+`hallucination` cannot be archived. It is the journal, and moving it outside `onboard`'s default scope reproduces the failure `maintain-prune` was deleted for: the content is not lost, but a fresh agent cannot reach it by default, which for that agent is the same outcome. `introduction`, `sourcecode`, and `useguide` record current state rather than history, so they hold nothing to archive. That leaves completed phase history in `roadmap`, and since the contract already forbids reasoning from living in a checkpoint, what remains movable is evidence tables and affected-file lists.
 
-**Rejected: delete archive and give the relocation right to `maintain-compact`.** Relocation is legal under compact's information-preservation gate, since moving a completed phase into a linked file leaves the active document shorter with nothing lost, so the alternative was real. Rejected because it gives compact two mechanisms and an escape hatch from its own gate: an agent unable to compress far enough could relocate instead, satisfying "shorter" without doing the work the gate asks for.
+Against that, the flag had exactly one producer and one consumer, and the consumer excludes by document while every proposal reached for a per-section marker. `onboard` skips whole files, so a section marked `status: archived` inside an active document is still read in full and the exclusion does nothing.
+
+Deleted with the skill: `status: archived` from the frontmatter enum, `onboard`'s exclusion rule, and `maintain-compact`'s `not for archiving completed phases` non-goal. A status value nothing writes and nothing reads is an affordance that invites someone to supply the missing producer, which is how a deleted skill comes back.
+
+**Accepted cost: a long-running single-domain pack has no way to shed history.** `maintain-compact` cannot, because its gate forbids losing detail, and that gate is recent - its first step previously read "repeated and low-value content", and "low-value" was the phrase an agent used to cut old phase narration. `maintain-split` cannot, because it divides by domain and a one-domain pack has nothing to divide. Onboard cost for such a pack therefore grows monotonically. This is the price of the deletion, and nothing mitigates it.
+
+**Rejected: keep archive and specify `<pack>/archive/` as the destination.** One file per archived phase, `status: archived` frontmatter, linked from the active roadmap, with archiving forbidden on `hallucination` and a promote-the-reasoning-first step before any relocation. Coherent, and it closes the cost above. Rejected because the operation it protects is thin once `hallucination` is excluded, and because no skill routes to it, so it fires only when a user remembers a maintenance chore.
+
+**Rejected: move the flag into the write-able skills and drop relocation.** The first proposal, and it collapses. With relocation gone the flag is only ever a per-section marker, and `onboard` excludes by document, so the marker is inert. It would have retired the skill while appearing to keep the feature.
+
+**Rejected earlier, and still the reason compact must not inherit relocation.** Relocation is legal under compact's information-preservation gate, since moving a completed phase into a linked file leaves the active document shorter with nothing lost, so the alternative was real. Rejected because it gives compact two mechanisms and an escape hatch from its own gate: an agent unable to compress far enough could relocate instead, satisfying "shorter" without doing the work the gate asks for. Compact's non-goal now states that prohibition directly rather than naming a skill that no longer exists.
 
 ### The compact gate
 
@@ -355,7 +364,7 @@ It is not a general introduction or roadmap that duplicates child content. This 
 - Organization-wide hook rollout remains deferred. The setup skill handles one repository at a time and preserves unknown configuration rather than replacing it.
 - Blind semantic writing from transcript or repository-wide candidates remains rejected. The agent may checkpoint only a pack unambiguously established in its current thread.
 - The detect and repair split across the `sync` and `audit` families is unresolved. See `Detect And Repair` above.
-- The archive destination is unresolved. `baselinedocs-maintain-archive` is kept on condition that its output location is stated, and it is not yet stated. See `Skill Consolidation` above.
+- Whether a whole pack can be marked finished and skipped by `onboard` is open. The deleted `status: archived` was per-document and per-section, and a pack-level equivalent would need no skill, since any write-able skill can set it and `onboard` already excludes by document. Recorded rather than built, because re-adding the value before a consumer exists recreates the orphaned affordance the deletion removed. See `Skill Consolidation` above.
 
 ## Research Basis
 

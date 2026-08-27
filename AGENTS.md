@@ -13,7 +13,7 @@ This repo is the source of the `baselinedocs` skill family. Everything here is a
 
 Consequences:
 
-- **A skill may rely on anything inside its own folder.** That is what `<skill>/references/` is for, and it ships. The 11 pack-writing skills read their own `references/pack-contract.md` on every run and must keep doing so. The boundary is the folder, not the act of reading a file.
+- **A skill may rely on anything inside its own folder.** That is what `<skill>/references/` is for, and it ships. The 10 pack-writing skills read their own `references/pack-contract.md` on every run and must keep doing so. The boundary is the folder, not the act of reading a file.
 - **Name a sibling skill for routing.** "`baselinedocs-maintain-split` creates one" tells the reader where to go next and holds whether or not that skill is installed. The `Non-Goals` sections across the family are built on this.
 - **Never make a sibling's content a prerequisite.** Not "read `baselinedocs-init`", not a path through `../`, not a sibling's `references/`. Naming a skill is routing; requiring its content is a dependency that resolves to nothing when the skill is installed alone. That is the historical bug here: `baselinedocs-adopt` shipped with "Read `baselinedocs-init` when creating a new pack", and the folder it named was usually absent. Note that the broken line contained no path at all, so "avoid paths" is not the test - "does this run need another folder present" is.
 - Do not justify cutting something from a `SKILL.md` on the grounds that it is written down in `DESIGN.md`. No installed agent can open that file.
@@ -35,12 +35,12 @@ A bare prohibition with an appealing counter-argument gets overridden mid-run. A
 
 ## The pack contract
 
-`contract/pack-contract.md` is the only definition of which baseline document owns which content. The 11 pack-writing skills each ship a byte-identical copy at `<skill>/references/pack-contract.md`, because a skill cannot reach a sibling's files.
+`contract/pack-contract.md` is the only definition of which baseline document owns which content. The 10 pack-writing skills each ship a byte-identical copy at `<skill>/references/pack-contract.md`, because a skill cannot reach a sibling's files.
 
-- Edit the canonical file, then copy it to all 14.
+- Edit the canonical file, then copy it to all 10.
 - Never edit a packaged copy directly, and never restate the document roles anywhere else.
 - Skills that only read a pack carry no copy.
-- Each of the 14 carries one gate sentence in its `SKILL.md` sending the agent to read the contract. That gate cannot live in the contract: an agent that skipped the file never reaches the sentence telling it not to skip the file.
+- Each of the 10 carries one gate sentence in its `SKILL.md` sending the agent to read the contract. That gate cannot live in the contract: an agent that skipped the file never reaches the sentence telling it not to skip the file.
 
 `tests/test_references.py` pins the copies and fails on drift.
 

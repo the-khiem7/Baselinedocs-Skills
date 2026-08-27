@@ -1,6 +1,0 @@
-interface:
-  display_name: "Baseline Docs Internal: Archive"
-  short_description: "Archive completed baseline history"
-  default_prompt: "Use $baselinedocs-maintain-archive to archive completed baseline history."
-policy:
-  allow_implicit_invocation: true

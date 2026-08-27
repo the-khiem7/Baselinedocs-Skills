@@ -41,6 +41,6 @@ Either check failing means revert, not adjust. A long file costs less than a hal
 
 ## Non-Goals
 
-- not for archiving completed phases
+- not for moving content out of the active pack; compaction is compression, and relocating instead satisfies "shorter" while skipping the work the gate above asks for
 - not for splitting unrelated workstreams
 - not for removing a claim that turned out false; the contract's relocation rule owns that

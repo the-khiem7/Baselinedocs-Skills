@@ -86,7 +86,7 @@ All six set `policy.allow_implicit_invocation: false` for Codex, so they stay de
 | --------- | ---------------------------------------------------------------------------------- |
 | Sync      | `sync-codebase`, `sync-decisions`, `sync-reconcile`       |
 | Audit     | `audit-drift`, `audit-claims`                                                  |
-| Maintain  | `maintain-compact`, `maintain-archive`, `maintain-split` |
+| Maintain  | `maintain-compact`, `maintain-split` |
 | Knowledge | `extract-wiki`                                                                   |
 
 All skill IDs use lowercase kebab-case, for example `baselinedocs-sync-codebase`. These are agent-selected helpers: their UI names start with `Baseline Docs Internal:` and implicit invocation stays enabled. Some hosts do not enforce the Codex-specific policy, so each skill description states the classification too.

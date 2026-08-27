@@ -3,8 +3,8 @@ baseline_schema: "2.0"
 pack: "skill-consolidation"
 document: "hallucination"
 status: "active"
-updated: "2026-08-26"
-code_ref: "cded242"
+updated: "2026-08-27"
+code_ref: "uncommitted"
 ---
 
 # Skill Consolidation: Decisions and Open Questions
@@ -110,10 +110,36 @@ The lesson-entry exception already in the skill body does not patch this. The co
 
 **Order, carried from D7's execution.** Both duplicates state one thing the canonical sentence does not: a lesson entry stays even after the mistake is resolved. Widen the canonical sentence to cover that, re-copy it, and only then delete the two. Deleting first drops the rule for as long as it takes to notice.
 
-## Open questions
+## D11: maintain-archive is deleted, reversing D6
 
-**Q1: what is the archive destination?** D6 keeps `maintain-archive` on condition that its destination is stated, and the path was never named. Candidates include a subdirectory such as `<pack>/archive/` holding one file per archived phase, or an in-place section marked `status: archived`. Blocks the archive phase and nothing else.
+**Decided.** Delete `baselinedocs-maintain-archive`. Remove `archived` from the `status` enum in `contract/pack-contract.md`, remove `onboard`'s archived-material exclusion rule, and replace `maintain-compact`'s `not for archiving completed phases` non-goal with a direct prohibition on moving content out of the active pack. Closes Q1.
+
+**Why.** D6 kept the skill on condition that its destination be specified. Specifying it forced the prior question of what may be moved, and the answer left almost nothing.
+
+| Document | Archivable | Reason |
+|---|---|---|
+| `hallucination` | no | the journal. Moving it outside `onboard`'s default scope reproduces the failure D4 deleted `maintain-prune` for: content a fresh agent cannot reach by default is, for that agent, content that was removed |
+| `introduction`, `sourcecode`, `useguide` | no | current state, not history |
+| `roadmap` | completed phase history only | and the contract already keeps reasoning out of a checkpoint, so what is movable is evidence tables and affected-file lists |
+
+The flag does not survive either. `onboard` excludes by document, while every proposal for `status: archived` was a per-section marker, so a marked section inside an active document is still read in full and the exclusion does nothing.
+
+**What breaks if ignored.** Keeping the enum value with no producer and no consumer leaves an affordance that invites the next contributor to supply the missing producer, which is how a deleted skill returns. Keeping the skill with an unspecified destination leaves two runs archiving to two different places, which is the defect that deleted `resume-snapshot`.
+
+**Accepted cost.** A long-running single-domain pack now has no way to shed history. `maintain-compact` cannot, because D7's gate forbids losing detail, and its "low-value" wording, the phrase an agent used to cut old phase narration, was removed in the same round. `maintain-split` divides by domain, and a one-domain pack has nothing to divide. Onboard cost for such a pack grows monotonically and nothing mitigates it.
+
+**Supersedes one constraint.** The introduction recorded that the frontmatter schema must not change and that `status: archived` stays in the enum, carried from the original instruction. That constraint was set while D6 held. Removing the value is a deliberate exception to it, not an oversight; the rest of the schema is untouched.
+
+**Rejected: keep archive and specify `<pack>/archive/`.** One file per archived phase, `status: archived` frontmatter, linked from the active roadmap, with archiving forbidden on `hallucination` and a promote-the-reasoning-first step before any relocation. Coherent, and it is the only option that closes the accepted cost above. Rejected because the operation it protects is thin once `hallucination` is excluded, and because no skill routes to it, so it fires only when a user remembers a maintenance chore.
+
+**Rejected: move the flag into the write-able skills and drop relocation.** The first proposal on the table. It collapses: with relocation gone the flag is only ever a per-section marker, and `onboard` excludes by document, so the marker is inert. It would have retired the skill while appearing to keep the feature.
+
+**D1 and D6 are left as written.** Both cite `maintain-archive` as a live skill, D1 using it as an example of a post-state `maintain-compact` does not share. That is what was argued at the time and the journal keeps it. Read those two entries as history; D11 is the current position. `DESIGN.md` carries the corrected version, because it states current design rather than recording a sequence.
+
+## Open questions
 
 **Q2: does the rename sweep cover the whole family?** D3 renames one skill. Whether `sync-codebase`, `sync-reconcile`, `maintain-compact` and the rest get the same treatment for name directness was asked and not answered. Not blocking.
 
 **Q3: detect versus repair, one axis or two families?** `audit-drift` reports what `sync-codebase` repairs, and `sync-reconcile` repairs what nothing reports. The two families are one detect/repair axis applied unevenly across comparison scopes, not two overlapping families. Two architectures are open: keep the split and complete the matrix, or collapse each comparison scope into one skill with a report-only mode. `audit-drift` already states that it is audit-first rather than auto-fix-first, which describes a default and therefore argues for a flag; Terraform's separation of plan from apply argues for keeping two commands where consequences are asymmetric. Deferred by decision, not blocking, but it decides whether the `baselinedocs-sync` namespace is needed for code-sync.
+
+**Q4: can a whole pack be marked finished and skipped by `onboard`?** The `status: archived` value D11 removed was per-document and per-section, and the per-section reading is what made it inert. A pack-level equivalent is a different proposition: it needs no skill, since any write-able skill can set it and `onboard` already excludes by document, and it would partly answer the cost D11 accepted. Not built, because re-adding the enum value before a consumer exists recreates the orphaned affordance D11 removed. Surfaced during P5 and not blocking.

@@ -3,8 +3,8 @@ baseline_schema: "2.0"
 pack: "skill-consolidation"
 document: "sourcecode"
 status: "active"
-updated: "2026-08-26"
-code_ref: "cded242"
+updated: "2026-08-27"
+code_ref: "uncommitted"
 ---
 
 # Skill Family Topology
@@ -29,21 +29,21 @@ A skill may rely only on files inside its own folder, because `npx skills add --
 |---|---|---|---|
 | User entrypoints | 6 | `init`, `adopt`, `save`, `run`, `onboard`, `brief` | false |
 | One-time administration | 1 | `setup-hooks` | false |
-| Lifecycle, agent-selected | 9 | 3 sync, 2 audit, 3 maintain, `extract-wiki`. 11 at `cded242` | true |
+| Lifecycle, agent-selected | 8 | 3 sync, 2 audit, 2 maintain, `extract-wiki`. 11 at `cded242` | true |
 
 `tests/test_skill_metadata.py` pins this: the 7 names in `ENTRYPOINTS` must disable implicit invocation and every other skill must enable it.
 
 ## Contract fanout
 
-`contract/pack-contract.md` is the only definition of which baseline document owns which content. 11 pack-writing skills each ship a byte-identical copy at `<skill>/references/pack-contract.md`, pinned by `tests/test_references.py`, because a skill cannot reach a sibling's files. 13 at `cded242`.
+`contract/pack-contract.md` is the only definition of which baseline document owns which content. 10 pack-writing skills each ship a byte-identical copy at `<skill>/references/pack-contract.md`, pinned by `tests/test_references.py`, because a skill cannot reach a sibling's files. 13 at `cded242`.
 
 | Carries a copy | Does not |
 |---|---|
-| `init`, `adopt`, `save`, `run`, `sync-codebase`, `sync-decisions`, `sync-reconcile`, `maintain-compact`, `maintain-archive`, `maintain-split`, `extract-wiki` | `onboard`, `brief`, `setup-hooks`, `audit-drift`, `audit-claims` |
+| `init`, `adopt`, `save`, `run`, `sync-codebase`, `sync-decisions`, `sync-reconcile`, `maintain-compact`, `maintain-split`, `extract-wiki` | `onboard`, `brief`, `setup-hooks`, `audit-drift`, `audit-claims` |
 
-Skills that only read a pack carry no copy. Each of the 11 also carries one gate sentence sending the agent to read the contract; that gate cannot live in the contract, because an agent that skipped the file never reaches the sentence telling it not to skip the file.
+Skills that only read a pack carry no copy. Each of the 10 also carries one gate sentence sending the agent to read the contract; that gate cannot live in the contract, because an agent that skipped the file never reaches the sentence telling it not to skip the file.
 
-Editing the canonical file means re-copying it to all 11. P2 changed it, so any copy predating that edit is stale by exactly one section.
+Editing the canonical file means re-copying it to all 10. P2 added a section, P4 rewrote a sentence, and P5 removed an enum value, so any copy predating this pack is stale on three counts.
 
 `baselinedocs-run` additionally ships `references/execution-contract.md`, which has no second copy anywhere.
 
@@ -74,7 +74,7 @@ Which skills are named inside another skill's shipped text. Recorded as topology
 | `audit-drift` | `brief`, `onboard`, `audit-claims` |
 | `audit-claims` | `audit-drift` |
 | `maintain-split` | `onboard` |
-| `init`, `run`, `setup-hooks`, `sync-codebase`, `sync-decisions`, `maintain-compact`, `maintain-archive`, `extract-wiki` | nothing |
+| `init`, `run`, `setup-hooks`, `sync-codebase`, `sync-decisions`, `maintain-compact`, `extract-wiki` | nothing |
 
 At `cded242` the deleted `sync-decision` appeared here too, named only by `sync-decisions` in a mutual `Non-Goals` reference between the pair being merged.
 
@@ -86,10 +86,9 @@ The audit pair now carries a mutual reference of its own, added by P3, and it do
 
 | Value | Written by | Read by |
 |---|---|---|
-| `status: archived` | `maintain-archive` only | `onboard` only, as a default scope exclusion |
 | `code_ref` | every pack-writing skill | `audit-drift`, `onboard` |
 
-The single-producer, single-consumer shape of `archived` is what D6 turns on.
+`status: archived` was the second row here, written by `maintain-archive` only and read by `onboard` only, as a default scope exclusion. That single-producer, single-consumer shape is what D6 turned on and what D11 removed: P5 deleted the producer, the consumer, and the value together, so no orphaned half remains for a later contributor to complete.
 
 `audit-claims` is absent from the `code_ref` row by rule, not by omission. P3 forbids it from ranking or filtering claims by provenance, because a current `code_ref` does not make a claim supported and a stale one does not make it false. That rule is what keeps the audit pair on separate axes rather than on the same axis at two zoom levels.
 

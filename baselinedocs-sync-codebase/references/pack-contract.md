@@ -17,7 +17,7 @@ Every baseline document starts with:
 baseline_schema: "2.0"
 pack: "<kebab-case-pack>"
 document: "<introduction|roadmap|hallucination|sourcecode|useguide|index>"
-status: "<draft|active|blocked|complete|archived>"
+status: "<draft|active|blocked|complete>"
 updated: "YYYY-MM-DD"
 code_ref: "<commit|uncommitted|unknown>"
 ---

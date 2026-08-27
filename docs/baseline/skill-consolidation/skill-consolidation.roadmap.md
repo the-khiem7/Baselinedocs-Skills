@@ -3,7 +3,7 @@ baseline_schema: "2.0"
 pack: "skill-consolidation"
 document: "roadmap"
 status: "active"
-updated: "2026-08-26"
+updated: "2026-08-27"
 code_ref: "uncommitted"
 ---
 
@@ -21,7 +21,7 @@ Reasoning for each phase lives in `skill-consolidation.hallucination.md` under t
 | P2 | `maintain-prune` deleted, relocation rule in the contract | D4, D5 | P1 | complete |
 | P3 | `audit-verify` renamed `audit-claims`, both audit descriptions rewritten | D3 | - | complete |
 | P4 | `maintain-compact` carries the revert gate | D7 | - | complete |
-| P5 | `maintain-archive` destination specified | D6 | Q1 | blocked |
+| P5 | `maintain-archive` deleted, with `status: archived` and its only consumer | D11 | Q1 | complete |
 | P6 | `DESIGN.md`, `AGENTS.md`, `README.md` aligned to the end state, and the last duplicate rule statements removed | D1, D8, D9, D10 | P1, P2, P3, P4 | complete |
 
 ## P1: fold sync-decision into sync-decisions
@@ -178,18 +178,56 @@ Neither has the host-boundary excuse that justifies the 11 contract copies: thos
 
 P4 also invalidated one sentence in `DESIGN.md:190`, which credits `maintain-compact` with forbidding lesson-entry compression. The prohibition still exists and still holds; it now lives in the contract. P6 owns that correction.
 
-## P5: specify the archive destination
+## P5: delete maintain-archive and its orphaned consumers
 
-Blocked on Q1. Do not start by choosing a path.
+Scope changed after Q1 was answered. The phase was written as "specify the destination"; specifying it disproved D6, and D11 replaced it. Reasoning is in D11, not here.
 
 Deliverables:
 
-- state the destination path and naming convention in `baselinedocs-maintain-archive/SKILL.md`
+- delete `baselinedocs-maintain-archive/`
+- remove `archived` from the `status` enum in `contract/pack-contract.md`, then re-copy to all remaining pack-writing skills
+- remove `"baselinedocs-maintain-archive"` from `CONTRACT_SKILLS`
+- remove the archived-material exclusion from `baselinedocs-onboard/SKILL.md`, and make the retained-source-material rule beside it self-standing, since it read "on the same terms" and its terms are being deleted
+- replace `maintain-compact`'s `not for archiving completed phases` non-goal with a direct prohibition on moving content out of the active pack, so the deletion does not silently grant compact the relocation right D11 rejected
+- `README.md`, `AGENTS.md`, `DESIGN.md` aligned
 
 Acceptance criteria:
 
-- two independent runs would archive the same content to the same location
-- the destination is readable from the skill body without inference
+- no file in the repository names `baselinedocs-maintain-archive` except this pack and the `DESIGN.md` record
+- no producer and no consumer of `status: archived` remains, and the value is gone from the enum
+- 10 packaged contract copies, all byte-identical
+- `maintain-compact` still forbids relocation after the skill that owned it is gone
+
+### Checkpoint: complete
+
+| Item | Result |
+|---|---|
+| Evidence | `uvx pytest tests/ -q`: 20 passed, 23 subtests passed |
+| Skills on disk | 15, down from 16 |
+| Packaged contract copies | 10, `cmp` clean after the fourth contract edit |
+| `contract/pack-contract.md` | 82 lines. One enum value removed, no line count change |
+| `status: archived` | no producer, no consumer, not in the enum |
+| Residual references | this pack and `DESIGN.md`'s deletion record only |
+
+Affected files:
+
+- deleted `baselinedocs-maintain-archive/` (3 files)
+- `contract/pack-contract.md`: `status` enum
+- all 10 `<skill>/references/pack-contract.md` re-synced
+- `tests/test_references.py`: `CONTRACT_SKILLS`
+- `baselinedocs-onboard/SKILL.md`: `Inputs`, and two `Reading Rules` lines merged into one
+- `baselinedocs-maintain-compact/SKILL.md`: `Non-Goals`
+- `README.md`: `Agent-Selected Skills` maintain row
+- `AGENTS.md`: pack-writing count in four places, not two
+- `DESIGN.md`: `Decision Summary` row, `Onboard Scope Gate` paragraph removed and its principle moved to the source-material rule, `Skill Consolidation` count and table row, `Why archive was kept` replaced by `Why archive was deleted`, `Deferred Work` bullet replaced
+
+Revision summary: `AGENTS.md` still said 14 in two further places, at `The pack contract` bullets "copy it to all 14" and "Each of the 14". P6 corrected the two prose mentions and missed these, because it searched for the sentence it knew about rather than for the number. All four now read 10.
+
+Revision summary: the compact non-goal was replaced rather than deleted. It had named `maintain-archive` to mark a boundary, and deleting the line with the skill would have removed the prohibition along with the pointer, silently handing compact the relocation right D11 records as rejected. Same shape as the P6 pointer replacements: when a line names something being deleted, check whether the line is a pointer or a rule wearing a pointer's clothes.
+
+### Finding: the last mention of archiving in shipped text
+
+`baselinedocs-adopt/SKILL.md` lines 17 and 51 use the word "archive" for the source artifact, not for pack status: a source-retention choice of retain, archive separately, or remove. Unrelated to `status: archived` and left as written. Recorded so a later reference sweep does not read it as a missed deletion.
 
 ## P6: align the repository documents
 
@@ -248,10 +286,8 @@ Revision summary: the acceptance criterion requiring the rule to be stated once 
 
 ## Next action
 
-Answer Q1, then execute P5. That is the only work left in this pack.
+All six phases are complete. 15 skills, 10 packaged contract copies, 20 tests passing, nothing committed, per the commit policy chosen for this run.
 
-Q1 asks where an archived phase is written. `maintain-archive` is kept on the condition that this is stated, so until it is answered the skill is documented as incomplete rather than working, and `onboard` excludes a category nothing reliably produces.
+Nothing in this pack is blocked. Three questions stay open and none of them belong to it: Q2 and Q3 were deferred by decision before P1, and Q4 was surfaced by P5 and deliberately not built. The next piece of work is whichever of those the user opens, and Q3 is the one that changes skill names, so it should go first if any of them do.
 
-The recommendation on file is a subdirectory, `<pack>/archive/`, one file per archived phase, each with `status: archived` frontmatter and a link from the active roadmap. The reason is mechanical: `onboard` excludes archived material by skipping a whole file, so a section marked archived inside an active document is still read, and the exclusion rule does nothing. The alternative to weigh against it is exactly that in-place variant, which costs no new files but gives up the exclusion.
-
-Everything else is finished. P1 through P4 and P6 are complete, all 20 tests pass, and no changes are committed, per the commit policy chosen for this run.
+The D9 description batch is the one item still owed by this pack's own scope. Check whether it has content before opening it: the only overlapping-trigger pair left after P1 and P2 is `sync-codebase` against `audit-drift`, which Q3 already covers, so the batch may be empty.

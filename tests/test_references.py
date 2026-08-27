@@ -20,7 +20,6 @@ CONTRACT_SKILLS = {
     "baselinedocs-sync-decisions",
     "baselinedocs-sync-reconcile",
     "baselinedocs-maintain-compact",
-    "baselinedocs-maintain-archive",
     "baselinedocs-maintain-split",
     "baselinedocs-extract-wiki",
 }
