@@ -4,7 +4,7 @@ pack: "skill-consolidation"
 document: "hallucination"
 status: "complete"
 updated: "2026-08-27"
-code_ref: "uncommitted"
+code_ref: "c6eb29a"
 ---
 
 # Skill Consolidation: Decisions and Open Questions
@@ -165,8 +165,50 @@ The flag does not survive either. `onboard` excludes by document, while every pr
 
 **Consequence for D2.** `baselinedocs-sync` is not needed as a namespace, because no merge happens. `sync-decisions` keeps its longer name for the original reason: a bare `sync` would attract every code-sync request through the name alone.
 
+## D13: the rename sweep stops at the audit pair, closing Q2
+
+**Decided.** No skill outside D3's rename is renamed. `sync-reconcile` keeps its name. Closes Q2.
+
+**Why.** Three findings, in increasing weight.
+
+The name is not the surface that selects this skill. Both `onboard` and `brief` name `baselinedocs-sync-reconcile` in shipped text, and each does so at the moment a contradiction is found, which is exactly when the choice is made. Routing already works without the name carrying its object, so a rename would pay for an improvement to a surface that is not the main entry path.
+
+The family has no single naming convention to conform to. `sync-codebase` names the source of truth it compares against; `sync-decisions` names the thing it propagates. Two skills already considered direct, two different patterns. "Name the object" therefore has no one target here, and `sync-contradictions`, the best candidate, would parallel one of them while diverging from the other.
+
+The cost is higher than D8 recorded, measured in P8. A machine carries several independent host skill directories, four on this one, each a real copy rather than a link into a shared store, and the installer adds and overwrites but never removes. A rename leaves the old name in every one of them until someone deletes it by hand.
+
+**What breaks if ignored.** Renaming on a naming principle the family does not consistently follow buys a marginal clarity gain and pays it in stale duplicate skills competing for selection on every installed machine.
+
+**Rejected: rename to `sync-contradictions`.** The strongest candidate, and it does name the object. Rejected on the three findings above rather than on the name itself, which is a better name than the one being kept.
+
+**What the question retains.** The naming principle from D3 stands for any *new* skill: name what it operates on. D13 declines a retroactive sweep, not the principle.
+
+## D14: no pack-level finished marker, closing Q4
+
+**Decided.** Do not re-add a `status` value for a finished or parked pack, and do not give `onboard` a status-based scope filter. Closes Q4.
+
+**Why.** The function already exists one layer up. `onboard` does not scan for packs, it is pointed at one, and on an initiative its step 2 reads the index and stops, then step 3 selects the scope when the routing evidence names exactly one sub-pack **in progress**. That phrase is already the filter Q4 proposed to add: a finished pack is not selected, because it is not in progress. Adding a frontmatter value would restate a routing rule as data.
+
+`status: complete` cannot serve the purpose either, and the reason is worth keeping. This pack is `complete` and is precisely what a contributor must read before touching any skill folder, since D1 through D14 are the whole argument for the shape every current skill has. A rule that skipped complete packs would skip the most load-bearing document in the repository. So a finished marker would have to be a value distinct from `complete`, which makes it a schema change rather than a reuse.
+
+**What breaks if ignored.** It would be `onboard`'s first status-based scope filter after P5 deleted the only one, rebuilding the mechanism just removed to obtain a behavior the routing rule already provides. The orphaned-affordance failure in D11 is the same shape.
+
+**Rejected: add a `parked` or `archived` value with `onboard` as its consumer.** Coherent, and unlike the value D11 deleted it would operate at file granularity, so the mechanism would work. Rejected because no initiative index exists yet, so the payoff is zero today, and because step 3 already declines to load what is not in progress.
+
+**If this is reopened.** The trigger to watch for is a real multi-pack initiative where the index's own status proves insufficient for routing. That is the evidence D14 lacks, not an argument it lost.
+
+## D15: the installed generation gap is closed, and the constraint asserting it is disproven
+
+**What was believed.** The introduction carried a constraint stating that the skills installed on this machine were an older generation than this repository: the installed `baselinedocs-init` still routed to a `resume` family and shipped a 44-line contract against this repository's then-74-line canonical file. The operational conclusion drawn from it was that a `baselinedocs` skill invoked in a later thread would read a stale copy.
+
+**What disproved it.** P8 deleted every `baselinedocs-*` folder from each host directory and installed from this clone. Re-measured at `c6eb29a`: each of `.claude`, `.agents`, `.kilocode`, and `.kiro` holds exactly the 15 skills this repository defines, every packaged `references/pack-contract.md` in all four is `cmp`-identical to the 82-line canonical file, and the installed `baselinedocs-init` contains no occurrence of "resume" at all. `.codex/skills` exists and holds no baselinedocs skill, as it did before.
+
+**What survives it.** The mechanism, not the measurement. An installed skill reads its own copy, so an install is a snapshot and this repository drifts from any machine from the next edit onward. The introduction keeps that as a constraint and the roadmap keeps the returning-risk row. Only the claim that this machine is currently behind is withdrawn.
+
+**Unresolved, and now unresolvable.** Two figures exist for the pre-P8 installed contract: 44 lines in the introduction's constraint, measured against `baselinedocs-init` when that constraint was written, and 46 lines in P8's checkpoint, measured across the installed set at delete time. The state both describe has been overwritten, so neither can be re-checked. Both are kept as recorded rather than reconciled to one number, because choosing between them would invent a measurement. The likeliest explanation, if it ever matters: the host directories are independent copies and may simply have held different generations.
+
+**What breaks if this entry is dropped.** The next reader finds a constraint saying installs are snapshots, with no record that the gap was ever real or ever closed, and re-runs P8's delete-and-reinstall against a machine that already matches. P8's own finding is why the record is worth keeping: the installed set was worse than the constraint described, missing three of the six user entrypoints, so the constraint understated a real problem rather than inventing one.
+
 ## Open questions
 
-**Q2: does the rename sweep cover the whole family?** Narrowed twice and nearly empty. D3 renamed one skill on the principle that a name should carry the unit the skill operates on. Applied to the rest, `sync-codebase`, `sync-decisions`, `audit-claims` and `extract-wiki` already name their object; `maintain-compact` and `maintain-split` name an operation whose object is unambiguous, since a pack is the only thing they act on; `audit-drift` keeps its name because three inbound pointers in shipped text use it. That leaves `sync-reconcile`, which names an operation without naming what it reconciles. D12 closed the namespace half: `baselinedocs-sync` is not needed. Weigh a rename against D8: an installed copy cannot be reached, so a rename reads to that user as one skill vanishing and an unfamiliar one appearing. Not blocking.
-
-**Q4: can a whole pack be marked finished and skipped by `onboard`?** The `status: archived` value D11 removed was per-document and per-section, and the per-section reading is what made it inert. A pack-level equivalent is a different proposition: it needs no skill, since any write-able skill can set it and `onboard` already excludes by document, and it would partly answer the cost D11 accepted. Not built, because re-adding the enum value before a consumer exists recreates the orphaned affordance D11 removed. Surfaced during P5 and not blocking.
+None. Q1 closed in D11, Q3 in D12, Q2 in D13, Q4 in D14. Stated rather than deleted so a reader can tell the section was emptied deliberately.

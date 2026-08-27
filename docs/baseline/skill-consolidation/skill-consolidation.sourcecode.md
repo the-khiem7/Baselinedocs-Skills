@@ -4,7 +4,7 @@ pack: "skill-consolidation"
 document: "sourcecode"
 status: "complete"
 updated: "2026-08-27"
-code_ref: "uncommitted"
+code_ref: "c6eb29a"
 ---
 
 # Skill Family Topology

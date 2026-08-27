@@ -29,6 +29,8 @@ This version separates deliberate user workflow starts, one-time administration,
 | Compaction correctness | Give `maintain-compact` a pass-or-revert gate instead of a goal |
 | Archived material | Delete `maintain-archive`, the `status: archived` enum value, and `onboard`'s exclusion together, rather than keep an affordance nothing performs |
 | Sync against audit | Keep all five. The comparison-scope matrix that made them look overlapping was drawn on an axis that does not separate them |
+| Renaming for directness | Applies to a new skill, not retroactively. `sync-reconcile` keeps its name because a pointer, not the name, is how it is reached |
+| A finished pack | No status value and no `onboard` filter. Routing already declines to load a sub-pack that is not in progress |
 
 ## Trigger Architecture
 
@@ -277,6 +279,26 @@ The gate is stated in the body with that cost comparison because an agent compac
 
 With prune gone, compact is the only skill that reduces an active document, so its own wording had to stop authorizing what prune was deleted for. Its first step said "repeated and low-value content", and "low-value" was the last phrase in the family permitting removal on grounds other than redundancy.
 
+### Why the rename sweep stopped at the audit pair
+
+`audit-verify` became `audit-claims` because the pair had been separated on unit of analysis and the name had to carry that unit. Extending the same principle across the family was considered and declined. Most skills already name what they operate on, and `maintain-compact` and `maintain-split` name an operation whose object is unambiguous because a pack is the only thing they act on. `sync-reconcile` was the one real candidate, and it keeps its name for three reasons.
+
+The name is not the surface that selects it. `onboard` and `brief` both name it in shipped text, each at the moment a contradiction is found, which is when the choice is actually made. A rename would improve a surface that is not the entry path.
+
+The family has no single convention to conform to. `sync-codebase` names the source of truth it compares against; `sync-decisions` names the thing it propagates. Two already-direct names, two different patterns, so "name the object" has no one target. `sync-contradictions` is a better name than the one kept, and it would parallel one of those two while diverging from the other.
+
+The cost is larger than the install boundary above implies, and it was measured rather than estimated. A machine carries several independent host skill directories, four on the one checked, each a real copy rather than a link into a shared store, and the installer adds and overwrites but never removes. A rename leaves the old name in all of them until someone deletes it by hand.
+
+The principle stands for a new skill. What was declined is the retroactive sweep.
+
+### Why there is no finished-pack marker
+
+Deleting `status: archived` raised the question of whether a pack-level equivalent should replace it, and the answer is no, because the behavior already exists a layer up. `onboard` is pointed at a target rather than scanning for one, and on an initiative it reads the index, stops, and selects the scope only when the routing evidence names exactly one sub-pack in progress. A finished pack is already not selected. A frontmatter value would restate a routing rule as data.
+
+`status: complete` cannot be reused for it either. This repository's own consolidation pack is complete and is exactly what a contributor must read before touching a skill folder, since it carries the whole argument for the shape the current skills have. A rule that skipped complete packs would skip the most load-bearing document present. A finished marker would therefore need a value distinct from `complete`, making it a schema change rather than a reuse of one.
+
+**Rejected: add a `parked` value with `onboard` as its consumer.** Unlike the value that was deleted, this one would operate at file granularity, so the mechanism would work. Rejected because no initiative index exists yet, so the payoff is zero, and because it would be `onboard`'s first status-based scope filter after the previous one was removed, rebuilding a mechanism to obtain a behavior routing already provides. The evidence that would justify reopening it is a real multi-pack initiative where index status proves insufficient for routing.
+
 ### One rule, one place
 
 The lesson-entry rule was stated in five wordings: once in the contract and four times elsewhere. `tests/test_references.py` could not see them drift, because it compares contract copies against the canonical file and knows nothing about a paraphrase written somewhere else. Each removal followed the same order: widen the canonical sentence to cover what the duplicate uniquely said, re-copy it to every packaged copy, and only then delete. Deleting first drops the rule for as long as it takes to notice.
@@ -391,8 +413,7 @@ It is not a general introduction or roadmap that duplicates child content. This 
 - Package-level installation profiles could hide internal helpers more completely, but Skills.sh does not currently provide a portable hidden-skill category.
 - Organization-wide hook rollout remains deferred. The setup skill handles one repository at a time and preserves unknown configuration rather than replacing it.
 - Blind semantic writing from transcript or repository-wide candidates remains rejected. The agent may checkpoint only a pack unambiguously established in its current thread.
-- Whether any skill name outside the audit pair should be made more direct is open. `sync-reconcile` is the only remaining candidate, since it names an operation without naming what it operates on. Weighed against a rename's cost: an installed copy cannot be reached, so a rename reads to that user as one skill vanishing and an unfamiliar one appearing.
-- Whether a whole pack can be marked finished and skipped by `onboard` is open. The deleted `status: archived` was per-document and per-section, and a pack-level equivalent would need no skill, since any write-able skill can set it and `onboard` already excludes by document. Recorded rather than built, because re-adding the value before a consumer exists recreates the orphaned affordance the deletion removed. See `Skill Consolidation` above.
+Nothing about the skill family remains deferred. The rename sweep and the finished-pack marker were both closed rather than postponed; see `Skill Consolidation` above for each, including the evidence that would justify reopening them.
 
 ## Research Basis
 
