@@ -11,7 +11,7 @@ CANONICAL_CONTRACT = ROOT / "contract" / "pack-contract.md"
 # packaged assets of one canonical file, the same arrangement `hooks/checkpoint.py`
 # already uses, and they are pinned for the same reason: a drifted copy reaches
 # whoever installed that one skill, and nothing in their install says it is stale.
-CONTRACT_SKILLS = {
+WRITER_SKILLS = {
     "baselinedocs-init",
     "baselinedocs-adopt",
     "baselinedocs-save",
@@ -24,10 +24,31 @@ CONTRACT_SKILLS = {
     "baselinedocs-extract-wiki",
 }
 
-GATE = (
+# A skill that writes nothing still needs the role list to report content sitting
+# in a document whose role does not cover it. The qualifier is a full read, not
+# the absence of writes: a skill that reads part of a pack and owns the role list
+# would report conformance it never checked, which is worse than not reporting it.
+# `baselinedocs-brief` reads no document in full, and neither `audit` skill
+# compares placement, so none of them carry a copy.
+READER_SKILLS = {
+    "baselinedocs-onboard",
+}
+
+CONTRACT_SKILLS = WRITER_SKILLS | READER_SKILLS
+
+# One gate per skill, worded for what that skill does with the contract. Both are
+# pinned: an unpinned second wording is how the family ends up with two
+# definitions of when the file must be read.
+WRITE_GATE = (
     "Read `references/pack-contract.md` in full before creating or editing any pack "
     "file, every time."
 )
+READ_GATE = (
+    "Read `references/pack-contract.md` in full before reporting the pack state, "
+    "every time."
+)
+GATES = {name: WRITE_GATE for name in WRITER_SKILLS}
+GATES.update({name: READ_GATE for name in READER_SKILLS})
 
 
 class ContractCopyTests(unittest.TestCase):
@@ -46,10 +67,23 @@ class ContractCopyTests(unittest.TestCase):
 
     def test_contract_skills_gate_on_reading_the_contract(self):
         for name in sorted(CONTRACT_SKILLS):
-            text = (ROOT / name / "SKILL.md").read_text(encoding="utf-8")
-            self.assertIn(
-                GATE, text, f"{name} ships the contract but never requires reading it"
-            )
+            with self.subTest(skill=name):
+                text = (ROOT / name / "SKILL.md").read_text(encoding="utf-8")
+                self.assertIn(
+                    GATES[name],
+                    text,
+                    f"{name} ships the contract but never requires reading it",
+                )
+
+    def test_read_only_skills_are_not_gated_on_writing(self):
+        for name in sorted(READER_SKILLS):
+            with self.subTest(skill=name):
+                text = (ROOT / name / "SKILL.md").read_text(encoding="utf-8")
+                self.assertNotIn(
+                    WRITE_GATE,
+                    text,
+                    f"{name} writes no pack file, so the write gate can never fire in it",
+                )
 
     # The count of pack-writing skills is stated in prose in AGENTS.md, and prose
     # is not re-derived when CONTRACT_SKILLS changes. It went stale twice: it read
@@ -58,6 +92,9 @@ class ContractCopyTests(unittest.TestCase):
     # the number. The cure is one statement, pinned. Keep the count in the
     # `The N pack-writing skills` sentence only; say "every pack-writing skill"
     # everywhere else, so there is nothing else to update and nothing to disagree.
+    # That count is `WRITER_SKILLS`, not `CONTRACT_SKILLS`: since a full reader also
+    # ships the contract, the two differ, and pinning the prose to the wrong one
+    # would make AGENTS.md call a read-only skill a pack-writing skill.
     def test_agents_md_states_the_skill_count_once_and_correctly(self):
         text = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
         stated = re.findall(r"The (\d+) pack-writing skills", text)
@@ -68,8 +105,8 @@ class ContractCopyTests(unittest.TestCase):
         )
         self.assertEqual(
             int(stated[0]),
-            len(CONTRACT_SKILLS),
-            "AGENTS.md disagrees with CONTRACT_SKILLS about how many skills ship the contract",
+            len(WRITER_SKILLS),
+            "AGENTS.md disagrees with WRITER_SKILLS about how many skills write into a pack",
         )
         strays = re.findall(r"\ball (\d+)\b|\bEach of the (\d+)\b", text)
         self.assertEqual(
@@ -78,10 +115,15 @@ class ContractCopyTests(unittest.TestCase):
             "phrase these count-free: the count belongs in one sentence, checked above",
         )
 
+    # Scoped to this repository's own markdown. A dot-directory under the root is
+    # never repo content: it is `.git`, a tool cache, or a host skills directory
+    # someone installed into this checkout, and `.gitignore` already excludes those.
+    # Sweeping them makes a convention test fail on text this repo did not author
+    # and cannot fix, which is how a green suite turns into a permanently red one.
     def test_no_typographic_dashes(self):
         offenders = []
         for path in sorted(ROOT.rglob("*.md")):
-            if any(part in {".git", ".pytest_cache"} for part in path.parts):
+            if any(part.startswith(".") for part in path.relative_to(ROOT).parts):
                 continue
             for number, line in enumerate(
                 path.read_text(encoding="utf-8").splitlines(), start=1

@@ -4,7 +4,7 @@ pack: "skill-consolidation"
 document: "hallucination"
 status: "complete"
 updated: "2026-08-27"
-code_ref: "c6eb29a"
+code_ref: "uncommitted"
 ---
 
 # Skill Consolidation: Decisions and Open Questions
@@ -209,6 +209,43 @@ The cost is higher than D8 recorded, measured in P8. A machine carries several i
 
 **What breaks if this entry is dropped.** The next reader finds a constraint saying installs are snapshots, with no record that the gap was ever real or ever closed, and re-runs P8's delete-and-reinstall against a machine that already matches. P8's own finding is why the record is worth keeping: the installed set was worse than the constraint described, missing three of the six user entrypoints, so the constraint understated a real problem rather than inventing one.
 
+## D16: the contract ships on a full read, not on writing
+
+**Decided.** The criterion for shipping `references/pack-contract.md` is that the skill reads the pack in full, not that it writes into one. `baselinedocs-onboard` gets the copy and a gate wording of its own, and a new `Workflow` step reporting content that sits in a document whose role does not cover it. No other read-only skill gets a copy. Opens Q5.
+
+**Why.** The old criterion answered the wrong question. Writing is what makes placement a *decision*, so a writer must consult the role list before it acts. A full read is what makes placement *checkable*, and that is a different property the criterion never named. D12 had already assigned the detect cell for a pack against itself to `onboard` and `brief`, which report contradictions and route to `sync-reconcile` without repairing. A detector holding no role list can only see two statements that literally disagree; it cannot see correctly-stated content in the wrong file, which the contract's own opening section names as the damaging failure, because that content is duplicated as soon as the correct owner needs the same fact and the copies then drift.
+
+`onboard` is the only read-only skill that qualifies, and the reason is its read guarantee, not its lack of writes. It commits to reading every document in the selected scope in full.
+
+**The gate had to be reworded, not reused.** The writers' sentence names creating or editing a pack file. In a skill that never does either, that precondition can never be met, and an instruction that can never fire teaches the agent to treat the gate as decoration. `onboard`'s wording triggers on reporting the pack state. Both are pinned, and `test_read_only_skills_are_not_gated_on_writing` asserts the write wording is absent from a reader rather than only asserting that some gate is present.
+
+**What breaks if ignored.** A real `onboard` run against an unrelated pack reported `onboard`'s absent contract copy as an unreadable file, and concluded that every future write into that pack was blocked. Both halves were wrong: ten skills carried the copy at the time, and no write routes through a read-only skill. The run was obeying an instruction scoped to skills that "read or write" a pack, so it looked for a file the skill was never meant to have. A reader acting on that report has two repairs available and both are wrong: add copies to skills that must not have one, which fails `test_references.py`, or conclude the contract is missing everywhere and skip the gate. Recording the criterion is what makes an absent copy legible as a decision rather than as damage.
+
+**Rejected: leave `onboard` without a copy because it writes nothing.** The arrangement this replaces, and the reasoning is above. Keeping it leaves the family's only full reader unable to report the misplacement the contract exists to prevent.
+
+**Rejected: give the contract to every read-only skill.** `brief` deliberately reads nothing in full, so it would report conformance it never checked, which is worse than reporting none. `audit-drift` compares documents against code and decisions and `audit-claims` compares a claim against its evidence, so neither examines placement. `setup-hooks` never opens a pack.
+
+**Rejected: add a placement-audit skill instead.** Refused on the grounds already recorded in D12. The detect cell for a pack against itself is occupied, and a new skill there would serve only "show placement findings without loading the pack", which nothing has asked for and which no partial read can answer.
+
+**The de-duplication argument was weak and is recorded as such.** Part of the case for shipping the copy was that `onboard`'s `SKILL.md` paraphrased the contract in several places and could shrink to pointers, which would have made this a net removal of duplicated text. Reading both files side by side reduced that to one sentence: `onboard`'s "a moved repository is a signal" restated the contract's "a newer commit is a drift signal, not automatic proof of drift", and only the "not a verdict to investigate here" half was its own. The `Output` section's document names were left alone deliberately, because they read as reporting order rather than as a second role list, and cutting them would have made the instruction vaguer without removing a fact. Recorded because it was the most persuasive-sounding argument on the table and the weakest in fact; the criterion argument carried the decision on its own. A later reader re-deriving the change from the de-duplication case would conclude it was not worth making.
+
+**Accepted cost.** The installed set on this machine is one phase behind again, exactly as the roadmap's risk row predicted. Ten copies against the repository's eleven, and an `onboard` that will keep reporting the absent copy the old way until the family is reinstalled here.
+
 ## Open questions
 
-None. Q1 closed in D11, Q3 in D12, Q2 in D13, Q4 in D14. Stated rather than deleted so a reader can tell the section was emptied deliberately.
+### Q5: who repairs content that is true but sits in the wrong document?
+
+Raised by D16, 2026-08-27. `onboard` can now report such a finding, and nothing in the family repairs it. `sync-reconcile` triggers on a contradiction, and correctly-stated content in the wrong file is not one yet; it becomes one only once the correct owner also states the fact, which is the drift the contract's opening section describes. So the repair arrives one step too late by design.
+
+Two sub-questions, both unanswered:
+
+| Sub-question | State |
+|---|---|
+| Does an open follow-up recorded inside a closed decision count as misplaced? | The contract lists open questions and closed decisions as `hallucination` content but does not say whether an open item may live inside a closed entry. Found in a real pack: two live items were filed inside closed decisions rather than in its open-questions section, and only a full read surfaced them |
+| Does `sync-reconcile` widen to cover placement, or does the contract name an owner the way the disproven-claim rule does? | Undecided. The disproven-claim rule names three owners rather than adding a skill, which is the cheaper shape and the precedent |
+
+Deliberately not answered in P9. Answering it means either widening a skill's trigger or adding a fourth owner clause to the contract, and neither is in this pack's scope, which is skill-count reduction and selection-surface repair. `onboard` is instructed to report the finding and name no repair owner, so the gap is visible at the point it is hit rather than papered over by a wrong routing pointer.
+
+What would reopen it as work: a pack where the same fact has landed in two documents because the first placement was wrong. That is the state where the gap costs something, and it is also the state where `sync-reconcile` becomes correctly applicable.
+
+Q1 closed in D11, Q3 in D12, Q2 in D13, Q4 in D14. Stated rather than deleted so a reader can tell the section was emptied deliberately before Q5 opened.

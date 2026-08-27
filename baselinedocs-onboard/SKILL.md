@@ -7,6 +7,8 @@ description: Load, ingest, or absorb an existing adaptive baseline pack or initi
 
 Load a pack into working context and report the state it records. The deliverable is a loaded agent, not a new document. Nothing is written.
 
+Read `references/pack-contract.md` in full before reporting the pack state, every time. It is the only definition of which document owns which content, and that is the standard content in the wrong document is reported against; do not infer it from a filename, from an earlier session, or from memory. Report a placement finding and repair nothing.
+
 ## Inputs
 
 Determine or confirm:
@@ -24,11 +26,12 @@ Determine or confirm:
 4. Enumerate the selected scope. Report the file list with line counts before reading anything, and name what the scope excludes.
 5. Apply the size gate. When you cannot say with confidence that the scope fits in remaining context, stop, present the total, propose a narrower scope, and wait. Uncertainty resolves toward asking, not toward starting.
 6. Read every file in the agreed scope in full. Do not truncate, skim headings, sample sections, or substitute a search for a read.
-7. Record provenance per document: `status`, `updated`, `code_ref`. When `code_ref` names a commit, report whether the repository moved past it. `uncommitted` and `unknown` are provenance, not commits: report them as stated and compare nothing. A moved repository is a signal, not a verdict to investigate here.
+7. Record provenance per document: `status`, `updated`, `code_ref`. When `code_ref` names a commit, report whether the repository moved past it. `uncommitted` and `unknown` are provenance, not commits: report them as stated and compare nothing. A moved repository is the drift signal the contract describes, not a verdict to investigate here.
 8. Follow links out of the pack. Read a wiki article when it is in scope; otherwise list it unread.
 9. Collect unresolved references: every point where a loaded document leans on something outside the scope, quoted with its location. A decision cited without its content, a term used undefined, a link into another pack.
-10. Report the pack state first, then the manifest. The state is what a reader needs; the manifest is how they check the read happened.
-11. Stop. Do not propose, plan, or begin work unless asked.
+10. Check placement against the contract: content sitting in a document whose role does not cover it, and a conditional document absent where its inclusion criterion is met. Report each with its location and repair nothing. Name `baselinedocs-sync-reconcile` only where the misplacement has also produced a contradiction. A placement finding on its own has no repair owner yet, and inventing one is how a reader starts moving content no skill was told to move.
+11. Report the pack state first, then the manifest. The state is what a reader needs; the manifest is how they check the read happened.
+12. Stop. Do not propose, plan, or begin work unless asked.
 
 ## Reading Rules
 
@@ -59,7 +62,8 @@ Then the record of the read:
 - the routing view: every sub-pack, its status, and which was selected on what evidence
 - load manifest: path, `status`, `updated`, `code_ref`, lines read, grouped by pack, with the index as its own row
 - dependency edges as recorded, and any excluded pack an in-scope pack depends on
-- anything missing, unreadable, or excluded by scope
+- placement findings against the contract, each with its location
+- anything missing, unreadable, or excluded by scope. A skill that ships no contract copy is not missing one: only a writer and a full reader carry it
 
 ## Non-Goals
 

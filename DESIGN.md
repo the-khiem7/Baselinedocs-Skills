@@ -31,6 +31,7 @@ This version separates deliberate user workflow starts, one-time administration,
 | Sync against audit | Keep all five. The comparison-scope matrix that made them look overlapping was drawn on an axis that does not separate them |
 | Renaming for directness | Applies to a new skill, not retroactively. `sync-reconcile` keeps its name because a pointer, not the name, is how it is reached |
 | A finished pack | No status value and no `onboard` filter. Routing already declines to load a sub-pack that is not in progress |
+| Who ships the contract | A full read of the pack, not the act of writing. The ten writers and `baselinedocs-onboard`; no partial reader |
 
 ## Trigger Architecture
 
@@ -102,7 +103,19 @@ The content stays in one place. `pack-contract.md` is the single definition of w
 
 The opposite arrangement - keeping the role list inline and stripping roles out of the contract - was also rejected. The contract still has to name the five documents to give their filenames and their inclusion criteria, so both files would keep discussing the same five things, separated only by a distinction between "what it holds" and "when to create it" that is too fine to survive editing.
 
-Skills install one folder at a time and cannot reach a sibling skill's files, so every pack-writing skill ships its own copy of the contract. Those copies are packaged assets of `contract/pack-contract.md`, the same arrangement `hooks/checkpoint.py` already uses, and they are pinned by a test for the same reason: a copy that drifts reaches whoever installed that one skill, and nothing in their install tells them it is stale.
+Skills install one folder at a time and cannot reach a sibling skill's files, so every skill that ships the contract ships its own copy. Those copies are packaged assets of `contract/pack-contract.md`, the same arrangement `hooks/checkpoint.py` already uses, and they are pinned by a test for the same reason: a copy that drifts reaches whoever installed that one skill, and nothing in their install tells them it is stale.
+
+The criterion for shipping it is a full read of the pack, not the act of writing. Ten writers qualify, and so does `baselinedocs-onboard`, which writes nothing. `Detect And Repair` already assigns the pack-against-itself detection cell to `onboard` and `brief`, and a detector without the role list can only see two statements that literally disagree. It cannot see content sitting in a document whose role does not cover it, which is the failure the contract's opening section calls the damaging one, because that content gets duplicated once the correct owner needs the same fact and the copies then drift. `onboard` reads every document in full, so it is the one read-only skill that can check placement against the standard rather than against a sibling pack that happens to be shaped differently.
+
+The gate is worded per use. A writer reads before creating or editing a pack file; `onboard` reads before reporting the pack state. Both wordings are pinned by `tests/test_references.py`, and that test also asserts `onboard` does not carry the write wording. Reusing the write sentence there was rejected: its precondition can never be met in a skill that writes nothing, and an instruction that never fires teaches the agent to read the gate as decoration.
+
+**Rejected: leave `onboard` without a copy, on the grounds that it writes nothing.** The arrangement this replaces. It reads the criterion off the wrong axis. Writing is what makes placement a *decision*; a full read is what makes it *checkable*. Keeping the old criterion leaves the family's only full reader unable to report the misplacement the contract exists to prevent.
+
+**Rejected: give the contract to every read-only skill.** `baselinedocs-brief` deliberately reads no document in full, so it would report conformance it never checked, which is worse than reporting none. Neither `audit` skill compares placement: `audit-drift` compares documents against code and decisions, `audit-claims` compares a claim against its evidence. `baselinedocs-setup-hooks` never opens a pack.
+
+**Rejected: add a placement-audit skill instead.** Rejected on the grounds already recorded under `Why the matrix is not completed`. The detect cell for a pack against itself is occupied, and a new skill there would serve only "show placement findings without loading the pack", which nothing has asked for and which no partial read can answer.
+
+**What breaks if this is ignored.** An onboard run against a real pack reported the absent copy in a read-only skill as an unreadable file, and concluded that every future write into that pack was blocked. Both halves were wrong: ten skills carried the copy at the time, and no write routes through a read-only skill. The two repairs that reading invites are adding copies to skills that must not have one, which fails `test_references.py`, and concluding the contract is missing everywhere and skipping the gate. Recording the criterion is what makes an absent copy legible as a decision rather than as damage.
 
 The README now documents only the whole-family install, and that does not relax this boundary or permit collapsing the copies into one shared file. `npx skills add --skill <name>` still works and is merely no longer advertised, and a host's skills directory is a place users delete from as well as install into, so a skill can still end up alone next to nothing. The boundary is what a folder can be relied on to contain, not what one install command happened to fetch. Pointing a skill at a sibling's `references/` would work on the maintainer's machine and fail silently on a user's.
 

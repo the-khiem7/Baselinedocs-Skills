@@ -4,7 +4,7 @@ pack: "skill-consolidation"
 document: "sourcecode"
 status: "complete"
 updated: "2026-08-27"
-code_ref: "c6eb29a"
+code_ref: "uncommitted"
 ---
 
 # Skill Family Topology
@@ -18,7 +18,7 @@ The shape the consolidation acts on. Baseline measured at `cded242`; counts belo
   SKILL.md
   agents/
     openai.yaml
-  references/     # only when the skill writes into a pack
+  references/     # only when the skill writes into a pack, or reads one in full
 ```
 
 A skill may rely only on files inside its own folder, because `npx skills add --skill <name>` installs one folder and nothing else travels with it. `contract/`, `hooks/`, `tests/`, and the repository documents do not ship.
@@ -35,15 +35,17 @@ A skill may rely only on files inside its own folder, because `npx skills add --
 
 ## Contract fanout
 
-`contract/pack-contract.md` is the only definition of which baseline document owns which content. 10 pack-writing skills each ship a byte-identical copy at `<skill>/references/pack-contract.md`, pinned by `tests/test_references.py`, because a skill cannot reach a sibling's files. 13 at `cded242`.
+`contract/pack-contract.md` is the only definition of which baseline document owns which content. 11 skills each ship a byte-identical copy at `<skill>/references/pack-contract.md`, pinned by `tests/test_references.py`, because a skill cannot reach a sibling's files. 13 at `cded242`, 10 at `c6eb29a`.
 
 | Carries a copy | Does not |
 |---|---|
-| `init`, `adopt`, `save`, `run`, `sync-codebase`, `sync-decisions`, `sync-reconcile`, `maintain-compact`, `maintain-split`, `extract-wiki` | `onboard`, `brief`, `setup-hooks`, `audit-drift`, `audit-claims` |
+| `init`, `adopt`, `save`, `run`, `sync-codebase`, `sync-decisions`, `sync-reconcile`, `maintain-compact`, `maintain-split`, `extract-wiki`, `onboard` | `brief`, `setup-hooks`, `audit-drift`, `audit-claims` |
 
-Skills that only read a pack carry no copy. Each of the 10 also carries one gate sentence sending the agent to read the contract; that gate cannot live in the contract, because an agent that skipped the file never reaches the sentence telling it not to skip the file.
+The criterion is a full read of the pack, not the act of writing: the 10 writers qualify, and so does `onboard`, which writes nothing but reads every document and reports content sitting in a document whose role does not cover it. `brief` reads nothing in full and neither `audit` skill compares placement, so a copy there would let a skill report conformance it never checked.
 
-Editing the canonical file means re-copying it to all 10. P2 added a section, P4 rewrote a sentence, and P5 removed an enum value, so any copy predating this pack is stale on three counts.
+Each of the 11 carries one gate sentence sending the agent to read the contract, in one of two pinned wordings: the writers trigger before creating or editing a pack file, `onboard` before reporting the pack state. `test_read_only_skills_are_not_gated_on_writing` asserts `onboard` does not carry the write wording, whose precondition it can never meet. That gate cannot live in the contract, because an agent that skipped the file never reaches the sentence telling it not to skip the file.
+
+Editing the canonical file means re-copying it to all of them. P2 added a section, P4 rewrote a sentence, and P5 removed an enum value, so any copy predating this pack is stale on three counts.
 
 `baselinedocs-run` additionally ships `references/execution-contract.md`, which has no second copy anywhere.
 
@@ -69,6 +71,8 @@ Writes, separated by trigger, which fixes blast radius:
 Three of the five consult code and decisions both, which is why a comparison-scope axis cannot separate them.
 
 Detect for a pack against itself has no dedicated skill because `onboard` and `brief` both report contradictions and route to `sync-reconcile`. Repair for a claim against evidence has none because the contract's disproven-claim rule already names its three owners.
+
+P9 added a third finding type without an owner in either table. `onboard` now reports content sitting in a document whose role does not cover it, and no skill above repairs that: `sync-reconcile` triggers on a contradiction, and correctly-stated content in the wrong file is not one until the correct owner also states it. Q5 holds that gap open; `onboard` is instructed to report such a finding without naming a repair skill.
 
 ## Pointer graph
 
@@ -110,10 +114,10 @@ The audit pair now carries a mutual reference of its own, added by P3, and it do
 
 | File | Pins |
 |---|---|
-| `test_references.py` | contract copies byte-identical to canonical, the gate sentence present in each, the pack-writing skill count stated once in `AGENTS.md` and matching `CONTRACT_SKILLS`, no typographic dashes in any `*.md` under the root |
+| `test_references.py` | contract copies byte-identical to canonical, the right gate wording present in each and the write wording absent from a reader, the pack-writing skill count stated once in `AGENTS.md` and matching `WRITER_SKILLS`, no typographic dashes in any `*.md` this repository owns |
 | `test_skill_metadata.py` | skill id matches folder name, `openai.yaml` names its own skill, only entrypoints disable implicit invocation |
 | `test_checkpoint.py` | the Stop hook adapter contains no repository detection logic, and the prompt keeps its thread boundaries |
 | `test_install_hooks.py` | packaged hook assets match canonical, installs are idempotent, existing host configuration preserved |
 | `test_run_policy.py` | `baselinedocs-run` policy selection gate |
 
-`test_no_typographic_dashes` globs every `*.md` under the repository root, so it covers this pack.
+`test_no_typographic_dashes` globs every `*.md` under the repository root except those inside a dot-directory, so it covers this pack and skips a host skills directory installed into the checkout.

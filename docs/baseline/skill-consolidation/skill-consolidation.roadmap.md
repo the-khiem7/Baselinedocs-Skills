@@ -4,12 +4,12 @@ pack: "skill-consolidation"
 document: "roadmap"
 status: "complete"
 updated: "2026-08-27"
-code_ref: "c6eb29a"
+code_ref: "uncommitted"
 ---
 
 # Skill Consolidation Roadmap
 
-Verification gate for every phase: `uvx pytest tests/ -q` green. The repository has no `pyproject.toml`, so `uv run python -m pytest` does not work. Every checkpoint below met the gate: 20 passed and 23 subtests passed for P1 through P7, and 21 passed and 23 subtests for P8 once the test it adds landed.
+Verification gate for every phase: `uvx pytest tests/ -q` green. The repository has no `pyproject.toml`, so `uv run python -m pytest` does not work. Every checkpoint below met the gate: 20 passed and 23 subtests passed for P1 through P7, 21 passed and 23 subtests for P8 once the test it adds landed, and 22 passed and 35 subtests for P9.
 
 Reasoning for each phase lives in `skill-consolidation.hallucination.md` under the decision named in its Basis column. Do not restate it here.
 
@@ -25,6 +25,7 @@ Reasoning for each phase lives in `skill-consolidation.hallucination.md` under t
 | P6 | `DESIGN.md`, `AGENTS.md`, `README.md` aligned to the end state, and the last duplicate rule statements removed | D1, D8, D9, D10 | P1, P2, P3, P4 | complete |
 | P7 | the sync and audit model corrected, and the routing pointers it exposed added | D12 | Q3 | complete |
 | P8 | installed skills replaced on this machine, and the stale-count class of defect given a test | D8 | P7 | complete |
+| P9 | the contract-shipping criterion changed to a full read, and `onboard` given the copy and a gate of its own | D16 | - | complete |
 
 ## P1: fold sync-decision into sync-decisions
 
@@ -228,7 +229,7 @@ Changes:
 | `baselinedocs-run/references/execution-contract.md` | duplicate lesson-entry statement replaced with a pointer |
 | `baselinedocs-save/SKILL.md` | duplicate lesson-entry statement replaced with a pointer |
 | `skill-consolidation.hallucination.md` | every decision recorded with its rejected alternatives |
-| `AGENTS.md` | pack-writing skill count corrected in two places, stated as 14 at `cded242` when the real figure was 13 and is now 11. One pointer added to `Conventions` |
+| `AGENTS.md` | pack-writing skill count corrected in two places, stated as 14 at `cded242` when the real figure was 13, and 11 as at this phase. One pointer added to `Conventions` |
 | `DESIGN.md` | 261 to 366 lines. Three rows added to `Decision Summary`, the `resume-snapshot` justification corrected, the pointer criterion in `Deferred Work` replaced with D1, deprecation records added for `sync-decision` and `maintain-prune`, line 190 corrected where it credited `maintain-compact` with a prohibition P4 moved into the contract, and two new sections added, `Skill Consolidation` and `Detect And Repair` |
 | `README.md` | already correct. The `Agent-Selected Skills` table had been updated by P1, P2, and P3 as each landed, and the sections those edits did not touch carried no stale count or skill name |
 
@@ -310,22 +311,71 @@ The install was made from an uncommitted working tree, which was the state of th
 
 Revision summary: the pack was set to `status: complete` in this phase, while Q2 and Q4 were still open, on the grounds that neither was in its scope. Both were closed afterwards in D13 and D14 without touching a skill file, so the status needed no revisiting.
 
+## P9: ship the contract to the pack's only full reader
+
+Opened by a real `onboard` run against an unrelated pack, which reported `onboard`'s absent contract copy as an unreadable file and concluded that future writes into that pack were blocked. Both halves were wrong, and the wrong conclusion was reachable because nothing recorded why the copy was absent. D16 carries the argument.
+
+Acceptance criteria:
+
+- the criterion for shipping the contract is recorded as a full read of the pack, not the act of writing
+- `onboard` ships a byte-identical copy and gates on it with a wording whose precondition it can actually meet
+- a read-only skill carrying the write gate fails a test
+- `AGENTS.md` still states the pack-writing count in one sentence, and that count still means writers only
+- 11 packaged contract copies, all byte-identical
+
+### Checkpoint: complete
+
+| Item | Result |
+|---|---|
+| Verification gate | 22 passed, 35 subtests passed |
+| Packaged contract copies | 11, `cmp` clean against canonical |
+| Negative check, copy drift | appending a line to `onboard`'s copy failed `test_packaged_contract_matches_canonical_contract`, then restored |
+| Negative check, wrong gate | injecting the write gate into `onboard` failed `test_read_only_skills_are_not_gated_on_writing`, then restored |
+| Skills on disk | 15, unchanged. No skill added, deleted, or renamed |
+| Installed copies, this machine | still 10 per host directory. Not reinstalled in this phase |
+
+Changes:
+
+| File | Change |
+|---|---|
+| `baselinedocs-onboard/references/pack-contract.md` | new, byte-identical to canonical. The 11th copy |
+| `baselinedocs-onboard/SKILL.md` | read gate added above `Inputs`; new `Workflow` step 10 checking placement against the contract, with the old steps 10 and 11 renumbered; the drift-signal half of step 7 folded into a citation; `Output` gains a placement-findings line and the statement that a skill without a copy is not missing one |
+| `tests/test_references.py` | `CONTRACT_SKILLS` split into `WRITER_SKILLS` and `READER_SKILLS`, both gate wordings pinned, new test that a reader carries no write gate, `AGENTS.md` count test repinned to `WRITER_SKILLS`, `test_no_typographic_dashes` scoped away from dot-directories |
+| `AGENTS.md` | `The pack contract` states the criterion and both gate wordings and records that an absent copy is a decision; the folder-boundary bullet and the count convention repinned |
+| `DESIGN.md` | `Decision Summary` row, and `Rule Placement` extended with the criterion, the per-use gate, three rejected alternatives, and what breaks if it is ignored |
+
+The gate wording had to change with the copy. `onboard` never creates or edits a pack file, so the writers' sentence names a precondition it cannot meet, and an instruction that can never fire teaches the agent to read the gate as decoration. Its wording triggers on reporting the pack state instead, and the test asserts the write wording is absent rather than merely that some gate is present.
+
+### Finding: the promised de-duplication was one sentence, not a sweep
+
+The case for shipping the copy included an argument that `onboard`'s `SKILL.md` was paraphrasing the contract in several places and could shrink to pointers. Reading both texts side by side reduced that to one sentence: `onboard`'s "a moved repository is a signal" restated the contract's "a newer commit is a drift signal, not automatic proof of drift", and only the "not a verdict to investigate here" half was `onboard`'s own. That half is kept and the restated half now cites the contract.
+
+The `Output` section's document names survived on purpose. They read as reporting order rather than as a second role list, and stripping them would have made the instruction vaguer without removing a fact. Recorded because the de-duplication argument was the strongest-sounding one on the table and it was the weakest in fact; the criterion argument in D16 is what carried the phase.
+
+### Finding: the convention test swept content the repository does not own
+
+`test_no_typographic_dashes` failed on 73 lines across more than twenty skill folders under `.agents/`, a host skills directory installed into this checkout and already excluded by `.gitignore`. None of it is authored here and none of it can be fixed here. The test skipped only `.git` and `.pytest_cache` by name, so anything else hidden at the root swept in. It now skips every dot-directory component, which is exact for this repository: all 38 of its own markdown files sit outside one.
+
+Found while running P9's gate, unrelated to P9's change. Left in this phase rather than given its own, because a convention test that fails on foreign text is not a finding a later phase would inherit in a usable state.
+
 ## Risks
 
 | Risk | Detail |
 |---|---|
-| Installed skills are stale | Closed by P8 on this machine, all four host directories. It stays live everywhere else, and it returns here the moment the repository changes again: an install is a snapshot, so this repository and any machine drift apart from the next edit onward. |
+| Installed skills are stale | Reopened by P9, exactly as this row predicted. P8 closed it on this machine; P9 then changed the repository, so all four host directories now hold 15 skills with 10 contract copies against the repository's 11, and their `onboard` carries no copy and no read gate. The drift is one phase wide and known, not discovered later, which is the only difference an install snapshot allows. |
 | Direct delete cannot reach installed machines | Accepted under D8, and made concrete by P8's manual deletion of eight obsolete folders in each of four directories. |
-| Uncommitted work is the only copy | Closed. The work is committed at `c6eb29a` on `main`, and P8's post-install diff confirms every installed skill folder matches it, so the four machine copies now have a source. |
+| Uncommitted work is the only copy | Reopened for P9 alone. P1 through P8 are committed at `c6eb29a` on `main`; P9's changes sit in the working tree, uncommitted at the user's request. |
 | The separate description batch closed empty | D9 split description sharpening into its own batch, for pairs sharing triggers while producing different outcomes. Its last candidate pair was `sync-codebase` against `audit-drift`, and D12 established the two are not on one axis. P7 gave each side a pointer to the other side of the work instead of rewriting either description to compete. No batch remains. |
 
 ## Next action
 
-None. The pack is closed.
+Reinstall the family on this machine, or accept the drift knowingly. All four host directories hold P8's snapshot: 15 skills, 10 contract copies, and an `onboard` with neither the copy nor the read gate. Nothing on this machine is broken by that, because the criterion change only adds a capability, but a later `onboard` run here will behave as it did before P9 and will report the absent copy the same way. P9 was not reinstalled because installing is a machine action taken deliberately, not a side effect of a repository edit.
 
-All eight phases are complete, committed at `c6eb29a` on `main`. 15 skills, 10 packaged contract copies, 21 tests passing, and the four installed host copies verified identical to the repository.
+All nine phases are complete. P1 through P8 are committed at `c6eb29a` on `main`; P9 is uncommitted at the user's request. 15 skills, 11 packaged contract copies, 22 tests passing.
 
-No open questions remain. All four were closed by decision, each with its rejected alternatives recorded:
+One open question is live, Q5 in `skill-consolidation.hallucination.md`: no skill owns relocating content that is true but sits in the wrong document. P9 surfaced it and deliberately did not answer it. `onboard` now reports such a finding and is instructed not to name a repair owner for it.
+
+The four original questions were all closed by decision, each with its rejected alternatives recorded:
 
 | Question | Closed by | Outcome |
 |---|---|---|
