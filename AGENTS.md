@@ -9,18 +9,25 @@ This repo is the source of the `baselinedocs` skill family. Everything here is a
 | Path | Ships | Read by |
 |---|---|---|
 | `<skill>/SKILL.md`, `<skill>/agents/openai.yaml`, `<skill>/references/*` | yes | the running agent |
-| `AGENTS.md`, `DESIGN.md`, `README.md`, `HOOKS.md`, `contract/`, `hooks/`, `tests/` | no | whoever works in this repo |
+| `AGENTS.md`, `README.md`, `HOOKS.md`, `contract/`, `hooks/`, `tests/`, `docs/baseline/` | no | whoever works in this repo |
 
 Consequences:
 
 - **A skill may rely on anything inside its own folder.** That is what `<skill>/references/` is for, and it ships. Every skill shipping `references/pack-contract.md` reads its own copy on every run and must keep doing so. The boundary is the folder, not the act of reading a file.
 - **Name a sibling skill for routing.** "`baselinedocs-maintain-split` creates one" tells the reader where to go next and holds whether or not that skill is installed. The `Non-Goals` sections across the family are built on this.
 - **Never make a sibling's content a prerequisite.** Not "read `baselinedocs-init`", not a path through `../`, not a sibling's `references/`. Naming a skill is routing; requiring its content is a dependency that resolves to nothing when the skill is installed alone. That is the historical bug here: `baselinedocs-adopt` shipped with "Read `baselinedocs-init` when creating a new pack", and the folder it named was usually absent. Note that the broken line contained no path at all, so "avoid paths" is not the test - "does this run need another folder present" is.
-- Do not justify cutting something from a `SKILL.md` on the grounds that it is written down in `DESIGN.md`. No installed agent can open that file.
+- Do not justify cutting something from a `SKILL.md` on the grounds that it is written down in `docs/baseline/`. No installed agent can open a doc pack.
 
 ## Where reasoning goes
 
-`DESIGN.md` is the decision log: the full argument, the alternatives that were rejected, and why. Record decisions there, including what breaks if one is ignored.
+`docs/baseline/` is the decision log: the full argument, the alternatives that were rejected, and why. Record decisions there, including what breaks if one is ignored. Two packs, routed by `docs/baseline/baselinedocs.index.md`:
+
+| Pack | Owns |
+|---|---|
+| `docs/baseline/family-design/` | the design of the family as a whole: trigger architecture, pack schema, checkpoint model and hooks, rule placement, workflow sequence, the onboard scope gate, evidence retention, `useguide`, execution policy, multi-pack routing |
+| `docs/baseline/skill-consolidation/` | which skills were merged, deleted, or renamed, and the criterion that decided each |
+
+Identifiers carry their pack prefix, `FD-` or `SC-`, so a reference is unambiguous wherever it is read. `family-design.hallucination.md` FD-D30 records why.
 
 A `SKILL.md` is an instruction executed fresh on every run, not a decision log. It carries a WHY clause only where the agent has a plausible reason to break the rule and would otherwise talk itself out of it.
 
@@ -55,7 +62,7 @@ It is a second asset rather than a section of the contract on purpose. The contr
 
 - ASCII hyphen only. No en dash, no em dash. Enforced by `test_no_typographic_dashes` across every `*.md` in the repo.
 - State the pack-writing skill count in one sentence only, the one under `The pack contract`. Everywhere else say "every pack-writing skill". `test_references.py` pins that sentence against `WRITER_SKILLS` and fails on a second one, because a count repeated in prose goes stale the next time a skill is added or removed. It is pinned to `WRITER_SKILLS` rather than `CONTRACT_SKILLS` because a full reader ships the contract too, so the two counts differ and the prose is about writing.
-- Before merging or deleting a skill, read `Skill Consolidation` in `DESIGN.md`. The merge test is two conditions, not one, and two plausible-looking alternatives are recorded there as rejected so they are not proposed again.
+- Before merging or deleting a skill, read `docs/baseline/skill-consolidation/skill-consolidation.hallucination.md` SC-D1. The merge test is two conditions, not one, and two plausible-looking alternatives are recorded there as rejected so they are not proposed again.
 - Skill folder shape: `SKILL.md`, `agents/openai.yaml`, and `references/` only when needed.
 - User entrypoints set `allow_implicit_invocation: false`. Lifecycle skills keep it enabled and prefix their display name with `Baseline Docs Internal:`.
 - That policy field is Codex-only. On other hosts the `description` frontmatter is the real selection surface, so it must carry the vocabulary a user would actually type.

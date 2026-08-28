@@ -76,9 +76,30 @@ Left alone it costs twice. A reader cannot tell which questions are live, which 
 
 Omit a conditional document when it would contain only `not applicable` filler. Preserve an existing conditional document until its useful content is migrated or pruning is explicitly safe.
 
+`useguide` means a consumer contract. Valid forms: API request and response behavior; method or library usage; a migration or conversion procedure; an operator workflow; black-box behavior another team needs. If no consumer exists, omit the file.
+
+A procedure that applies across tasks is not a consumer contract, whoever consumes it. It belongs in the wiki, at `docs/wiki/<topic>.md`, because a pack holds task-specific state while a wiki article holds task-independent instruction that can be injected into later work. `baselinedocs-extract-wiki` performs that move.
+
 ## Evidence density
 
-Record final evidence and material unresolved failures. Do not retain every failed fixture run, retry, or intermediate command.
+Keep:
+
+- the final passing or failing result supporting current status
+- unresolved failures
+- failures that explain a changed design
+- reproduction details for an active defect
+- a lesson entry
+
+Discard from an active document:
+
+- routine failed fixture iterations
+- repeated commands with the same meaning
+- transient syntax or setup mistakes already resolved
+- chat chronology that does not affect current truth
+
+A resolved mistake is not the same as a routine failed attempt. The discard list targets attempts carrying no reusable insight, not a documented misjudgment that would otherwise be repeated.
+
+External raw logs may still be linked when auditability requires them. Link them rather than pasting them into the document.
 
 A lesson entry - a mistake with why it looked reasonable, what disproved it, and the fix applied - is not a retry or an intermediate command. Keep it in full even after the mistake is resolved, both when writing it and when compacting the document later. Trimming it to its final state, or dropping it because it is fixed, discards the reason it exists, which is what prevents the same mistake recurring.
 

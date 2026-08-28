@@ -45,13 +45,13 @@ The criterion is a full read of the pack, not the act of writing: the 10 writers
 
 Each of the 11 carries one gate sentence sending the agent to read the contract, in one of two pinned wordings: the writers trigger before creating or editing a pack file, `onboard` before reporting the pack state. `test_read_only_skills_are_not_gated_on_writing` asserts `onboard` does not carry the write wording, whose precondition it can never meet. That gate cannot live in the contract, because an agent that skipped the file never reaches the sentence telling it not to skip the file.
 
-Editing the canonical file means re-copying it to all of them. P2 added a section, P4 rewrote a sentence, and P5 removed an enum value, so any copy predating this pack is stale on three counts.
+Editing the canonical file means re-copying it to all of them. SC-P2 added a section, SC-P4 rewrote a sentence, and SC-P5 removed an enum value, so any copy predating this pack is stale on three counts.
 
 ## Report style fanout
 
 `contract/report-style.md` governs what the agent says to the user, and nothing about what goes inside a document. 14 skills ship a byte-identical copy at `<skill>/references/report-style.md`, every one except `setup-hooks`, which merges host configuration and names no pack element.
 
-Its audience is deliberately wider than the contract's, and the two sets are not nested the same way: `brief`, `audit-claims`, and `audit-drift` carry report style without carrying the contract, because each produces a user-facing report that cites identifiers while none of them writes a pack or reads one in full. D17 records why merging the two files would force the wrong audience on one of them.
+Its audience is deliberately wider than the contract's, and the two sets are not nested the same way: `brief`, `audit-claims`, and `audit-drift` carry report style without carrying the contract, because each produces a user-facing report that cites identifiers while none of them writes a pack or reads one in full. SC-D17 records why merging the two files would force the wrong audience on one of them.
 
 Each of the 14 carries a gate sentence triggering before it reports, pinned by `test_every_reporter_gates_on_report_style`, and the copies are pinned by `test_packaged_report_style_matches_canonical_and_reaches_every_reporter`, which also asserts the audience set rather than only comparing whatever copies happen to exist.
 
@@ -59,7 +59,7 @@ Each of the 14 carries a gate sentence triggering before it reports, pinned by `
 
 ## The sync and audit skills
 
-Two groups on two different axes, not one detect/repair axis across comparison scopes. The earlier comparison-scope matrix is recorded as disproven in D12; what follows is the shape the bodies actually have.
+Two groups on two different axes, not one detect/repair axis across comparison scopes. The earlier comparison-scope matrix is recorded as disproven in SC-D12; what follows is the shape the bodies actually have.
 
 Report-only, separated by unit of analysis:
 
@@ -80,11 +80,11 @@ Three of the five consult code and decisions both, which is why a comparison-sco
 
 Detect for a pack against itself has no dedicated skill because `onboard` and `brief` both report contradictions and route to `sync-reconcile`. Repair for a claim against evidence has none because the contract's disproven-claim rule already names its three owners.
 
-P9 added a third finding type, and D20 gave it owners without adding a skill. `onboard` reports content sitting where the role lists do not put it, and the contract's misfiled-content rule names who moves it: `sync-decisions` when a decision settled what it was filed under, `sync-reconcile` when the misplacement already produced a contradiction, `save` when the current thread established where it belongs. The pattern follows the disproven-claims rule, which also names owners rather than occupying a matrix cell with a new skill.
+SC-P9 added a third finding type, and SC-D20 gave it owners without adding a skill. `onboard` reports content sitting where the role lists do not put it, and the contract's misfiled-content rule names who moves it: `sync-decisions` when a decision settled what it was filed under, `sync-reconcile` when the misplacement already produced a contradiction, `save` when the current thread established where it belongs. The pattern follows the disproven-claims rule, which also names owners rather than occupying a matrix cell with a new skill.
 
 ## Pointer graph
 
-Which skills are named inside another skill's shipped text. Recorded as topology only. Per D1 this is not evidence about whether a skill is needed; a skill nothing points at may be missing a pointer, and its description can still be uncontested.
+Which skills are named inside another skill's shipped text. Recorded as topology only. Per SC-D1 this is not evidence about whether a skill is needed; a skill nothing points at may be missing a pointer, and its description can still be uncontested.
 
 | Skill | Named by |
 |---|---|
@@ -100,11 +100,11 @@ Which skills are named inside another skill's shipped text. Recorded as topology
 | `maintain-split` | `onboard` |
 | `init`, `run`, `setup-hooks`, `maintain-compact`, `extract-wiki` | nothing |
 
-`sync-codebase` and `sync-decisions` moved out of the last row in P7. Both were named by nothing, which under D1 is a signal that a pointer is missing rather than that a skill is unnecessary, and P7 acted on it that way: `audit-drift` now names all three repair skills when it recommends follow-up actions, and the write trio names whichever sibling owns the case it refuses.
+`sync-codebase` and `sync-decisions` moved out of the last row in SC-P7. Both were named by nothing, which under SC-D1 is a signal that a pointer is missing rather than that a skill is unnecessary, and SC-P7 acted on it that way: `audit-drift` now names all three repair skills when it recommends follow-up actions, and the write trio names whichever sibling owns the case it refuses.
 
 At `cded242` the deleted `sync-decision` appeared here too, named only by `sync-decisions` in a mutual `Non-Goals` reference between the pair being merged.
 
-The audit pair now carries a mutual reference of its own, added by P3, and it does not mean the same thing. `sync-decision` and `sync-decisions` pointed at each other because neither description could settle which one applied; the pointers were a symptom of an undecidable pair. `audit-drift` and `audit-claims` point at each other to state the boundary in the surface that selects them, so the pointers are what makes the pair decidable. Same shape, opposite meaning: read a mutual disclaimer as a merge signal only when neither description states what separates the two.
+The audit pair now carries a mutual reference of its own, added by SC-P3, and it does not mean the same thing. `sync-decision` and `sync-decisions` pointed at each other because neither description could settle which one applied; the pointers were a symptom of an undecidable pair. `audit-drift` and `audit-claims` point at each other to state the boundary in the surface that selects them, so the pointers are what makes the pair decidable. Same shape, opposite meaning: read a mutual disclaimer as a merge signal only when neither description states what separates the two.
 
 `README.md` names `maintain-compact` in its trap table, but the README does not ship, so that reference does not exist at runtime.
 
@@ -114,9 +114,9 @@ The audit pair now carries a mutual reference of its own, added by P3, and it do
 |---|---|---|
 | `code_ref` | every pack-writing skill | `audit-drift`, `onboard` |
 
-`status: archived` was the second row here, written by `maintain-archive` only and read by `onboard` only, as a default scope exclusion. That single-producer, single-consumer shape is what D6 turned on and what D11 removed: P5 deleted the producer, the consumer, and the value together, so no orphaned half remains for a later contributor to complete.
+`status: archived` was the second row here, written by `maintain-archive` only and read by `onboard` only, as a default scope exclusion. That single-producer, single-consumer shape is what SC-D6 turned on and what SC-D11 removed: SC-P5 deleted the producer, the consumer, and the value together, so no orphaned half remains for a later contributor to complete.
 
-`audit-claims` is absent from the `code_ref` row by rule, not by omission. P3 forbids it from ranking or filtering claims by provenance, because a current `code_ref` does not make a claim supported and a stale one does not make it false. That rule is what keeps the audit pair on separate axes rather than on the same axis at two zoom levels.
+`audit-claims` is absent from the `code_ref` row by rule, not by omission. SC-P3 forbids it from ranking or filtering claims by provenance, because a current `code_ref` does not make a claim supported and a stale one does not make it false. That rule is what keeps the audit pair on separate axes rather than on the same axis at two zoom levels.
 
 ## Test surface
 
