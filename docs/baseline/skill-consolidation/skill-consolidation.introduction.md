@@ -2,7 +2,7 @@
 baseline_schema: "2.0"
 pack: "skill-consolidation"
 document: "introduction"
-status: "complete"
+status: "active"
 updated: "2026-08-27"
 code_ref: "uncommitted"
 ---
@@ -24,11 +24,14 @@ Out of scope: the pack schema, which is unchanged apart from the one enum remova
 | skills on disk | 15: 7 entrypoints, 8 lifecycle. 18 at `cded242`, before P1 |
 | skills shipping `references/pack-contract.md` | 11, byte-identical, pinned by `tests/test_references.py`. The 10 writers plus `onboard`, which reads every document in full. 13 at `cded242`, 10 at `c6eb29a` |
 | criterion for shipping it | a full read of the pack, not the act of writing. D16 |
-| `contract/pack-contract.md` | 82 lines. 74 at `cded242`, before the P2 `Disproven claims` section |
-| installed copies, this machine | 15 skills per host directory in `.claude`, `.agents`, `.kilocode`, `.kiro`, holding P8's snapshot: 10 contract copies, and an `onboard` with neither the copy nor the read gate. `.codex/skills` holds none |
+| skills shipping `references/report-style.md` | 14, byte-identical. Every skill except `setup-hooks`, which names no pack element. D17 |
+| `contract/pack-contract.md` | 108 lines, 11 sections. 84 before the P12 entry-index and P13 misfiled-content sections, 74 at `cded242` before the P2 `Disproven claims` section |
+| entry kinds in `hallucination` | at least 3, and never enumerated: a closed decision with four required parts, a disproven-claim relocation with a different shape, and an open question. Q8 |
+| installed copies, this machine | 15 skills per host directory in `.claude`, `.agents`, `.kilocode`, `.kiro`, holding P8's snapshot: 10 contract copies at 82 lines, no `report-style.md` anywhere, and an `onboard` with neither the contract copy nor its read gate. `.codex/skills` holds none |
 | `AGENTS.md` claim about that count | corrected to 10 in four places by P5. It said 14 in all four at `cded242`, when the real figure was 13; P6 found only two of them |
 | `status: archived` | removed from the enum by P5. No producer, no consumer |
 | test command | `uvx pytest tests/ -q` |
+| `hallucination` entry index | required by the contract above 40 KB or 20 entries, whichever comes first. 22 rows here, and no skill consumes it yet. D19 |
 | existing baseline packs | none before this one |
 
 ## Target
@@ -43,8 +46,9 @@ Out of scope: the pack schema, which is unchanged apart from the one enum remova
 | merge criterion recorded | `DESIGN.md` carries a testable rule instead of a pointer heuristic |
 
 | contract shipped on a full read, not on writing | `onboard` can report content sitting in a document whose role does not cover it |
+| report style shipped to every reporting skill | an element identifier is glossed in conversation regardless of whose machine the skill runs on |
 
-End state: 15 skills, 11 packaged contract copies.
+End state: 15 skills, 11 packaged contract copies, 14 packaged report-style copies.
 
 ## Constraints
 

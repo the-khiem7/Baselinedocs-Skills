@@ -5,6 +5,8 @@ description: Check whether individual claims in a baseline pack are supported by
 
 # Baseline Docs Audit Claims
 
+Read `references/report-style.md` in full before reporting to the user, every time. It governs how a pack element is named in conversation; an identifier stated without its meaning is a question the user has to ask.
+
 ## Purpose
 
 Check whether baseline claims are actually supported.

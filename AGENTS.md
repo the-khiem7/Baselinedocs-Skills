@@ -45,6 +45,12 @@ A bare prohibition with an appealing counter-argument gets overridden mid-run. A
 
 `tests/test_references.py` pins the copies and fails on drift.
 
+## Report style
+
+`contract/report-style.md` governs what the agent says to the user, not what it writes into a pack. Every skill except `baselinedocs-setup-hooks` ships a byte-identical copy at `<skill>/references/report-style.md` and gates on reading it, because every one of them names pack elements in its output.
+
+It is a second asset rather than a section of the contract on purpose. The contract's audience is skills that write a pack or read one in full, and `baselinedocs-brief` is neither: it must not carry the role list, because a partial reader holding it would report conformance it never checked. It still cites element identifiers in every report it produces. Folding the two files would force the wrong audience on one of them, so they stay separate and are pinned separately.
+
 ## Conventions
 
 - ASCII hyphen only. No en dash, no em dash. Enforced by `test_no_typographic_dashes` across every `*.md` in the repo.

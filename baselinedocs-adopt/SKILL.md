@@ -19,6 +19,8 @@ Determine or confirm:
 
 Read `references/pack-contract.md` in full before creating or editing any pack file, every time. It is the only definition of which document owns which content; do not infer that from a filename, from an earlier session, or from memory.
 
+Read `references/report-style.md` in full before reporting to the user, every time. It governs how a pack element is named in conversation; an identifier stated without its meaning is a question the user has to ask.
+
 ## Workflow
 
 1. Inspect the complete source before editing. Record its scope, headings, decisions, requirements, workflows, assumptions, risks, open questions, and explicit exclusions.

@@ -2,14 +2,14 @@
 baseline_schema: "2.0"
 pack: "skill-consolidation"
 document: "roadmap"
-status: "complete"
+status: "active"
 updated: "2026-08-27"
 code_ref: "uncommitted"
 ---
 
 # Skill Consolidation Roadmap
 
-Verification gate for every phase: `uvx pytest tests/ -q` green. The repository has no `pyproject.toml`, so `uv run python -m pytest` does not work. Every checkpoint below met the gate: 20 passed and 23 subtests passed for P1 through P7, 21 passed and 23 subtests for P8 once the test it adds landed, and 22 passed and 35 subtests for P9.
+Verification gate for every phase: `uvx pytest tests/ -q` green. The repository has no `pyproject.toml`, so `uv run python -m pytest` does not work. Every checkpoint below met the gate: 20 passed and 23 subtests passed for P1 through P7, 21 passed and 23 subtests for P8 once the test it adds landed, 22 passed and 35 subtests for P9, and 24 passed and 63 subtests for P10 through P14.
 
 Reasoning for each phase lives in `skill-consolidation.hallucination.md` under the decision named in its Basis column. Do not restate it here.
 
@@ -26,6 +26,11 @@ Reasoning for each phase lives in `skill-consolidation.hallucination.md` under t
 | P7 | the sync and audit model corrected, and the routing pointers it exposed added | D12 | Q3 | complete |
 | P8 | installed skills replaced on this machine, and the stale-count class of defect given a test | D8 | P7 | complete |
 | P9 | the contract-shipping criterion changed to a full read, and `onboard` given the copy and a gate of its own | D16 | - | complete |
+| P10 | report style shipped to every reporting skill, hard-wrapping banned, Q6 and Q7 opened from measured packs | D17, D18 | - | complete |
+| P11 | entry index built on this pack as a Q7 trial | Q7 | P10 | complete |
+| P12 | the entry index required by the contract above a threshold | D19 | P11 | complete |
+| P13 | misfiled content given named owners in the contract, closing Q5 | D20 | P11 | complete |
+| P14 | contract heading repaired, and the thread's uncaptured reasoning written down | D21 | P13 | complete |
 
 ## P1: fold sync-decision into sync-decisions
 
@@ -358,6 +363,189 @@ The `Output` section's document names survived on purpose. They read as reportin
 
 Found while running P9's gate, unrelated to P9's change. Left in this phase rather than given its own, because a convention test that fails on foreign text is not a finding a later phase would inherit in a usable state.
 
+## P10: report style shipped, hard-wrapping banned, and two questions opened from measured packs
+
+Four items reported from real use of the family against unrelated packs. Two were decided and implemented here, D17 and D18; two were opened as questions rather than answered, Q6 and Q7, because both need a wider sample or a design not yet argued.
+
+Acceptance criteria:
+
+- every skill that names a pack element in its output ships `references/report-style.md` and gates on reading it
+- the contract forbids hard-wrapping a paragraph
+- both new fanouts fail a test when a copy drifts or a gate is missing
+- the identifier scheme is recorded as an open question, not guessed at
+
+### Checkpoint: complete
+
+| Item | Result |
+|---|---|
+| Verification gate | 24 passed, 63 subtests passed |
+| `report-style.md` copies | 14, `cmp` clean. Every skill except `setup-hooks`, which names no pack element |
+| Contract copies | 11, re-synced after the hard-wrap edit, `cmp` clean |
+| Negative check, copy drift | appending a line to `brief`'s copy failed `test_packaged_report_style_matches_canonical_and_reaches_every_reporter`, then restored |
+| Negative check, missing gate | deleting the gate line from `brief` failed `test_every_reporter_gates_on_report_style`, then restored |
+| Packs surveyed | 2 repositories, 16 documents, 12,932 lines. Read for structure and size only; nothing written to either |
+
+Changes:
+
+| File | Change |
+|---|---|
+| `contract/report-style.md` | new, 4 rules. Governs conversation only, and says so in its first line to keep the boundary with the contract explicit |
+| `<skill>/references/report-style.md` | 14 copies, byte-identical |
+| 14 `SKILL.md` files | one gate sentence each, placed above the first section, or directly under the contract gate where one exists |
+| `contract/pack-contract.md` | hard-wrap prohibition added to the writing rules. 82 lines to 84 |
+| `<skill>/references/pack-contract.md` | all 11 copies re-synced |
+| `tests/test_references.py` | two tests for the report-style fanout, one on byte-identity and audience, one on the gate |
+| `AGENTS.md` | new `Report style` section stating the audience rule and why the asset is separate |
+| `DESIGN.md` | two `Decision Summary` rows, and two new sections, `Report Style As A Shipped Asset` and `Hard-Wrapped Paragraphs` |
+
+`setup-hooks` is the one exemption. It merges host configuration and never names a pack element, so a report-style copy there would be an asset nothing in the skill can act on.
+
+### Finding: the survey disproved its own hypothesis
+
+The survey was run to test a cheap explanation for oversized journals, that a large fraction was content the contract already forbids and that enforcement alone would shrink them. It is not there: across the two large journals, zero changelog-style revision notes, zero retry or attempt logs, zero `UPDATE:` or `EDIT:` markers, zero superseded markers. The bulk is journal content the contract requires be kept.
+
+Recorded because the hypothesis was mine and it was wrong, and because its failure is what makes Q7 a structural question rather than an enforcement one. The measurements and the structural root cause both live in Q7; they are not restated here.
+
+## P11: build the entry index on this pack as a Q7 trial
+
+Approved as a trial only. The index goes into this pack's `hallucination` and nowhere else: the contract does not require one, no other pack gets one, and `onboard`'s reading rules are unchanged, so nothing yet consumes it. The point was to produce real numbers for a question that could not be settled on argument.
+
+Acceptance criteria:
+
+- one row per entry, stating what the entry is about and never its reasoning
+- the table declares itself a trial under Q7, so a later reader does not mistake it for a contract requirement
+- the before-and-after token cost of a scoped read is measured, not estimated
+
+### Checkpoint: complete
+
+| Item | Result |
+|---|---|
+| Verification gate | 24 passed, 63 subtests passed |
+| Rows | 21: D1 through D18, Q5 through Q7 |
+| File cost, index alone | 317 lines and 41.8 KB to 347 lines and 44.3 KB. Plus 623 tokens. The document passed 370 lines once the trial write-up in Q7 landed, and a figure measured inside the document it measures cannot stay exact |
+| Scoped read, table and open questions only | about 3,322 tokens, 28 percent of a full read, measured after the write-up landed |
+| Scoped read, plus the four entries a contract-fanout task needs | about 5,842 tokens, 50 percent of a full read |
+| Contract | unchanged. No new fanout, no new test |
+
+Changes:
+
+| File | Change |
+|---|---|
+| `skill-consolidation.hallucination.md` | `Entry index` section added above D1, with the rule that a row carries subject only and the note that it is a Q7 trial |
+| `skill-consolidation.hallucination.md`, Q7 | trial result, the closed-to-open ratio measured across three journals, and the sequencing consequence it exposed |
+
+The measurements and the reasoning both live in Q7. Not restated here.
+
+### Finding: what decides the payoff is placement, not size
+
+The trial's useful output was not the saving on this pack. It was that the saving depends on the ratio of closed decisions to open questions, because only a closed entry can be deferred to a row, and that ratio varies from 86 percent closed to 46 percent closed across three real journals. The pack that most needs the mechanism benefits least, and its ratio is bad because settled material sits under its open-questions heading. That is Q5 presenting as Q7, and it changes the order the two should be answered in. Recorded in Q7 with the numbers.
+
+## P12: the entry index enters the contract
+
+The trial in P11 produced numbers, and the numbers carried the decision. D19 records the argument, the threshold's calibration, and the three rejected alternatives, one of which was this phase's own recommendation.
+
+Acceptance criteria:
+
+- the contract requires an index above a stated threshold and omits it below
+- the threshold cites what it was calibrated against, so it can be argued with rather than guessed at
+- the contract states that no test verifies a row against its entry, rather than leaving that unsaid
+- this pack's index stops describing itself as a trial
+
+### Checkpoint: complete
+
+| Item | Result |
+|---|---|
+| Verification gate | 24 passed, 63 subtests passed |
+| `contract/pack-contract.md` | 84 lines to 98 |
+| Contract copies | 11, re-synced, `cmp` clean |
+| Index rows here | 22, after D19 got its own row |
+| New tests | none. The one thing worth pinning cannot be pinned, and the structural half was declined |
+
+Changes:
+
+| File | Change |
+|---|---|
+| `contract/pack-contract.md` | new `Entry index` section after the closed-decision rule: threshold, four required columns, the subject-only rule for a row, the unverifiability statement, and the heading-delimited precondition |
+| `<skill>/references/pack-contract.md` | all 11 copies re-synced |
+| `skill-consolidation.hallucination.md` | index header now cites the contract instead of calling itself a trial; D19 added; Q7 narrowed to what `onboard` does with the index |
+| `DESIGN.md` | `Decision Summary` row and a new `Entry Index` section |
+
+The threshold is 40 KB or more than 20 entries, whichever comes first, and both numbers are stated because they measure different costs. Bytes measure what a read costs. Entry count measures what the index costs to maintain, which is the cost that does not scale down.
+
+### Finding: the phase went against its own recommendation, on the record
+
+This phase recommended accepting the unverifiable row while still pinning the structural half, since tests for a missing row, a row pointing at no entry, and a row longer than one line are cheap. The user chose discipline alone. Implemented as decided and recorded in D19 as a rejected alternative rather than as a disagreement, because the tests stay cheap to add later and because what they would not have caught is the only thing that matters here: whether a row's text is still true.
+
+## P13: misfiled content gets owners, closing Q5
+
+Q5 had been left open through P9 and P10 on the grounds that answering it needed either a widened skill trigger or a fourth owner clause in the contract, and that neither was in scope. P11's measurement overtook that: the repair returns more on a live pack than the mechanism P12 shipped. D20 carries the argument.
+
+Acceptance criteria:
+
+- the contract names an owner for content that is accurate but misfiled, without adding a skill
+- `onboard` stops reporting that the finding has no owner
+- the sub-question the rule does not settle is stated as still unsettled rather than quietly covered
+
+### Checkpoint: complete
+
+| Item | Result |
+|---|---|
+| Verification gate | 24 passed, 63 subtests passed |
+| `contract/pack-contract.md` | 98 lines to 106 |
+| Contract copies | 11, re-synced, `cmp` clean |
+| Skills added or widened | none. Three existing triggers absorbed the case |
+| Q5 | closed by D20. Its analysis moved into D20 rather than being deleted with its heading |
+
+Changes:
+
+| File | Change |
+|---|---|
+| `contract/pack-contract.md` | new `Misfiled content` section after `Disproven claims`: owners, verbatim relocation, the inside-one-document form, and what it costs left alone |
+| `<skill>/references/pack-contract.md` | all 11 copies re-synced |
+| `baselinedocs-onboard/SKILL.md` | step 10 now names the owner the contract gives, and covers settled material under an unsettled heading. It previously said the finding had no owner and warned against inventing one, which D20 made false |
+| `skill-consolidation.hallucination.md` | D20 added, Q5's section removed with its content carried into D20, three index rows repointed from Q5 to D20 |
+| `skill-consolidation.sourcecode.md` | the third finding type now shows its owners |
+| `DESIGN.md` | `Decision Summary` row and a new `Misfiled Content` section |
+
+### Finding: closing Q5 invalidated a sentence P9 had deliberately written
+
+`onboard` step 10 carried a warning that a placement finding has no repair owner and that inventing one is how a reader starts moving content no skill was told to move. That was correct when P9 wrote it and false the moment D20 landed. It was found by grepping for the phrase rather than by remembering it, which is the only method that works: a rule written into a shipped skill to describe a gap becomes wrong when the gap closes, and nothing in the pack points from the closing decision back to the skill file that described the gap.
+
+## P14: repair the contract heading, capture what the thread held
+
+A `save` pass. Its first act was the mandatory full read of the contract, which found a structural defect P13 had introduced and shipped to all 11 copies. The rest of the phase captured reasoning that existed only in conversation.
+
+### Checkpoint: complete
+
+| Item | Result |
+|---|---|
+| Verification gate | 24 passed, 63 subtests passed |
+| `## Conditional documents` | restored. It had been destroyed by P13's insertion, leaving `sourcecode` and `useguide` defined under `## Misfiled content` |
+| Structure verified | each of the five role bullets listed with the heading above it, rather than checked by eye. All five sit under the correct heading |
+| Contract copies | 11, re-synced, `cmp` clean |
+| Index rows against entry headings | 24 rows, 24 headings, matched by count |
+| Contract size | 106 lines to 108 |
+
+Changes:
+
+| File | Change |
+|---|---|
+| `contract/pack-contract.md` | `## Conditional documents` heading restored |
+| `<skill>/references/pack-contract.md` | all 11 copies re-synced |
+| `skill-consolidation.hallucination.md` | D21 records the heading defect as a lesson entry; Q8 opened for the within-entry label standard; Q6 expanded with the full proposed scheme, its seven rules, and its four rejected alternatives |
+
+Nothing else was written. The four decisions the thread reached the edge of are recorded as open, not as decided, because the user has not answered them.
+
+### Finding: every available signal said the broken contract was fine
+
+The defect passed `cmp` across all 11 copies, which was accurate, and passed the suite at 24 tests. Both checks measure whether the copies agree with canonical. Neither can see a defect introduced into what they agree about, and the more copies there are the more reassuring a green result looks. D21 states the class rather than the incident: a byte-identity test protects a fanout, not a source.
+
+It was found by reading the file top to bottom because the gate requires it, not by reading the diff. The diff showed a section correctly added; only the whole file showed a heading gone.
+
+### Finding: one of this phase's own earlier claims was wrong
+
+An earlier count in this thread reported D8, D9, and D15 as closed decisions missing required labels. Reading all three showed D15 is not a closed decision at all but a disproven-claim relocation, so the four-part rule does not apply to it and the count had used the wrong standard. D8 carries the consequence under a different label name. D9 is the only clear case. Corrected in Q8, where it changed the shape of the question: a label standard has to enumerate entry kinds before it can be enforced, and it therefore costs more than it first appeared to.
+
 ## Risks
 
 | Risk | Detail |
@@ -369,11 +557,28 @@ Found while running P9's gate, unrelated to P9's change. Left in this phase rath
 
 ## Next action
 
-Reinstall the family on this machine, or accept the drift knowingly. All four host directories hold P8's snapshot: 15 skills, 10 contract copies, and an `onboard` with neither the copy nor the read gate. Nothing on this machine is broken by that, because the criterion change only adds a capability, but a later `onboard` run here will behave as it did before P9 and will report the absent copy the same way. P9 was not reinstalled because installing is a machine action taken deliberately, not a side effect of a repository edit.
+Four decisions are waiting on the user, and nothing else in this pack can proceed past them. They are stated here because a question the user has not answered is not a next action the pack can take on its own.
 
-All nine phases are complete. P1 through P8 are committed at `c6eb29a` on `main`; P9 is uncommitted at the user's request. 15 skills, 11 packaged contract copies, 22 tests passing.
+| Waiting on | Question | Recommendation on record |
+|---|---|---|
+| Q8 | fix the exact text of the required labels per entry kind in the contract, and test it | yes. It is the first structural rule in `hallucination` a machine could check, and it answers the readability objection that raised Q8 |
+| Q8 | allow a compound reference such as `D19 / Rejected: mandatory in every pack` for citing a part of an entry | yes. A text reference fails loudly when the label changes; a renumbered identifier fails silently |
+| Q6 | adopt the identifier scheme now, or keep waiting for further pack samples | adopt now. D19 put an index into the contract whose first column is an identifier, and that column has no defined format until this is settled |
+| Q7 | which of the four options `onboard` takes for using the index | option four, entry-level scoping as the size gate's third outcome rather than the default read |
 
-One open question is live, Q5 in `skill-consolidation.hallucination.md`: no skill owns relocating content that is true but sits in the wrong document. P9 surfaced it and deliberately did not answer it. `onboard` now reports such a finding and is instructed not to name a repair owner for it.
+D9 also needs a decision that is not a design question: it is the one closed decision in this journal with no why, no consequence, and no rejected alternative. Filling those in means writing reasoning for a decision closed long ago, which the brownfield rule forbids reconstructing from inference, so the choice is repair it from the record or leave it non-conformant and say so. Q8 carries the detail.
+
+Reinstalling the family on this machine remains outstanding. Deferred 2026-08-27 at the user's request, so the drift below is accepted knowingly rather than pending discovery. All four host directories hold P8's snapshot: 15 skills, 10 contract copies, and an `onboard` with neither the copy nor the read gate. Nothing on this machine is broken by that, because the criterion change only adds a capability, but a later `onboard` run here will behave as it did before P9 and will report the absent copy the same way. P9 was not reinstalled because installing is a machine action taken deliberately, not a side effect of a repository edit.
+
+All fourteen phases are complete. P1 through P8 are committed at `c6eb29a` on `main`; P9 through P14 are uncommitted at the user's request. 15 skills, 11 packaged contract copies, 14 packaged report-style copies, 24 tests passing.
+
+Three open questions are live in `skill-consolidation.hallucination.md`. Q5 was closed by D20 in P13. None of the three is answered anywhere else, so a reader looking for a position on them will not find one outside its entry:
+
+| Question | Subject | Why it is open rather than decided |
+|---|---|---|
+| Q6 | what the element identifier scheme is, and whether the contract owns it | opened to wait for further pack samples. That reason has weakened: the index D19 requires has an identifier as its first column, and waiting leaves that column undefined |
+| Q7 | what `onboard` does with the index, now that D19 settled the index itself | changing what `onboard` reads touches its central promise. Four options are recorded in the entry and none is chosen, so the index currently serves a human reader and saves no tokens |
+| Q8 | the label standard inside an entry, and how many entry kinds `hallucination` holds | raised against Q6's proposal by the user. Answering it needs the entry kinds enumerated first, which is more work than the standard appeared to be |
 
 The four original questions were all closed by decision, each with its rejected alternatives recorded:
 

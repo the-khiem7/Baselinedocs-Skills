@@ -33,6 +33,20 @@ code_ref: "<commit|uncommitted|unknown>"
 
 A closed decision records four things: what was decided, why, what breaks if it is ignored, and which alternatives were rejected with their reasons. A decision recorded without its reasoning is one the next reader optimizes away, because nothing tells them what it was protecting. A rejected alternative that is not written down gets proposed again.
 
+## Entry index
+
+Conditional, like the documents below. Add an index at the top of `hallucination` once that document exceeds 40 KB or holds more than 20 entries, whichever comes first. Below that, omit it: the maintenance burden is per entry and does not scale down, while a reader can hold a short journal without help.
+
+The index is one table, one row per entry, four columns: the entry's identifier, what the entry is about, its status, and the identifiers of related entries. Status is required, not decorative, because it is the only place a reader learns an entry was later reversed without reading the entry that reversed it.
+
+A row states what an entry is about and nothing more. Never its reasoning, never the justification behind its outcome, never a summary that could be mistaken for the entry. A row that carries reasoning is a second copy of the entry, and the two drift.
+
+Nothing verifies a row against its entry. Every other duplicated file in this system is byte-identical and machine-compared; a row is a different text by design, so there is nothing to compare it to. This one is upheld by discipline: when an entry changes status or subject, its row changes in the same edit. A stale row asserting an entry is current when a later entry reversed it is worse than no index at all.
+
+An answer that turns on an entry whose full text was not read is unbacked. Say so and offer to read the entry. A row is a locator, not a source.
+
+The index presumes each entry is delimited by its own heading carrying its identifier. Where a journal is not yet structured that way, delimiting it is the first step of adding the index and is the author's work: no skill performs that restructuring, and bold text at the start of a line does not count, because it is not an anchor, not a table-of-contents row, and not a citable target.
+
 ## Reasoning ownership
 
 `roadmap` records the outcome: what happened, the final evidence, and the next action. `hallucination` records the why: a defect's cause, rejected alternatives, the reasoning behind a fix. When a roadmap entry needs to explain why something happened, link to the matching hallucination entry instead of restating its reasoning. Duplicating the same narrative in both documents means every later correction has to be made twice, and they drift when it isn't.
@@ -44,6 +58,16 @@ A claim that code or an explicit decision has disproven moves into `hallucinatio
 Owners: `sync-codebase` when code disproved it, `sync-decisions` when a decision closed it, `save` when the current thread established it.
 
 Deleting the claim loses the only record that the belief was ever held, and a later agent re-derives it from the same evidence that produced it the first time. `hallucination` is a journal, and a defeated approach kept beside what defeated it is what stops that approach being proposed again. Nothing in an active pack is removed on the grounds that it is no longer true. It is relocated.
+
+## Misfiled content
+
+Content that is accurate but sits where the role lists do not put it moves to the document or section that owns it. It moves verbatim: this is a relocation, not a rewrite, and shortening it on the way is a separate operation that needs its own justification.
+
+Owners: `sync-decisions` when a decision settled what the content was filed under, `sync-reconcile` when the misplacement has already produced a contradiction, `save` when the current thread established where it belongs. A skill that only reports names the owner and moves nothing.
+
+The commonest form is not across two documents but inside one: settled material accumulating under a heading that says it is unsettled. Measured in a real pack, an open-questions section held 88 entries while 7 questions were actually open, so more than nine tenths of that section was closed material filed as open. Nothing there is untrue, so no audit reports it and the disproven-claims rule above does not reach it.
+
+Left alone it costs twice. A reader cannot tell which questions are live, which is the one thing that section exists to answer. And every reader pays for it, because the section a reader must always take in full is exactly the section that filled up with material that could have been deferred.
 
 ## Conditional documents
 
@@ -61,6 +85,8 @@ A lesson entry - a mistake with why it looked reasonable, what disproved it, and
 Do not present a build, a formatter, a static check, or a documentation review as proof of live runtime, integration, or deployment behavior. Record what was observed running.
 
 Write terse. Use a table for options, comparisons, and status. Do not add changelog-style notes about what was just corrected, and do not create a side file to explain an edit; edit the target document only. A pack that accumulates edit commentary becomes the transcript this policy exists to prevent. Use the ASCII hyphen. Do not emit an en dash or an em dash.
+
+Never hard-wrap a paragraph. One paragraph is one line, however long, and the reader's editor wraps it. Inserting a newline at a column breaks the paragraph into fragments that read as a list of unrelated statements, and it roughly doubles the line count without adding a word, so every later reference to a line number is off and the document looks twice the size it is. Measured on a real pack: 92 percent of its prose lines fell in the 40-to-89-character band, which no natural paragraph produces.
 
 ## Boundary with code
 

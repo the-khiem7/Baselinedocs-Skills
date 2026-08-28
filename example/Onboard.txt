@@ -1,0 +1,121 @@
+Đã nạp xong. Báo cáo trạng thái pack, không ghi file nào.
+
+Trạng thái pack
+Pack là gì
+thingsboard-uat-provisioning (sub-pack của initiative thingsboard-provisioning), theo thingsboard-uat-provisioning.introduction.md:
+
+Scope: provision môi trường UAT khách hàng cho ThingsBoard trong AWS account riêng 954903081749 ("Atlantic UAT"), profile kai-atlantic-uat, region ap-southeast-1, dùng topology standalone monolith + external Kafka (MSK) (quyết định 2026-08-19, thay cho microservices).
+Target architecture: 1 ECS Fargate task thingsboard/tb-node:4.3.1.3 với TB_QUEUE_TYPE=kafka, MSK 2x kafka.t3.small, RDS PostgreSQL db.t4g.small single-AZ, CloudFront + WAF, internal ALB (HTTP), internet-facing NLB (MQTT 8883), NAT instance t4g.nano, Secrets Manager. Không ElastiCache, không transport container riêng.
+Domain: atlantic-iot-core.styluat.com (CloudFront) và atlantic-iot-core-mqtt.styluat.com (MQTT), đổi 2026-08-21 từ styl.solutions.
+Load spec: 8 device / 5 giây (GK Yeo, 2026-08-12), ~1.6 msg/sec, ~2 GB lưu giữ. Cost đã chấp nhận: ~$285/tháng. Deadline: Monday 2026-08-24 (Dustin), đã đạt.
+Ràng buộc thêm: MPA POC sẽ là tenant thứ hai trên cùng hạ tầng này (Vincent, 2026-08-19), sizing chưa biết.
+Trạng thái phase (theo roadmap)
+Phase	Trạng thái ghi trong pack
+Phase 1 - Planning and decisions	Complete (2026-08-18 -> 2026-08-19)
+Phase 2 - Terraform implementation	Complete (2026-08-19). 48 test pass (9 UAT + 39 POC)
+Phase 3 - Infrastructure provisioning (apply)	"Effectively complete" (2026-08-19 -> 2026-08-21), 16 step, target met
+Phase 4 - Application bootstrap and DNS	In progress. Bootstrap xong và verified (2026-08-21); admin hardening xong (2026-08-24); còn SMTP + DNS
+Phase 5 - Monitoring and alerting	Not started
+Đang bị chặn ở đâu: SMTP trong ThingsBoard UI bị chặn bởi SES sandbox của account 954903081749 (ProductionAccessEnabled: false, cap 200 mail/24h). Case AWS Support 178772020500871 đã mở 2026-08-26, AWS hỏi thêm chi tiết, reply đã draft nhưng pack không có xác nhận đã gửi. 4 DNS record SES thì đã landed và verified (domain + DKIM Success, 2026-08-26) nên DNS không còn là blocker.
+
+Next action ghi trong pack (nguyên văn)
+Từ roadmap.md, "Current status" (item còn mở):
+
+SMTP not yet configured in the ThingsBoard UI (requested 2026-08-24 by Dustin). DNS verification (item 2) is no longer the blocker, but a second blocker was found while preparing this step: the UAT account (954903081749) is still in the SES sandbox
+SSO integration with ThingsBoard - OPEN question, raised 2026-08-24 by Joseph in the same email thread. Not yet researched; see hallucination.md open questions.
+MX record for styluat.com - OPEN question, raised 2026-08-26 by Joseph after the SES submission ("a chưa thấy có MX record, em check và add thêm vô nhé"). Not yet clarified whether he means SES inbound receiving, a custom MAIL FROM domain, or an unrelated general-purpose MX for the domain
+Re-check the case status before assuming this is resolved.
+
+Phase 3, Next action step 16:
+
+Continue into any remaining Phase 4 work once the MQTT routing CNAME (Step 11 evidence) and the 4 SES DNS records (records 3-6 from Step 11's table) are submitted - everything else in this phase is done.
+Phase 4, Next action step 2:
+
+DNS records - GoDaddy CNAMEs for CloudFront, MQTT, ACM, SES. [...] the MQTT routing CNAME landed 2026-08-24 (Phase 3 Step 11); the 4 SES CNAMEs/TXT are the remaining DNS cutover.
+Phase 5, Next action:
+
+Next action: scope and implement monitoring/alerting (not yet detailed - add a breakdown here once scoped).
+
+Cross-pack checkpoint của index (nguyên văn, đề ngày 2026-08-19)
+Architecture decision made: UAT redirected from microservices to standalone+MSK. Microservices content moved to a new prod pack.
+POC remains unchanged and in daily use. 40 tests pass.
+UAT status, test counts, and next action live in thingsboard-uat-provisioning.introduction.md and thingsboard-uat-provisioning.roadmap.md - not restated here to avoid drift. Headline: Phase 3 in progress (bootstrap applied, plan pending).
+Prod is a dormant architecture/cost record - no account, no timeline.
+poc-provisioning.hallucination.md's "production within 6 weeks" question remains open.
+MPA POC will be a second tenant on the UAT environment (detail in the UAT pack's hallucination.md). Sizing questions pending from Calista via Joseph.
+Open question còn mở (từ hallucination.md)
+#	Câu hỏi	Nêu bởi / ngày	Ghi chú của pack
+1	styluat.com có cần MX record không, và để làm gì?	Joseph, 2026-08-26	Đã điều tra: SES outbound không cần MX. Chưa rõ Joseph muốn (a) SES inbound, (b) custom MAIL FROM, hay (c) MX chung. "Do not add an MX record until this is clarified"
+2	ThingsBoard có tích hợp được SSO công ty không?	Joseph, 2026-08-24	Chưa research. Cần xác nhận provider SSO + CE có SAML/OAuth2 hay chỉ PE. "Do not answer Joseph before both are confirmed"
+3	Telemetry đi tới backend HTX bằng cách nào (MQTT push / HTTP push / PCSS pull)?	2026-08-18, giao Truong	Ảnh hưởng ingress config, không ảnh hưởng container topology
+4	Quan hệ giữa UAT này và "production" cuối cùng là gì?	carried từ revision trước	Prod pack chưa có account/timeline
+5	MPA POC ảnh hưởng sizing thế nào?	2026-08-19	"Do not resize preemptively", chờ câu trả lời của Calista qua Joseph
+6	Calista là ai?	2026-08-19	Có vẻ là stakeholder MPA, chưa xác nhận
+7	POC state bucket: import hay để nguyên?	2026-08-19	Chỉ cần quyết nếu ưu tiên tính nhất quán giữa các env
+Thêm 2 item mở nằm trong closed decision, không nằm ở mục open questions:
+
+SES production access: "Not yet confirmed submitted to the AWS case as of this pack update" (case 178772020500871).
+Bounce/complaint handling thủ công: "revisit with aws_sesv2_configuration_set + an SNS event destination if this environment's user base grows materially".
+Unresolved reference (pack dựa vào thứ ngoài scope đã nạp)
+Mỗi mục dưới đây là chỗ tài liệu đã nạp trích dẫn một nguồn mà tôi chưa đọc. Câu trả lời nào của tôi chạm vào các mục này đều là không có căn cứ (unbacked).
+
+Vị trí	Trích dẫn	Cần nạp gì
+roadmap.md Phase 1 evidence 4	"see docs/cost/uat/ThingsboardUatBillPlan.md (external-safe) and docs/cost/uat/ThingsboardUatBillExplained.md (internal reasoning). Total: ~$285/month"	docs/cost/uat/
+roadmap.md item 3, hallucination.md SES entry	"the same 554 Access denied error the POC pack hit under the same condition (see docs/runbooks/ThingsboardAppBootstrap.md)"	ThingsboardAppBootstrap.md
+roadmap.md Phase 3 step 8/11	"The STYL DNS request form (docs/runbooks/DnsRequestForm.md) only accepts 3 Name/Value pairs per submission"	DnsRequestForm.md
+Index, dependency edges	"reuses shared Terraform modules from poc-provisioning at terraform/modules/{networking,credentials,data,compute,edge}"	pack poc-provisioning (đang loại khỏi scope)
+Index checkpoint	"poc-provisioning.hallucination.md's 'production within 6 weeks' question remains open"	poc-provisioning.hallucination.md
+introduction.md, hallucination.md	"The microservices topology remains documented as a future production scale-up path in the thingsboard-prod-provisioning pack"	pack thingsboard-prod-provisioning (đang loại khỏi scope)
+hallucination.md ACM entry	"Confirmed by reading solace-event-mesh-infrastructure's docs/baseline/uat-provisioning/{roadmap,hallucination}.md and its docs/domain/ directory directly"	repo ngoài C:\.repos\Work\solace-event-mesh-infrastructure
+Index, dependency edges	"docs/cost/ThingsboardProdBillPlan.md and docs/cost/ThingsboardProdBillExplained.md belong to the prod pack (microservices estimate, ~$389/month)"	docs/cost/prod/
+Tôi có thể nạp bất kỳ mục nào trong bảng trên nếu anh yêu cầu. Chưa nạp gì thêm.
+
+Ghi nhận quá trình đọc
+Routing view
+Sub-pack	Status ghi trong index	Chọn?
+poc-provisioning	"Active - Phases 0-5 implemented, Phase 6 (CI) outstanding"	Không
+thingsboard-uat-provisioning	"Active - Phase 3 in progress (plan ready, no blockers)"	Đã chọn
+thingsboard-prod-provisioning	"Draft - architecture/cost research preserved, no active work"	Không
+Bằng chứng chọn UAT: đây là sub-pack duy nhất mà index gán một phase đang chạy ("Phase 3 in progress"), và checkpoint của index nói thẳng "POC remains unchanged and in daily use" cùng "Prod is a dormant architecture/cost record - no account, no timeline". POC tuy gắn nhãn Active nhưng phần việc còn lại (Phase 6 CI) được ghi là "outstanding", không phải in progress.
+
+Load manifest
+Đường dẫn	status	updated	code_ref	Dòng đã đọc
+thingsboard-provisioning.index.md	active	2026-08-21	uncommitted	74 / 74
+thingsboard-uat-provisioning.introduction.md	active	2026-08-24	uncommitted	231 / 231
+thingsboard-uat-provisioning.roadmap.md	active	2026-08-26	uncommitted	566 / 566
+thingsboard-uat-provisioning.hallucination.md	active	2026-08-26	uncommitted	1110 / 1110
+Tổng: 1981 dòng, đọc đủ, không truncate. code_ref của cả 4 file là uncommitted - đây là provenance, không phải commit, nên không có gì để so với repo. HEAD hiện tại: c494498 (2026-08-26).
+
+Dependency edge (nguyên văn từ index)
+thingsboard-uat-provisioning reuse module Terraform dùng chung của poc-provisioning tại terraform/modules/{networking,credentials,data,compute,edge}.
+thingsboard-prod-provisioning (khi kích hoạt) có thể cần module mới/sửa nhiều cho ECS microservices, ElastiCache, ALB routing khác.
+File cost: ThingsboardProdBill*.md thuộc prod pack; cost của POC (CostEstimate.md, CostReportUat.html, UatCostEstimate.html) chỉ nói về POC account.
+Pack bị loại khỏi scope mà pack in-scope phụ thuộc vào: poc-provisioning (edge module reuse). Không đọc, theo default một domain pack.
+
+Mâu thuẫn phát hiện khi đọc (chỉ báo cáo, không sửa)
+Skill này không sở hữu việc sửa; baselinedocs-sync-reconcile mới sở hữu.
+
+Index vs pack, trạng thái phase. Index (updated 2026-08-21) ghi UAT "Phase 3 in progress (plan ready, no blockers)" và "bootstrap applied, plan pending"; roadmap.md (updated 2026-08-26) ghi Phase 3 "Effectively complete" và Phase 4 "In progress". Không coi index là nguồn đúng, cũng không ưu tiên bản updated mới hơn.
+RDS instance class. introduction.md "Target architecture" và "Key differences from POC" ghi db.t4g.small; roadmap.md Phase 3 Step 8 ghi đã downsize db.t4g.small -> db.t4g.micro và applied thành công 2026-08-21. roadmap.md Phase 5 risk và hallucination.md open question #5 vẫn nói "RDS db.t4g.small (2 GiB RAM)".
+Số test POC. Index: "40 tests pass". introduction.md + roadmap.md: "39 POC tests pass (48 total)".
+roadmap.md Phase 3 status vs evidence. Header phase ghi "All 16 next-action steps done except requesting the 4 remaining SES DNS records", nhưng "Current status" item 2 ghi 4 record đó đã RESOLVED 2026-08-26; đồng thời Step 11 "Submission 2 (records 3-6...) - NOT YET SUBMITTED" vẫn còn nguyên.
+roadmap.md Phase 3 risk đã lỗi thời. Risk ACM ghi "no ACM validation step exists in this pack's design any more" và khuyên "default to the import approach from the start", nhưng Step 10/13-15 đã revert về request+DNS-validate và cert import đã bị xóa khỏi ACM theo chỉ đạo của Joseph/Dong.
+roadmap.md Phase 4 "Current runtime state" đóng băng ở 2026-08-21. Vẫn ghi "MQTT device ingestion does not work yet" và "Remaining: flip ecs_service_mqtt_binding_enabled", trong khi Phase 3 Step 10 và "Current status" item 1 ghi flag đã revert và MQTT target group healthy (2026-08-24).
+hallucination.md, entry MSK authentication. Đoạn "Current state in Terraform" vẫn ghi TB_QUEUE_KAFKA_OTHER_PROPERTIES và "Not yet applied - this is Phase 3 work, still pending terraform plan/apply", trong khi entry "SASL/SCRAM implementation bug found and fixed" ghi cơ chế đó không thể hoạt động và đã thay bằng TB_QUEUE_KAFKA_CONFLUENT_*, applied và verified.
+hallucination.md, entry ACM đầu tiên. Tiêu đề ghi "DECIDED 2026-08-21, NOT YET IMPLEMENTED" nhưng thân entry ghi "Executed and verified 2026-08-21" rồi bị SUPERSEDED cùng ngày. Pack tự khai báo giữ lại có chủ ý, nhưng tiêu đề mâu thuẫn với thân.
+Thiếu, không đọc được, hoặc bị loại khỏi scope
+Bị loại theo scope đã chọn (một domain pack), chưa đọc:
+
+poc-provisioning/ - 4 file, 6751 dòng (hallucination 2796, roadmap 2985, introduction 633, sourcecode 337)
+thingsboard-prod-provisioning/ - 3 file, 210 dòng
+docs/runbooks/ - 6 file, trong đó DnsRequestForm.md, ThingsboardAppBootstrap.md, WorkRest.md được pack trích dẫn
+docs/cost/ - gồm uat/ (2 file pack trích dẫn trực tiếp), poc/, prod/, CostEstimateConvention.md
+docs/decisions/ (5 file), docs/architecture/Deployment.md, docs/diagrams/
+Record/ - 3 file .eml + 1 ảnh (nguồn email gốc: "PoC for Vital Sign Monitoring", "Using ThingSBoard as as the IOT telemetry mgmt", "{Production within 6 weeks} Re_ ..."). Đây là retained source material, mặc định ngoài scope.
+Toàn bộ terraform/ - onboard đọc pack, không đọc code
+Thiếu trong pack: thingsboard-uat-provisioning chỉ có 3 document (introduction, roadmap, hallucination). Không có sourcecode - trong khi poc-provisioning có poc-provisioning.sourcecode.md. Không có wiki article nào được link ra từ pack.
+
+Không đọc được: C:\Users\STYLVN\.claude\skills\baselinedocs-onboard\references\pack-contract.md không tồn tại (skill dir chỉ có SKILL.md và agents/openai.yaml), và không tìm thấy bản nào trong các skill baselinedocs-* khác. Không ảnh hưởng lần onboard này vì onboard không ghi file, nhưng sẽ chặn mọi lần ghi vào pack theo quy tắc trong CLAUDE.md.
+
+Dừng ở đây, không đề xuất và không bắt đầu việc gì.
+

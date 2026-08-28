@@ -9,6 +9,8 @@ Load a pack into working context and report the state it records. The deliverabl
 
 Read `references/pack-contract.md` in full before reporting the pack state, every time. It is the only definition of which document owns which content, and that is the standard content in the wrong document is reported against; do not infer it from a filename, from an earlier session, or from memory. Report a placement finding and repair nothing.
 
+Read `references/report-style.md` in full before reporting to the user, every time. It governs how a pack element is named in conversation; an identifier stated without its meaning is a question the user has to ask.
+
 ## Inputs
 
 Determine or confirm:
@@ -29,7 +31,7 @@ Determine or confirm:
 7. Record provenance per document: `status`, `updated`, `code_ref`. When `code_ref` names a commit, report whether the repository moved past it. `uncommitted` and `unknown` are provenance, not commits: report them as stated and compare nothing. A moved repository is the drift signal the contract describes, not a verdict to investigate here.
 8. Follow links out of the pack. Read a wiki article when it is in scope; otherwise list it unread.
 9. Collect unresolved references: every point where a loaded document leans on something outside the scope, quoted with its location. A decision cited without its content, a term used undefined, a link into another pack.
-10. Check placement against the contract: content sitting in a document whose role does not cover it, and a conditional document absent where its inclusion criterion is met. Report each with its location and repair nothing. Name `baselinedocs-sync-reconcile` only where the misplacement has also produced a contradiction. A placement finding on its own has no repair owner yet, and inventing one is how a reader starts moving content no skill was told to move.
+10. Check placement against the contract: content sitting in a document whose role does not cover it, settled material under a heading that says it is unsettled, and a conditional document or entry index absent where its inclusion criterion is met. Report each with its location, name the owner the contract's misfiled-content rule gives it, and move nothing yourself.
 11. Report the pack state first, then the manifest. The state is what a reader needs; the manifest is how they check the read happened.
 12. Stop. Do not propose, plan, or begin work unless asked.
 

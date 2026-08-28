@@ -5,6 +5,8 @@ description: Audit which baseline documents have fallen behind the code or behin
 
 # Baseline Docs Audit Drift
 
+Read `references/report-style.md` in full before reporting to the user, every time. It governs how a pack element is named in conversation; an identifier stated without its meaning is a question the user has to ask.
+
 ## Purpose
 
 Report where baseline truth drift exists.

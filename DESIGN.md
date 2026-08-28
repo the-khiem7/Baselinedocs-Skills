@@ -32,6 +32,10 @@ This version separates deliberate user workflow starts, one-time administration,
 | Renaming for directness | Applies to a new skill, not retroactively. `sync-reconcile` keeps its name because a pointer, not the name, is how it is reached |
 | A finished pack | No status value and no `onboard` filter. Routing already declines to load a sub-pack that is not in progress |
 | Who ships the contract | A full read of the pack, not the act of writing. The ten writers and `baselinedocs-onboard`; no partial reader |
+| Unreadable element codes | Ship `report-style.md` to every reporting skill, so a glossed identifier does not depend on one user's own instructions |
+| Hard-wrapped paragraphs | Ban them in the contract. One paragraph is one line; wrapping doubles the line count and buys nothing |
+| An oversized journal | A conditional entry index above 40 KB or 20 entries, with a required status column and no test behind the rows |
+| True content in the wrong place | Name owners in the contract, as the disproven-claim rule does. No new skill, no widened trigger |
 
 ## Trigger Architecture
 
@@ -118,6 +122,60 @@ The gate is worded per use. A writer reads before creating or editing a pack fil
 **What breaks if this is ignored.** An onboard run against a real pack reported the absent copy in a read-only skill as an unreadable file, and concluded that every future write into that pack was blocked. Both halves were wrong: ten skills carried the copy at the time, and no write routes through a read-only skill. The two repairs that reading invites are adding copies to skills that must not have one, which fails `test_references.py`, and concluding the contract is missing everywhere and skipping the gate. Recording the criterion is what makes an absent copy legible as a decision rather than as damage.
 
 The README now documents only the whole-family install, and that does not relax this boundary or permit collapsing the copies into one shared file. `npx skills add --skill <name>` still works and is merely no longer advertised, and a host's skills directory is a place users delete from as well as install into, so a skill can still end up alone next to nothing. The boundary is what a folder can be relied on to contain, not what one install command happened to fetch. Pointing a skill at a sibling's `references/` would work on the maintainer's machine and fail silently on a user's.
+
+## Report Style As A Shipped Asset
+
+A rule about how the agent talks cannot live only in a user's own instruction file. That file is per-user, so a rule placed there produces one user's experience and leaves every other user with whatever the model defaults to, which is the drift this repository exists to remove from the skill family. `contract/report-style.md` therefore ships to every skill that names a pack element in its output, which is all of them except `setup-hooks`.
+
+It stays a separate file from the contract because the two have different correct audiences. The contract goes to skills that write a pack or read one in full. `brief` is neither, and `Rule Placement` records why it must not hold the role list: a partial reader that owns the placement standard reports conformance it never checked. Yet `brief` produces a user-facing report on every run and cites identifiers in it. Merging the files would either hand `brief` the contract, reversing that decision, or leave the family's cheapest conversational skill outside the conversation rule. Two files, two audiences, two pinning tests.
+
+The rule the file carries is one line of substance: an identifier gets a gloss the first time a message names it. The reader of a terminal cannot recover a meaning the message never carried, so a bare code is not brevity, it is a deferred question. This was reported from real use, where a suggestion phrased as three bare codes could not be evaluated without scrolling back.
+
+**Rejected: state it in the user's global instructions only.** It works, for one user, on one machine. The point of a shipped skill is that its behavior does not depend on who installed it.
+
+**Rejected: add it as a section of `pack-contract.md`.** Cheaper by one file and one test, and wrong on audience, for the reason above.
+
+## Hard-Wrapped Paragraphs
+
+The contract now forbids inserting a newline inside a paragraph. One paragraph is one line however long; the reader's editor wraps it.
+
+Measured on a real pack before the rule existed: 2,396 of 2,610 prose lines fell in the 40-to-89-character band and only 20 lines exceeded 90 characters. No natural paragraph distributes that way, so the file had been wrapped at a column. Two packs written without wrapping put the majority of their prose lines above 200 characters, which is what unwrapped prose looks like.
+
+What wrapping costs: the paragraph reads as a list of unrelated statements, the line count roughly doubles so every line-number reference drifts and the document looks twice its real size, and a diff of a one-word change re-flows a whole block.
+
+What it does not cost is tokens, which track bytes rather than lines. That distinction is load-bearing, because a wrapped document looks like a size problem and is not one. Unwrapping the measured pack would cut its line count by roughly half and its token cost by almost nothing. Do not offer this rule as a remedy for a pack that is genuinely too large.
+
+## Entry Index
+
+A large `hallucination` is a real cost and the contract now answers it with an index at the top of the document, one row per entry, conditional on the document exceeding 40 KB or holding more than 20 entries.
+
+The arithmetic is favourable and was measured, not assumed. A row costs about 87 bytes; the average closed entry it defers is about 1,850 bytes, in two separate packs. That is roughly 21 to 1, so an index pays for itself once more than about five percent of entries can be deferred, which is every realistic read. On a 342 KB journal the projection is a saving near 35,000 tokens per load.
+
+It is conditional rather than mandatory for one reason that has nothing to do with tokens: the maintenance burden is per entry and does not scale down. A journal of six entries can be held whole by any reader and an index there is upkeep with no return. Mandating it everywhere would also have made three real packs non-conformant the day the rule landed, and the restructuring that would fix them is the author's work rather than any skill's: relocating misfiled content now has named owners, but delimiting an undelimited journal into entries is not a relocation, and the contract says outright that no skill performs it.
+
+Both threshold numbers are stated because they measure different costs. Bytes measure what a read costs. Entry count measures what the index costs to maintain. Neither alone is the trigger, and both are calibrated against measured points rather than derived: at 21 entries and 47 KB a scoped read came to 28 to 50 percent of a full read, while a 2.9 KB journal would carry an index larger than its saving.
+
+**The index is the first duplication here that no test can pin, and that was accepted deliberately.** Every other duplicated file in this repository is byte-identical and machine-compared, which is exactly why the fanout is safe. A row is a different text from its entry by design, so there is nothing to compare it against, and no test can establish that a row still describes what it points at. The rule therefore rests on discipline: when an entry changes subject or status, its row changes in the same edit. The specific worst case is a row asserting an entry is current after a later entry reversed it, which is the disproven-claim failure the contract's relocation rule exists to prevent, reappearing inside the index.
+
+**Rejected: mandatory in every pack.** Three measured journals, at 2,796, 2,008, and 1,110 lines, delimit entries with bold text or with nothing. For them the index is a restructuring, not an addition.
+
+**Rejected: pin the structural half while accepting the unverifiable text.** Tests for a missing row, a row pointing at no entry, and a row exceeding one line are cheap, and this was the recommendation. Not taken; the mechanism rests on discipline by decision. They remain cheap to add, and what they would not have caught is the only thing that matters, which is whether a row's text is still true.
+
+**Rejected: drop the status column.** The defensive option, since status is the column most likely to go stale and the only one that can assert something false. Kept because its value showed on the first build, where it made a reversed decision visible without reading the entry that reversed it, and because without it the table is a locator that no longer answers whether an entry still holds.
+
+## Misfiled Content
+
+Content that is accurate but sitting where the role lists do not put it now has named owners in the contract: `sync-decisions` when a decision settled what it was filed under, `sync-reconcile` when the misplacement has already produced a contradiction, `save` when the current thread established where it belongs. A reporting skill names the owner and moves nothing. The move is verbatim, because shortening on the way is a different operation with a different gate.
+
+No skill repaired this before, and the reason was structural rather than an oversight. `sync-reconcile` fires on a contradiction, and correctly-stated content in the wrong file is not one yet; it becomes one only once the correct owner also states the fact, which is the drift the contract's opening section warns about. The only available repair therefore arrived one step after the damage. `maintain-compact` shortens and never moves. The write skills add rather than reorganize. The read skills report.
+
+The commonest form is inside one document rather than across two: settled material accumulating under a heading that says it is unsettled. Measured in a real pack, an open-questions section held 88 entries while 7 questions were actually open. Nothing in it was untrue, so neither audit skill reports it: one asks whether a claim has evidence, the other whether a document trails the code, and misfiling fails neither test.
+
+It costs twice, and the second cost is invisible. A reader cannot tell which questions are live, which is the only thing that section exists to answer. And every reader pays tokens for it, because the section that must always be read in full is exactly the section that filled with material an index could have deferred. On the measured pack the difference was about 21,000 tokens per load, more than the entry index itself returns there.
+
+**Rejected: widen `sync-reconcile` to treat a heading disagreeing with its own content as a contradiction.** Coherent, and cheaper by one contract section. Rejected on blast radius: that skill's guarantee is that it touches only what conflicts, and a heading-versus-content trigger makes any section reorganizable under it.
+
+**Rejected: add a skill for it.** Refused on the grounds recorded under `Why the matrix is not completed`. Naming owners is the pattern the disproven-claims rule already set, it costs no folder, and this family had eight phases of trimming behind it.
 
 ## Workflow Sequence
 

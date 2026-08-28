@@ -21,6 +21,8 @@ Read `references/execution-contract.md` before execution.
 
 Read `references/pack-contract.md` in full before creating or editing any pack file, every time. It is the only definition of which document owns which content; do not infer that from a filename, from an earlier session, or from memory.
 
+Read `references/report-style.md` in full before reporting to the user, every time. It governs how a pack element is named in conversation; an identifier stated without its meaning is a question the user has to ask.
+
 ## Policy Selection Gate
 
 Before implementation, determine whether the user's current request clearly answers both execution questions, regardless of invocation style or whether internal policy names are used.

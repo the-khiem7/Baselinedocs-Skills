@@ -7,6 +7,8 @@ description: Report where work stands right now from an existing baseline pack, 
 
 Answer "where are we" from the pack without loading it. This is deliberately a partial read. Nothing is written.
 
+Read `references/report-style.md` in full before reporting to the user, every time. It governs how a pack element is named in conversation; an identifier stated without its meaning is a question the user has to ask.
+
 ## Inputs
 
 Determine or confirm:

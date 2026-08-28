@@ -5,6 +5,20 @@ from pathlib import Path
 
 ROOT = Path(__file__).parents[1]
 CANONICAL_CONTRACT = ROOT / "contract" / "pack-contract.md"
+CANONICAL_REPORT_STYLE = ROOT / "contract" / "report-style.md"
+
+# Report style ships to every skill that names a pack element in its output, which
+# is every skill except `setup-hooks`. It is a separate asset from the contract on
+# purpose: the contract's audience is skills that write or fully read a pack, and
+# `brief` is a conversational skill that must not carry the role list (see D16),
+# yet it cites element identifiers in every report it produces. Folding the two
+# would force the wrong audience on one of them.
+REPORT_STYLE_EXEMPT = {"baselinedocs-setup-hooks"}
+
+REPORT_GATE = (
+    "Read `references/report-style.md` in full before reporting to the user, "
+    "every time."
+)
 
 # Every skill that writes into a pack ships the contract, because skills install
 # one folder at a time and cannot reach a sibling skill's files. The copies are
@@ -73,6 +87,34 @@ class ContractCopyTests(unittest.TestCase):
                     GATES[name],
                     text,
                     f"{name} ships the contract but never requires reading it",
+                )
+
+    def test_packaged_report_style_matches_canonical_and_reaches_every_reporter(self):
+        canonical = CANONICAL_REPORT_STYLE.read_bytes()
+        expected = {
+            path.name for path in ROOT.glob("baselinedocs-*") if path.is_dir()
+        } - REPORT_STYLE_EXEMPT
+        packaged = sorted(ROOT.glob("baselinedocs-*/references/report-style.md"))
+        self.assertEqual({path.parents[1].name for path in packaged}, expected)
+        for path in packaged:
+            with self.subTest(copy=path.parents[1].name):
+                self.assertEqual(
+                    path.read_bytes(),
+                    canonical,
+                    f"{path.relative_to(ROOT)} drifted from contract/report-style.md",
+                )
+
+    def test_every_reporter_gates_on_report_style(self):
+        for name in sorted(
+            {path.name for path in ROOT.glob("baselinedocs-*") if path.is_dir()}
+            - REPORT_STYLE_EXEMPT
+        ):
+            with self.subTest(skill=name):
+                text = (ROOT / name / "SKILL.md").read_text(encoding="utf-8")
+                self.assertIn(
+                    REPORT_GATE,
+                    text,
+                    f"{name} ships report style but never requires reading it",
                 )
 
     def test_read_only_skills_are_not_gated_on_writing(self):

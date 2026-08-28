@@ -2,7 +2,7 @@
 baseline_schema: "2.0"
 pack: "skill-consolidation"
 document: "sourcecode"
-status: "complete"
+status: "active"
 updated: "2026-08-27"
 code_ref: "uncommitted"
 ---
@@ -18,7 +18,7 @@ The shape the consolidation acts on. Baseline measured at `cded242`; counts belo
   SKILL.md
   agents/
     openai.yaml
-  references/     # only when the skill writes into a pack, or reads one in full
+  references/     # report-style.md in every reporting skill; pack-contract.md when it writes or fully reads
 ```
 
 A skill may rely only on files inside its own folder, because `npx skills add --skill <name>` installs one folder and nothing else travels with it. `contract/`, `hooks/`, `tests/`, and the repository documents do not ship.
@@ -47,6 +47,14 @@ Each of the 11 carries one gate sentence sending the agent to read the contract,
 
 Editing the canonical file means re-copying it to all of them. P2 added a section, P4 rewrote a sentence, and P5 removed an enum value, so any copy predating this pack is stale on three counts.
 
+## Report style fanout
+
+`contract/report-style.md` governs what the agent says to the user, and nothing about what goes inside a document. 14 skills ship a byte-identical copy at `<skill>/references/report-style.md`, every one except `setup-hooks`, which merges host configuration and names no pack element.
+
+Its audience is deliberately wider than the contract's, and the two sets are not nested the same way: `brief`, `audit-claims`, and `audit-drift` carry report style without carrying the contract, because each produces a user-facing report that cites identifiers while none of them writes a pack or reads one in full. D17 records why merging the two files would force the wrong audience on one of them.
+
+Each of the 14 carries a gate sentence triggering before it reports, pinned by `test_every_reporter_gates_on_report_style`, and the copies are pinned by `test_packaged_report_style_matches_canonical_and_reaches_every_reporter`, which also asserts the audience set rather than only comparing whatever copies happen to exist.
+
 `baselinedocs-run` additionally ships `references/execution-contract.md`, which has no second copy anywhere.
 
 ## The sync and audit skills
@@ -72,7 +80,7 @@ Three of the five consult code and decisions both, which is why a comparison-sco
 
 Detect for a pack against itself has no dedicated skill because `onboard` and `brief` both report contradictions and route to `sync-reconcile`. Repair for a claim against evidence has none because the contract's disproven-claim rule already names its three owners.
 
-P9 added a third finding type without an owner in either table. `onboard` now reports content sitting in a document whose role does not cover it, and no skill above repairs that: `sync-reconcile` triggers on a contradiction, and correctly-stated content in the wrong file is not one until the correct owner also states it. Q5 holds that gap open; `onboard` is instructed to report such a finding without naming a repair skill.
+P9 added a third finding type, and D20 gave it owners without adding a skill. `onboard` reports content sitting where the role lists do not put it, and the contract's misfiled-content rule names who moves it: `sync-decisions` when a decision settled what it was filed under, `sync-reconcile` when the misplacement already produced a contradiction, `save` when the current thread established where it belongs. The pattern follows the disproven-claims rule, which also names owners rather than occupying a matrix cell with a new skill.
 
 ## Pointer graph
 

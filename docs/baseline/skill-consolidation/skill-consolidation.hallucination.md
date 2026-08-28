@@ -2,12 +2,45 @@
 baseline_schema: "2.0"
 pack: "skill-consolidation"
 document: "hallucination"
-status: "complete"
+status: "active"
 updated: "2026-08-27"
 code_ref: "uncommitted"
 ---
 
 # Skill Consolidation: Decisions and Open Questions
+
+## Entry index
+
+One row per entry. A row states what the entry is about and nothing more: never its reasoning, never its outcome's justification, never a summary that could be mistaken for the entry itself. That restraint is the whole point, because a row that carried reasoning would be a second copy of the entry and the two would drift. An answer that turns on an entry whose full text was not read is unbacked, and must be reported that way rather than derived from a row.
+
+Required by `contract/pack-contract.md` once a journal passes its threshold. D19 records why, and this document is the first to carry one.
+
+| Entry | About | Status | Related |
+|---|---|---|---|
+| D1 | the two-condition test that decides whether two skills merge | current | D6, D12 |
+| D2 | folding `sync-decision` into `sync-decisions` | done in P1 | D1 |
+| D3 | keeping the audit pair separate and renaming `audit-verify` | done in P3 | D1, D12, D13 |
+| D4 | deleting `maintain-prune` | done in P2 | D5 |
+| D5 | where a disproven claim goes instead of being deleted | current, lives in the contract | D4, D15 |
+| D6 | keeping `maintain-archive` with a specified destination | **reversed by D11**, kept as history | D11 |
+| D7 | the pass-or-revert gate on `maintain-compact` | done in P4 | D11, Q7 |
+| D8 | deleting a skill folder outright instead of leaving a stub | current | D15 |
+| D9 | treating description sharpening as its own batch | closed empty | D12 |
+| D10 | removing the last duplicate rule statements inside P6 | done in P6 | D7 |
+| D11 | deleting `maintain-archive`, its enum value, and its consumer | current | D6, D7, Q7 |
+| D12 | keeping all five sync and audit skills, and the axis the old matrix got wrong | current | D3, D20 |
+| D13 | stopping the rename sweep at the audit pair | current | D3 |
+| D14 | declining a pack-level finished marker | current | - |
+| D15 | the installed generation gap, and the constraint that asserted it | current | D8 |
+| D16 | shipping the contract on a full read rather than on writing | current | D12, D17, D20 |
+| D17 | shipping report style as its own asset, separate from the contract | current | D16 |
+| D18 | forbidding hard-wrapped paragraphs in pack documents | current | Q7 |
+| D19 | putting the entry index into the contract as a conditional section | current | D5, D6, D20, Q7 |
+| D20 | who repairs content that is true but sits in the wrong document, closing Q5 | current | D5, D12, D16 |
+| D21 | an edit to the contract destroyed a section heading, and every test stayed green | current, repaired | D5, D19 |
+| Q6 | what the element identifier scheme is, and whether the contract owns it | open. The wait-for-samples reason has weakened, see the entry | Q7, Q8, D19 |
+| Q7 | what `onboard` does with the index, now that the index itself is decided | open, narrowed by D19 | D19, D7, D11 |
+| Q8 | the label standard inside an entry, and how many entry kinds `hallucination` holds | open | Q6, D19 |
 
 ## D1: merge criterion is a two-condition test
 
@@ -231,21 +264,207 @@ The cost is higher than D8 recorded, measured in P8. A machine carries several i
 
 **Accepted cost.** The installed set on this machine is one phase behind again, exactly as the roadmap's risk row predicted. Ten copies against the repository's eleven, and an `onboard` that will keep reporting the absent copy the old way until the family is reinstalled here.
 
+## D17: report style ships as its own asset, separate from the contract
+
+**Decided.** Add `contract/report-style.md` and copy it to every skill except `setup-hooks`, each gating on reading it before it reports. It carries one substantive rule: the first time a message names a pack element identifier, it must say what that element is. The same rule also goes into the user's own global instructions, and neither placement replaces the other.
+
+**Why.** Reported from real use. A suggestion phrased as three bare identifiers could not be evaluated at all without scrolling back through the conversation to recover what each one meant, which turns every citing sentence into a question the reader has to ask. A bare code is not brevity; it is a deferred question, and the terminal is the one medium where the reader cannot cheaply look back.
+
+**Why it does not live in the user's instruction file alone.** That file is per-user. A rule placed only there produces one user's experience and leaves every other installer with whatever the model defaults to, which is precisely the cross-user inconsistency this repository exists to remove from the family. A shipped skill's behavior must not depend on who installed it.
+
+**Why it is not a section of the contract.** The two files have different correct audiences, and D16 is what makes them different. The contract goes to skills that write a pack or read one in full. `brief` is neither, and D16 records why it must not hold the role list: a partial reader owning the placement standard would report conformance it never checked. Yet `brief` produces a user-facing report on every run and cites identifiers in it. Folding report style into the contract would either hand `brief` the contract and reverse D16, or leave the family's cheapest conversational skill outside the conversation rule. Two files, two audiences, two pinning tests.
+
+**What breaks if ignored.** Every report that cites an identifier costs the reader a scroll or a question, and the cost is invisible to the agent producing it. Left to per-user configuration, the family behaves differently for each installer, and a report written for one user reads as a code dump to the next.
+
+**Rejected: state it in the user's global instructions only.** Works for one user on one machine, and fails the point of shipping a skill.
+
+**Rejected: add it as a section of `pack-contract.md`.** One fewer file and one fewer test, and wrong on audience, for the reason above.
+
+**Accepted cost.** A second packaged asset means a second fanout to keep in sync, 14 copies against the contract's 11, and a second gate sentence loaded on every run of every skill. The file is deliberately short so that per-run cost stays small.
+
+## D18: hard-wrapped paragraphs are forbidden in pack documents
+
+**Decided.** The contract's writing rules now forbid inserting a newline inside a paragraph. One paragraph is one line, however long, and the reader's editor wraps it.
+
+**Why.** Measured, not assumed. In a real pack written by another agent, 2,396 of 2,610 prose lines fell in the 40-to-89-character band and only 20 lines exceeded 90 characters. No natural paragraph distributes that way, so the file had been wrapped at a column. Two packs written without wrapping put most of their prose lines above 200 characters, which is what unwrapped prose looks like. The wrapped paragraph reads as a list of unrelated statements, the line count roughly doubles so the document looks twice its real size and every line-number reference drifts, and a one-word edit re-flows a whole block in the diff.
+
+**What breaks if ignored.** Beyond readability, the line count stops being usable as a size signal, which matters because `onboard` reports line counts as its proof of a complete read and its size gate reasons about scope from them. A wrapped pack reports double the lines for the same content, so the gate over-estimates the cost of loading it and under-estimates how much content a given budget holds.
+
+**The distinction that has to survive.** Wrapping costs almost no tokens, because tokens track bytes rather than lines. Unwrapping the measured pack would halve its line count and change its token cost by almost nothing. A wrapped document therefore *looks* like a size problem and is not one, and this rule must never be offered as the remedy for a pack that is genuinely too large. Q7 owns that problem.
+
+## D19: the entry index enters the contract as a conditional section
+
+**Decided.** `contract/pack-contract.md` now requires an entry index at the top of `hallucination` once that document exceeds 40 KB or holds more than 20 entries, whichever comes first. Below the threshold it is omitted. The `Status` column is required. Nothing verifies a row against its entry, and that is accepted rather than mitigated. This closes the mechanism half of Q7; the half about what `onboard` does with the index stays open.
+
+**Why conditional rather than mandatory.** The index costs 87 bytes a row and defers an average closed entry of about 1,850 bytes, so its token arithmetic is roughly 21 to 1 in favour and it pays on any pack large enough to bother measuring. What does not scale down is the maintenance burden, which is per entry regardless of pack size. A journal of six entries can be held whole by any reader, and an index there is pure upkeep. Mandating it everywhere would also make three real packs non-conformant on the day the rule landed, and the restructuring that would fix them is the pack author's work: D20 gave misfiled content named owners, but delimiting an undelimited journal into entries is not a relocation, so no skill performs it and the contract says so outright.
+
+**Why the threshold is 40 KB or 20 entries.** Calibrated to measured points rather than derived. This document at 21 entries and 47 KB shows a scoped read at 28 to 50 percent of a full read, so the mechanism is already earning at that size. A 2.9 KB journal of 58 lines, measured in another repository, would carry an index larger than the saving. Both numbers are stated because they measure different costs: bytes measure what a read costs, entry count measures what the index costs to maintain. Neither alone is the trigger.
+
+**Why `Status` is required.** It is the only column that tells a reader an entry was later reversed without reading the entry that reversed it. Building the index here surfaced exactly that: D6 kept `maintain-archive` with a specified destination, and D11 deleted the skill outright, so a reader working sequentially learns D6 is dead only on reaching D11. The column also carries the sharpest risk in the mechanism, below.
+
+**What breaks if ignored, and it is accepted.** No test can verify a row still describes its entry, because a row is a different text from the entry by design and there is nothing to byte-compare it against. Every other duplicated file in this repository is safe precisely because it is byte-identical and machine-pinned: 11 contract copies, 14 report-style copies, the hook assets. The index is the first duplication here upheld by discipline alone, and the worst case is specific: a row saying an entry is current after a later entry reversed it actively asserts something false, which is the disproven-claim failure D5 exists to prevent, reappearing inside the index. The user accepted this consciously rather than by omission.
+
+**Rejected: mandatory in every pack.** Three real journals, at 2,796, 2,008, and 1,110 lines, delimit their entries with bold text or with nothing at all. For them the index is not an additive edit but a restructuring, and mandating it would create non-conformance with no owner.
+
+**Rejected: accept the unverifiable row but pin the structural half.** Tests are cheap here and would catch a missing row, a row pointing at no entry, and a row longer than one line. Recommended and not taken: the user chose to rest the whole mechanism on discipline. Recorded because the structural tests remain cheap to add later, and because what they would not have caught is the thing that actually matters, which is whether a row's text is still true.
+
+**Rejected: drop the `Status` column to remove the stale-assertion risk.** The defensive option. Rejected because the column's value was demonstrated on the first build while its risk is still hypothetical, and without it the table is a plain locator that no longer answers the question a reader most needs answered, which is whether an entry still holds.
+
+## D20: misfiled content gets named owners in the contract, closing Q5
+
+**Decided.** The contract gains a `Misfiled content` rule beside the disproven-claims rule. Content that is accurate but sits where the role lists do not put it moves, verbatim, to the document or section that owns it. Owners: `sync-decisions` when a decision settled what the content was filed under, `sync-reconcile` when the misplacement has already produced a contradiction, `save` when the current thread established where it belongs. A reporting skill names the owner and moves nothing. `onboard` step 10 is updated to name an owner instead of reporting that none exists.
+
+**Why the contract rather than a widened skill.** Both were on the table. Naming owners follows a precedent already in the contract, where the disproven-claims rule names three owners rather than adding a skill, and it adds no skill to a family this pack spent eight phases trimming. Widening `sync-reconcile` would have grown the blast radius of the one skill whose current guarantee is that it touches only conflicting sections.
+
+**Why the owners land where they do.** `sync-decisions` carries the commonest case, and it fits without stretching: an entry filed under open questions that a decision has since closed is misfiled precisely because a decision settled it, which is already that skill's trigger. `sync-reconcile` takes the case where the misplacement has produced a real contradiction, which is also already its trigger. `save` takes the case where the thread you are in is what established the correct placement.
+
+**The gap this closes, carried from Q5.** No skill repaired this before, and the reason was structural rather than an oversight. `sync-reconcile` fires on a contradiction, and correctly-stated content in the wrong file is not a contradiction yet; it becomes one only once the correct owner also states the fact, which is the drift the contract's opening section describes. So the only available repair arrived one step after the damage. `maintain-compact` shortens and never moves. The write skills add content rather than reorganizing it. The read skills report.
+
+**Measured, not hypothetical.** In one real pack the open-questions section held 88 entries while 7 questions were actually open, so more than nine tenths of that section was settled material filed as unsettled. Nothing in it is untrue, so no audit reports it: `audit-claims` asks whether a claim has evidence and `audit-drift` asks whether a document trails the code, and misfiling fails neither test.
+
+**What breaks if ignored.** Two costs, and the second is the one nobody sees. A reader cannot tell which questions are live, which is the single thing an open-questions section exists to answer. And every reader pays tokens for it, because the section that must always be read in full is exactly the section that filled with material that could have been deferred to an index row. On that pack the difference measured about 21,000 tokens per load, which is more than the entry index itself buys there.
+
+**Still open, and deliberately left so.** Whether an open follow-up recorded inside a closed decision counts as misfiled. The contract lists open questions and closed decisions as `hallucination` content and does not say whether an open item may live inside a closed entry. Two such items exist in a real pack. The rule above does not decide it, because a follow-up sitting beside the decision that spawned it is arguably where it belongs, and guessing would create exactly the kind of relocation this rule is meant to make deliberate.
+
+**Rejected: widen `sync-reconcile` to treat a heading disagreeing with its own content as a contradiction.** Coherent, and cheaper by one contract section. Rejected on blast radius: that skill's value is that it touches only what conflicts, and a heading-versus-content trigger makes any section reorganizable under it.
+
+**Rejected: leave it open until a pack demonstrates the cost.** The position held through P9 and P10. Overtaken by measurement: the cost is now a number on a live pack, and Q7's own sequencing finding showed this repair returns more there than the mechanism Q7 was about.
+
+## D21: an edit to the contract destroyed a section heading, and nothing detected it
+
+**What happened.** P13 inserted the `Misfiled content` section by replacing a block of text that ended at the `## Conditional documents` heading. The replacement text did not carry that heading back. For the length of P13 the contract defined `sourcecode` and `useguide` as bullets under `## Misfiled content`, and that state was copied byte-identically into all 11 packaged copies. Found on the next full read of the contract, which the gate requires before any pack edit, and repaired in the same pass.
+
+**Why it looked safe.** The edit was anchored on a unique string and applied cleanly. Nothing reported a problem: `cmp` confirmed all 11 copies matched canonical, which they did, and the suite stayed green at 24 passed. Every signal available said the change was sound, because every signal measures agreement between copies and none measures whether the canonical file still has the structure it is supposed to have.
+
+**What disproved it.** Reading the file top to bottom, as the gate requires, rather than reading the diff. The diff showed a new section added at the right place; only the whole file showed the heading gone.
+
+**The lesson, and it generalizes past this incident.** A byte-identity test protects a fanout, not a source. The 11 copies were provably correct and provably wrong at the same time: correct as copies, wrong as content. Any check of the form "the copies agree" is blind by construction to a defect introduced in what they agree about, and the more copies there are the more reassuring the green result looks. This is the same shape as the count-in-prose defect P8 pinned, and the same shape as the index rows D19 accepted as unpinnable, so it is worth stating once as a class rather than three times as incidents.
+
+**What breaks if ignored.** Two document roles were silently redefined. An agent reading the contract during that window would have decided that `sourcecode` is misfiled-content guidance, which is exactly the placement error the contract's opening section exists to prevent, injected into the file that prevents it.
+
+**Repaired, and the gate is what caught it.** The heading is restored, the 11 copies re-synced, and the five role bullets verified to sit under the correct headings by listing each bullet with the heading above it rather than by eye. Recorded rather than quietly fixed because the failure mode, not the typo, is the useful part.
+
+**Rejected: add a test asserting the contract's section list.** Tempting and cheap: pin the ordered heading list, fail on a removal. Not taken here because the heading list is edited deliberately in most phases that touch the contract, so the test would need updating in the same commits that break it, which is the pattern that trains a maintainer to update a test rather than read it. Left as a candidate if a second structural break occurs, which would make it a class rather than an incident.
+
 ## Open questions
 
-### Q5: who repairs content that is true but sits in the wrong document?
+### Q8: what is the label standard inside an entry, and how many entry kinds are there?
 
-Raised by D16, 2026-08-27. `onboard` can now report such a finding, and nothing in the family repairs it. `sync-reconcile` triggers on a contradiction, and correctly-stated content in the wrong file is not one yet; it becomes one only once the correct owner also states the fact, which is the drift the contract's opening section describes. So the repair arrives one step too late by design.
+Raised 2026-08-27 by the user, against the scheme proposed in Q6. The objection: a rule forbidding identifiers for sub-parts leaves a journal that reads as a wall of text, losing the organized shape a human scans, and that cost was not weighed.
 
-Two sub-questions, both unanswered:
+The objection is sound and the proposal had conflated two things. Visual structure inside an entry and citable identity across documents are separable, and only the second was ever the problem. Labels give the first without the second: measured here, one `grep '^\*\*Rejected'` finds all 22 rejected alternatives in this journal, so labels are already addressable as a class without any sub-identifier existing.
 
-| Sub-question | State |
+**Measured drift in this document.** The labels are not holding their wording.
+
+| Standard label | Uses | Competing wordings in use |
+|---|---|---|
+| `Decided.` | 18 | - |
+| `Why.` | 14 | 8, including `Why conditional rather than mandatory.`, `Why Status is required.`, `Why the old model was wrong.` |
+| `What breaks if ignored.` | 15 | 3, including `What breaks if ignored, and it is accepted.`, `What breaks if this entry is dropped.` |
+| `Rejected:` | 20 | 2 |
+
+**A correction to the first count, which changes what a standard can assert.** The first pass reported D8, D9, and D15 as entries missing required labels. Reading all three disproved part of that. D15 is not a closed decision at all: it is a disproven-claim relocation, and it uses the shape that rule implies, `What was believed` and `What disproved it`. The contract's four-part requirement is written for a closed decision, so D15 is conformant for its kind and the first count applied the wrong rule to it. D8 is arguable: it carries `Known cost, accepted.` doing the work of `What breaks if ignored.`, so its content is present under a different name. D9 is the only clear case, a single paragraph with no why, no consequence, and no rejected alternative.
+
+That correction is the finding, not a footnote. `hallucination` holds at least three entry kinds already: a closed decision, a disproven-claim relocation, and an open question. A test asserting four labels on every `## D<n>:` heading would fail D15 for being correctly written. So a label standard has to name the kinds and give each its own required labels before it can be enforced, and that is more work than the standard first appeared to be.
+
+**Also unresolved: whether D9 gets repaired or left.** Filling in its missing three parts means writing reasoning for a decision closed long ago, which the brownfield rule forbids reconstructing from inference. Leaving it means the journal contains one entry that does not meet the contract. Neither is obviously right, and no one has decided.
+
+**The candidate answer.** The contract fixes the exact text of the required labels per entry kind, in a fixed order, and a variant becomes an additional label after the standard one rather than a replacement. Unlike the index rows D19 accepted as unpinnable, this is testable, which is the strongest argument for it: it would be the first structural rule in `hallucination` a machine can actually check.
+
+**Related, and unresolved with it: citing a part of an entry.** Q6's proposal said promote the part to its own entry, which is heavy for something like one rejected alternative. The alternative on the table is a compound reference by text, `D19 / Rejected: mandatory in every pack`. Its property is the reason to prefer it: if the label text changes, the reference fails loudly, because a search for it returns nothing. A renumbered identifier fails silently, still resolving, now to the wrong thing. That asymmetry, not verbosity, is the real case against sub-identifiers.
+
+### Q6: what is the identifier scheme, and does the contract own it?
+
+Raised 2026-08-27, after the user reported that the prefix and its hierarchy vary by whichever agent last wrote the pack. Confirmed at the source: the contract says nothing about identifiers. No mention of numbering, of a prefix, or of an ID anywhere in its 84 lines. It defines document roles, the frontmatter schema, evidence density, and writing rules, and leaves element naming blank. So every agent invents a scheme and none of them is wrong by the standard that exists.
+
+Schemes observed in use: `D<n>` for a closed decision, `Q<n>` for an open question and `P<n>` for a phase in this pack; `T1a` meaning decision `a` inside topic 1, and `T-A` meaning topic A, reported from elsewhere; `Phase` against `Milestone` against bare `P` or `M` at roadmap level one, and `Task` against `Point` against `Node` at level two.
+
+The position to be argued when this is decided, recorded now so it is not lost: **hierarchy must not be encoded in the identifier.** Both `T1a` and `T-A` encode which topic a decision belongs to, and topic membership is the most mutable property a decision has. A decision often relates to two topics, and topics get merged and split as the document grows. Encoding a mutable relation into an immutable name guarantees that reorganizing the document breaks every reference to it. Concretely: if `D16` had been named `T3b`, then grouping it with `D11` today would force a rename, and every citation of it in `roadmap`, `sourcecode`, and `introduction` would silently become wrong. Flat append-only identifiers plus an explicit topic field inside the entry cost nothing to reorganize.
+
+The second half of the proposal, also unargued yet: only pack-wide identifiers may be cited across documents, and anything numbered inside a single document is local detail. A real pack cites "Phase 3 Step 11" from its Phase 4 section; inserting a step or moving that one to another phase breaks the citation with nothing to report it. Under the rule, a step that needs citing from elsewhere has to be promoted to an entry with its own identifier.
+
+**The proposed scheme, in full, so it can be argued with rather than re-derived.** One letter for the kind plus an integer. Flat, append-only, unique across the pack.
+
+| Kind | Identifier | Written as |
+|---|---|---|
+| closed decision | `D<n>` | `## D19: <title>` |
+| open question | `Q<n>` | `### Q7: <title>` |
+| roadmap phase | `P<n>` | `## P12: <title>` |
+| step inside a phase | `Step <n>` | local detail, not citable from another document |
+
+Seven rules go with it. A separate counter per kind, which this pack already proves out: Q1 through Q4 were closed by D11 through D14, each decision naming the question it closed, so the question keeps its number and the decision takes a new one. Append-only, never renumbered, never reusing a retired number, so a gap in the sequence is information rather than untidiness. The identifier sits in the heading text, which is what makes it greppable and gives it an anchor. No sub-identifiers. Grouping or topic goes in a field inside the entry or in the index's related column, never in the name. Only pack-wide identifiers may be cited between documents. One level-one concept in `roadmap`, named phase, prefixed `P`, with no parallel milestone or `M`, because two names for one level is where the reported drift began.
+
+**Rejected alternatives, with the reason each fails.**
+
+| Scheme | Why not |
 |---|---|
-| Does an open follow-up recorded inside a closed decision count as misplaced? | The contract lists open questions and closed decisions as `hallucination` content but does not say whether an open item may live inside a closed entry. Found in a real pack: two live items were filed inside closed decisions rather than in its open-questions section, and only a full read surfaced them |
-| Does `sync-reconcile` widen to cover placement, or does the contract name an owner the way the disproven-claim rule does? | Undecided. The disproven-claim rule names three owners rather than adding a skill, which is the cheaper shape and the precedent |
+| `T1a`, `T-A`, grouped by topic | encodes topic membership, the most mutable property an entry has, into a name that must not change. Concretely: grouping D16 with D11 today would force a rename, and every citation of it in `roadmap`, `sourcecode`, and `introduction` would silently become wrong |
+| spelled out, `Decision 16` | verbose at every citation, and the readability problem it addresses is already solved by the gloss rule in `report-style.md`, which costs nothing per identifier |
+| dated, `D-2026-08-27-1` | never collides and sorts chronologically, but long, and the date already sits inside the entry |
+| one global counter, `E1` upward | loses the kind signal, and the kind is what tells a reader whether an item is settled or still open |
 
-Deliberately not answered in P9. Answering it means either widening a skill's trigger or adding a fourth owner clause to the contract, and neither is in this pack's scope, which is skill-count reduction and selection-surface repair. `onboard` is instructed to report the finding and name no repair owner, so the gap is visible at the point it is hit rather than papered over by a wrong routing pointer.
+**A citation observed breaking in a real pack.** One pack cites "Phase 3 Step 11" from its Phase 4 section. Inserting a step before it, or moving that step to another phase, breaks the citation with nothing to report it. Under the rule above a step that needs citing from elsewhere has to be promoted to an entry with its own identifier, which is the cost the rule accepts in exchange.
 
-What would reopen it as work: a pack where the same fact has landed in two documents because the first placement was wrong. That is the state where the gap costs something, and it is also the state where `sync-reconcile` becomes correctly applicable.
+Deliberately not decided in P10. The user was supplying further pack output from other repositories to widen the sample first, and a naming rule written from two samples would be re-litigated the moment a third arrived. That reason has since weakened: D19 put an index into the contract whose first column is an identifier, so the key of a contract-required table currently has no defined format, and waiting leaves it that way. Q8 also has to be answered alongside this one, because the two together decide what is addressable and what is only readable.
 
-Q1 closed in D11, Q3 in D12, Q2 in D13, Q4 in D14. Stated rather than deleted so a reader can tell the section was emptied deliberately before Q5 opened.
+### Q7: what does `onboard` do with the index?
+
+Narrowed by D19, which decided the index itself: it is in the contract, conditional on a threshold, with a required `Status` column and no verification of a row against its entry. What is left open is the half that changes a skill rather than a document. The index exists and nothing consumes it, so today it serves a human reader and buys no token saving at all.
+
+The options, none chosen: leave `onboard` reading everything, so the index is documentation only; read the table plus every open question and only the closed entries the task touches, taking the full saving and the audit risk with it; do that but ask the user which closed entries to load, listing them, which is slower and auditable; or keep reading everything by default and engage entry-level scoping only where the size gate would otherwise stop the run.
+
+The last option deserves the most weight and was not obvious at first. `onboard`'s size gate already stops and asks when a scope may not fit, and today its only outcomes are load less or stop. Entry-level scoping turns that stop into a graded read, so the mechanism engages exactly where the alternative was already failing, and the default read is untouched. That answers the objection recorded below about auditability, because the narrowing only happens at a point where the user was going to be asked anyway.
+
+Raised 2026-08-27 from measured real packs. D11 predicted this exact cost and accepted it; the difference now is that it has a number.
+
+| Document | Lines | Bytes | Tokens, approximate |
+|---|---|---|---|
+| `poc-provisioning.hallucination.md` | 2,796 | 180,066 | 45,000 |
+| `poc-provisioning.roadmap.md` | 2,985 | 175,957 | 44,000 |
+| second repository, `uat-provisioning/hallucination.md` | 2,008 | 342,029 | **85,500** |
+| that pack, all five documents | 3,990 | 625,551 | **156,000** |
+| this pack's `hallucination`, for scale | 251 | 30,908 | 7,700 |
+
+Two corrections to how the problem was first stated. Byte count, not line count, is the size signal, because a wrapped document inflates lines and not bytes: the first pack above is wrapped, so its 2,796 lines hold roughly what 1,400 unwrapped lines would. And the figure that matters is per-document as much as per-pack: one 85,500-token `hallucination` is the hard case, while a 156,000-token whole-pack load is already mitigated by `onboard`'s default of one domain pack.
+
+**The hypothesis that a cheap fix existed is disproven.** The survey looked for content the contract already forbids, on the theory that enforcement alone would shrink these files. It is not there. Across both large journals: zero changelog-style revision notes, zero retry or attempt logs, zero `UPDATE:` or `EDIT:` markers, zero superseded-entry markers. The bulk is legitimate journal content that the contract requires be kept. So the size is real, and no enforcement pass reduces it.
+
+**What the survey did find, and it is the root cause of Q6 as well.** These journals have almost no addressable structure. The 2,796-line file carries one `##` heading and three `###` headings in total. The 2,008-line file carries two `##` headings and no `###` at all, delimiting its 172 entries with bold text at the start of a line instead. A third, 1,110 lines, puts every closed decision between line 13 and line 965 as one undelimited section. Bold text is invisible to every tool: not an anchor, not a table of contents row, not a greppable structure, not a citable target.
+
+That single fact explains both open questions. An entry that is not delimited cannot carry a stable identifier, which is Q6, and cannot be read selectively, which is Q7. The contract never requires `hallucination` to be a sequence of individually headed entries, and both symptoms follow from that omission.
+
+**The candidate answer, unagreed.** Give `hallucination` a header table of one row per entry - identifier, one-line statement of what it is about, status, related identifiers - and let `onboard` narrow to it: read the table and every open question in full always, read a closed entry in full when the work touches it, and report in the manifest exactly which entries were read in full against which were read as a row. This attacks the token cost rather than the file size and deletes nothing, and `onboard` already sanctions the mechanism, since its rules require narrowing openly before reading rather than truncating during it. What it lacks today is granularity below one whole document.
+
+Two risks to answer before adopting it. A summary row is a second statement of the entry's content, which is the duplication this repository fights hardest; the mitigation is that a row may state only what the entry is about and never its reasoning, pinned to one line by a test. And the agent will be tempted to answer from rows alone, which is the unbacked-answer failure `onboard` already has vocabulary for: an answer turning on an entry whose full text was not read is unbacked, and must be reported as such with an offer to read it.
+
+**Rejected already, and why the rejections still hold.** Compaction gets ten to fifteen percent, which does not touch 2,796 lines, and D7's gate forbids buying more by losing detail. Splitting by domain does nothing for a single-domain pack, as D11 recorded. Reviving archival to `<pack>/archive/` was rejected in D11 on grounds that still apply to this document specifically: content a fresh agent cannot reach by default is, for that agent, content that was deleted.
+
+**Trial result, measured on this document in P11.** The entry index was built here first, as the cheapest place to find out whether the shape works.
+
+Two things are measured below and they must not be confused. The first is what the mechanism costs the file, measured on the index alone. The second is what a scoped read costs, measured against the file as it stands after this write-up was added, because that is what a run would actually read.
+
+| Measure | Value |
+|---|---|
+| Cost of the index itself | 317 lines and 41.8 KB to 347 lines and 44.3 KB. Plus 623 tokens, or 6 percent |
+| Index table alone | 2,493 bytes, about 623 tokens for 21 entries |
+| Document at the time of measurement | 370 lines, 46.6 KB, about 11,644 tokens for a full read. It has grown since, because this table is inside the document it measures |
+| Read the table plus every open question, no closed entry | about 3,322 tokens, 28 percent of a full read |
+| Read the table, the open questions, and the four entries a contract-fanout task needs | about 5,842 tokens, 50 percent of a full read |
+
+So the shape works and the saving here is real but moderate, between 50 and 72 percent depending on how many closed entries the task touches. The file grows, which is the correct trade only because what a run reads is what costs.
+
+Writing this trial up moved the numbers, which is worth noticing rather than hiding. The write-up is a long open question, so it landed in the always-read half and pushed the minimum scoped read from 24 up to 28 percent. A journal that documents its own mechanics pays for them in the section it can never defer.
+
+**The trial also found what decides the payoff, and it is not size.** It is the ratio of closed decisions to open questions, because open questions must always be read in full and only closed entries can be deferred to a row. Measured across three real journals, that ratio is not stable:
+
+| Journal | Closed decisions | Open questions | Minimum scoped read |
+|---|---|---|---|
+| this document | 71 percent | 23 percent | 28 percent of full |
+| htx `thingsboard-uat` | 86 percent | 12 percent | about 18 percent of full |
+| solace `uat-provisioning` | 46 percent | **53 percent**, 184 KB of 342 KB | about 60 percent of full |
+
+The pack that most needs the mechanism benefits least from it, and the reason is not size. Its open-questions section holds 88 bold-delimited entries while an `onboard` run over it reported 7 live questions, so the section is carrying a large amount of settled material under a heading that says it is unsettled. That is a placement problem, which is Q5, presenting as a size problem.
+
+**Consequence for sequencing.** Q5 gates Q7 for the worst-affected pack. Repairing placement there would move roughly half the file from always-read to deferrable, which improves the scoped read from about 60 percent to something near the other two packs, and it costs no new mechanism at all. Adopting the index first on that pack would buy 40 percent and hide the reason the other 60 percent was unavailable.
+
+Q1 closed in D11, Q3 in D12, Q2 in D13, Q4 in D14, Q5 in D20. Stated rather than deleted so a reader can tell each was settled by a decision rather than dropped. Q5's analysis was not deleted with its heading; it is inside D20, which is where the relocation rule sends it.

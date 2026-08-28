@@ -1,0 +1,67 @@
+Brief này rút từ pack đã load đầy đủ trong thread (không đọc thêm gì). Danh sách dưới đây là toàn bộ việc còn mở, nhóm theo loại chặn.
+
+A. Việc duy nhất nằm trên đường tới hạn
+A1. Cấu hình SMTP trong ThingsBoard UI (Dustin yêu cầu 2026-08-24, Phase 4)
+
+Đây là việc thực thi duy nhất còn treo. Chuỗi bước theo thứ tự:
+
+#	Bước	Trạng thái
+1	Xác nhận reply cho case AWS đã gửi thật chưa	Không biết. Pack ghi "Not yet confirmed submitted as of this pack update"
+2	Kiểm tra trạng thái case 178772020500871 (region ap-southeast-1)	Chưa kiểm tra. AWS đã hỏi thêm chi tiết 2026-08-26
+3	Chờ SES production access được cấp	Chưa cấp. POC từng được cấp trong ngày (2026-08-12)
+4	POST /api/admin/settings key mail, dùng MAIL_SMTP_USERNAME/MAIL_SMTP_PASSWORD có sẵn trong secret atlantic-uat-app-config	Chưa thực thi
+5	POST /api/admin/settings/testMail để verify	Chưa thực thi
+Blocker: account 954903081749 vẫn trong SES sandbox. DNS đã hết là blocker (4 record SES verified Success 2026-08-26).
+
+Đường tạm thời có sẵn nếu case kéo dài: verify riêng 1 địa chỉ sysadmin làm SES identity trong account này. Pack đã cân nhắc và loại khỏi vai trò đường chính (POC runbook đã kết luận đây là workaround cần được thay thế, không phải câu trả lời), nhưng vẫn để mở như interim.
+
+Bước 1 và 2 cần đọc AWS bằng profile kai-atlantic-uat. Tôi chưa chạy lệnh nào, sẽ nói rõ profile trước khi chạy.
+
+B. Hai câu hỏi phải clarify trước khi được làm
+Cả hai đều do Joseph nêu, và pack cấm tự quyết.
+
+B1. MX record cho styluat.com (nêu 2026-08-26: "a chưa thấy có MX record, em check và add thêm vô nhé")
+
+Đã điều tra: SES outbound chỉ cần TXT + DKIM, đã verified, không cần MX. MX chỉ liên quan tới 3 khả năng, mỗi khả năng kéo theo resource Terraform khác nhau:
+
+Khả năng	Nghĩa là gì	Terraform phải thêm
+(a) SES inbound receiving	Reply về no-reply@... có chỗ đến	MX trỏ inbound-smtp.ap-southeast-1.amazonaws.com + receipt rule set
+(b) Custom MAIL FROM domain	Branding bounce	MX trỏ feedback-smtp.ap-southeast-1.amazonses.com + SPF TXT
+(c) Quan sát chung	Domain không có MX, không liên quan SES	Không có
+Pack ghi: "Do not add an MX record until this is clarified" - thêm sai loại thì mất một lượt submit DNS form và có thể xung đột với ý Joseph.
+
+B2. ThingsBoard có tích hợp SSO công ty được không (nêu 2026-08-24, kèm câu hỏi user ngoài STYL có login được không)
+
+Chưa research. Cần chốt 2 thứ trước khi trả lời Joseph: (1) công ty đang dùng provider SSO nào, (2) SAML/OAuth2 login có trong ThingsBoard Community Edition hay chỉ Professional Edition. Pack ghi: "Do not answer Joseph before both are confirmed" - hứa SSO mà chỉ PE có thì kéo theo đổi license/edition, việc này pack chưa scope.
+
+B2 phần (2) tôi tự research được ngay. Phần (1) phải hỏi IT/Joseph.
+
+C. Việc chưa scope
+C1. Phase 5 - Monitoring and alerting. Not started. Joseph yêu cầu ngay từ đầu ("minimum setup first, then monitoring/alerts"), pack ghi rõ là không được hoãn qua sau go-live UAT. Next action nguyên văn: "scope and implement monitoring/alerting (not yet detailed - add a breakdown here once scoped)". Đây là khối việc lớn nhất còn lại và hoàn toàn không bị chặn bởi ai.
+
+D. Chờ người khác, không hành động
+Việc	Chờ ai	Ràng buộc
+Sizing cho MPA POC (tenant thứ 2)	Calista, qua Joseph	"Do not resize preemptively". Nếu load lớn hơn 8 device của GK thì RDS có thể phải scale up
+Telemetry đi tới backend HTX bằng đường nào (MQTT push / HTTP push / PCSS pull)	Truong	Ảnh hưởng ingress config, không ảnh hưởng topology
+BLE Gateway integration	Truong & Dustin	Ngoài scope Terraform của pack
+Calista là ai	Joseph	Chỉ là xác nhận danh tính
+E. Nợ tài liệu
+#	Việc	Cách xử lý
+E1	Record/Iot Platform Architecture.eml (1.29 MB, lưu 2026-08-27 14:52, đã staged) chưa đọc, pack không tham chiếu	Đọc trước, rồi baselinedocs-adopt hoặc baselinedocs-save. Nếu email này có hướng kiến trúc mới thì nó ghi đè "Current truth" của pack
+E2	8 mâu thuẫn nội tại + index lệch trạng thái (index vẫn ghi "Phase 3 in progress", db.t4g.small vs db.t4g.micro, 39 vs 40 test POC, Phase 3 risk ACM lỗi thời, Phase 4 runtime state đóng băng 2026-08-21, entry MSK auth vẫn ghi "Not yet applied")	baselinedocs-sync-reconcile
+E3	Index ghi "A new cost estimate for the UAT pack's standalone+MSK architecture is pending" nhưng introduction.md ghi đã giao 2026-08-19 tại docs/cost/uat/	Cùng E2
+E4	Pack thiếu document sourcecode (pack POC có)	baselinedocs-save hoặc lifecycle skill tương ứng
+E5	Khoảng trống 1 ngày: last_conversation = 2026-08-26, hôm nay 2026-08-27	baselinedocs-save sau khi làm A1
+F. Nợ kỹ thuật đã accept, có điều kiện phải xem lại
+Việc	Điều kiện kích hoạt xem lại
+Bounce/complaint handling đang là monitoring thủ công qua SES console, không có SNS automation. grep xác nhận không có SNS topic / configuration set / event destination nào trong terraform/	Thêm aws_sesv2_configuration_set + SNS event destination khi user base tăng đáng kể (ví dụ khi sizing MPA POC chốt), hoặc khi AWS phản hồi không chấp nhận câu trả lời thủ công
+CF stack Atlantic-UAT vẫn tồn tại sau khi Terraform import 18 resource (dual ownership)	Accepted risk, mitigation chỉ là communication. Nếu ai update/delete stack thì state drift
+POC state bucket: import vào bootstrap module hay để nguyên	Chỉ cần quyết nếu ưu tiên nhất quán giữa các env
+Quan hệ giữa UAT này và "production" cuối cùng	Prod pack chưa có account, chưa có timeline
+Thứ tự tôi đề xuất
+E1 - đọc Iot Platform Architecture.eml trước tiên. Nó là file mới nhất trong repo (hôm nay) và chưa ai biết nội dung; nếu nó đổi hướng kiến trúc thì mọi việc dưới đây phải đọc lại.
+A1 bước 1-2 - kiểm tra case SES 178772020500871 và xác nhận reply đã gửi chưa. Rẻ, và pack tự cảnh báo phải re-check trước khi coi là xong.
+B1 + B2 - gộp thành một tin nhắn hỏi Joseph (MX muốn loại nào + provider SSO công ty). Song song đó tôi tự research phần CE vs PE của B2.
+C1 - scope Phase 5 monitoring. Không bị chặn bởi ai, và là khối việc lớn nhất còn lại.
+E2 + E5 - dọn mâu thuẫn và cập nhật pack sau khi các bước trên có kết quả.
+Muốn tôi bắt đầu từ mục nào thì nói số. Nếu chọn A1 tôi sẽ nêu rõ lệnh và profile kai-atlantic-uat trước khi chạy; lưu ý profile này khác kai-uat trong danh sách global của anh, pack dùng nhất quán kai-atlantic-uat cho account 954903081749.

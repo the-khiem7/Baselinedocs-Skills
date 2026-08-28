@@ -9,6 +9,8 @@ Turn reusable knowledge into a task-independent article.
 
 Read `references/pack-contract.md` in full before creating or editing any pack file, every time. It is the only definition of which document owns which content; do not infer that from a filename, from an earlier session, or from memory.
 
+Read `references/report-style.md` in full before reporting to the user, every time. It governs how a pack element is named in conversation; an identifier stated without its meaning is a question the user has to ask.
+
 ## Workflow
 
 1. Identify a pattern that can be applied outside the originating task.
