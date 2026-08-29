@@ -3,8 +3,8 @@ baseline_schema: "2.0"
 pack: "family-design"
 document: "roadmap"
 status: "active"
-updated: "2026-08-28"
-code_ref: "0cb913f"
+updated: "2026-08-29"
+code_ref: "uncommitted"
 ---
 
 # Family Design Roadmap
@@ -31,13 +31,14 @@ Verified against the repository, not against `DESIGN.md`.
 | Onboard scope gate | FD-D10 | implemented | `baselinedocs-onboard/SKILL.md` steps 4 and 5, and its first two Reading Rules |
 | Initiative routing | FD-D11, FD-D12, FD-D13 | implemented | `onboard` steps 2 and 3; `Never write the index` in step 2 |
 | Dependency edges and coupling | FD-D14, FD-D15, FD-D16 | implemented | `onboard` Reading Rules, four consecutive rules covering edges, collected references, unresolved references, and the index-status contradiction |
-| Output leads with state | FD-D17 | implemented | `onboard` step 11 and the `Output` section, which opens `State first` |
+| Output leads with state | FD-D17 | implemented | `onboard` step 11 and the `Output` section, whose two parts are `I. Pack status` then `II. Read record` |
 | Source material excluded | FD-D18 | implemented | `onboard` Reading Rules, retained-source-material rule keyed on absent baseline frontmatter |
 | Resume family dissolved | FD-D19, FD-D20 | implemented | no `resume-*` folder on disk; `baselinedocs-brief` present and set to `false` |
 | Evidence retention | FD-D21, FD-D29 | implemented | `contract/pack-contract.md`, `Evidence density`, carries both lists, the resolved-mistake distinction, and the external-log permission. 11 packaged copies re-synced |
 | `useguide` role | FD-D22, FD-D29 | implemented | contract, `Conditional documents`, carries the criterion, the five valid forms, and the wiki routing rule |
 | Execution policy gate | FD-D23 | implemented | `execution-contract.md`, `Selection gate`. Pinned by `tests/test_run_policy.py` |
 | Multi-pack routing | FD-D24 | implemented | contract, `Multi-pack initiatives`; and `docs/baseline/baselinedocs.index.md` now exercises it |
+| Report structure | FD-D31, FD-D32, FD-D33 | implemented | `contract/report-style.md` at 41 lines carries 8 rules, 4 of them about layout; 14 packaged copies `cmp` clean; `baselinedocs-onboard/SKILL.md` `Output` names both parts and every section |
 | Installation profiles | FD-Q1 | deferred | no platform mechanism exists to build against |
 | Organization-wide hook rollout | FD-Q2 | deferred | `baselinedocs-setup-hooks` handles one repository per invocation |
 
@@ -240,21 +241,69 @@ Changes:
 
 FD-P1 recorded the source as 496 lines. `git show 0cb913f:DESIGN.md | wc -l` returns 495. The figure came from a reader that numbers a trailing blank line; `wc -l` counts newline characters. One line is not a consequential error, but the way it survived is: it was written into a checkpoint, carried into the introduction, and read back twice without being questioned, because a number in a table looks like a measurement whether or not anything measured it. Corrected in both places to the figure a command returns.
 
+## FD-P5: give `report-style.md` the shape of a report, and reinstall
+
+Opened 2026-08-29 by a user review of a real `onboard` run in an unrelated repository. Four of the findings were layout, one reversed a shipped rule, and one proposed removing the load manifest. FD-D31, FD-D32, and FD-D33 carry the reasoning; the reinstall is the next action FD-P3 left standing, and it is in this phase because a rule that does not reach a machine changes nothing on it.
+
+Acceptance criteria:
+
+- `contract/report-style.md` carries the layout rules and all 14 packaged copies are byte-identical to it
+- a general rule lives in `report-style.md` and a report's own section names live in that skill's `SKILL.md`, with neither restating the other
+- the load manifest is compressed rather than removed, and still reports lines read
+- all four host skill directories match this repository, contract and report style included
+- `uvx pytest tests/ -q` stays green
+
+### Checkpoint: complete
+
+| Item | Result |
+|---|---|
+| Verification gate | 24 passed, 63 subtests passed |
+| `contract/report-style.md` | 25 lines to 41. 4 rules to 8 |
+| Packaged report-style copies | 14, re-synced, `cmp` clean against canonical |
+| Contract copies | 11, untouched. No contract edit in this phase |
+| Host directories updated | 4: `.claude`, `.agents`, `.kilocode`, `.kiro`. Each holds 15 skills, 11 contract copies, 14 report-style copies |
+| Installed state verified | every skill folder diffed against this repository. The only difference is a gitignored `scripts/__pycache__` in `setup-hooks` that the installer does not copy |
+| Entries written | 3: FD-D31, FD-D32, FD-D33 |
+
+Changes:
+
+| File | Change |
+|---|---|
+| `contract/report-style.md` | 4 rules added: gloss a quotation, structure a report rather than narrate it, a three-column table budget, and state the default answer set when asking. The next-action rule rewritten from verbatim quotation to structure-preserving restructure |
+| `<skill>/references/report-style.md` | all 14 copies re-synced |
+| `baselinedocs-onboard/SKILL.md` | `Output` rewritten into two named parts with a section per document role and a compressed manifest; step 11 rewired to point at `Output` instead of restating it; step 9 now requires a reference be said in the agent's own words before it is quoted |
+| `AGENTS.md` | `Report style` now states that the asset governs report shape as well as element naming |
+| `family-design.hallucination.md` | FD-D31, FD-D32, FD-D33 added; 3 index rows; entry count 32 to 35 |
+| `family-design.roadmap.md` | this phase, the design area row, the installed-skills risk row, and the next action |
+| `baselinedocs.index.md` | cross-pack checkpoint updated now that the reinstall is done |
+
+### Finding: the reviewed report was produced with no report-style rules at all
+
+The run under review came from an installed `baselinedocs-onboard` whose folder held no `report-style.md`, and a `pack-contract.md` at 82 lines against this repository's 129. So every formatting quality the reviewer praised was emergent model behavior with nothing behind it, and every formatting defect broke no rule. That is why the reinstall belongs in the same phase as the rule: without it the next run on this machine would have reproduced both, and the fix would have looked ineffective rather than undelivered.
+
+### Finding: three of the six layout complaints were one defect
+
+The load manifest, the unresolved-reference list, and one of the two phase tables all degraded into vertical dumps of field names. All three were tables with more columns than the terminal could render; a two-column table in the same report rendered correctly. The reviewer described the symptom as a wall of text and proposed deleting the manifest. Diagnosing the mechanism is what turned one of those three into a column budget rather than a deletion, and FD-D33 records why the deletion would have cost a guarantee rather than a table.
+
+### Finding: the installer splits neither `--skill` nor `--agent` on commas
+
+A comma-separated list is treated as one literal name. `-s a,b,c` reports `No matching skills found` and prints the available list, which reads like a discovery failure rather than a syntax error, and `-a` fails the same way with `Invalid agents`. Repeating the flag works: `-a claude-code -a universal -a kilo -a kiro-cli`. Recorded because the first attempt appeared to succeed at a glance, exited non-zero without anything obviously wrong in the visible output, and left all four hosts unchanged. Any later reinstall loops one skill per invocation with the agent flag repeated.
+
 ## Risks
 
 | Risk | Detail |
 |---|---|
 | `AGENTS.md` points four times at a file that is being retired | FD-D27 made this pack canonical and scheduled `DESIGN.md` for deletion, so `AGENTS.md` is already wrong where it tells a contributor to record decisions in `DESIGN.md`. The file is still on disk, so nothing is broken yet, but a contributor reading `AGENTS.md` today would write a new decision into the file being deleted. The rewire is the next action below |
 | `skill-consolidation` records its own state as uncommitted | Its roadmap states that SC-P9 through SC-P14 are uncommitted at the user's request. Those changes are now committed, at `959617b`, `b857216`, and `0cb913f`. This adoption did not repair it: `baselinedocs-sync-codebase` owns a pack that has fallen behind the code, and the repair belongs in that pack, not this one |
-| Installed skills are behind this repository | Measured on one host directory only, `C:\Users\STYLVN\.claude\skills`: the installed `baselinedocs-adopt` carries an 82-line `pack-contract.md` and no `report-style.md`, against this repository's 108-line contract and 14 report-style copies. The other three host directories `skill-consolidation` names were not re-checked in this run |
+| Installed skills are behind this repository | Closed 2026-08-29 in FD-P5, and it will reopen on the next repository edit. All four host directories now hold 15 skills, 11 contract copies at 129 lines, and 14 report-style copies at 41 lines, each folder diffed against this repository. The mechanism survives the measurement: an installed skill reads its own packaged copy, so this repository and every machine drift apart from the next edit onward. Before the reinstall the gap was two generations wide and it was invisible from inside a run, which is what FD-P5's first finding records |
 | A reference written before 2026-08-28 names an identifier that no longer exists | FD-D30 renamed every identifier in both packs to carry a pack prefix. Anything citing a bare `D16` or `P8`, in a commit message or an earlier thread, now resolves to nothing. That is the intended failure mode, chosen over a bare number that resolves silently to the wrong entry, but it is a real cost to anyone holding an old reference |
 | Nothing about the skill family itself is deferred | The rename sweep and the finished-pack marker were closed rather than postponed, in `skill-consolidation` SC-D13 and SC-D14. The only deferred items in this pack, FD-Q1 and FD-Q2, are blocked on a platform capability and on a rollout mechanism, neither of which is a skill-family question |
 
 ## Next action
 
-Reinstall the family on this machine. `contract/pack-contract.md` moved from 108 lines to 129 in FD-P3, so every host skill directory now holds a contract at least one generation behind this repository, and an installed skill reads its own packaged copy rather than this one. Installing is a deliberate machine action, never a side effect of a repository edit, which is why it is stated as the next action rather than performed as part of a phase.
+Exercise the new report shape on a real pack and report whether it holds. FD-P5 changed what every reporting skill says without any test able to see the change: no test can check that a report was structured, only that the rule file was copied. The next `baselinedocs-onboard` run in an unrelated repository is the first evidence either way, and the reviewed run that opened FD-P5 is the baseline to compare it against.
 
-The adoption itself is finished. Nothing in this pack is waiting on a user decision.
+The adoption is finished and the reinstall is done. Nothing in this pack is waiting on a user decision.
 
 One repair is outstanding and belongs to another pack: `skill-consolidation.roadmap.md` states that SC-P9 through SC-P14 are uncommitted, and they are committed at `959617b`, `b857216`, and `0cb913f`. `baselinedocs-sync-codebase` owns a pack that has fallen behind the code, and the repair belongs in that pack rather than here.
 

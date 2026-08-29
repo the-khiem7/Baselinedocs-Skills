@@ -3,8 +3,8 @@ baseline_schema: "2.0"
 pack: "baselinedocs"
 document: "index"
 status: "active"
-updated: "2026-08-28"
-code_ref: "0cb913f"
+updated: "2026-08-29"
+code_ref: "uncommitted"
 ---
 
 # Baselinedocs Initiative Index
@@ -15,7 +15,7 @@ Routing metadata for the packs under `docs/baseline/`. It carries links, scope, 
 
 | Pack | Scope | Depends on | Status | Next checkpoint |
 |---|---|---|---|---|
-| [`family-design`](family-design/family-design.introduction.md) | The design of the skill family as a whole: trigger architecture, pack schema, checkpoint model, rule placement, workflow sequence, onboard scope gate, the dissolved `resume-*` family, evidence retention, `useguide`, execution policy, multi-pack routing | - | active | Rewire `AGENTS.md` off `DESIGN.md` in four places, then delete `DESIGN.md` |
+| [`family-design`](family-design/family-design.introduction.md) | The design of the skill family as a whole: trigger architecture, pack schema, checkpoint model, rule placement, workflow sequence, onboard scope gate, the dissolved `resume-*` family, evidence retention, `useguide`, execution policy, multi-pack routing, report structure | - | active | Exercise the new report shape on a real pack |
 | [`skill-consolidation`](skill-consolidation/skill-consolidation.introduction.md) | Reducing the family by removing skills whose operation duplicates another, and repairing the selection surface where two skills claim overlapping triggers | - | active | Four decisions waiting on the user, listed in its roadmap under `Next action` |
 
 Status is copied from each pack's own frontmatter. When this table and a pack disagree, that is a contradiction to report, not a conflict to settle here by preferring the index or the newer date. `baselinedocs-sync-reconcile` owns the repair.
@@ -64,7 +64,9 @@ Any reference written before 2026-08-28 uses the old bare numbers and will not r
 
 `family-design` was adopted from `DESIGN.md` on 2026-08-28 against `0cb913f`, and `DESIGN.md` was deleted the same day once coverage had been verified across all 22 of its sections. These two packs are now the sole record of the family design. `family-design.hallucination.md` FD-D27 carries the decision; the deleted file remains recoverable at `git show 0cb913f:DESIGN.md`.
 
-The adoption is finished and neither pack is waiting on a user decision. The checkpoint is **reinstall the family on this machine**: `contract/pack-contract.md` moved from 108 lines to 129 on 2026-08-28, and an installed skill reads its own packaged copy, so every host directory is behind until someone installs deliberately.
+The adoption is finished, the reinstall it was waiting on was carried out on 2026-08-29 in `family-design` FD-P5, and neither pack is waiting on a user decision. All four host skill directories now hold 15 skills, 11 contract copies at 129 lines, and 14 report-style copies at 41 lines, each folder diffed against this repository.
+
+The checkpoint is **exercise the new report shape on a real pack**. FD-P5 rewrote what every reporting skill says to the user, and no test can see that change: a test can check that the rule file was copied, never that a report was structured. The next `onboard` run in an unrelated repository is the first evidence either way.
 
 What each pack still carries:
 

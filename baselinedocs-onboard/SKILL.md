@@ -30,9 +30,9 @@ Determine or confirm:
 6. Read every file in the agreed scope in full. Do not truncate, skim headings, sample sections, or substitute a search for a read.
 7. Record provenance per document: `status`, `updated`, `code_ref`. When `code_ref` names a commit, report whether the repository moved past it. `uncommitted` and `unknown` are provenance, not commits: report them as stated and compare nothing. A moved repository is the drift signal the contract describes, not a verdict to investigate here.
 8. Follow links out of the pack. Read a wiki article when it is in scope; otherwise list it unread.
-9. Collect unresolved references: every point where a loaded document leans on something outside the scope, quoted with its location. A decision cited without its content, a term used undefined, a link into another pack.
+9. Collect unresolved references: every point where a loaded document leans on something outside the scope, said in your own words and then quoted with its location. A decision cited without its content, a term used undefined, a link into another pack.
 10. Check placement against the contract: content sitting in a document whose role does not cover it, settled material under a heading that says it is unsettled, and a conditional document or entry index absent where its inclusion criterion is met. Report each with its location, name the owner the contract's misfiled-content rule gives it, and move nothing yourself.
-11. Report the pack state first, then the manifest. The state is what a reader needs; the manifest is how they check the read happened.
+11. Report in the two parts `Output` defines, state before record. The state is what a reader needs; the record is how they check the read happened.
 12. Stop. Do not propose, plan, or begin work unless asked.
 
 ## Reading Rules
@@ -51,21 +51,24 @@ Determine or confirm:
 
 ## Output
 
-State first:
+Two parts, each rendered as its own heading: `I. Pack status`, then `II. Read record`. State first and prove second. The state is what the reader came for; the record is how they check the read happened.
 
-- what the pack is: its scope and target, as `introduction` records them
-- phase status from `roadmap`: what is complete, what is in progress, what is blocked, and on what
-- the recorded next action for each pack in scope, quoted verbatim; for an initiative, the index's cross-pack checkpoint as well
-- open questions still open
-- unresolved references, quoted with location, and the offer to load what they name
+`I. Pack status`, one named section per source, in this order:
 
-Then the record of the read:
+- `Doc pack introduction`: scope and target, as `introduction` records them. Report what it records; do not reproduce it
+- `Phase Roadmap`: what is complete, what is in progress, what is blocked, and on what
+- `Next action`: one sub-heading per pack in scope, restructured under the report-style rule that keeps every instruction, condition, and ordering intact
+- `Cross-pack checkpoint`: for an initiative, from the index
+- `Open questions`: those still open, one bullet each, grouped by pack
+- `Unresolved references`: each said in your own words before it is quoted, with its location, and the offer to load what it names
 
-- the routing view: every sub-pack, its status, and which was selected on what evidence
-- load manifest: path, `status`, `updated`, `code_ref`, lines read, grouped by pack, with the index as its own row
-- dependency edges as recorded, and any excluded pack an in-scope pack depends on
-- placement findings against the contract, each with its location
-- anything missing, unreadable, or excluded by scope. A skill that ships no contract copy is not missing one: only a writer and a full reader carry it
+`II. Read record`:
+
+- `Routing view`: every sub-pack, its status, and which was selected on what evidence
+- `Load manifest`: one line per pack giving files, lines read, and the `status`, `updated`, and `code_ref` its documents share, with the index as its own line and a total. Break a document out separately only where its provenance differs from the rest of its pack. Compress the manifest, never omit it: the line counts are the only proof the reader has that the read was complete
+- `Dependency edges` as recorded, and any excluded pack an in-scope pack depends on
+- `Placement findings` against the contract, each with its location
+- `Excluded and unreadable`: anything missing, unreadable, or excluded by scope. A skill that ships no contract copy is not missing one: only a writer and a full reader carry it
 
 ## Non-Goals
 

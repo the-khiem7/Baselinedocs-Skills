@@ -3,8 +3,8 @@ baseline_schema: "2.0"
 pack: "family-design"
 document: "hallucination"
 status: "active"
-updated: "2026-08-28"
-code_ref: "0cb913f"
+updated: "2026-08-29"
+code_ref: "uncommitted"
 ---
 
 # Family Design: Decisions and Open Questions
@@ -13,7 +13,7 @@ code_ref: "0cb913f"
 
 One row per entry. A row states what the entry is about and nothing more: never its reasoning, never the justification behind its outcome, never a summary that could be mistaken for the entry. An answer that turns on an entry whose full text was not read is unbacked, and must be reported that way rather than derived from a row.
 
-Required by `contract/pack-contract.md` above 40 KB or 20 entries. This document holds 32.
+Required by `contract/pack-contract.md` above 40 KB or 20 entries. This document holds 35.
 
 Every identifier in this initiative carries its pack's prefix: `FD-` here, `SC-` in `skill-consolidation`. It is written that way everywhere, inside the pack as well as across packs, so a reference is unambiguous wherever it is read and greppable across the whole repository. FD-D30 records the decision.
 
@@ -49,6 +49,9 @@ Every identifier in this initiative carries its pack's prefix: `FD-` here, `SC-`
 | FD-D28 | a coverage ledger routed seven sections to another pack without checking that pack carried them | current, repaired | FD-D27, FD-D7 |
 | FD-D29 | whether the contract carries the retention and `useguide` detail in full or in summary, closing FD-Q3 | current | FD-D21, FD-D22, FD-D7 |
 | FD-D30 | how an identifier is named once an initiative holds more than one pack, closing FD-Q4 | current | FD-D24, FD-D27 |
+| FD-D31 | what `report-style.md` governs beyond the naming of an element | current | FD-D7, FD-D17 |
+| FD-D32 | whether a next action is quoted verbatim or restructured for reading | current, reverses the rule as shipped | FD-D31, FD-D17 |
+| FD-D33 | whether `onboard`'s load manifest is removed or compressed | current | FD-D10, FD-D17, FD-D31 |
 | FD-Q1 | hiding internal helpers at package level rather than by naming convention | open, deferred on a missing platform feature | FD-D1 |
 | FD-Q2 | installing checkpoint hooks across more than one repository | open, deferred | FD-D6 |
 
@@ -408,6 +411,52 @@ A new thread is the default once the pack is current, which after a save it is. 
 **Rejected: one counter running across the whole initiative, so this pack would start at D22.** Unambiguous with no prefix at all, and the shortest identifiers of the three options. Rejected because a pack's numbering would then depend on which other packs exist: adding a pack, or splitting one, forces a renumber somewhere, and a renumbered identifier is the silent-failure case again. Numbers must be a property of the pack that owns them.
 
 **What this settles in `skill-consolidation` SC-Q6, and what it does not.** SC-Q6 asks what the identifier scheme is and whether the contract should own it, and it proposes flat, append-only, per-kind counters unique across the pack. This decision amends one clause of that proposal, replacing "unique across the pack" with "unique across the initiative, by carrying the pack prefix". Everything else in SC-Q6 stays open: the per-kind letters, the ban on encoding hierarchy in a name, the ban on sub-identifiers, and whether the contract should state any of it. `contract/pack-contract.md` is deliberately unchanged by this decision, because the contract owning the scheme is the half SC-Q6 still owns.
+
+## FD-D31: `report-style.md` gains the shape of a report, not only the naming of its parts
+
+**Decided.** `contract/report-style.md` gains four rules covering how a report is laid out: structure it as headings and bullets rather than narrating it, keep a table inside three columns with long values moved to bullets beneath it, gloss a quotation the way an identifier is glossed, and state the full default answer set when asking so a one-word agreement accepts something stated. The file goes from 25 lines to 41 and is re-copied to all 14 packaged copies. Section names and section order for a particular report stay in that skill's own `SKILL.md`.
+
+**Why.** The file was named for style and carried none. All four of its rules were about naming an element or quoting one, and nothing in it said how a report is laid out, so every skill's output shape was whatever the model produced that run. That is the per-installer inconsistency `skill-consolidation` SC-D17 created this asset to remove, still fully in place in the half of the job the asset never covered.
+
+**Measured, not assumed.** The report the user reviewed on 2026-08-29 was produced by an installed `onboard` whose folder holds no `report-style.md` at all, and a `pack-contract.md` at 82 lines against this repository's 129. Its readability was emergent model behavior with no rule behind it, and nothing would reproduce it on another host.
+
+**What breaks if ignored.** The layout complaint recurs on every host and every model, and there is nothing to point at when it does, because no rule was ever broken.
+
+**The table rule came from a measured failure rather than from taste.** In that run three separate sections degraded into vertical dumps of field names, and all three had one cause: more columns than the terminal could render. The six-column load manifest emitted about 90 lines, two of them rows carrying a pack name and five empty fields. A two-column table in the same report rendered correctly. So the rule is a column budget, because the defect is column count and not table use.
+
+**Rejected: put the section names and their order into `report-style.md` as well.** Where the user first proposed them, and it would put every layout rule in one file. Rejected because those names describe one skill's report and the file ships to 14, so thirteen skills would load a template for output they never produce, on every run. FD-D7 puts a rule's content in exactly one file; it does not say every rule belongs in the same file.
+
+**Rejected: write nothing and correct the output when it comes out wrong.** Cheapest today, and it changes no shipped file. Rejected because a correction does not survive the thread, and the next run on the next host starts from the same blank.
+
+**Accepted cost.** 16 lines added to a file loaded on every invocation of 14 skills. SC-D17 recorded that the file is deliberately short to keep that per-run cost small, so this is a deliberate exception to its own sizing argument, taken on the grounds FD-D29 used for the contract: a rule no agent can read changes no agent's behavior.
+
+## FD-D32: a next action is restructured for reading, not quoted verbatim
+
+**Decided, reversing the rule as shipped.** `report-style.md` required that a next action be quoted and never paraphrased. It now requires that what the next action instructs survive intact, with every instruction, condition, prohibition, name, number, and ordering kept, none added and none softened, while the rendering is free: a heading per pack or phase, one bullet per instruction, the source's own numbering preserved, and no blockquote. The document and phase it came from are named, so the user can check the rendering against the source.
+
+**Why the old rule existed, kept because it is the half that must not be lost.** Paraphrasing a next action silently changes what the user will do, and it is the one field a reader acts on directly rather than reasons about. That risk is real and this decision does not deny it. It moves the protection from the form of the words to the content of the instruction.
+
+**Why it changed.** Verbatim quotation was protecting meaning by freezing layout, and the two are separable. A recorded next action is frequently already a numbered list, and one in the reviewed run was literally three numbered instructions, which the blockquote flattened into a single paragraph. The rule as written therefore produced the exact unreadable output the rest of FD-D31's rules exist to prevent, and produced it in the field the user most needs to act on.
+
+**What breaks if ignored.** In one direction an instruction is dropped or softened in the retelling, and the user acts on something the pack never said. In the other, the most actionable field in the report is the least readable thing in it. The rule has to bind content and free layout, or it fails on one side or the other.
+
+**Rejected: keep verbatim quotation and accept the readability cost.** The position this repository held until 2026-08-29, and defensible: an exact quotation is trivially auditable, while "the meaning is unchanged" is a judgement. Rejected by the user after reviewing a real report, on the grounds that a next action nobody reads protects nothing. What replaces the lost audit property is the requirement to name the source document and phase, which keeps the rendering checkable against the original at the cost of one lookup.
+
+**Rejected: allow free paraphrase.** The reading of the user's instruction that would have been easiest to implement. Not taken, because it drops the protection above with nothing in its place. The instruction was that the meaning must not change, and that clause is the binding half of this decision.
+
+## FD-D33: the load manifest is compressed, not removed
+
+**Decided.** `onboard`'s load manifest stays, in a compressed form: one line per pack giving its file count, lines read, and the `status`, `updated`, and `code_ref` its documents share, with the index as its own line and a total. A document is broken out separately only where its provenance differs from the rest of its pack.
+
+**Why.** Removal was proposed because the manifest rendered as about 90 lines of vertical field dump. That is the table-width defect FD-D31 fixes, not a defect in the manifest. What the manifest carries is FD-D10's guarantee made checkable: the promise is that the reader either knows what the agent holds or knows it holds nothing, and the line counts are the only evidence the user has for a claim of a complete read. FD-D17 already ranked the manifest second, behind pack state, precisely because it proves the read rather than reporting it. Removing it deletes the proof and keeps the claim.
+
+**Why compression is the right amount.** The information sits in the variance, not in the rows. In the reviewed run all seven baseline documents shared one `code_ref`, all documents within a pack shared a status and a date, and six fields repeated across eight rows to say three things. Stating the shared values once per pack and breaking out only what differs takes that from about 90 lines to about 5 with nothing lost. It is the same trade `skill-consolidation` SC-D19 made for the entry index: defer what is uniform, surface the exception.
+
+**What breaks if ignored.** `onboard` asserts a complete read and offers nothing to check it against, which is the silent-partial-read failure FD-D10 was written to design out, reintroduced deliberately in order to fix a rendering problem.
+
+**Rejected: remove the manifest entirely.** The user's first proposal, and its reason was sound, because as rendered it was unreadable bookkeeping. Rejected on the argument above and withdrawn by the user once compression was on the table. Recorded because a later reader looking at a five-line manifest will not see why it cannot become a zero-line one.
+
+**Rejected: one summary line only, with the detail available on request.** Shorter still, and it keeps a total. Rejected because per-pack provenance is what a reader uses to decide how far to trust a document, and folding several packs into one line hides the pack whose `code_ref` differs from the rest, which is the one line worth seeing.
 
 ## Open questions
 
