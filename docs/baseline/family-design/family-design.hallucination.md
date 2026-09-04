@@ -4,7 +4,7 @@ pack: "family-design"
 document: "hallucination"
 status: "active"
 updated: "2026-09-04"
-code_ref: "0d30867"
+code_ref: "5bb5e7f"
 ---
 
 # Family Design: Decisions and Open Questions
@@ -13,7 +13,7 @@ code_ref: "0d30867"
 
 One row per entry. A row states what the entry is about and nothing more: never its reasoning, never the justification behind its outcome, never a summary that could be mistaken for the entry. An answer that turns on an entry whose full text was not read is unbacked, and must be reported that way rather than derived from a row.
 
-Required by `contract/pack-contract.md` above 40 KB or 20 entries. This document holds 38.
+Required by `contract/pack-contract.md` above 40 KB or 20 entries. This document holds 39.
 
 Every identifier in this initiative carries its pack's prefix: `FD-` here, `SC-` in `skill-consolidation`. It is written that way everywhere, inside the pack as well as across packs, so a reference is unambiguous wherever it is read and greppable across the whole repository. FD-D30 records the decision.
 
@@ -54,6 +54,7 @@ Every identifier in this initiative carries its pack's prefix: `FD-` here, `SC-`
 | FD-D33 | whether `onboard`'s load manifest is removed or compressed | reversed by FD-D34 | FD-D10, FD-D17, FD-D31 |
 | FD-D34 | dropping `onboard`'s `Read record` half entirely, reversing FD-D33 | current | FD-D33, FD-D17, FD-D10 |
 | FD-D35 | a stated four-column exception in `report-style.md`, extending FD-D31 | current | FD-D31, FD-D34 |
+| FD-D36 | `hallucination` entries are written in a compact agent-directed register, not narrative prose | current | FD-D7, FD-D21 |
 | FD-Q1 | hiding internal helpers at package level rather than by naming convention | open, deferred on a missing platform feature | FD-D1 |
 | FD-Q2 | installing checkpoint hooks across more than one repository | open, deferred | FD-D6 |
 | FD-Q5 | who, if anyone, owns misfiled-content detection now that `onboard` no longer checks it | open | FD-D34 |
@@ -484,6 +485,20 @@ A new thread is the default once the pack is current, which after a save it is. 
 **Rejected: merge the phase identifier into the content cell.** The option that keeps the existing three-column rule untouched, at the cost of a table cell reading as `` `FD-P1` adopt DESIGN.md into pack ``. Rejected because it buries the identifier inside a text blob rather than naming it, which is the opposite of `report-style.md`'s own rule to name an element before saying what it is.
 
 **Rejected: split into two three-column tables per pack.** Keeps every table within the existing budget by separating phase-and-status from opens-and-related-phase. Rejected because it separates a phase from the open question it is about, doubles the number of tables per pack, and a reader has to cross-reference two tables to answer one question a single row already answered.
+
+## FD-D36: `hallucination` entries are written in a compact agent-directed register, not narrative prose
+
+**Decided.** `contract/pack-contract.md` gains a new `Register` section, placed immediately after `Required documents` rather than folded into `Evidence density`, so the rule sits near the top of the file an agent reads top to bottom instead of at the tail of a section already carrying a different rule set. It states the compact form for a decision entry's four required parts: decision as one imperative or declarative sentence; why as a trailing clause after a dash, expanded to a full sentence only when it carries a measurement or mechanism a clause cannot hold, dropped once the harm is self-evident; what breaks if ignored as the concrete failure, not a description of how it would feel; rejected alternative as what it was plus the one reason it lost, not the deliberation that led to trying it. A verification step closes the rule: before shortening an existing entry, every identifier, filename, number, and rejected alternative it named must still be present somewhere in the result. 11 packaged copies re-synced.
+
+**Why.** `hallucination` is read by an agent on every `onboard`, not by a person once, and this pack's own entries are written the other way: rhetorical-question headers, first-person narration of how a passage's wording was arrived at, dated anecdotes beyond the lesson-entry form `Evidence density` already permits. `family-design.hallucination.md` and `skill-consolidation.hallucination.md` together run 982 lines, most of it connective narrative around a four-part shape a compact form carries in far less space.
+
+**What breaks if ignored.** Every future entry keeps paying the cost this decision exists to stop, on every load, forever, and the two-pack line count above is the measurement, not an estimate.
+
+**Rejected: leave the rule inside `Evidence density`.** Where it landed first. Rejected on the user's own review: a rule an agent must weigh for every entry it writes is easy to under-apply once it sits at the tail of a section already about something else, evidence retention rather than wording. A standalone section directly under `Required documents`, the section that first states the four parts this one governs the wording of, reads before the agent's attention has moved on to other rules.
+
+**Rejected: the `caveman` skill family (`.agents/skills/caveman*`).** Considered because it already exists in this environment aiming at the same goal, terse output without losing technical substance. Rejected because the core `caveman` skill's own Boundaries section excludes persisted docs and memory files from compression by design, so it never reaches a pack file, and `caveman-compress`, the one variant that does rewrite files, trims at the word level (articles, filler, hedging) with no directive-versus-narrative classification and no loss-verification step, so it shortens the prose without removing the actual hazard: a narrative aside in present tense read back later as a current fact.
+
+**Not retroactive.** This entry ships the register for entries written from here on. The existing entries in this pack and in `skill-consolidation.hallucination.md` are left as they are; rewriting them under the new register is separate, deliberately deferred work.
 
 ## Open questions
 

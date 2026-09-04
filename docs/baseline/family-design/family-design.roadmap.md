@@ -4,7 +4,7 @@ pack: "family-design"
 document: "roadmap"
 status: "active"
 updated: "2026-09-04"
-code_ref: "0d30867"
+code_ref: "5bb5e7f"
 ---
 
 # Family Design Roadmap
@@ -39,6 +39,7 @@ Verified against the repository, not against `DESIGN.md`.
 | Execution policy gate | FD-D23 | implemented | `execution-contract.md`, `Selection gate`. Pinned by `tests/test_run_policy.py` |
 | Multi-pack routing | FD-D24 | implemented | contract, `Multi-pack initiatives`; and `docs/baseline/baselinedocs.index.md` now exercises it |
 | Report structure | FD-D31, FD-D32, FD-D33, FD-D34, FD-D35 | implemented | `contract/report-style.md` at 43 lines carries 8 rules plus the four-column exception; 14 packaged copies `cmp` clean; `baselinedocs-onboard/SKILL.md` `Output` is five flat sections, `Read record` removed |
+| Decision entry register | FD-D36 | implemented | `contract/pack-contract.md`, `Register`, a standalone section after `Required documents`, states the compact form for a decision's four required parts and the loss-verification step; 11 packaged copies `cmp` clean |
 | Installation profiles | FD-Q1 | deferred | no platform mechanism exists to build against |
 | Organization-wide hook rollout | FD-Q2 | deferred | `baselinedocs-setup-hooks` handles one repository per invocation |
 
@@ -328,19 +329,61 @@ Changes:
 
 FD-P5's next action asked for the report shape to be exercised on a real pack and reported on. It was, this session, against this repository's own two-pack initiative, and the report it produced was the one FD-P5 itself had just finished making readable: headed sections, budgeted tables, a restructured next action. The verdict was not that the shape held; it was that the shape it replaced, `I. Pack status` plus `II. Read record`, was still too much report for what the user wanted, independent of whether each part inside it was well formatted. A layout fix and a scope fix are different corrections, and FD-P5 only made the first one available to notice.
 
+## FD-P7: state a compact register for `hallucination` entries in the contract
+
+Opened 2026-09-04, in the same onboard session as FD-P6, when the user named the pain point directly: this pack's own entries burn context on every `onboard` because they are written as narrative prose rather than for the agent that reads them. The user pointed at two candidates already present on this machine, the `deprose` skill and the `.agents/skills/caveman*` family, and asked which fit. FD-D36 carries the reasoning and the rejection.
+
+Acceptance criteria:
+
+- `contract/pack-contract.md` states the compact register for a decision entry's four required parts, and all 11 packaged copies are byte-identical to it
+- the rule changes wording only; the four required parts `Required documents` already mandates are not reduced
+- the change is scoped to future entries; no existing entry in either pack is rewritten in this phase
+- `uvx pytest tests/ -q` stays green
+
+### Checkpoint: complete
+
+| Item | Result |
+|---|---|
+| Verification gate | 24 passed, 63 subtests passed |
+| `contract/pack-contract.md` | 129 lines to 140. New `Register` section added directly after `Required documents`, not folded into `Evidence density`: the compact four-part form plus the loss-verification step. Two standalone narrative-incident paragraphs, in `Before writing` and `Boundary with code`, compressed into a trailing clause on the directive each one justified; verified by grep that every term either named survived the compression |
+| Packaged contract copies | 11, re-synced, `cmp` clean against canonical |
+| Report-style copies | 14, untouched. No `report-style.md` edit in this phase |
+| Host directories updated | 0. Reinstall not carried out in this phase |
+| Entries written | 1: FD-D36 |
+| Commit | `5bb5e7f`, present on disk with this phase's 14-file change already staged and committed under that hash. No `git commit` was invoked in this session; the commit's origin was not investigated here and is flagged to the user instead |
+
+Changes:
+
+| File | Change |
+|---|---|
+| `contract/pack-contract.md` | new `Register` section, after `Required documents`: the compact four-part form, the cut-on-sight list, and the loss-verification sentence. `Before writing` and `Boundary with code` each lose one standalone narrative-incident paragraph, folded into the directive above it as a trailing clause |
+| `<skill>/references/pack-contract.md` | all 11 copies re-synced |
+| `family-design.hallucination.md` | FD-D36 added; 1 index row; entry count 38 to 39 |
+| `family-design.roadmap.md` | this phase, the design area row, the risk row, and the next action |
+
+### Finding: compressing two narrative anecdotes does not reopen FD-D29
+
+FD-D29 rejected shipping only the two sentences an agent cannot derive and kept the contract's reasoning in full, on the ground that "derivable" is the writer's judgement, not the agent's. This phase's anecdote compression is a narrower operation: each incident's fact set survives, moved from a standalone paragraph into a trailing clause on the directive it justifies, and checked afterward by grep for every term the original named. Nothing was judged derivable and cut; the words describing it were shortened. FD-D29's own boundary, keep the reasoning, not necessarily its longest phrasing, was never in question.
+
+### Finding: two commits landed on this repository between this session's own `onboard` read and this phase, from the same user, under identifiers this phase could have collided with
+
+This session's `onboard` read `family-design.hallucination.md` at 35 decision entries, `FD-D33` newest. Before this phase started editing, commits `0d30867` and `0d1cc02` had already landed on `main`, adding `FD-D34`, `FD-D35`, `FD-Q5`, and this roadmap's own `FD-P6`, none of it visible to the session that read the pack minutes earlier. Re-reading both files immediately before writing was what caught it; writing from the onboard read alone would have produced a second `FD-D34` naming an unrelated decision, the exact silent-collision failure `FD-D30` names as the reason every identifier carries a pack prefix, reproduced one level down inside a single pack's own counter instead of across packs.
+
 ## Risks
 
 | Risk | Detail |
 |---|---|
 | `AGENTS.md` points four times at a file that is being retired | FD-D27 made this pack canonical and scheduled `DESIGN.md` for deletion, so `AGENTS.md` is already wrong where it tells a contributor to record decisions in `DESIGN.md`. The file is still on disk, so nothing is broken yet, but a contributor reading `AGENTS.md` today would write a new decision into the file being deleted. The rewire is the next action below |
 | `skill-consolidation` records its own state as uncommitted | Its roadmap states that SC-P9 through SC-P14 are uncommitted at the user's request. Those changes are now committed, at `959617b`, `b857216`, and `0cb913f`. This adoption did not repair it: `baselinedocs-sync-codebase` owns a pack that has fallen behind the code, and the repair belongs in that pack, not this one |
-| Installed skills are behind this repository | Reopened 2026-09-04 by FD-P6, exactly as FD-P5 predicted it would on the next repository edit. All four host directories still hold FD-P5's snapshot: `report-style.md` at 41 lines against this repository's 43, and `baselinedocs-onboard/SKILL.md` in its two-part `Output` shape rather than FD-P6's five flat sections. The mechanism survives the measurement: an installed skill reads its own packaged copy, so this repository and every machine drift apart from the next edit onward. Reinstalling is the next action below |
+| Installed skills are behind this repository | Widened again 2026-09-04 by FD-P7, on top of the gap FD-P6 reopened, exactly as FD-P5 predicted would happen on the next repository edit. An installed skill reads its own packaged copy, so any given machine's global install drifts from this repository from its next edit onward, and whether a particular machine is current is machine-specific state this pack does not track. Reinstalling from this local clone is the standing remedy, not a one-time phase: `npx skills remove -g -s <the 15 names>` then `npx skills add . -g -a '*' -s <the 15 names>`, run again whenever a machine's copy needs to catch up |
 | A reference written before 2026-08-28 names an identifier that no longer exists | FD-D30 renamed every identifier in both packs to carry a pack prefix. Anything citing a bare `D16` or `P8`, in a commit message or an earlier thread, now resolves to nothing. That is the intended failure mode, chosen over a bare number that resolves silently to the wrong entry, but it is a real cost to anyone holding an old reference |
 | Nothing about the skill family itself is deferred | The rename sweep and the finished-pack marker were closed rather than postponed, in `skill-consolidation` SC-D13 and SC-D14. The only deferred items in this pack, FD-Q1 and FD-Q2, are blocked on a platform capability and on a rollout mechanism, neither of which is a skill-family question |
 
 ## Next action
 
-Reinstall FD-P6's changes to the four host skill directories, `.claude`, `.agents`, `.kilocode`, `.kiro`: the widened `contract/report-style.md`, its 14 re-synced packaged copies, and the rewritten `baselinedocs-onboard/SKILL.md`. This is the same mechanical step FD-P3 and FD-P5 both closed out with, not a new kind of work, and until it runs, every installed `onboard` still produces the two-part report this phase replaced.
+On any machine whose global install has not picked up FD-P6's and FD-P7's changes, reinstall the family from a local clone of this repository, the same mechanical step FD-P3 and FD-P5 both closed out with: the widened `contract/report-style.md` and its 14 re-synced packaged copies, the rewritten `baselinedocs-onboard/SKILL.md`, and the widened `contract/pack-contract.md` and its 11 re-synced packaged copies. This is per-machine state, not a repository-wide fact this pack tracks, so no phase records when a given machine last ran it.
+
+Separately, and explicitly deferred by the user rather than scheduled: rewriting `family-design.hallucination.md`'s and `skill-consolidation.hallucination.md`'s existing entries under FD-D36's compact register is its own piece of work, not a follow-on to this phase.
 
 One open question is new: FD-Q5 asks who, if anyone, now checks a pack for misfiled content, since `onboard`'s placement check was deleted along with the output section that reported it. Nothing else in the pack is waiting on a user decision.
 

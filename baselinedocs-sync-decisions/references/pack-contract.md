@@ -4,7 +4,7 @@
 
 The gate that requires reading this file lives in each skill's `SKILL.md`, because a rule that exists only inside a file the agent may not open cannot enforce opening that file. This section records why the gate exists.
 
-Content written into a document whose role does not cover it does not stay contained. It gets duplicated once the correct owner also turns out to need the same fact, and the copies drift as later corrections land in only one of them. In the recorded incident, execution status and evidence were written into two documents whose roles are decisions and architecture, while the document whose role actually covers evidence and next action already existed, already had an established pattern for that exact content, and was never opened.
+Content written into a document whose role does not cover it does not stay contained - it gets duplicated once the correct owner also turns out to need the same fact, and the copies drift as later corrections land in only one of them. This happened: execution status and evidence landed in the decisions and architecture documents instead of `roadmap`, which already had an established pattern for that exact content and was never opened.
 
 Decide placement from the role lists below, every time. Do not infer it from a filename, from an earlier session, or from memory of this contract.
 
@@ -32,6 +32,19 @@ code_ref: "<commit|uncommitted|unknown>"
 - `hallucination` (`<prefix>.hallucination.md`): the why - open questions, closed decisions, a defect's cause, rejected alternatives
 
 A closed decision records four things: what was decided, why, what breaks if it is ignored, and which alternatives were rejected with their reasons. A decision recorded without its reasoning is one the next reader optimizes away, because nothing tells them what it was protecting. A rejected alternative that is not written down gets proposed again.
+
+## Register
+
+A `hallucination` entry is read by an agent every time the pack loads, not by a person reading once. State its four required parts above in a fixed compact form, never as narrative prose.
+
+- Decision: one imperative or declarative sentence.
+- Why: a trailing clause after a dash, expanded to a full sentence only when it carries a measurement or mechanism a clause cannot hold. Drop it entirely once the harm is self-evident from the decision.
+- What breaks if ignored: the concrete failure, not a description of how it would feel.
+- Rejected alternative: what it was plus the one reason it lost, not the deliberation that led to trying it.
+
+Cut on sight: a rhetorical question used as a section lead-in, narration of how this entry's own wording was arrived at, a lead-in phrase carrying no content beyond `Why:` or `Rejected:` themselves, a dated anecdote beyond what the lesson-entry form under `Evidence density` already keeps.
+
+Compression must not delete a fact. Before shortening an existing entry, confirm every identifier, filename, number, and rejected alternative the original named is still present somewhere in the result.
 
 ## Entry index
 
@@ -111,9 +124,7 @@ Never hard-wrap a paragraph. One paragraph is one line, however long, and the re
 
 ## Boundary with code
 
-A pack is internal operational memory. Never reference a pack filename or a pack section from inside code, configuration, infrastructure resource descriptions, or anything else that ships outside the repository. State the technical reason in place instead.
-
-This has happened: infrastructure resource descriptions cited a pack's `hallucination` document by filename, and those descriptions were visible in a cloud provider console to everyone with account access, where the referenced filename means nothing.
+A pack is internal operational memory. Never reference a pack filename or a pack section from inside code, configuration, infrastructure resource descriptions, or anything else that ships outside the repository - infrastructure resource descriptions have done exactly that, citing a `hallucination` document by filename in text a cloud provider console showed to everyone with account access, where the filename meant nothing. State the technical reason in place instead.
 
 ## Multi-pack initiatives
 
