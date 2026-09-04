@@ -3,7 +3,7 @@ baseline_schema: "2.0"
 pack: "baselinedocs"
 document: "index"
 status: "active"
-updated: "2026-08-29"
+updated: "2026-09-04"
 code_ref: "uncommitted"
 ---
 
@@ -15,7 +15,7 @@ Routing metadata for the packs under `docs/baseline/`. It carries links, scope, 
 
 | Pack | Scope | Depends on | Status | Next checkpoint |
 |---|---|---|---|---|
-| [`family-design`](family-design/family-design.introduction.md) | The design of the skill family as a whole: trigger architecture, pack schema, checkpoint model, rule placement, workflow sequence, onboard scope gate, the dissolved `resume-*` family, evidence retention, `useguide`, execution policy, multi-pack routing, report structure | - | active | Exercise the new report shape on a real pack |
+| [`family-design`](family-design/family-design.introduction.md) | The design of the skill family as a whole: trigger architecture, pack schema, checkpoint model, rule placement, workflow sequence, onboard scope gate, the dissolved `resume-*` family, evidence retention, `useguide`, execution policy, multi-pack routing, report structure | - | active | Reinstall FD-P6's changes to the four host skill directories |
 | [`skill-consolidation`](skill-consolidation/skill-consolidation.introduction.md) | Reducing the family by removing skills whose operation duplicates another, and repairing the selection surface where two skills claim overlapping triggers | - | active | Four decisions waiting on the user, listed in its roadmap under `Next action` |
 
 Status is copied from each pack's own frontmatter. When this table and a pack disagree, that is a contradiction to report, not a conflict to settle here by preferring the index or the newer date. `baselinedocs-sync-reconcile` owns the repair.
@@ -39,7 +39,7 @@ An edge records why something is blocked. It is never a reading order: either pa
 
 ## Reading this initiative
 
-The default scope is one pack, not both. Together they are 2,026 lines, 772 in `family-design` and 1,254 in `skill-consolidation`, and a reader who needs the consolidation history does not need the family design to get it.
+The default scope is one pack, not both. Together they are 2,279 lines, 1,023 in `family-design` and 1,256 in `skill-consolidation`, and a reader who needs the consolidation history does not need the family design to get it.
 
 | If the question is | Load |
 |---|---|
@@ -64,9 +64,9 @@ Any reference written before 2026-08-28 uses the old bare numbers and will not r
 
 `family-design` was adopted from `DESIGN.md` on 2026-08-28 against `0cb913f`, and `DESIGN.md` was deleted the same day once coverage had been verified across all 22 of its sections. These two packs are now the sole record of the family design. `family-design.hallucination.md` FD-D27 carries the decision; the deleted file remains recoverable at `git show 0cb913f:DESIGN.md`.
 
-The adoption is finished, the reinstall it was waiting on was carried out on 2026-08-29 in `family-design` FD-P5, and neither pack is waiting on a user decision. All four host skill directories now hold 15 skills, 11 contract copies at 129 lines, and 14 report-style copies at 41 lines, each folder diffed against this repository.
+The adoption is finished. The reinstall FD-P3 left standing was carried out on 2026-08-29 in `family-design` FD-P5, and reopened again on 2026-09-04 by FD-P6: all four host skill directories still hold FD-P5's snapshot, `report-style.md` at 41 lines and `onboard/SKILL.md`'s two-part `Output`, both now stale against this repository.
 
-The checkpoint is **exercise the new report shape on a real pack**. FD-P5 rewrote what every reporting skill says to the user, and no test can see that change: a test can check that the rule file was copied, never that a report was structured. The next `onboard` run in an unrelated repository is the first evidence either way.
+The previous checkpoint, exercise the new report shape on a real pack, is closed. It was exercised this session against these same two packs, and the verdict was not that the shape held: the user found the report too heavy on bookkeeping regardless of how well each part was formatted, which is what `family-design` FD-P6 acted on. The current checkpoint is reinstalling FD-P6's changes to the four host directories, recorded above.
 
 What each pack still carries:
 
@@ -74,6 +74,7 @@ What each pack still carries:
 |---|---|---|
 | `family-design` | FD-Q1, hiding lifecycle skills at package level | deferred on a platform mechanism that does not exist |
 | `family-design` | FD-Q2, installing hooks across more than one repository | deferred on a rollout design |
+| `family-design` | FD-Q5, who owns misfiled-content detection now that `onboard` no longer checks it | open, opened by FD-P6 |
 | `skill-consolidation` | SC-Q6, the identifier scheme and whether the contract owns it | open, minus the uniqueness clause FD-D30 settled |
 | `skill-consolidation` | SC-Q7, what `baselinedocs-onboard` does with an entry index | open, four options recorded, none chosen |
 | `skill-consolidation` | SC-Q8, the label standard inside an entry | open |

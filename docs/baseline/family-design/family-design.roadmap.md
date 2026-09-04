@@ -3,8 +3,8 @@ baseline_schema: "2.0"
 pack: "family-design"
 document: "roadmap"
 status: "active"
-updated: "2026-08-29"
-code_ref: "uncommitted"
+updated: "2026-09-04"
+code_ref: "0d30867"
 ---
 
 # Family Design Roadmap
@@ -38,7 +38,7 @@ Verified against the repository, not against `DESIGN.md`.
 | `useguide` role | FD-D22, FD-D29 | implemented | contract, `Conditional documents`, carries the criterion, the five valid forms, and the wiki routing rule |
 | Execution policy gate | FD-D23 | implemented | `execution-contract.md`, `Selection gate`. Pinned by `tests/test_run_policy.py` |
 | Multi-pack routing | FD-D24 | implemented | contract, `Multi-pack initiatives`; and `docs/baseline/baselinedocs.index.md` now exercises it |
-| Report structure | FD-D31, FD-D32, FD-D33 | implemented | `contract/report-style.md` at 41 lines carries 8 rules, 4 of them about layout; 14 packaged copies `cmp` clean; `baselinedocs-onboard/SKILL.md` `Output` names both parts and every section |
+| Report structure | FD-D31, FD-D32, FD-D33, FD-D34, FD-D35 | implemented | `contract/report-style.md` at 43 lines carries 8 rules plus the four-column exception; 14 packaged copies `cmp` clean; `baselinedocs-onboard/SKILL.md` `Output` is five flat sections, `Read record` removed |
 | Installation profiles | FD-Q1 | deferred | no platform mechanism exists to build against |
 | Organization-wide hook rollout | FD-Q2 | deferred | `baselinedocs-setup-hooks` handles one repository per invocation |
 
@@ -289,22 +289,61 @@ The load manifest, the unresolved-reference list, and one of the two phase table
 
 A comma-separated list is treated as one literal name. `-s a,b,c` reports `No matching skills found` and prints the available list, which reads like a discovery failure rather than a syntax error, and `-a` fails the same way with `Invalid agents`. Repeating the flag works: `-a claude-code -a universal -a kilo -a kiro-cli`. Recorded because the first attempt appeared to succeed at a glance, exited non-zero without anything obviously wrong in the visible output, and left all four hosts unchanged. Any later reinstall loops one skill per invocation with the agent flag repeated.
 
+## FD-P6: narrow `onboard`'s report to pack status only, and extend the table-width exception
+
+Opened 2026-09-04 when this session's own `baselinedocs-onboard` run against this repository's two packs, exactly the exercise FD-P5's next action called for, returned a report the user judged too wall-of-text and too heavy on bookkeeping. FD-D34 and FD-D35 carry the reasoning; FD-Q5 opens on the gap the change leaves behind.
+
+Acceptance criteria:
+
+- `baselinedocs-onboard/SKILL.md`'s `Output` section reports pack state only, in five named sections, with no `Read record` half
+- `contract/report-style.md` states the four-column exception in the section it qualifies, and all 14 packaged copies are byte-identical to it
+- both gate sentences, for `pack-contract.md` and for `report-style.md`, survive unchanged in `baselinedocs-onboard/SKILL.md`
+- `uvx pytest tests/ -q` stays green
+
+### Checkpoint: complete
+
+| Item | Result |
+|---|---|
+| Verification gate | 24 passed, 63 subtests passed |
+| `contract/report-style.md` | 41 lines to 43. 1 exception added to the existing table-width rule |
+| Packaged report-style copies | 14, re-synced, `cmp` clean against canonical |
+| `baselinedocs-onboard/SKILL.md` | 79 lines to 69. `Output` from two parts, 6 plus 5 items, to 5 flat sections |
+| Workflow steps removed | 1: the placement check, since nothing reports its result now |
+| Contract copies | 11, untouched. No contract edit in this phase |
+| Host directories updated | 0. Reinstall not carried out in this phase |
+| Entries written | 3: FD-D34, FD-D35, FD-Q5 |
+| Commit | `0d30867`, present on disk with the 16-file change already staged and committed under that hash. No `git commit` was invoked in this session; the commit's origin was not investigated here and was flagged to the user instead |
+
+Changes:
+
+| File | Change |
+|---|---|
+| `contract/report-style.md` | `Keep a table inside the terminal's width` gains the four-column exception |
+| `<skill>/references/report-style.md` | all 14 copies re-synced |
+| `baselinedocs-onboard/SKILL.md` | opening paragraph, steps 7 and 8, and one Reading Rules bullet trimmed of promises `Read record` no longer keeps; step 10 (placement check) deleted and the rest renumbered; `Output` rewritten into 5 flat sections |
+| `family-design.hallucination.md` | FD-D34, FD-D35, FD-Q5 added; FD-D33's index status marked reversed by FD-D34; entry count 35 to 38 |
+| `family-design.roadmap.md` | this phase, the design area row, the installed-skills risk row, and the next action |
+
+### Finding: the checkpoint FD-P5 left standing returned the opposite verdict from what it was written expecting
+
+FD-P5's next action asked for the report shape to be exercised on a real pack and reported on. It was, this session, against this repository's own two-pack initiative, and the report it produced was the one FD-P5 itself had just finished making readable: headed sections, budgeted tables, a restructured next action. The verdict was not that the shape held; it was that the shape it replaced, `I. Pack status` plus `II. Read record`, was still too much report for what the user wanted, independent of whether each part inside it was well formatted. A layout fix and a scope fix are different corrections, and FD-P5 only made the first one available to notice.
+
 ## Risks
 
 | Risk | Detail |
 |---|---|
 | `AGENTS.md` points four times at a file that is being retired | FD-D27 made this pack canonical and scheduled `DESIGN.md` for deletion, so `AGENTS.md` is already wrong where it tells a contributor to record decisions in `DESIGN.md`. The file is still on disk, so nothing is broken yet, but a contributor reading `AGENTS.md` today would write a new decision into the file being deleted. The rewire is the next action below |
 | `skill-consolidation` records its own state as uncommitted | Its roadmap states that SC-P9 through SC-P14 are uncommitted at the user's request. Those changes are now committed, at `959617b`, `b857216`, and `0cb913f`. This adoption did not repair it: `baselinedocs-sync-codebase` owns a pack that has fallen behind the code, and the repair belongs in that pack, not this one |
-| Installed skills are behind this repository | Closed 2026-08-29 in FD-P5, and it will reopen on the next repository edit. All four host directories now hold 15 skills, 11 contract copies at 129 lines, and 14 report-style copies at 41 lines, each folder diffed against this repository. The mechanism survives the measurement: an installed skill reads its own packaged copy, so this repository and every machine drift apart from the next edit onward. Before the reinstall the gap was two generations wide and it was invisible from inside a run, which is what FD-P5's first finding records |
+| Installed skills are behind this repository | Reopened 2026-09-04 by FD-P6, exactly as FD-P5 predicted it would on the next repository edit. All four host directories still hold FD-P5's snapshot: `report-style.md` at 41 lines against this repository's 43, and `baselinedocs-onboard/SKILL.md` in its two-part `Output` shape rather than FD-P6's five flat sections. The mechanism survives the measurement: an installed skill reads its own packaged copy, so this repository and every machine drift apart from the next edit onward. Reinstalling is the next action below |
 | A reference written before 2026-08-28 names an identifier that no longer exists | FD-D30 renamed every identifier in both packs to carry a pack prefix. Anything citing a bare `D16` or `P8`, in a commit message or an earlier thread, now resolves to nothing. That is the intended failure mode, chosen over a bare number that resolves silently to the wrong entry, but it is a real cost to anyone holding an old reference |
 | Nothing about the skill family itself is deferred | The rename sweep and the finished-pack marker were closed rather than postponed, in `skill-consolidation` SC-D13 and SC-D14. The only deferred items in this pack, FD-Q1 and FD-Q2, are blocked on a platform capability and on a rollout mechanism, neither of which is a skill-family question |
 
 ## Next action
 
-Exercise the new report shape on a real pack and report whether it holds. FD-P5 changed what every reporting skill says without any test able to see the change: no test can check that a report was structured, only that the rule file was copied. The next `baselinedocs-onboard` run in an unrelated repository is the first evidence either way, and the reviewed run that opened FD-P5 is the baseline to compare it against.
+Reinstall FD-P6's changes to the four host skill directories, `.claude`, `.agents`, `.kilocode`, `.kiro`: the widened `contract/report-style.md`, its 14 re-synced packaged copies, and the rewritten `baselinedocs-onboard/SKILL.md`. This is the same mechanical step FD-P3 and FD-P5 both closed out with, not a new kind of work, and until it runs, every installed `onboard` still produces the two-part report this phase replaced.
 
-The adoption is finished and the reinstall is done. Nothing in this pack is waiting on a user decision.
+One open question is new: FD-Q5 asks who, if anyone, now checks a pack for misfiled content, since `onboard`'s placement check was deleted along with the output section that reported it. Nothing else in the pack is waiting on a user decision.
 
 One repair is outstanding and belongs to another pack: `skill-consolidation.roadmap.md` states that SC-P9 through SC-P14 are uncommitted, and they are committed at `959617b`, `b857216`, and `0cb913f`. `baselinedocs-sync-codebase` owns a pack that has fallen behind the code, and the repair belongs in that pack rather than here.
 
-Two open questions remain in this pack, both deferred on something outside it: FD-Q1 waits on a portable hidden-skill mechanism that no installer provides, and FD-Q2 waits on a hook rollout design. Neither is a decision anyone can take today. `skill-consolidation` still carries SC-Q6, SC-Q7, and SC-Q8, and SC-Q6 is the one this pack touched: FD-D30 settled its uniqueness clause and left the rest of it open.
+Two older open questions remain in this pack, both deferred on something outside it: FD-Q1 waits on a portable hidden-skill mechanism that no installer provides, and FD-Q2 waits on a hook rollout design. Neither is a decision anyone can take today. `skill-consolidation` still carries SC-Q6, SC-Q7, and SC-Q8, and SC-Q6 is the one this pack touched: FD-D30 settled its uniqueness clause and left the rest of it open.

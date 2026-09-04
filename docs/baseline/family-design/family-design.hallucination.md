@@ -3,8 +3,8 @@ baseline_schema: "2.0"
 pack: "family-design"
 document: "hallucination"
 status: "active"
-updated: "2026-08-29"
-code_ref: "uncommitted"
+updated: "2026-09-04"
+code_ref: "0d30867"
 ---
 
 # Family Design: Decisions and Open Questions
@@ -13,7 +13,7 @@ code_ref: "uncommitted"
 
 One row per entry. A row states what the entry is about and nothing more: never its reasoning, never the justification behind its outcome, never a summary that could be mistaken for the entry. An answer that turns on an entry whose full text was not read is unbacked, and must be reported that way rather than derived from a row.
 
-Required by `contract/pack-contract.md` above 40 KB or 20 entries. This document holds 35.
+Required by `contract/pack-contract.md` above 40 KB or 20 entries. This document holds 38.
 
 Every identifier in this initiative carries its pack's prefix: `FD-` here, `SC-` in `skill-consolidation`. It is written that way everywhere, inside the pack as well as across packs, so a reference is unambiguous wherever it is read and greppable across the whole repository. FD-D30 records the decision.
 
@@ -51,9 +51,12 @@ Every identifier in this initiative carries its pack's prefix: `FD-` here, `SC-`
 | FD-D30 | how an identifier is named once an initiative holds more than one pack, closing FD-Q4 | current | FD-D24, FD-D27 |
 | FD-D31 | what `report-style.md` governs beyond the naming of an element | current | FD-D7, FD-D17 |
 | FD-D32 | whether a next action is quoted verbatim or restructured for reading | current, reverses the rule as shipped | FD-D31, FD-D17 |
-| FD-D33 | whether `onboard`'s load manifest is removed or compressed | current | FD-D10, FD-D17, FD-D31 |
+| FD-D33 | whether `onboard`'s load manifest is removed or compressed | reversed by FD-D34 | FD-D10, FD-D17, FD-D31 |
+| FD-D34 | dropping `onboard`'s `Read record` half entirely, reversing FD-D33 | current | FD-D33, FD-D17, FD-D10 |
+| FD-D35 | a stated four-column exception in `report-style.md`, extending FD-D31 | current | FD-D31, FD-D34 |
 | FD-Q1 | hiding internal helpers at package level rather than by naming convention | open, deferred on a missing platform feature | FD-D1 |
 | FD-Q2 | installing checkpoint hooks across more than one repository | open, deferred | FD-D6 |
+| FD-Q5 | who, if anyone, owns misfiled-content detection now that `onboard` no longer checks it | open | FD-D34 |
 
 ## FD-D1: six entrypoints stay deliberate, and the rest stay agent-selectable
 
@@ -458,6 +461,30 @@ A new thread is the default once the pack is current, which after a save it is. 
 
 **Rejected: one summary line only, with the detail available on request.** Shorter still, and it keeps a total. Rejected because per-pack provenance is what a reader uses to decide how far to trust a document, and folding several packs into one line hides the pack whose `code_ref` differs from the rest, which is the one line worth seeing.
 
+## FD-D34: the onboard report drops `Read record` entirely, reversing FD-D33
+
+**Decided, reversing FD-D33.** `baselinedocs-onboard`'s `Output` section no longer has a `Read record` half. The load manifest, the routing view, dependency edges as a standalone list, placement findings, and the excluded-and-unreadable list are gone from the report, and nothing replaces them, compressed or otherwise. `Output` is now five flat sections, `Doc pack introduction`, `Roadmap and Opens`, `Next actions`, `Cross-pack checkpoint`, `Unresolved references`, with no `I.`/`II.` split above them. `Workflow` step 10, the placement check against the contract, is deleted along with it, since nothing consumed its result once `Placement findings` no longer exists; steps 7 and 8 and one Reading Rules bullet were also trimmed of promises the deleted section no longer keeps. The file goes from 79 lines to 69.
+
+**Why.** A real report against this repository's own two-pack initiative, run this session, read as bookkeeping-heavy: the reader wanted pack state and had to read past routing evidence, a six-field manifest, and an empty placement-findings list to reach it. FD-D17 already ranked the manifest second for the same reason; this decision goes further and removes the whole half rather than reordering it, on the user's explicit choice after the trade-off was put to them directly.
+
+**What breaks if ignored, stated plainly since none of it was individually re-confirmed.** Four things the family built on purpose stop being reported. The load manifest was FD-D33's answer to how a reader knows `onboard` did not silently truncate; that proof is gone, though the underlying gate it proved, the size gate in `Workflow` steps 4 through 6 and the first two Reading Rules, is untouched and still runs. The placement check `skill-consolidation` SC-D16 and SC-D20 built into `onboard` specifically because a full read is the qualifying criterion is no longer performed by anything in the family; FD-Q5 opens on exactly this gap. The exclusion-reporting Reading Rules bullet is gone, so retained source material or an oversized scope can be dropped from a load without the report saying so. Dependency edges no longer get a standalone line; they surface only inside `Cross-pack checkpoint`, and only when a real coupling exists to report.
+
+**Rejected: compress every guarantee into short lines folded inside Pack Status.** The option recommended when this trade-off was put to the user: a one-line proof-of-read per pack, an excluded-material line per pack, placement findings folded into a short bullet list, dependency edges folded into `Cross-pack checkpoint`. Rejected in favor of the simpler report; the user judged the four guarantees above worth losing rather than worth the lines they cost on every run.
+
+**Rejected: keep proof-of-read only, drop the rest.** A narrower middle ground, keeping FD-D33's core guarantee while still dropping placement findings, dependency edges, and the excluded list. Also rejected, for the same reason: the user chose the fully flat report over any partial retention.
+
+## FD-D35: `report-style.md` gains a four-column exception for identifier-shaped tables, extending FD-D31
+
+**Decided.** The `Keep a table inside the terminal's width` rule in `contract/report-style.md` keeps its three-column default and gains one stated exception: four columns are allowed when every column holds a short phrase, a one- or two-word status, or a handful of identifiers, never a full sentence, a quotation, or a path. The file goes from 41 lines to 43 lines. All 14 packaged copies were re-synced.
+
+**Why.** `baselinedocs-onboard`'s new `Roadmap and Opens` table needs four fields in one row: a phase identifier, a short phrase of what the phase did, its status, and the identifiers of any open question tied to it, mirroring the contract's own entry-index shape, identifier and about and status and related, applied to a phase instead of a decision. Forcing that into three columns would either drop the phase identifier or merge two identifiers into one cell, which is the same failure FD-D31 diagnosed: a value split across a merged cell degrades exactly like a value too wide for its own cell, only the cause is narrower rather than the row being wider than the terminal.
+
+**What breaks if ignored.** Either the phase table loses the identifier a reader needs to cite the phase elsewhere, or two unrelated things share one cell and the report-style rule against presenting an identifier without a gloss is satisfied technically while failing in spirit, since a merged cell reads as one value rather than two.
+
+**Rejected: merge the phase identifier into the content cell.** The option that keeps the existing three-column rule untouched, at the cost of a table cell reading as `` `FD-P1` adopt DESIGN.md into pack ``. Rejected because it buries the identifier inside a text blob rather than naming it, which is the opposite of `report-style.md`'s own rule to name an element before saying what it is.
+
+**Rejected: split into two three-column tables per pack.** Keeps every table within the existing budget by separating phase-and-status from opens-and-related-phase. Rejected because it separates a phase from the open question it is about, doubles the number of tables per pack, and a reader has to cross-reference two tables to answer one question a single row already answered.
+
 ## Open questions
 
 ### FD-Q1: can internal helpers be hidden at package level?
@@ -473,3 +500,11 @@ The trigger to reopen: a portable hidden-skill or profile mechanism appearing in
 What makes it more than a loop over repositories: the installer merges into each host's existing configuration, and the safety property that matters is preserving what it did not write. A rollout mechanism has to hold that property across repositories whose hook configuration nobody has inspected, which is a different problem from installing into one repository a user is looking at.
 
 FD-Q3 closed in FD-D29, FD-Q4 closed in FD-D30. Stated here rather than deleted, so a reader can tell each was settled by a decision rather than dropped. Neither question's analysis was lost with its heading: both sit inside the decision that closed them.
+
+### FD-Q5: who, if anyone, owns misfiled-content detection now that `onboard` no longer checks it?
+
+FD-D34 deleted `onboard`'s placement check along with its output section, because nothing consumed its report once `Placement findings` no longer exists. `onboard` was the only skill in the family that read a pack in full and could compare content against `pack-contract.md`'s role lists; `skill-consolidation` SC-D16 and SC-D20 built that capability into `onboard` specifically because a full read is the qualifying criterion for carrying the contract at all.
+
+What is at stake: the failure `pack-contract.md`'s own `Misfiled content` section describes, settled material filed under an open-questions heading being the commonest form, has no detector anywhere in the family until this question is answered.
+
+The trigger to reopen: a decision on whether an existing skill absorbs the check under the same full-read criterion SC-D16 already established, whether a new skill is warranted, or whether the family accepts the gap as a deliberate cost of a lighter `onboard` report.
