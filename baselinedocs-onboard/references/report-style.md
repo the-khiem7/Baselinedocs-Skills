@@ -36,6 +36,8 @@ A report with more than one part names each part as a heading, states each fact 
 
 Three columns at most, every cell short. A path, a URL, a quotation, or a full sentence goes in a bullet under the table, never inside a cell. A table too wide to render degrades into a vertical dump of field names and empty rows, which is worse than the prose it replaced. When rows repeat the same value, state it once above the table and list only the rows that differ.
 
+One exception: four columns are allowed when every column holds a short phrase, a one- or two-word status, or a handful of identifiers, never a full sentence, a quotation, or a path. Splitting a table like that further would not shorten anything; it would only force one short value, such as two related identifiers, apart into two cells for no gain. A column that actually holds a sentence still moves that value to a bullet below the table, and the table stays at three columns.
+
 ## When asking, state what one word of agreement means
 
 Give each question its recommended answer, then close the block with the full default set spelled out, so a user replying `approve` accepts something stated rather than something inferred. One exception, and it is absolute: a default set never carries an authorization the user has to give affirmatively, such as committing, deleting, or applying. Ask for those separately and leave them out of the shortcut.

@@ -7,7 +7,7 @@ description: Load, ingest, or absorb an existing adaptive baseline pack or initi
 
 Load a pack into working context and report the state it records. The deliverable is a loaded agent, not a new document. Nothing is written.
 
-Read `references/pack-contract.md` in full before reporting the pack state, every time. It is the only definition of which document owns which content, and that is the standard content in the wrong document is reported against; do not infer it from a filename, from an earlier session, or from memory. Report a placement finding and repair nothing.
+Read `references/pack-contract.md` in full before reporting the pack state, every time. It is the only definition of which document owns which content, the entry-index shape, and what a phase or an open question records; do not infer any of it from a filename, from an earlier session, or from memory.
 
 Read `references/report-style.md` in full before reporting to the user, every time. It governs how a pack element is named in conversation; an identifier stated without its meaning is a question the user has to ask.
 
@@ -28,12 +28,11 @@ Determine or confirm:
 4. Enumerate the selected scope. Report the file list with line counts before reading anything, and name what the scope excludes.
 5. Apply the size gate. When you cannot say with confidence that the scope fits in remaining context, stop, present the total, propose a narrower scope, and wait. Uncertainty resolves toward asking, not toward starting.
 6. Read every file in the agreed scope in full. Do not truncate, skim headings, sample sections, or substitute a search for a read.
-7. Record provenance per document: `status`, `updated`, `code_ref`. When `code_ref` names a commit, report whether the repository moved past it. `uncommitted` and `unknown` are provenance, not commits: report them as stated and compare nothing. A moved repository is the drift signal the contract describes, not a verdict to investigate here.
-8. Follow links out of the pack. Read a wiki article when it is in scope; otherwise list it unread.
+7. Record provenance per document: `status`, `updated`, `code_ref`. `uncommitted` and `unknown` are provenance, not commits. A newer commit than a document's `code_ref` is the drift signal the contract describes, not a verdict to investigate here.
+8. Follow links out of the pack. Read a wiki article when it is in scope; otherwise leave it unread and do not treat it as loaded.
 9. Collect unresolved references: every point where a loaded document leans on something outside the scope, said in your own words and then quoted with its location. A decision cited without its content, a term used undefined, a link into another pack.
-10. Check placement against the contract: content sitting in a document whose role does not cover it, settled material under a heading that says it is unsettled, and a conditional document or entry index absent where its inclusion criterion is met. Report each with its location, name the owner the contract's misfiled-content rule gives it, and move nothing yourself.
-11. Report in the two parts `Output` defines, state before record. The state is what a reader needs; the record is how they check the read happened.
-12. Stop. Do not propose, plan, or begin work unless asked.
+10. Report the sections `Output` defines, in that order. Render every section every time except `Cross-pack checkpoint`, which follows its own stated condition; when a section has nothing to report, say so rather than dropping its heading.
+11. Stop. Do not propose, plan, or begin work unless asked.
 
 ## Reading Rules
 
@@ -46,29 +45,21 @@ Determine or confirm:
 - Dependency edges and the cross-pack checkpoint live only in the index. Without one they are missing, not derivable: do not infer them from directory names, alphabetical order, or the import graph.
 - Do not resolve a contradiction found while reading; report it. `baselinedocs-sync-reconcile` owns the repair. Index status disagreeing with a pack's own `status` is one of these: do not treat the index as authoritative and do not prefer the newer `updated`.
 - Retained source material is out of scope unless the user includes it: a `sources/` directory, or any file in the pack without baseline frontmatter. `baselinedocs-adopt` already distributed its information into the documents, so reading both loads the same content twice, and the source is usually the largest file present.
-- List anything excluded rather than dropping it silently, so the user can pull it in.
 - Do not update frontmatter, dates, or status. Onboard writes nothing, including the index it just reported missing.
 
 ## Output
 
-Two parts, each rendered as its own heading: `I. Pack status`, then `II. Read record`. State first and prove second. The state is what the reader came for; the record is how they check the read happened.
+Five named sections, each its own heading, in this order: `Doc pack introduction`, `Roadmap and Opens`, `Next actions`, `Cross-pack checkpoint`, `Unresolved references`. Render every section as headings and nested bullets, never as a paragraph; a paragraph is for an argument that must be followed in order, and a report is not one.
 
-`I. Pack status`, one named section per source, in this order:
+`Doc pack introduction`: one sub-heading per pack in scope, named for the pack. Under it, one bullet for scope and one bullet for target, as `introduction` records them. Report what it records; do not reproduce it, and do not fold scope and target into one paragraph.
 
-- `Doc pack introduction`: scope and target, as `introduction` records them. Report what it records; do not reproduce it
-- `Phase Roadmap`: what is complete, what is in progress, what is blocked, and on what
-- `Next action`: one sub-heading per pack in scope, restructured under the report-style rule that keeps every instruction, condition, and ordering intact
-- `Cross-pack checkpoint`: for an initiative, from the index
-- `Open questions`: those still open, one bullet each, grouped by pack
-- `Unresolved references`: each said in your own words before it is quoted, with its location, and the offer to load what it names
+`Roadmap and Opens`: one sub-heading per pack in scope, holding that pack's table. One row per phase, four columns: the phase identifier, a short phrase of what the phase did, its status in the pack's own word for it, and the identifiers of any open question recorded against that phase, or a dash. This is the contract's entry-index shape, identifier and about and status and related, applied to a phase instead of a decision; `report-style.md`'s stated exception is what lets this table run to four columns. When a phase needs more than the phrase column holds, add a bullet below the table naming the phase identifier; never widen a cell into a sentence. Under the table, a bulleted list titled `Not tied to a phase` for any open question the pack records without a phase link; omit that list when the pack has none.
 
-`II. Read record`:
+`Next actions`: one sub-heading per pack in scope. Under it, one bullet per action item, ordered from easiest and least urgent to hardest and most urgent. An item is the pack's recorded `Next action`, its instructions split one per nested bullet, or an open question the pack's own next action names as something it cannot proceed past. Head each item with what it is and close with its identity tag as inline code; nest its instructions under it, restructured under the report-style next-action rule so what they tell the user to do survives unchanged, none added, none softened. Rank on two recorded signals, never on unstated judgment: whether the pack already records a recommendation for the item, which ranks easier than one with none, since approving a recorded answer is easier than originating one; and how many other recorded items are blocked on it or waiting on it, which ranks more urgent the higher that count. State the signal beside the item, so the ranking is checkable against the pack rather than taken on trust.
 
-- `Routing view`: every sub-pack, its status, and which was selected on what evidence
-- `Load manifest`: one line per pack giving files, lines read, and the `status`, `updated`, and `code_ref` its documents share, with the index as its own line and a total. Break a document out separately only where its provenance differs from the rest of its pack. Compress the manifest, never omit it: the line counts are the only proof the reader has that the read was complete
-- `Dependency edges` as recorded, and any excluded pack an in-scope pack depends on
-- `Placement findings` against the contract, each with its location
-- `Excluded and unreadable`: anything missing, unreadable, or excluded by scope. A skill that ships no contract copy is not missing one: only a writer and a full reader carry it
+`Cross-pack checkpoint`: only when the scope sits inside a multi-pack initiative. Omit the heading when the index records no dependency edge and no coupling note touching an in-scope pack; an empty heading is the filler the contract's own omission rule exists to prevent. When it records one, report the index's own checkpoint narrative restructured as bullets, and pair the specific coupled entries or phases it names, for example "`family-design` FD-D30 amended one clause of `skill-consolidation` SC-Q6," rather than merging both packs' phase tables into one timeline. Phases in different packs run on independent per-pack counters with no shared date at phase granularity, only a document-level `updated` date each, so pairing the named entries is the fusion this section offers, not a unified chronology.
+
+`Unresolved references`: one bullet per reference. Say in your own words what is missing, before quoting it, with its location.
 
 ## Non-Goals
 
