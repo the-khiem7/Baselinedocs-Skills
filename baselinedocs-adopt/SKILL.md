@@ -30,9 +30,9 @@ Read `references/report-style.md` in full before reporting to the user, every ti
 5. Preserve provenance for every adopted claim, including the source artifact and the point-in-time interpretation where useful.
 6. Mark each claim accurately as `implemented`, `planned`, `decided`, `unverified`, or historical. Resolve contradictions only with repository evidence or an explicit decision.
 7. Write a coverage ledger mapping every source section or requirement to its destination baseline document. Include exclusions and intentionally consolidated material.
-8. Validate that the pack answers the same substantive questions as the source: why, scope, behavior, architecture, users/operations, decisions, risks, verification state, roadmap, and next action.
+8. Validate the adopted pack against the three evaluation criteria: Coverage, Purity, and Readiness. When dual-subagent cross-verification is available, launch one subagent to read the adopted pack and one to read the source artifact, cross-checking knowledge inventories against these three criteria.
 9. If source removal was authorized, remove it only after coverage validation succeeds. If retention was required, follow the agreed retention method. Never infer either choice.
-10. Report changed paths, coverage result, unresolved gaps, source-retention result, and the next executable action.
+10. Report changed paths, coverage result, unresolved gaps, source-retention result, evaluation criteria verdicts (Coverage, Purity, Readiness), and the next executable action.
 
 ## Distribution
 
@@ -48,11 +48,22 @@ Do not force content into a file whose role does not fit. Add a narrowly scoped 
 - Keep exact requirements, constraints, names, state transitions, ownership boundaries, and negative requirements traceable.
 - Preserve open questions as open; do not silently decide them during conversion.
 - Preserve explicit unknowns and unsupported claims as unverified.
-- Distinguish proposal intent from code, test, deployment, and runtime evidence.
+- Distinguish proposal intent from code, test, deployment, and runtime evidence. When adopting a proposal, RFC, or draft under review, mark the pack status as `draft` and its claims as `proposed` or `unverified`. Never invent an implementation roadmap or execution phases that presume acceptance - downstream agents will mistake fictitious phases for approved work.
+- Never borrow concrete parameters (port numbers, IP addresses, commit hashes, container UIDs, environment account IDs) from another environment or codebase to fill in abstract mentions in the source. Preserve the source's exact level of abstraction; fabricated details cause design conflicts when the proposal changes.
+- Respect repository and role boundaries. Tasks outside this repository's remit (such as application surveys, licensing negotiations, or legal assessments) belong in `hallucination` as external dependencies gating the work, not as tasks on the repository's `roadmap`.
+- Never create conditional documents (such as `useguide`) for proposals or unbuilt systems without active consumers or operators. Inventing CLI commands or runbooks to populate an unneeded document produces false operational memory.
 - Do not claim builds, formatting, static inspection, or documentation review prove live behavior.
 - Do not delete, archive, commit, or otherwise alter the source artifact unless the user explicitly authorizes that action.
 - If lossless retention is required, verify raw-byte identity; a normalized hash or matching headings is insufficient.
 
+## Evaluation Criteria
+
+Score and verify the adopted pack against three strict criteria before completing adoption:
+
+- **Coverage**: 100% of the source material's scope, requirements, constraints, architectural decisions, rejected alternatives with reasons, risks, open questions, and comparative reference tables must be traceable in the destination documents. Nothing from the source is dropped, softened, or smoothed away.
+- **Purity**: Zero hallucination and zero context pollution. The pack must not import concrete values (port numbers, IP addresses, commit hashes, container UIDs, environment account IDs) from other environments or existing code to fill in abstract concepts. It must not invent fictitious implementation phases or CLI runbooks. The source's exact level of abstraction is preserved intact.
+- **Readiness**: Downstream agents reading the pack must be able to act without ambiguity. The lifecycle state must accurately reflect reality (`draft`/`proposed` for proposals, `blocked` when gating inputs are missing). Scope and role boundaries must be respected: upstream prerequisites and cross-domain dependencies belong in `hallucination` as external dependencies, keeping the repository's `roadmap` strictly focused on actionable phases within its remit.
+
 ## Output
 
-Produce a baseline pack that is collectively equivalent in information to the adopted source while being easier to navigate, update, audit, and resume.
+Produce a baseline pack that is collectively equivalent in information to the adopted source while being easier to navigate, update, audit, and resume, verified clean across Coverage, Purity, and Readiness.

@@ -33,6 +33,8 @@ code_ref: "<commit|uncommitted|unknown>"
 
 A closed decision records four things: what was decided, why, what breaks if it is ignored, and which alternatives were rejected with their reasons. A decision recorded without its reasoning is one the next reader optimizes away, because nothing tells them what it was protecting. A rejected alternative that is not written down gets proposed again.
 
+A roadmap organizes work into sequential units named `Phase <N>` (e.g. `Phase 1`, `Phase 2`). Do not invent alternative grouping names like `Block`, `Step`, or `Track` - downstream tools, hooks, and checkpoints parse the phase prefix.
+
 ## Register
 
 A `hallucination` entry is read by an agent every time the pack loads, not by a person reading once. State its four required parts above in a fixed compact form, never as narrative prose.
@@ -89,7 +91,7 @@ Left alone it costs twice. A reader cannot tell which questions are live, which 
 
 Omit a conditional document when it would contain only `not applicable` filler. Preserve an existing conditional document until its useful content is migrated or pruning is explicitly safe.
 
-`useguide` means a consumer contract. Valid forms: API request and response behavior; method or library usage; a migration or conversion procedure; an operator workflow; black-box behavior another team needs. If no consumer exists, omit the file.
+`useguide` means a consumer contract. Valid forms: API request and response behavior; method or library usage; a migration or conversion procedure; an operator workflow; black-box behavior another team needs. If no consumer exists, omit the file. Never invent operational CLI procedures or consumer examples just to populate this document for a proposal or unbuilt system.
 
 A procedure that applies across tasks is not a consumer contract, whoever consumes it. It belongs in the wiki, at `docs/wiki/<topic>.md`, because a pack holds task-specific state while a wiki article holds task-independent instruction that can be injected into later work. `baselinedocs-extract-wiki` performs that move.
 
