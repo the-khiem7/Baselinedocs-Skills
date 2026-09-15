@@ -11,7 +11,6 @@ ENTRYPOINTS = {
     "baselinedocs-brief",
     "baselinedocs-save",
     "baselinedocs-run",
-    "baselinedocs-setup-hooks",
 }
 
 

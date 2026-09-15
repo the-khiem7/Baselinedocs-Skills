@@ -33,7 +33,7 @@ code_ref: "<commit|uncommitted|unknown>"
 
 A closed decision records four things: what was decided, why, what breaks if it is ignored, and which alternatives were rejected with their reasons. A decision recorded without its reasoning is one the next reader optimizes away, because nothing tells them what it was protecting. A rejected alternative that is not written down gets proposed again.
 
-A roadmap organizes work into sequential units named `Phase <N>` (e.g. `Phase 1`, `Phase 2`). Do not invent alternative grouping names like `Block`, `Step`, or `Track` - downstream tools, hooks, and checkpoints parse the phase prefix.
+A roadmap organizes work into sequential units named `Phase <N>` (e.g. `Phase 1`, `Phase 2`). Do not invent alternative grouping names like `Block`, `Step`, or `Track` - downstream tools and checkpoints parse the phase prefix.
 
 ## Register
 

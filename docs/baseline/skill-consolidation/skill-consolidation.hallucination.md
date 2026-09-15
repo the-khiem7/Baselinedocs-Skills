@@ -3,8 +3,8 @@ baseline_schema: "2.0"
 pack: "skill-consolidation"
 document: "hallucination"
 status: "active"
-updated: "2026-08-28"
-code_ref: "0cb913f"
+updated: "2026-09-11"
+code_ref: "uncommitted"
 ---
 
 # Skill Consolidation: Decisions and Open Questions
@@ -38,6 +38,7 @@ Required by `contract/pack-contract.md` once a journal passes its threshold. SC-
 | SC-D19 | putting the entry index into the contract as a conditional section | current | SC-D5, SC-D6, SC-D20, SC-Q7 |
 | SC-D20 | who repairs content that is true but sits in the wrong document, closing SC-Q5 | current | SC-D5, SC-D12, SC-D16 |
 | SC-D21 | an edit to the contract destroyed a section heading, and every test stayed green | current, repaired | SC-D5, SC-D19 |
+| SC-D22 | deleting setup-hooks and removing the report-style exemption | current | SC-D1, SC-D8, SC-D17 |
 | SC-Q6 | what the element identifier scheme is, and whether the contract owns it | open, except the uniqueness clause settled by `family-design` FD-D30 | SC-Q7, SC-Q8, SC-D19 |
 | SC-Q7 | what `onboard` does with the index, now that the index itself is decided | open, narrowed by SC-D19 | SC-D19, SC-D7, SC-D11 |
 | SC-Q8 | the label standard inside an entry, and how many entry kinds `hallucination` holds | open | SC-Q6, SC-D19 |
@@ -345,6 +346,16 @@ The cost is higher than SC-D8 recorded, measured in SC-P8. A machine carries sev
 **Repaired, and the gate is what caught it.** The heading is restored, the 11 copies re-synced, and the five role bullets verified to sit under the correct headings by listing each bullet with the heading above it rather than by eye. Recorded rather than quietly fixed because the failure mode, not the typo, is the useful part.
 
 **Rejected: add a test asserting the contract's section list.** Tempting and cheap: pin the ordered heading list, fail on a removal. Not taken here because the heading list is edited deliberately in most phases that touch the contract, so the test would need updating in the same commits that break it, which is the pattern that trains a maintainer to update a test rather than read it. Left as a candidate if a second structural break occurs, which would make it a class rather than an incident.
+
+## SC-D22: delete baselinedocs-setup-hooks and remove report-style exemption
+
+**Decided.** Delete the one-time administrative skill `baselinedocs-setup-hooks` outright without a stub, reducing total skills from 15 to 14 and user entrypoints from 7 to 6, eliminating the `REPORT_STYLE_EXEMPT` exemption so 100 percent of remaining skills ship `contract/report-style.md`.
+
+**Why.** `setup-hooks` existed solely to merge host configurations for the external Stop hook adapter retired in `family-design` FD-D37 - removing the hook mechanism eliminates the skill's only purpose and leaves every remaining skill in the family producing reports that cite pack elements under `report-style.md`.
+
+**What breaks if ignored.** Leaving an administrative skill for a decommissioned subsystem creates dead user entrypoints, lingering host configuration dependencies, and preserves an arbitrary exemption in the report-style distribution test.
+
+**Rejected: keep setup-hooks as an optional utility.** Rejected because retaining a skill whose underlying functionality was removed leaves orphaned code and misleads operators into attempting unsupported hook configurations.
 
 ## Open questions
 

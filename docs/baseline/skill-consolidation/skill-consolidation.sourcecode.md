@@ -28,10 +28,10 @@ A skill may rely only on files inside its own folder, because `npx skills add --
 | Class | Count | Skills | `allow_implicit_invocation` |
 |---|---|---|---|
 | User entrypoints | 6 | `init`, `adopt`, `save`, `run`, `onboard`, `brief` | false |
-| One-time administration | 1 | `setup-hooks` | false |
+| One-time administration | 0 | none (`setup-hooks` deleted in SC-D22) | - |
 | Lifecycle, agent-selected | 8 | 3 sync, 2 audit, 2 maintain, `extract-wiki`. 11 at `cded242` | true |
 
-`tests/test_skill_metadata.py` pins this: the 7 names in `ENTRYPOINTS` must disable implicit invocation and every other skill must enable it.
+`tests/test_skill_metadata.py` pins this: the 6 names in `ENTRYPOINTS` must disable implicit invocation and every other skill must enable it.
 
 ## Contract fanout
 
@@ -39,7 +39,7 @@ A skill may rely only on files inside its own folder, because `npx skills add --
 
 | Carries a copy | Does not |
 |---|---|
-| `init`, `adopt`, `save`, `run`, `sync-codebase`, `sync-decisions`, `sync-reconcile`, `maintain-compact`, `maintain-split`, `extract-wiki`, `onboard` | `brief`, `setup-hooks`, `audit-drift`, `audit-claims` |
+| `init`, `adopt`, `save`, `run`, `sync-codebase`, `sync-decisions`, `sync-reconcile`, `maintain-compact`, `maintain-split`, `extract-wiki`, `onboard` | `brief`, `audit-drift`, `audit-claims` |
 
 The criterion is a full read of the pack, not the act of writing: the 10 writers qualify, and so does `onboard`, which writes nothing but reads every document and reports content sitting in a document whose role does not cover it. `brief` reads nothing in full and neither `audit` skill compares placement, so a copy there would let a skill report conformance it never checked.
 
@@ -49,7 +49,7 @@ Editing the canonical file means re-copying it to all of them. SC-P2 added a sec
 
 ## Report style fanout
 
-`contract/report-style.md` governs what the agent says to the user, and nothing about what goes inside a document. 14 skills ship a byte-identical copy at `<skill>/references/report-style.md`, every one except `setup-hooks`, which merges host configuration and names no pack element.
+`contract/report-style.md` governs what the agent says to the user, and nothing about what goes inside a document. 14 skills ship a byte-identical copy at `<skill>/references/report-style.md`, every single skill in the family without exception.
 
 Its audience is deliberately wider than the contract's, and the two sets are not nested the same way: `brief`, `audit-claims`, and `audit-drift` carry report style without carrying the contract, because each produces a user-facing report that cites identifiers while none of them writes a pack or reads one in full. SC-D17 records why merging the two files would force the wrong audience on one of them.
 
@@ -98,7 +98,7 @@ Which skills are named inside another skill's shipped text. Recorded as topology
 | `audit-drift` | `brief`, `onboard`, `audit-claims` |
 | `audit-claims` | `audit-drift` |
 | `maintain-split` | `onboard` |
-| `init`, `run`, `setup-hooks`, `maintain-compact`, `extract-wiki` | nothing |
+| `init`, `run`, `maintain-compact`, `extract-wiki` | nothing |
 
 `sync-codebase` and `sync-decisions` moved out of the last row in SC-P7. Both were named by nothing, which under SC-D1 is a signal that a pointer is missing rather than that a skill is unnecessary, and SC-P7 acted on it that way: `audit-drift` now names all three repair skills when it recommends follow-up actions, and the write trio names whichever sibling owns the case it refuses.
 

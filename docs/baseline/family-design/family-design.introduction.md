@@ -3,8 +3,8 @@ baseline_schema: "2.0"
 pack: "family-design"
 document: "introduction"
 status: "active"
-updated: "2026-08-28"
-code_ref: "0cb913f"
+updated: "2026-09-11"
+code_ref: "uncommitted"
 ---
 
 # Baseline Docs Family Design
@@ -13,7 +13,7 @@ code_ref: "0cb913f"
 
 The design of the `baselinedocs` skill family as a whole: which skills exist and how a host selects them, what a pack is and what its frontmatter means, how a phase checkpoint is produced, the order the skills are meant to be used in, and how a reader loads a pack without loading too much.
 
-In scope: the trigger architecture, the pack schema and its frontmatter semantics, the checkpoint model and its hook adapter, rule placement across the three instruction surfaces, the workflow sequence and the README shape that teaches it, the onboard scope gate, the dissolution of the `resume-*` family, evidence retention, the `useguide` role, run's execution policies, and multi-pack routing.
+In scope: the trigger architecture, the pack schema and its frontmatter semantics, the checkpoint model, rule placement across the three instruction surfaces, the workflow sequence and the README shape that teaches it, the onboard scope gate, the dissolution of the `resume-*` family, evidence retention, the `useguide` role, run's execution policies, and multi-pack routing.
 
 Out of scope, and owned elsewhere:
 
@@ -30,18 +30,18 @@ Verified against the working tree at `0cb913f`, not read off `DESIGN.md`.
 
 | Fact | State |
 |---|---|
-| skills on disk | 15 |
+| skills on disk | 14 |
 | user entrypoints | 6: `init`, `adopt`, `save`, `run`, `onboard`, `brief`. All set `allow_implicit_invocation: false` |
-| one-time administration | 1: `setup-hooks`, also `false` |
+| one-time administration | 0 |
 | lifecycle skills, agent-selected | 8, all `true` |
 | pack schema | `2.0`. Three core documents, two conditional |
-| packaged `pack-contract.md` copies | 11. Absent from `audit-claims`, `audit-drift`, `brief`, `setup-hooks` |
-| packaged `report-style.md` copies | 14. Absent from `setup-hooks` only |
-| checkpoint hook | `hooks/checkpoint.py`, 78 lines, plus `hooks/prompts/checkpoint.md` and three host config examples |
-| hook repository inspection | none. The adapter reads stdin, checks a loop guard, and emits a fixed prompt |
+| packaged `pack-contract.md` copies | 11. Absent from `audit-claims`, `audit-drift`, `brief` |
+| packaged `report-style.md` copies | 14. Present in every skill |
+| checkpoint hook | none. Automated Stop hook adapter retired and removed in FD-P8 |
+| checkpoint model | in-thread phase checkpointing by `run` |
 | `resume-*` skills | none on disk |
 | execution policies | `approval_policy` and `commit_policy`, defined in `baselinedocs-run/references/execution-contract.md`, gated by `tests/test_run_policy.py` |
-| test command and result | `uvx pytest tests/ -q`: 24 passed, 63 subtests passed |
+| test command and result | `uvx pytest tests/ -q`: 12 passed, 40 subtests passed |
 | baseline packs in this repository | 2: this one and `skill-consolidation`, routed by `docs/baseline/baselinedocs.index.md` |
 | source of this pack | `DESIGN.md`, 495 lines, 60,743 bytes. Deleted 2026-08-28 after coverage was verified, and recoverable at `git show 0cb913f:DESIGN.md`. FD-D27 |
 
@@ -53,18 +53,18 @@ The family's design is shipped, not planned. This pack exists so the reasoning b
 |---|---|---|
 | Trigger architecture | Deliberate entrypoints stay explicit; lifecycle skills stay selectable by an agent | yes |
 | Pack schema | Three core documents plus two conditional, transitioning additively from the fixed five | yes |
-| Checkpoint model | A phase checkpoint is written by `run` itself; the hook only prompts and never inspects the repository | yes |
+| Checkpoint model | A phase checkpoint is written by `run` itself; no automated hook adapter | yes |
 | Rule placement | A rule's pointer lives in `SKILL.md`, its content in exactly one file | yes |
 | Workflow sequence | The intended order is written down and taught by the README | yes |
 | Onboard scope gate | A reader either knows what it holds or knows it holds nothing; never a silent partial read | yes |
 | Resume family | Dissolved, with one owner per question it used to claim | yes |
 | Installation profiles | Internal helpers hidden at package level | no, deferred. FD-Q1 |
-| Hook rollout | More than one repository at a time | no, deferred. FD-Q2 |
+| Hook rollout | Retired in FD-P8; hook mechanism removed | yes |
 
 ## Constraints
 
 - A skill may rely only on files inside its own folder. `npx skills add --skill <name>` installs one folder and nothing else travels with it, so a canonical asset reaches a skill as a byte-identical packaged copy or it does not reach it at all.
-- `README.md`, `AGENTS.md`, `HOOKS.md`, `contract/`, `hooks/`, `tests/`, and this pack do not ship. No installed agent can open any of them, so nothing may be cut from a `SKILL.md` on the grounds that it is written down here.
+- `README.md`, `AGENTS.md`, `contract/`, `tests/`, and this pack do not ship. No installed agent can open any of them, so nothing may be cut from a `SKILL.md` on the grounds that it is written down here.
 - ASCII hyphen only. `test_no_typographic_dashes` globs every `*.md` outside a dot-directory, this pack included.
 - The frontmatter schema is fixed at `2.0`. Extending it is a schema change, not a convention change.
 - An install is a snapshot. An installed skill reads its own packaged copy, so this repository and any machine drift apart from the next edit onward.

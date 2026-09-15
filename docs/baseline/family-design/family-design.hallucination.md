@@ -3,8 +3,8 @@ baseline_schema: "2.0"
 pack: "family-design"
 document: "hallucination"
 status: "active"
-updated: "2026-09-04"
-code_ref: "5bb5e7f"
+updated: "2026-09-11"
+code_ref: "uncommitted"
 ---
 
 # Family Design: Decisions and Open Questions
@@ -13,7 +13,7 @@ code_ref: "5bb5e7f"
 
 One row per entry. A row states what the entry is about and nothing more: never its reasoning, never the justification behind its outcome, never a summary that could be mistaken for the entry. An answer that turns on an entry whose full text was not read is unbacked, and must be reported that way rather than derived from a row.
 
-Required by `contract/pack-contract.md` above 40 KB or 20 entries. This document holds 39.
+Required by `contract/pack-contract.md` above 40 KB or 20 entries. This document holds 40.
 
 Every identifier in this initiative carries its pack's prefix: `FD-` here, `SC-` in `skill-consolidation`. It is written that way everywhere, inside the pack as well as across packs, so a reference is unambiguous wherever it is read and greppable across the whole repository. FD-D30 records the decision.
 
@@ -24,7 +24,7 @@ Every identifier in this initiative carries its pack's prefix: `FD-` here, `SC-`
 | FD-D3 | what `code_ref` records, and what it cannot record | current | FD-D18 |
 | FD-D4 | what a phase checkpoint contains and which document holds it | current | FD-D5, FD-D21 |
 | FD-D5 | the boundary between what `run` checkpoints and what `save` writes | current | FD-D4, FD-D8 |
-| FD-D6 | how much the checkpoint hook is allowed to work out for itself | current | FD-D4, FD-D26 |
+| FD-D6 | how much the checkpoint hook is allowed to work out for itself | retired, superseded by FD-D37 | FD-D4, FD-D26, FD-D37 |
 | FD-D7 | which instruction surface carries a rule's pointer and which carries its content | current | FD-D2, FD-D21 |
 | FD-D8 | writing the family's intended order down, and where `save` sits in it | current | FD-D5, FD-D9, FD-D19 |
 | FD-D9 | what the README leads with | current | FD-D1, FD-D8 |
@@ -55,8 +55,9 @@ Every identifier in this initiative carries its pack's prefix: `FD-` here, `SC-`
 | FD-D34 | dropping `onboard`'s `Read record` half entirely, reversing FD-D33 | current | FD-D33, FD-D17, FD-D10 |
 | FD-D35 | a stated four-column exception in `report-style.md`, extending FD-D31 | current | FD-D31, FD-D34 |
 | FD-D36 | `hallucination` entries are written in a compact agent-directed register, not narrative prose | current | FD-D7, FD-D21 |
+| FD-D37 | removing the automated checkpoint hook mechanism and setup-hooks skill | current | FD-D6, FD-Q2, FD-D4 |
 | FD-Q1 | hiding internal helpers at package level rather than by naming convention | open, deferred on a missing platform feature | FD-D1 |
-| FD-Q2 | installing checkpoint hooks across more than one repository | open, deferred | FD-D6 |
+| FD-Q2 | installing checkpoint hooks across more than one repository | closed, hook mechanism removed | FD-D6, FD-D37 |
 | FD-Q5 | who, if anyone, owns misfiled-content detection now that `onboard` no longer checks it | open | FD-D34 |
 
 ## FD-D1: six entrypoints stay deliberate, and the rest stay agent-selectable
@@ -500,6 +501,18 @@ A new thread is the default once the pack is current, which after a save it is. 
 
 **Not retroactive.** This entry ships the register for entries written from here on. The existing entries in this pack and in `skill-consolidation.hallucination.md` are left as they are; rewriting them under the new register is separate, deliberately deferred work.
 
+## FD-D37: remove the automated checkpoint hook adapter and setup-hooks skill
+
+**Decided.** Remove the Stop hook adapter in `hooks/` and the one-time administration skill `baselinedocs-setup-hooks`, keeping phase checkpointing purely in-thread within `baselinedocs-run` and manual operator workflow.
+
+**Why.** Platform hook implementations across Codex, Claude Code, and Cursor differ in schema, trust prompts, and lifecycle semantics, and an automated Stop hook prompts on every turn regardless of relevance - moving the decision entirely into the model's active execution loop eliminates hook setup overhead, host-specific config drift, and unneeded turn continuations.
+
+**What breaks if ignored.** Maintaining hook adapters across evolving agent hosts creates recurring configuration drift, host-specific trust barriers, and unwanted prompt continuations that interrupt unrelated work.
+
+**Rejected: keep sample hook templates without the installer skill.** Rejected because orphaned scripts without active maintenance or test coverage drift silently and imply the family still supports platform hook integration.
+
+**Rejected: keep passive hooks for Claude Code only.** Rejected because introducing host-specific asymmetry violates the family principle of portable agent instructions across supported hosts.
+
 ## Open questions
 
 ### FD-Q1: can internal helpers be hidden at package level?
@@ -510,11 +523,9 @@ The trigger to reopen: a portable hidden-skill or profile mechanism appearing in
 
 ### FD-Q2: can hooks be rolled out across an organization?
 
-`baselinedocs-setup-hooks` handles one repository at a time and preserves unknown configuration rather than replacing it. An organization-wide rollout remains deferred.
+Closed by FD-D37. The entire hook mechanism, including `baselinedocs-setup-hooks` and the `hooks/` adapter, has been removed from the repository, so organization-wide rollout is no longer applicable.
 
-What makes it more than a loop over repositories: the installer merges into each host's existing configuration, and the safety property that matters is preserving what it did not write. A rollout mechanism has to hold that property across repositories whose hook configuration nobody has inspected, which is a different problem from installing into one repository a user is looking at.
-
-FD-Q3 closed in FD-D29, FD-Q4 closed in FD-D30. Stated here rather than deleted, so a reader can tell each was settled by a decision rather than dropped. Neither question's analysis was lost with its heading: both sit inside the decision that closed them.
+FD-Q2 closed in FD-D37, FD-Q3 closed in FD-D29, FD-Q4 closed in FD-D30. Stated here rather than deleted, so a reader can tell each was settled by a decision rather than dropped. Neither question's analysis was lost with its heading: both sit inside the decision that closed them.
 
 ### FD-Q5: who, if anyone, owns misfiled-content detection now that `onboard` no longer checks it?
 

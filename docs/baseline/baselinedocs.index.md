@@ -3,7 +3,7 @@ baseline_schema: "2.0"
 pack: "baselinedocs"
 document: "index"
 status: "active"
-updated: "2026-09-04"
+updated: "2026-09-11"
 code_ref: "uncommitted"
 ---
 
@@ -15,7 +15,7 @@ Routing metadata for the packs under `docs/baseline/`. It carries links, scope, 
 
 | Pack | Scope | Depends on | Status | Next checkpoint |
 |---|---|---|---|---|
-| [`family-design`](family-design/family-design.introduction.md) | The design of the skill family as a whole: trigger architecture, pack schema, checkpoint model, rule placement, workflow sequence, onboard scope gate, the dissolved `resume-*` family, evidence retention, `useguide`, execution policy, multi-pack routing, report structure | - | active | Reinstall FD-P6's changes to the four host skill directories |
+| [`family-design`](family-design/family-design.introduction.md) | The design of the skill family as a whole: trigger architecture, pack schema, checkpoint model, rule placement, workflow sequence, onboard scope gate, the dissolved `resume-*` family, evidence retention, `useguide`, execution policy, multi-pack routing, report structure | - | active | Reinstall FD-P6, FD-P7, and FD-P8 changes to host skill directories |
 | [`skill-consolidation`](skill-consolidation/skill-consolidation.introduction.md) | Reducing the family by removing skills whose operation duplicates another, and repairing the selection surface where two skills claim overlapping triggers | - | active | Four decisions waiting on the user, listed in its roadmap under `Next action` |
 
 Status is copied from each pack's own frontmatter. When this table and a pack disagree, that is a contradiction to report, not a conflict to settle here by preferring the index or the newer date. `baselinedocs-sync-reconcile` owns the repair.
@@ -43,7 +43,7 @@ The default scope is one pack, not both. Together they are 2,279 lines, 1,023 in
 
 | If the question is | Load |
 |---|---|
-| why the family is shaped the way it is, what a pack is, how a checkpoint or a hook works, how the skills are meant to be used in order | `family-design` |
+| why the family is shaped the way it is, what a pack is, how a checkpoint works, how the skills are meant to be used in order | `family-design` |
 | why a particular skill exists, was merged, was renamed, or was deleted, and what the merge criterion is | `skill-consolidation` |
 | anything touching the identifier scheme, or a change to `contract/pack-contract.md` | both, because the shared open question sits across them |
 
@@ -73,7 +73,6 @@ What each pack still carries:
 | Pack | Outstanding | Kind |
 |---|---|---|
 | `family-design` | FD-Q1, hiding lifecycle skills at package level | deferred on a platform mechanism that does not exist |
-| `family-design` | FD-Q2, installing hooks across more than one repository | deferred on a rollout design |
 | `family-design` | FD-Q5, who owns misfiled-content detection now that `onboard` no longer checks it | open, opened by FD-P6 |
 | `skill-consolidation` | SC-Q6, the identifier scheme and whether the contract owns it | open, minus the uniqueness clause FD-D30 settled |
 | `skill-consolidation` | SC-Q7, what `baselinedocs-onboard` does with an entry index | open, four options recorded, none chosen |

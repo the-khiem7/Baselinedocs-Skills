@@ -3,7 +3,7 @@ baseline_schema: "2.0"
 pack: "skill-consolidation"
 document: "introduction"
 status: "active"
-updated: "2026-08-27"
+updated: "2026-09-11"
 code_ref: "uncommitted"
 ---
 
@@ -21,10 +21,10 @@ Out of scope: the pack schema, which is unchanged apart from the one enum remova
 
 | Fact | State |
 |---|---|
-| skills on disk | 15: 7 entrypoints, 8 lifecycle. 18 at `cded242`, before SC-P1 |
+| skills on disk | 14: 6 entrypoints, 8 lifecycle. 18 at `cded242`, before SC-P1 |
 | skills shipping `references/pack-contract.md` | 11, byte-identical, pinned by `tests/test_references.py`. The 10 writers plus `onboard`, which reads every document in full. 13 at `cded242`, 10 at `c6eb29a` |
 | criterion for shipping it | a full read of the pack, not the act of writing. SC-D16 |
-| skills shipping `references/report-style.md` | 14, byte-identical. Every skill except `setup-hooks`, which names no pack element. SC-D17 |
+| skills shipping `references/report-style.md` | 14, byte-identical. Every skill in the family, no exceptions. SC-D17, SC-D22 |
 | `contract/pack-contract.md` | 108 lines, 11 sections. 84 before the SC-P12 entry-index and SC-P13 misfiled-content sections, 74 at `cded242` before the SC-P2 `Disproven claims` section |
 | entry kinds in `hallucination` | at least 3, and never enumerated: a closed decision with four required parts, a disproven-claim relocation with a different shape, and an open question. SC-Q8 |
 | installed copies, this machine | 15 skills per host directory in `.claude`, `.agents`, `.kilocode`, `.kiro`, holding SC-P8's snapshot: 10 contract copies at 82 lines, no `report-style.md` anywhere, and an `onboard` with neither the contract copy nor its read gate. `.codex/skills` holds none |
@@ -48,7 +48,7 @@ Out of scope: the pack schema, which is unchanged apart from the one enum remova
 | contract shipped on a full read, not on writing | `onboard` can report content sitting in a document whose role does not cover it |
 | report style shipped to every reporting skill | an element identifier is glossed in conversation regardless of whose machine the skill runs on |
 
-End state: 15 skills, 11 packaged contract copies, 14 packaged report-style copies.
+End state: 14 skills, 11 packaged contract copies, 14 packaged report-style copies.
 
 ## Constraints
 

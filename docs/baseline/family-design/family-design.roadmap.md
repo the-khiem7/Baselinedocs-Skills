@@ -3,8 +3,8 @@ baseline_schema: "2.0"
 pack: "family-design"
 document: "roadmap"
 status: "active"
-updated: "2026-09-04"
-code_ref: "5bb5e7f"
+updated: "2026-09-11"
+code_ref: "uncommitted"
 ---
 
 # Family Design Roadmap
@@ -19,12 +19,12 @@ Verified against the repository, not against `DESIGN.md`.
 
 | Area | Basis | Status | Evidence |
 |---|---|---|---|
-| Trigger architecture | FD-D1 | implemented | 7 `agents/openai.yaml` files set `allow_implicit_invocation: false`, exactly the 6 entrypoints plus `setup-hooks`; the other 8 set `true`. Pinned by `tests/test_skill_metadata.py` |
+| Trigger architecture | FD-D1 | implemented | 6 `agents/openai.yaml` files set `allow_implicit_invocation: false`, exactly the 6 user entrypoints; the other 8 set `true`. Pinned by `tests/test_skill_metadata.py` |
 | Pack schema 2.0 | FD-D2 | implemented | `contract/pack-contract.md` defines 3 required and 2 conditional documents; the `status` enum holds `draft`, `active`, `blocked`, `complete` |
 | Frontmatter semantics | FD-D3 | implemented | contract states `updated` as the edit date and `code_ref` as the inspected code state, with `uncommitted` and `unknown` as valid values |
 | Checkpoint contents | FD-D4 | implemented | `baselinedocs-run/references/execution-contract.md`, `Phase checkpoint`, lists outcome, evidence, changed files, unresolved risk, next phase, and routes reasoning to `hallucination` |
 | Run and save boundary | FD-D5 | implemented | `README.md` trap table states it; `run` checkpoints each phase |
-| Hook infers nothing | FD-D6 | implemented | `hooks/checkpoint.py` at 76 lines contains no Git, filesystem-search, or timestamp call; the loop guard reads `stop_hook_active` and `loop_count`. Pinned by `tests/test_checkpoint.py` |
+| Hook infers nothing | FD-D6, FD-D37 | retired | Hook adapter retired and removed in FD-P8. Checkpoint execution handled in-thread by `run` |
 | Rule placement | FD-D7 | implemented | 11 byte-identical `pack-contract.md` copies and 14 byte-identical `report-style.md` copies, each with a gate sentence in its `SKILL.md`. Pinned by `tests/test_references.py` |
 | Workflow sequence written down | FD-D8 | implemented | `README.md` Mermaid flowchart plus the branch table |
 | README leads with the workflow | FD-D9 | implemented | `README.md` order is Install, Workflow, Six User Entrypoints; no per-skill install command present |
@@ -41,7 +41,7 @@ Verified against the repository, not against `DESIGN.md`.
 | Report structure | FD-D31, FD-D32, FD-D33, FD-D34, FD-D35 | implemented | `contract/report-style.md` at 43 lines carries 8 rules plus the four-column exception; 14 packaged copies `cmp` clean; `baselinedocs-onboard/SKILL.md` `Output` is five flat sections, `Read record` removed |
 | Decision entry register | FD-D36 | implemented | `contract/pack-contract.md`, `Register`, a standalone section after `Required documents`, states the compact form for a decision's four required parts and the loss-verification step; 11 packaged copies `cmp` clean |
 | Installation profiles | FD-Q1 | deferred | no platform mechanism exists to build against |
-| Organization-wide hook rollout | FD-Q2 | deferred | `baselinedocs-setup-hooks` handles one repository per invocation |
+| Organization-wide hook rollout | FD-Q2, FD-D37 | closed | Hook mechanism removed from repository in FD-P8; rollout no longer applicable |
 
 ## FD-P1: adopt `DESIGN.md` into this pack
 
@@ -369,19 +369,58 @@ FD-D29 rejected shipping only the two sentences an agent cannot derive and kept 
 
 This session's `onboard` read `family-design.hallucination.md` at 35 decision entries, `FD-D33` newest. Before this phase started editing, commits `0d30867` and `0d1cc02` had already landed on `main`, adding `FD-D34`, `FD-D35`, `FD-Q5`, and this roadmap's own `FD-P6`, none of it visible to the session that read the pack minutes earlier. Re-reading both files immediately before writing was what caught it; writing from the onboard read alone would have produced a second `FD-D34` naming an unrelated decision, the exact silent-collision failure `FD-D30` names as the reason every identifier carries a pack prefix, reproduced one level down inside a single pack's own counter instead of across packs.
 
+## FD-P8: remove hook mechanism and setup-hooks skill
+
+Opened 2026-09-11 when the user requested complete removal of hooks from the family. FD-D37 carries the reasoning and rejected alternatives.
+
+Acceptance criteria:
+
+- `baselinedocs-setup-hooks/`, `hooks/`, and `HOOKS.md` removed from the repository
+- `tests/test_checkpoint.py` and `tests/test_install_hooks.py` removed; remaining test suite passes cleanly
+- `contract/pack-contract.md` updated to remove "hooks" from line 36 and all 11 packaged copies re-synced
+- `tests/test_skill_metadata.py` updated to 6 user entrypoints; `tests/test_references.py` updated to empty exemption
+- Host installations in `.gemini`, `.agents`, and `.claude` cleaned up
+- `uvx pytest tests/ -q` stays green, including `test_no_typographic_dashes`
+
+### Checkpoint: complete
+
+| Item | Result |
+|---|---|
+| Verification gate | 12 passed, 40 subtests passed |
+| Hook files removed | `baselinedocs-setup-hooks/` (5 files), `hooks/` (5 files), `HOOKS.md` |
+| Test files removed | 2: `tests/test_checkpoint.py`, `tests/test_install_hooks.py` |
+| Contract copies | 11, re-synced, `cmp` clean against canonical |
+| Host directories cleaned | 3: `.gemini`, `.agents`, `.claude` |
+| Entries written | 1: FD-D37; FD-D6 retired; FD-Q2 closed |
+| Commit | uncommitted |
+
+Changes:
+
+| File | Change |
+|---|---|
+| `contract/pack-contract.md` | line 36 removes "hooks" from the downstream tools sentence |
+| `<skill>/references/pack-contract.md` | all 11 copies re-synced |
+| `tests/test_skill_metadata.py` | `baselinedocs-setup-hooks` removed from `ENTRYPOINTS` |
+| `tests/test_references.py` | `REPORT_STYLE_EXEMPT` set to empty |
+| `AGENTS.md` | `HOOKS.md` and `hooks/` removed from untracked list; report-style exemption note removed |
+| `family-design.introduction.md` | counts updated to 14 skills and 6 entrypoints; hooks removed from scope and truth |
+| `family-design.sourcecode.md` | `Checkpoint hook` replaced with `Checkpoint model` |
+| `family-design.hallucination.md` | FD-D37 added; FD-D6 marked retired; FD-Q2 closed |
+| `family-design.roadmap.md` | this phase, design area status, and risks updated |
+
 ## Risks
 
 | Risk | Detail |
 |---|---|
 | `AGENTS.md` points four times at a file that is being retired | FD-D27 made this pack canonical and scheduled `DESIGN.md` for deletion, so `AGENTS.md` is already wrong where it tells a contributor to record decisions in `DESIGN.md`. The file is still on disk, so nothing is broken yet, but a contributor reading `AGENTS.md` today would write a new decision into the file being deleted. The rewire is the next action below |
 | `skill-consolidation` records its own state as uncommitted | Its roadmap states that SC-P9 through SC-P14 are uncommitted at the user's request. Those changes are now committed, at `959617b`, `b857216`, and `0cb913f`. This adoption did not repair it: `baselinedocs-sync-codebase` owns a pack that has fallen behind the code, and the repair belongs in that pack, not this one |
-| Installed skills are behind this repository | Widened again 2026-09-04 by FD-P7, on top of the gap FD-P6 reopened, exactly as FD-P5 predicted would happen on the next repository edit. An installed skill reads its own packaged copy, so any given machine's global install drifts from this repository from its next edit onward, and whether a particular machine is current is machine-specific state this pack does not track. Reinstalling from this local clone is the standing remedy, not a one-time phase: `npx skills remove -g -s <the 15 names>` then `npx skills add . -g -a '*' -s <the 15 names>`, run again whenever a machine's copy needs to catch up |
+| Installed skills are behind this repository | Widened again 2026-09-11 by FD-P8, on top of the gap FD-P7 reopened. An installed skill reads its own packaged copy, so any given machine's global install drifts from this repository from its next edit onward, and whether a particular machine is current is machine-specific state this pack does not track. Reinstalling from this local clone is the standing remedy, not a one-time phase: `npx skills remove -g -s <the 14 names>` then `npx skills add . -g -a '*' -s <the 14 names>`, run again whenever a machine's copy needs to catch up |
 | A reference written before 2026-08-28 names an identifier that no longer exists | FD-D30 renamed every identifier in both packs to carry a pack prefix. Anything citing a bare `D16` or `P8`, in a commit message or an earlier thread, now resolves to nothing. That is the intended failure mode, chosen over a bare number that resolves silently to the wrong entry, but it is a real cost to anyone holding an old reference |
-| Nothing about the skill family itself is deferred | The rename sweep and the finished-pack marker were closed rather than postponed, in `skill-consolidation` SC-D13 and SC-D14. The only deferred items in this pack, FD-Q1 and FD-Q2, are blocked on a platform capability and on a rollout mechanism, neither of which is a skill-family question |
+| Nothing about the skill family itself is deferred | The rename sweep and the finished-pack marker were closed rather than postponed, in `skill-consolidation` SC-D13 and SC-D14. The only deferred item in this pack, FD-Q1, is blocked on a platform capability |
 
 ## Next action
 
-On any machine whose global install has not picked up FD-P6's and FD-P7's changes, reinstall the family from a local clone of this repository, the same mechanical step FD-P3 and FD-P5 both closed out with: the widened `contract/report-style.md` and its 14 re-synced packaged copies, the rewritten `baselinedocs-onboard/SKILL.md`, and the widened `contract/pack-contract.md` and its 11 re-synced packaged copies. This is per-machine state, not a repository-wide fact this pack tracks, so no phase records when a given machine last ran it.
+On any machine whose global install has not picked up FD-P6's, FD-P7's, and FD-P8's changes, reinstall the family from a local clone of this repository, the same mechanical step FD-P3 and FD-P5 both closed out with: the widened `contract/report-style.md` and its 14 re-synced packaged copies, the rewritten `baselinedocs-onboard/SKILL.md`, the widened `contract/pack-contract.md` and its 11 re-synced packaged copies, and the removal of `baselinedocs-setup-hooks`. This is per-machine state, not a repository-wide fact this pack tracks, so no phase records when a given machine last ran it.
 
 Separately, and explicitly deferred by the user rather than scheduled: rewriting `family-design.hallucination.md`'s and `skill-consolidation.hallucination.md`'s existing entries under FD-D36's compact register is its own piece of work, not a follow-on to this phase.
 
@@ -389,4 +428,4 @@ One open question is new: FD-Q5 asks who, if anyone, now checks a pack for misfi
 
 One repair is outstanding and belongs to another pack: `skill-consolidation.roadmap.md` states that SC-P9 through SC-P14 are uncommitted, and they are committed at `959617b`, `b857216`, and `0cb913f`. `baselinedocs-sync-codebase` owns a pack that has fallen behind the code, and the repair belongs in that pack rather than here.
 
-Two older open questions remain in this pack, both deferred on something outside it: FD-Q1 waits on a portable hidden-skill mechanism that no installer provides, and FD-Q2 waits on a hook rollout design. Neither is a decision anyone can take today. `skill-consolidation` still carries SC-Q6, SC-Q7, and SC-Q8, and SC-Q6 is the one this pack touched: FD-D30 settled its uniqueness clause and left the rest of it open.
+One older open question remains in this pack: FD-Q1 waits on a portable hidden-skill mechanism that no installer provides. `skill-consolidation` still carries SC-Q6, SC-Q7, and SC-Q8, and SC-Q6 is the one this pack touched: FD-D30 settled its uniqueness clause and left the rest of it open.

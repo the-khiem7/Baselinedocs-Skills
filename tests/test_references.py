@@ -8,12 +8,12 @@ CANONICAL_CONTRACT = ROOT / "contract" / "pack-contract.md"
 CANONICAL_REPORT_STYLE = ROOT / "contract" / "report-style.md"
 
 # Report style ships to every skill that names a pack element in its output, which
-# is every skill except `setup-hooks`. It is a separate asset from the contract on
+# is now every skill in the family. It is a separate asset from the contract on
 # purpose: the contract's audience is skills that write or fully read a pack, and
 # `brief` is a conversational skill that must not carry the role list (see D16),
 # yet it cites element identifiers in every report it produces. Folding the two
 # would force the wrong audience on one of them.
-REPORT_STYLE_EXEMPT = {"baselinedocs-setup-hooks"}
+REPORT_STYLE_EXEMPT = set()
 
 REPORT_GATE = (
     "Read `references/report-style.md` in full before reporting to the user, "
@@ -22,9 +22,9 @@ REPORT_GATE = (
 
 # Every skill that writes into a pack ships the contract, because skills install
 # one folder at a time and cannot reach a sibling skill's files. The copies are
-# packaged assets of one canonical file, the same arrangement `hooks/checkpoint.py`
-# already uses, and they are pinned for the same reason: a drifted copy reaches
-# whoever installed that one skill, and nothing in their install says it is stale.
+# packaged assets of one canonical file, and they are pinned for the same reason:
+# a drifted copy reaches whoever installed that one skill, and nothing in their
+# install says it is stale.
 WRITER_SKILLS = {
     "baselinedocs-init",
     "baselinedocs-adopt",

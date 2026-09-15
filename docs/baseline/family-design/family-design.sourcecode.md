@@ -3,8 +3,8 @@ baseline_schema: "2.0"
 pack: "family-design"
 document: "sourcecode"
 status: "active"
-updated: "2026-08-28"
-code_ref: "0cb913f"
+updated: "2026-09-11"
+code_ref: "uncommitted"
 ---
 
 # Design Mechanisms
@@ -24,31 +24,20 @@ Four surfaces reach a running agent, and they do not offer the same guarantee. T
 
 The consequence that drives the design: a rule requiring a reference file to be read cannot live in that reference file, because an agent that skipped the file never reaches the sentence telling it not to skip it. That one sentence is the only thing restated per skill.
 
-## Checkpoint hook
+## Checkpoint model
 
-Five files, 130 lines total, and the design point is what is absent from them.
+The checkpoint mechanism runs in-thread through `baselinedocs-run`, not through an automated platform hook. The external Stop hook adapter in `hooks/checkpoint.py` and the one-time installer skill `baselinedocs-setup-hooks` were retired and deleted in FD-P8 under FD-D37.
 
-| Path | Lines | Role |
-|---|---|---|
-| `hooks/checkpoint.py` | 76 | the adapter. Reads a JSON payload on stdin, applies the loop guard, emits the prompt in the shape the host expects |
-| `hooks/prompts/checkpoint.md` | 11 | the prompt itself, the entire semantic content of the mechanism |
-| `hooks/examples/codex.hooks.json` | 18 | host wiring example |
-| `hooks/examples/claude.settings.json` | 15 | host wiring example |
-| `hooks/examples/cursor.hooks.json` | 10 | host wiring example |
+| Path | Role |
+|---|---|
+| `baselinedocs-run/references/execution-contract.md` | Phase checkpoint schema, policy gates, and verification standards |
+| `contract/pack-contract.md` | Required documents (`roadmap`), phase prefix rules, and entry index requirements |
 
-Execution flow, on a Stop event:
+Execution flow:
 
-1. `load_payload` parses stdin as JSON and returns `None` on any decode failure or a non-object payload.
-2. The run aborts to `{}` when the payload is `None`, when `hook_event_name` is missing or blank, or when `already_continued` is true.
-3. `already_continued` is the loop guard: true when `stop_hook_active` is set, or when `loop_count` is a positive integer, or when `loop_count` cannot be read as an integer at all. Unparseable means already continued, so an unknown host field fails closed rather than looping.
-4. `load_prompt` reads `hooks/prompts/checkpoint.md` relative to the adapter's own directory and returns `None` on an OSError or an empty file, which also aborts to `{}`.
-5. `output_for` selects the response shape: `followup_message` for Cursor, `{"decision": "block", "reason": prompt}` for a Stop event on the other hosts, and `systemMessage` otherwise.
-
-What the adapter never does, and this is the design rather than an omission: no roadmap discovery, no Git inspection, no timestamp comparison, no semantic completion check, no repository detection of any kind. `tests/test_checkpoint.py` asserts the absence. The reasoning is FD-D6.
-
-The prompt carries every judgment the mechanism makes. It tells the agent to use only a pack established in the current thread, to finish without modifying files when no pack is clear or more than one is plausible or the roadmap already reflects the work, to inspect only the identified pack, that a shared working tree may hold another thread's changes, and not to commit.
-
-`baselinedocs-setup-hooks` installs this by running its bundled `scripts/install_hooks.py`, merging the selected host's configuration rather than replacing it, and running a second time to confirm no further change. `tests/test_install_hooks.py` pins packaged asset identity, idempotence, and preservation of existing host configuration.
+1. `baselinedocs-run` executes an authorized phase, verifies acceptance criteria, and checkpoints the active roadmap before proceeding to the next phase.
+2. The checkpoint records status, evidence, changed files, open risks, and next action in the pack's `<prefix>.roadmap.md`.
+3. In conversational or ad-hoc workflows, the operator or agent invokes `baselinedocs-save` or updates `roadmap.md` directly. No background Stop hook intervenes on host turns.
 
 ## Execution policy
 

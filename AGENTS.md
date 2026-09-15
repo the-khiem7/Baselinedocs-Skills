@@ -9,7 +9,7 @@ This repo is the source of the `baselinedocs` skill family. Everything here is a
 | Path | Ships | Read by |
 |---|---|---|
 | `<skill>/SKILL.md`, `<skill>/agents/openai.yaml`, `<skill>/references/*` | yes | the running agent |
-| `AGENTS.md`, `README.md`, `HOOKS.md`, `contract/`, `hooks/`, `tests/`, `docs/baseline/` | no | whoever works in this repo |
+| `AGENTS.md`, `README.md`, `contract/`, `tests/`, `docs/baseline/` | no | whoever works in this repo |
 
 Consequences:
 
@@ -24,7 +24,7 @@ Consequences:
 
 | Pack | Owns |
 |---|---|
-| `docs/baseline/family-design/` | the design of the family as a whole: trigger architecture, pack schema, checkpoint model and hooks, rule placement, workflow sequence, the onboard scope gate, evidence retention, `useguide`, execution policy, multi-pack routing |
+| `docs/baseline/family-design/` | the design of the family as a whole: trigger architecture, pack schema, checkpoint model, rule placement, workflow sequence, the onboard scope gate, evidence retention, `useguide`, execution policy, multi-pack routing |
 | `docs/baseline/skill-consolidation/` | which skills were merged, deleted, or renamed, and the criterion that decided each |
 
 Identifiers carry their pack prefix, `FD-` or `SC-`, so a reference is unambiguous wherever it is read. `family-design.hallucination.md` FD-D30 records why.
@@ -54,7 +54,7 @@ A bare prohibition with an appealing counter-argument gets overridden mid-run. A
 
 ## Report style
 
-`contract/report-style.md` governs what the agent says to the user, not what it writes into a pack. It covers two things: how a pack element or a quotation is named so the reader can act on it, and how a report is shaped so the reader can scan it. Every skill except `baselinedocs-setup-hooks` ships a byte-identical copy at `<skill>/references/report-style.md` and gates on reading it, because every one of them produces a report that cites pack elements.
+`contract/report-style.md` governs what the agent says to the user, not what it writes into a pack. It covers two things: how a pack element or a quotation is named so the reader can act on it, and how a report is shaped so the reader can scan it. Every skill ships a byte-identical copy at `<skill>/references/report-style.md` and gates on reading it, because every one of them produces a report that cites pack elements.
 
 It is a second asset rather than a section of the contract on purpose. The contract's audience is skills that write a pack or read one in full, and `baselinedocs-brief` is neither: it must not carry the role list, because a partial reader holding it would report conformance it never checked. It still cites element identifiers in every report it produces. Folding the two files would force the wrong audience on one of them, so they stay separate and are pinned separately.
 
