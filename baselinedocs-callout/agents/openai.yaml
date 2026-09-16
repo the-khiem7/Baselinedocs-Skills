@@ -1,0 +1,6 @@
+interface:
+  display_name: "Baseline Docs Callout"
+  short_description: "Name a slice of the pack for a later thread"
+  default_prompt: "Use $baselinedocs-callout to create, update, or retire a temporary callout group in an existing baseline pack."
+policy:
+  allow_implicit_invocation: false

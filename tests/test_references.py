@@ -36,6 +36,7 @@ WRITER_SKILLS = {
     "baselinedocs-maintain-compact",
     "baselinedocs-maintain-split",
     "baselinedocs-extract-wiki",
+    "baselinedocs-callout",
 }
 
 # A skill that writes nothing still needs the role list to report content sitting

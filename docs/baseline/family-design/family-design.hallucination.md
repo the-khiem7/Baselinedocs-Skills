@@ -56,6 +56,7 @@ Every identifier in this initiative carries its pack's prefix: `FD-` here, `SC-`
 | FD-D35 | a stated four-column exception in `report-style.md`, extending FD-D31 | current | FD-D31, FD-D34 |
 | FD-D36 | `hallucination` entries are written in a compact agent-directed register, not narrative prose | current | FD-D7, FD-D21 |
 | FD-D37 | removing the automated checkpoint hook mechanism and setup-hooks skill | current | FD-D6, FD-Q2, FD-D4 |
+| FD-D38 | `baselinedocs-callout` as a seventh user entrypoint owning temporary routing groups | current | FD-D1, FD-D16, FD-D31 |
 | FD-Q1 | hiding internal helpers at package level rather than by naming convention | open, deferred on a missing platform feature | FD-D1 |
 | FD-Q2 | installing checkpoint hooks across more than one repository | closed, hook mechanism removed | FD-D6, FD-D37 |
 | FD-Q5 | who, if anyone, owns misfiled-content detection now that `onboard` no longer checks it | open | FD-D34 |
@@ -512,6 +513,24 @@ A new thread is the default once the pack is current, which after a save it is. 
 **Rejected: keep sample hook templates without the installer skill.** Rejected because orphaned scripts without active maintenance or test coverage drift silently and imply the family still supports platform hook integration.
 
 **Rejected: keep passive hooks for Claude Code only.** Rejected because introducing host-specific asymmetry violates the family principle of portable agent instructions across supported hosts.
+
+## FD-D38: a seventh user entrypoint owning temporary callout groups
+
+**Decided.** Add `baselinedocs-callout`, a user entrypoint that opens, updates, and retires a named routing table inside an existing pack. A callout group maps short labels onto pack elements that already exist, declares the condition that ends it, and carries no fact of its own.
+
+**Why.** A long thread produces a set of workstreams the user wants to raise again days later, and naming each one costs a paragraph every time it comes up. Nothing in the family covered it: the `hallucination` entry index is permanent and per entry, the multi-pack index is per pack, and `baselinedocs-brief` reports position without leaving anything behind. The gap was filled by hand in a real pack before the skill existed, which is what showed the shape.
+
+**What breaks if ignored.** Every thread restates the same grouping in prose, and each restatement is a fresh chance to group things differently, so two threads name the same slice of work incompatibly and neither is written down.
+
+**Placement is a section in `introduction` above `## Scope`, never a new file.** The contract defines the document set, and a seventh file would be invisible to every skill that reads a pack by role. Above `## Scope` because the group exists to be found before anything else is read.
+
+**A user entrypoint rather than a lifecycle skill.** The agent cannot infer that a user wants a shorthand for their own later use, and retiring a group is the one delete in the family that is not a relocation, so it must never fire implicitly.
+
+**Rejected: a `callout` document type in the contract.** Rejected because the enum reaches every byte-identical packaged copy, and a routing aid that expires is not worth a permanent widening of the pack shape.
+
+**Rejected: folding it into `baselinedocs-save`.** Rejected because `save` writes what a thread established and a callout group asserts nothing, so the two would share a skill while obeying opposite rules about creating content. The skill refuses when a row has no destination and routes to `save` instead.
+
+**Rejected: letting the group carry phase status, so a reader gets the position without opening anything.** Rejected because status lives in `roadmap` and a copy here goes stale the first time a phase moves, with nothing to compare it against.
 
 ## Open questions
 

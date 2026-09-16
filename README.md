@@ -63,7 +63,7 @@ flowchart TD
 | `save` is the step after `run` | `run` already checkpoints the roadmap each phase. `save` owns what a phase checkpoint does not: decisions closed, questions opened, scope moved.                                                                  |
 | one thing is called compact        | Two are. Host`/compact` shrinks the conversation. `baselinedocs-maintain-compact` shrinks the pack, on a different axis: not a full window, but a pack gone noisy over months.                                    |
 
-## Six User Entrypoints
+## Seven User Entrypoints
 
 | User intent                            | Skill                    | Outcome                                                   |
 | -------------------------------------- | ------------------------ | --------------------------------------------------------- |
@@ -73,12 +73,14 @@ flowchart TD
 | Execute an initialized roadmap         | `baselinedocs-run`     | Run phases with checkpoints and requested approval policy |
 | Load an existing pack before working   | `baselinedocs-onboard` | Read the selected pack in full into working context       |
 | Ask where the work stands mid-task     | `baselinedocs-brief`   | Report position cheaply, without loading the pack         |
+| Name a slice of the pack for later     | `baselinedocs-callout` | Open, update, or retire a temporary callout group         |
 
-All six set `policy.allow_implicit_invocation: false` for Codex, so they stay deliberate user actions. Three behaviors are worth knowing before you meet them:
+All seven set `policy.allow_implicit_invocation: false` for Codex, so they stay deliberate user actions. Three behaviors are worth knowing before you meet them:
 
 - `onboard` writes nothing, and on a multi-pack initiative it routes before it loads: it reads the index, takes one domain pack rather than the whole set, and reports every point where a loaded document leaned on something that was not loaded.
 - `run` invoked without both execution policies asks whether to pause after each phase and whether to commit each verified phase. It never chooses defaults silently.
 - `setup-hooks` is a one-time per-repository administration utility, not part of the daily loop.
+- `callout` writes no fact and creates no pack content. It points at elements that already exist, refuses when one does not, and requires a stated condition that ends the group before it will open one.
 
 ## Agent-Selected Skills
 

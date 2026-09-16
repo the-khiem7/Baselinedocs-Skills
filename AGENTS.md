@@ -42,7 +42,7 @@ A bare prohibition with an appealing counter-argument gets overridden mid-run. A
 
 ## The pack contract
 
-`contract/pack-contract.md` is the only definition of which baseline document owns which content. The 10 pack-writing skills each ship a byte-identical copy at `<skill>/references/pack-contract.md`, because a skill cannot reach a sibling's files. `baselinedocs-onboard` ships the same copy while writing nothing, because it reads every document in full and reports content sitting in the wrong one.
+`contract/pack-contract.md` is the only definition of which baseline document owns which content. The 11 pack-writing skills each ship a byte-identical copy at `<skill>/references/pack-contract.md`, because a skill cannot reach a sibling's files. `baselinedocs-onboard` ships the same copy while writing nothing, because it reads every document in full and reports content sitting in the wrong one.
 
 - Edit the canonical file, then copy it to every skill that ships it.
 - Never edit a packaged copy directly, and never restate the document roles anywhere else.
