@@ -3,7 +3,7 @@ baseline_schema: "2.0"
 pack: "baselinedocs"
 document: "index"
 status: "active"
-updated: "2026-09-11"
+updated: "2026-09-16"
 code_ref: "uncommitted"
 ---
 
@@ -15,7 +15,7 @@ Routing metadata for the packs under `docs/baseline/`. It carries links, scope, 
 
 | Pack | Scope | Depends on | Status | Next checkpoint |
 |---|---|---|---|---|
-| [`family-design`](family-design/family-design.introduction.md) | The design of the skill family as a whole: trigger architecture, pack schema, checkpoint model, rule placement, workflow sequence, onboard scope gate, the dissolved `resume-*` family, evidence retention, `useguide`, execution policy, multi-pack routing, report structure | - | active | Reinstall FD-P6, FD-P7, and FD-P8 changes to host skill directories |
+| [`family-design`](family-design/family-design.introduction.md) | The design of the skill family as a whole: trigger architecture, pack schema, checkpoint model, rule placement, workflow sequence, onboard scope gate, the dissolved `resume-*` family, evidence retention, `useguide`, execution policy, multi-pack routing, report structure | - | active | Reinstall FD-P6, FD-P7, FD-P8, and FD-P9 changes to host skill directories |
 | [`skill-consolidation`](skill-consolidation/skill-consolidation.introduction.md) | Reducing the family by removing skills whose operation duplicates another, and repairing the selection surface where two skills claim overlapping triggers | - | active | Four decisions waiting on the user, listed in its roadmap under `Next action` |
 
 Status is copied from each pack's own frontmatter. When this table and a pack disagree, that is a contradiction to report, not a conflict to settle here by preferring the index or the newer date. `baselinedocs-sync-reconcile` owns the repair.

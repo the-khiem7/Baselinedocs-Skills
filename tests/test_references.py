@@ -7,13 +7,12 @@ ROOT = Path(__file__).parents[1]
 CANONICAL_CONTRACT = ROOT / "contract" / "pack-contract.md"
 CANONICAL_REPORT_STYLE = ROOT / "contract" / "report-style.md"
 
-# Report style ships to every skill that names a pack element in its output, which
-# is now every skill in the family. It is a separate asset from the contract on
-# purpose: the contract's audience is skills that write or fully read a pack, and
-# `brief` is a conversational skill that must not carry the role list (see D16),
-# yet it cites element identifiers in every report it produces. Folding the two
-# would force the wrong audience on one of them.
-REPORT_STYLE_EXEMPT = set()
+# Report style ships to every skill that names a pack element in its output.
+# `baselinedocs-load` is exempt because it operates silently and outputs only a single
+# confirmation word ("Sẵn sàng." / "Ready.") with no pack elements cited.
+REPORT_STYLE_EXEMPT = {
+    "baselinedocs-load",
+}
 
 REPORT_GATE = (
     "Read `references/report-style.md` in full before reporting to the user, "
@@ -49,7 +48,13 @@ READER_SKILLS = {
     "baselinedocs-onboard",
 }
 
-CONTRACT_SKILLS = WRITER_SKILLS | READER_SKILLS
+# A silent loader reads the pack in full and holds the contract to understand
+# baseline document roles and schemas, but produces no explanatory report.
+LOADER_SKILLS = {
+    "baselinedocs-load",
+}
+
+CONTRACT_SKILLS = WRITER_SKILLS | READER_SKILLS | LOADER_SKILLS
 
 # One gate per skill, worded for what that skill does with the contract. Both are
 # pinned: an unpinned second wording is how the family ends up with two
@@ -62,8 +67,13 @@ READ_GATE = (
     "Read `references/pack-contract.md` in full before reporting the pack state, "
     "every time."
 )
+LOAD_GATE = (
+    "Read `references/pack-contract.md` in full before loading a pack, "
+    "every time."
+)
 GATES = {name: WRITE_GATE for name in WRITER_SKILLS}
 GATES.update({name: READ_GATE for name in READER_SKILLS})
+GATES.update({name: LOAD_GATE for name in LOADER_SKILLS})
 
 
 class ContractCopyTests(unittest.TestCase):
@@ -119,7 +129,7 @@ class ContractCopyTests(unittest.TestCase):
                 )
 
     def test_read_only_skills_are_not_gated_on_writing(self):
-        for name in sorted(READER_SKILLS):
+        for name in sorted(READER_SKILLS | LOADER_SKILLS):
             with self.subTest(skill=name):
                 text = (ROOT / name / "SKILL.md").read_text(encoding="utf-8")
                 self.assertNotIn(

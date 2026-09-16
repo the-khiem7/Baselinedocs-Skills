@@ -8,6 +8,7 @@ ENTRYPOINTS = {
     "baselinedocs-init",
     "baselinedocs-adopt",
     "baselinedocs-onboard",
+    "baselinedocs-load",
     "baselinedocs-brief",
     "baselinedocs-save",
     "baselinedocs-run",

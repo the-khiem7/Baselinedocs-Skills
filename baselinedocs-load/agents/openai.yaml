@@ -1,0 +1,6 @@
+interface:
+  display_name: "Baseline Docs Load"
+  short_description: "Silently load a baseline pack into context"
+  default_prompt: "Use $baselinedocs-load to prime working context with an existing baseline pack completely without generating an explanatory report."
+policy:
+  allow_implicit_invocation: false

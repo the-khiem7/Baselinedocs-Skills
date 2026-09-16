@@ -3,7 +3,7 @@ baseline_schema: "2.0"
 pack: "family-design"
 document: "introduction"
 status: "active"
-updated: "2026-09-11"
+updated: "2026-09-16"
 code_ref: "uncommitted"
 ---
 
@@ -30,18 +30,18 @@ Verified against the working tree at `0cb913f`, not read off `DESIGN.md`.
 
 | Fact | State |
 |---|---|
-| skills on disk | 14 |
-| user entrypoints | 6: `init`, `adopt`, `save`, `run`, `onboard`, `brief`. All set `allow_implicit_invocation: false` |
+| skills on disk | 16 |
+| user entrypoints | 8: `init`, `adopt`, `save`, `run`, `onboard`, `load`, `brief`, `callout`. All set `allow_implicit_invocation: false` |
 | one-time administration | 0 |
 | lifecycle skills, agent-selected | 8, all `true` |
 | pack schema | `2.0`. Three core documents, two conditional |
-| packaged `pack-contract.md` copies | 11. Absent from `audit-claims`, `audit-drift`, `brief` |
-| packaged `report-style.md` copies | 14. Present in every skill |
+| packaged `pack-contract.md` copies | 13. Absent from `audit-claims`, `audit-drift`, `brief` |
+| packaged `report-style.md` copies | 15. Absent from `load` |
 | checkpoint hook | none. Automated Stop hook adapter retired and removed in FD-P8 |
 | checkpoint model | in-thread phase checkpointing by `run` |
 | `resume-*` skills | none on disk |
 | execution policies | `approval_policy` and `commit_policy`, defined in `baselinedocs-run/references/execution-contract.md`, gated by `tests/test_run_policy.py` |
-| test command and result | `uvx pytest tests/ -q`: 12 passed, 40 subtests passed |
+| test command and result | `uvx pytest tests/ -q`: 12 passed, 45 subtests passed |
 | baseline packs in this repository | 2: this one and `skill-consolidation`, routed by `docs/baseline/baselinedocs.index.md` |
 | source of this pack | `DESIGN.md`, 495 lines, 60,743 bytes. Deleted 2026-08-28 after coverage was verified, and recoverable at `git show 0cb913f:DESIGN.md`. FD-D27 |
 

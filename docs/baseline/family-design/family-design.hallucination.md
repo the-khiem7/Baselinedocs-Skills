@@ -3,7 +3,7 @@ baseline_schema: "2.0"
 pack: "family-design"
 document: "hallucination"
 status: "active"
-updated: "2026-09-11"
+updated: "2026-09-16"
 code_ref: "uncommitted"
 ---
 
@@ -13,7 +13,7 @@ code_ref: "uncommitted"
 
 One row per entry. A row states what the entry is about and nothing more: never its reasoning, never the justification behind its outcome, never a summary that could be mistaken for the entry. An answer that turns on an entry whose full text was not read is unbacked, and must be reported that way rather than derived from a row.
 
-Required by `contract/pack-contract.md` above 40 KB or 20 entries. This document holds 40.
+Required by `contract/pack-contract.md` above 40 KB or 20 entries. This document holds 41.
 
 Every identifier in this initiative carries its pack's prefix: `FD-` here, `SC-` in `skill-consolidation`. It is written that way everywhere, inside the pack as well as across packs, so a reference is unambiguous wherever it is read and greppable across the whole repository. FD-D30 records the decision.
 
@@ -57,6 +57,7 @@ Every identifier in this initiative carries its pack's prefix: `FD-` here, `SC-`
 | FD-D36 | `hallucination` entries are written in a compact agent-directed register, not narrative prose | current | FD-D7, FD-D21 |
 | FD-D37 | removing the automated checkpoint hook mechanism and setup-hooks skill | current | FD-D6, FD-Q2, FD-D4 |
 | FD-D38 | `baselinedocs-callout` as a seventh user entrypoint owning temporary routing groups | current | FD-D1, FD-D16, FD-D31 |
+| FD-D39 | silent pack loading with single-word confirmation output | current | FD-D1, FD-D10, FD-D34 |
 | FD-Q1 | hiding internal helpers at package level rather than by naming convention | open, deferred on a missing platform feature | FD-D1 |
 | FD-Q2 | installing checkpoint hooks across more than one repository | closed, hook mechanism removed | FD-D6, FD-D37 |
 | FD-Q5 | who, if anyone, owns misfiled-content detection now that `onboard` no longer checks it | open | FD-D34 |
@@ -531,6 +532,22 @@ A new thread is the default once the pack is current, which after a save it is. 
 **Rejected: folding it into `baselinedocs-save`.** Rejected because `save` writes what a thread established and a callout group asserts nothing, so the two would share a skill while obeying opposite rules about creating content. The skill refuses when a row has no destination and routes to `save` instead.
 
 **Rejected: letting the group carry phase status, so a reader gets the position without opening anything.** Rejected because status lives in `roadmap` and a copy here goes stale the first time a phase moves, with nothing to compare it against.
+
+## FD-D39: `baselinedocs-load` as an eighth user entrypoint owning silent context priming
+
+**Decided.** Add `baselinedocs-load`, a user entrypoint that reads a baseline documentation pack into working context silently and responds strictly with a single confirmation word ("Sẵn sàng." / "Ready."). It carries a packaged copy of `contract/pack-contract.md` to understand baseline document roles and schemas, but is exempt from `contract/report-style.md` because it produces no explanatory output.
+
+**Why.** `baselinedocs-onboard` emits a five-section report on every run, which pollutes working context and consumes tokens when an operator only wants the agent primed with pack state before beginning work.
+
+**What breaks if ignored.** Every session where an operator needs pack context forces a lengthy conversational breakdown, burning context window capacity on bookkeeping the operator did not ask to inspect.
+
+**Rejected: add a `--silent` flag to `baselinedocs-onboard`.** Rejected because slash-command parameter handling varies unpredictably across agent hosts, so flags are unreliably parsed compared to dedicated entrypoints.
+
+**Rejected: change `baselinedocs-onboard` default to silent output.** Rejected because operators who want an explicit status briefing and roadmap inspection would lose the established entrypoint behavior.
+
+**Rejected: omit `contract/pack-contract.md` from `baselinedocs-load`.** Rejected because a pack reader must understand document schemas and role boundaries to correctly contextualize the documents it ingests.
+
+**Rejected: ship `contract/report-style.md` to `baselinedocs-load`.** Rejected because the skill produces no conversational report, so shipping and gating on report-style rules wastes tokens on every invocation.
 
 ## Open questions
 
