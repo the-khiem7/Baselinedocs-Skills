@@ -19,13 +19,13 @@ Verified against the repository, not against `DESIGN.md`.
 
 | Area | Basis | Status | Evidence |
 |---|---|---|---|
-| Trigger architecture | FD-D1, FD-D38, FD-D39 | implemented | 8 `agents/openai.yaml` files set `allow_implicit_invocation: false`, exactly the 8 user entrypoints; the other 8 set `true`. Pinned by `tests/test_skill_metadata.py` |
+| Trigger architecture | FD-D1, FD-D38, FD-D39 | implemented | `agents/openai.yaml` sets `allow_implicit_invocation: false` in exactly the user entrypoints; every other skill sets `true`. Pinned by `tests/test_skill_metadata.py` |
 | Pack schema 2.0 | FD-D2 | implemented | `contract/pack-contract.md` defines 3 required and 2 conditional documents; the `status` enum holds `draft`, `active`, `blocked`, `complete` |
 | Frontmatter semantics | FD-D3 | implemented | contract states `updated` as the edit date and `code_ref` as the inspected code state, with `uncommitted` and `unknown` as valid values |
 | Checkpoint contents | FD-D4 | implemented | `baselinedocs-run/references/execution-contract.md`, `Phase checkpoint`, lists outcome, evidence, changed files, unresolved risk, next phase, and routes reasoning to `hallucination` |
 | Run and save boundary | FD-D5 | implemented | `README.md` trap table states it; `run` checkpoints each phase |
 | Hook infers nothing | FD-D6, FD-D37 | retired | Hook adapter retired and removed in FD-P8. Checkpoint execution handled in-thread by `run` |
-| Rule placement | FD-D7 | implemented | 13 byte-identical `pack-contract.md` copies and 15 `report-style.md` copies with `baselinedocs-load` exempt, each with a gate sentence in its `SKILL.md`. Pinned by `tests/test_references.py` |
+| Rule placement | FD-D7 | implemented | byte-identical packaged `pack-contract.md` and `report-style.md` copies, `baselinedocs-load` exempt from the latter, each with a gate sentence in its `SKILL.md`. Pinned by `tests/test_references.py` |
 | Workflow sequence written down | FD-D8 | implemented | `README.md` Mermaid flowchart plus the branch table |
 | README leads with the workflow | FD-D9 | implemented | `README.md` order is Install, Workflow, Six User Entrypoints; no per-skill install command present |
 | Onboard scope gate | FD-D10 | implemented | `baselinedocs-onboard/SKILL.md` steps 4 and 5, and its first two Reading Rules |
@@ -34,16 +34,17 @@ Verified against the repository, not against `DESIGN.md`.
 | Output leads with state | FD-D17 | implemented | `onboard` step 11 and the `Output` section, whose two parts are `I. Pack status` then `II. Read record` |
 | Source material excluded | FD-D18 | implemented | `onboard` Reading Rules, retained-source-material rule keyed on absent baseline frontmatter |
 | Resume family dissolved | FD-D19, FD-D20 | implemented | no `resume-*` folder on disk; `baselinedocs-brief` present and set to `false` |
-| Evidence retention | FD-D21, FD-D29 | implemented | `contract/pack-contract.md`, `Evidence density`, carries both lists, the resolved-mistake distinction, and the external-log permission. 11 packaged copies re-synced |
+| Evidence retention | FD-D21, FD-D29 | implemented | `contract/pack-contract.md`, `Evidence density`, carries both lists, the resolved-mistake distinction, and the external-log permission. Packaged copies re-synced |
 | `useguide` role | FD-D22, FD-D29 | implemented | contract, `Conditional documents`, carries the criterion, the five valid forms, and the wiki routing rule |
 | Execution policy gate | FD-D23 | implemented | `execution-contract.md`, `Selection gate`. Pinned by `tests/test_run_policy.py` |
 | Multi-pack routing | FD-D24 | implemented | contract, `Multi-pack initiatives`; and `docs/baseline/baselinedocs.index.md` now exercises it |
-| Report structure | FD-D31, FD-D32, FD-D33, FD-D34, FD-D35 | implemented | `contract/report-style.md` at 43 lines carries 8 rules plus the four-column exception; 14 packaged copies `cmp` clean; `baselinedocs-onboard/SKILL.md` `Output` is five flat sections, `Read record` removed |
-| Decision entry register | FD-D36 | implemented | `contract/pack-contract.md`, `Register`, a standalone section after `Required documents`, states the compact form for a decision's four required parts and the loss-verification step; 11 packaged copies `cmp` clean |
+| Report structure | FD-D31, FD-D32, FD-D33, FD-D34, FD-D35 | implemented | `contract/report-style.md` carries the layout rules plus the four-column exception; packaged copies `cmp` clean; `baselinedocs-onboard/SKILL.md` `Output` is five flat sections, `Read record` removed |
+| Decision entry register | FD-D36 | implemented | `contract/pack-contract.md`, `Register`, a standalone section after `Required documents`, states the compact form for a decision's four required parts and the loss-verification step; packaged copies `cmp` clean |
 | Installation profiles | FD-Q1 | deferred | no platform mechanism exists to build against |
 | Organization-wide hook rollout | FD-Q2, FD-D37 | closed | Hook mechanism removed from repository in FD-P8; rollout no longer applicable |
 | Silent loader entrypoint | FD-D39 | implemented | `baselinedocs-load` implemented as a silent pack loader with single-word confirmation output; exempt from `report-style.md` in `tests/test_references.py` |
 | Rule recall after compaction | FD-D40 | implemented | `baselinedocs-recall` ships both assets, gates on `RECALL_CONTRACT_GATE` and `RECALL_REPORT_GATE`; `RECALL_SKILLS` in `tests/test_references.py` |
+| Test harness | FD-D41 | implemented, CI unobserved | `tests/helpers.py`, `pytest.ini`, `tests/test_conventions.py`, `tests/test_packs.py`; `.gitattributes`; `.github/workflows/tests.yml` has not run on GitHub |
 
 ## FD-P1: adopt `DESIGN.md` into this pack
 
@@ -480,24 +481,60 @@ Changes:
 | `family-design.introduction.md`, `family-design.sourcecode.md` | counts; compaction note under `Instruction surfaces` |
 | `family-design.roadmap.md` | this phase, design area row, risk, next action |
 
+## FD-P11: harden the test harness
+
+Opened 2026-10-02 when the user asked for best-practice improvements to `tests/`. FD-D41 carries the reasoning and rejected alternatives.
+
+Acceptance criteria:
+
+- every per-skill check is its own parametrized case, and an unclassified skill fails with a message naming the set to update
+- `SKILL.md` frontmatter, `agents/openai.yaml`, and pack frontmatter are parsed, not pattern-matched
+- the sibling-dependency ban, folder shape, entry-index agreement, identifier prefix and resolution rules each fail on a deliberately broken input
+- the stale index count was caught by a test before it was fixed
+- the suite is green under `core.autocrlf=true` and `false`
+- no shipped skill file changes
+
+### Checkpoint: complete
+
+| Item | Result |
+|---|---|
+| Verification gate | `uvx --from "pytest>=8,<10" --with pyyaml pytest tests/ -q` green. The pass count is not recorded |
+| Mutation checks | 9 broken inputs, each reverted: unclassified skill, commented-out policy key, `../` path, `Read` of a sibling, one byte in a packaged contract, dropped index row, hard-wrapped paragraph, en dash in `openai.yaml`, bare and dangling identifier. Each failed with the skill, file, or entry named; the hard-wrap case warned |
+| Drift caught before fixing | the entry-index prose stated 42 entries against 43 headings; fixed by removing the number |
+| Line endings | clones of the tree under `core.autocrlf=true` and `false` both held LF and passed |
+| GitHub Actions | written, not run. `actions/checkout@v4` and `astral-sh/setup-uv@v6` were not verified against the marketplace and are not pinned to a commit |
+| Commit | uncommitted |
+
+Changes:
+
+| File | Change |
+|---|---|
+| `tests/helpers.py`, `pytest.ini`, `.gitattributes`, `.github/workflows/tests.yml` | new |
+| `tests/test_conventions.py`, `tests/test_packs.py` | new. Dash scan moved here and widened to every text suffix Git lists |
+| `tests/test_references.py`, `tests/test_skill_metadata.py`, `tests/test_run_policy.py` | rewritten as parametrized pytest functions; metadata tests parse YAML |
+| `AGENTS.md`, `family-design.introduction.md` | test command, dash-test scope |
+| `skill-consolidation.introduction.md`, `skill-consolidation.sourcecode.md`, `skill-consolidation.roadmap.md` | synced to the code by `baselinedocs-sync-codebase`: counts replaced by names or dated baselines, the classification, copy tables, pointer graph, and test surface rewritten, stale install and commit claims corrected, the `onboard` placement claim pointed at FD-D34 |
+| `family-design.introduction.md`, `family-design.roadmap.md` | counts removed from current-truth tables and the next action |
+| `family-design.hallucination.md` | FD-D41 added; 1 index row; stated entry count removed |
+
 ## Risks
 
 | Risk | Detail |
 |---|---|
 | `AGENTS.md` points four times at a file that is being retired | FD-D27 made this pack canonical and scheduled `DESIGN.md` for deletion, so `AGENTS.md` is already wrong where it tells a contributor to record decisions in `DESIGN.md`. The file is still on disk, so nothing is broken yet, but a contributor reading `AGENTS.md` today would write a new decision into the file being deleted. The rewire is the next action below |
-| `skill-consolidation` records its own state as uncommitted | Its roadmap states that SC-P9 through SC-P14 are uncommitted at the user's request. Those changes are now committed, at `959617b`, `b857216`, and `0cb913f`. This adoption did not repair it: `baselinedocs-sync-codebase` owns a pack that has fallen behind the code, and the repair belongs in that pack, not this one |
-| Installed skills are behind this repository | Widened again 2026-09-11 by FD-P8, 2026-09-16 by FD-P9, and 2026-10-02 by FD-P10, on top of the gap FD-P7 reopened. An installed skill reads its own packaged copy, so any given machine's global install drifts from this repository from its next edit onward, and whether a particular machine is current is machine-specific state this pack does not track. Reinstalling from this local clone is the standing remedy, not a one-time phase: `npx skills remove -g -s <the 17 names>` then `npx skills add . -g -a '*' -s <the 17 names>`, run again whenever a machine's copy needs to catch up |
+| `skill-consolidation` records its own state as uncommitted | Closed in FD-P11. Its roadmap stated that SC-P9 through SC-P14 were uncommitted; they are committed at `959617b`, `b857216`, and `0cb913f`. `baselinedocs-sync-codebase` repaired that pack's roadmap, introduction, and sourcecode against the code, since it owns a pack that has fallen behind it |
+| Installed skills are behind this repository | Widened again 2026-09-11 by FD-P8, 2026-09-16 by FD-P9, and 2026-10-02 by FD-P10, on top of the gap FD-P7 reopened. An installed skill reads its own packaged copy, so any given machine's global install drifts from this repository from its next edit onward, and whether a particular machine is current is machine-specific state this pack does not track. Reinstalling from this local clone is the standing remedy, not a one-time phase: `npx skills remove -g -s <every skill name>` then `npx skills add . -g -a '*' -s <every skill name>`, run again whenever a machine's copy needs to catch up |
 | A reference written before 2026-08-28 names an identifier that no longer exists | FD-D30 renamed every identifier in both packs to carry a pack prefix. Anything citing a bare `D16` or `P8`, in a commit message or an earlier thread, now resolves to nothing. That is the intended failure mode, chosen over a bare number that resolves silently to the wrong entry, but it is a real cost to anyone holding an old reference |
 | Nothing about the skill family itself is deferred | The rename sweep and the finished-pack marker were closed rather than postponed, in `skill-consolidation` SC-D13 and SC-D14. The only deferred item in this pack, FD-Q1, is blocked on a platform capability |
 
 ## Next action
 
-On any machine whose global install has not picked up FD-P6's through FD-P10's changes, reinstall the family from a local clone of this repository, the same mechanical step FD-P3 and FD-P5 both closed out with: the widened `contract/report-style.md` and its 14 re-synced packaged copies, the rewritten `baselinedocs-onboard/SKILL.md`, the widened `contract/pack-contract.md` and its 11 re-synced packaged copies, the removal of `baselinedocs-setup-hooks`, and the addition of `baselinedocs-load` and `baselinedocs-recall`. After that, check FD-P10's open item: run `/compact` mid pack work and confirm the agent selects `baselinedocs-recall` before its next pack write. This is per-machine state, not a repository-wide fact this pack tracks, so no phase records when a given machine last ran it.
+On any machine whose global install has not picked up FD-P6's through FD-P10's changes, reinstall the family from a local clone of this repository, the same mechanical step FD-P3 and FD-P5 both closed out with: the widened `contract/report-style.md` and its re-synced packaged copies, the rewritten `baselinedocs-onboard/SKILL.md`, the widened `contract/pack-contract.md` and its re-synced packaged copies, the removal of `baselinedocs-setup-hooks`, and the addition of `baselinedocs-load` and `baselinedocs-recall`. After that, check FD-P10's open item: run `/compact` mid pack work and confirm the agent selects `baselinedocs-recall` before its next pack write. This is per-machine state, not a repository-wide fact this pack tracks, so no phase records when a given machine last ran it.
+
+After FD-P11, push and confirm the first GitHub Actions run is green: the workflow has never run, and its two action tags are unverified and not pinned to a commit.
 
 Separately, and explicitly deferred by the user rather than scheduled: rewriting `family-design.hallucination.md`'s and `skill-consolidation.hallucination.md`'s existing entries under FD-D36's compact register is its own piece of work, not a follow-on to this phase.
 
 One open question is new: FD-Q5 asks who, if anyone, now checks a pack for misfiled content, since `onboard`'s placement check was deleted along with the output section that reported it. Nothing else in the pack is waiting on a user decision.
-
-One repair is outstanding and belongs to another pack: `skill-consolidation.roadmap.md` states that SC-P9 through SC-P14 are uncommitted, and they are committed at `959617b`, `b857216`, and `0cb913f`. `baselinedocs-sync-codebase` owns a pack that has fallen behind the code, and the repair belongs in that pack rather than here.
 
 One older open question remains in this pack: FD-Q1 waits on a portable hidden-skill mechanism that no installer provides. `skill-consolidation` still carries SC-Q6, SC-Q7, and SC-Q8, and SC-Q6 is the one this pack touched: FD-D30 settled its uniqueness clause and left the rest of it open.

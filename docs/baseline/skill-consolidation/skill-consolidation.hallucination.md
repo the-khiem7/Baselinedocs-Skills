@@ -398,7 +398,7 @@ The position to be argued when this is decided, recorded now so it is not lost: 
 
 The second half of the proposal, also unargued yet: only pack-wide identifiers may be cited across documents, and anything numbered inside a single document is local detail. A real pack cites "Phase 3 Step 11" from its Phase 4 section; inserting a step or moving that one to another phase breaks the citation with nothing to report it. Under the rule, a step that needs citing from elsewhere has to be promoted to an entry with its own identifier.
 
-**The proposed scheme, in full, so it can be argued with rather than re-derived.** One letter for the kind plus an integer. Flat, append-only, unique across the pack.
+**The proposed scheme, in full, so it can be argued with rather than re-derived.** One letter for the kind plus an integer. Flat, append-only, unique across the pack. The last clause is the one `family-design` FD-D30 replaced: unique across the initiative, by carrying the pack prefix.
 
 | Kind | Identifier | Written as |
 |---|---|---|

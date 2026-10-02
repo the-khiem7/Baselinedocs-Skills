@@ -1,9 +1,9 @@
 import re
-import unittest
-from pathlib import Path
 
+import pytest
 
-ROOT = Path(__file__).parents[1]
+from helpers import ROOT, SKILL_NAMES, read_skill, read_text, rel
+
 CANONICAL_CONTRACT = ROOT / "contract" / "pack-contract.md"
 CANONICAL_REPORT_STYLE = ROOT / "contract" / "report-style.md"
 
@@ -84,116 +84,99 @@ GATES.update({name: RECALL_CONTRACT_GATE for name in RECALL_SKILLS})
 RECALL_REPORT_GATE = "Read `references/report-style.md` in full now, every time."
 REPORT_GATES = {name: RECALL_REPORT_GATE for name in RECALL_SKILLS}
 
+REPORTERS = [name for name in SKILL_NAMES if name not in REPORT_STYLE_EXEMPT]
+READ_ONLY_SKILLS = sorted(READER_SKILLS | LOADER_SKILLS | RECALL_SKILLS)
 
-class ContractCopyTests(unittest.TestCase):
-    def test_packaged_contract_matches_canonical_contract(self):
-        canonical = CANONICAL_CONTRACT.read_bytes()
-        packaged = sorted(ROOT.glob("baselinedocs-*/references/pack-contract.md"))
-        self.assertEqual(
-            {path.parents[1].name for path in packaged}, CONTRACT_SKILLS
-        )
-        for path in packaged:
-            self.assertEqual(
-                path.read_bytes(),
-                canonical,
-                f"{path.relative_to(ROOT)} drifted from contract/pack-contract.md",
-            )
-
-    def test_contract_skills_gate_on_reading_the_contract(self):
-        for name in sorted(CONTRACT_SKILLS):
-            with self.subTest(skill=name):
-                text = (ROOT / name / "SKILL.md").read_text(encoding="utf-8")
-                self.assertIn(
-                    GATES[name],
-                    text,
-                    f"{name} ships the contract but never requires reading it",
-                )
-
-    def test_packaged_report_style_matches_canonical_and_reaches_every_reporter(self):
-        canonical = CANONICAL_REPORT_STYLE.read_bytes()
-        expected = {
-            path.name for path in ROOT.glob("baselinedocs-*") if path.is_dir()
-        } - REPORT_STYLE_EXEMPT
-        packaged = sorted(ROOT.glob("baselinedocs-*/references/report-style.md"))
-        self.assertEqual({path.parents[1].name for path in packaged}, expected)
-        for path in packaged:
-            with self.subTest(copy=path.parents[1].name):
-                self.assertEqual(
-                    path.read_bytes(),
-                    canonical,
-                    f"{path.relative_to(ROOT)} drifted from contract/report-style.md",
-                )
-
-    def test_every_reporter_gates_on_report_style(self):
-        for name in sorted(
-            {path.name for path in ROOT.glob("baselinedocs-*") if path.is_dir()}
-            - REPORT_STYLE_EXEMPT
-        ):
-            with self.subTest(skill=name):
-                text = (ROOT / name / "SKILL.md").read_text(encoding="utf-8")
-                self.assertIn(
-                    REPORT_GATES.get(name, REPORT_GATE),
-                    text,
-                    f"{name} ships report style but never requires reading it",
-                )
-
-    def test_read_only_skills_are_not_gated_on_writing(self):
-        for name in sorted(READER_SKILLS | LOADER_SKILLS | RECALL_SKILLS):
-            with self.subTest(skill=name):
-                text = (ROOT / name / "SKILL.md").read_text(encoding="utf-8")
-                self.assertNotIn(
-                    WRITE_GATE,
-                    text,
-                    f"{name} writes no pack file, so the write gate can never fire in it",
-                )
-
-    # The count of pack-writing skills is stated in prose in AGENTS.md, and prose
-    # is not re-derived when CONTRACT_SKILLS changes. It went stale twice: it read
-    # 14 when the real figure was 13, and a later pass corrected two of the four
-    # mentions because it searched for the sentence it remembered instead of for
-    # the number. The cure is one statement, pinned. Keep the count in the
-    # `The N pack-writing skills` sentence only; say "every pack-writing skill"
-    # everywhere else, so there is nothing else to update and nothing to disagree.
-    # That count is `WRITER_SKILLS`, not `CONTRACT_SKILLS`: since a full reader also
-    # ships the contract, the two differ, and pinning the prose to the wrong one
-    # would make AGENTS.md call a read-only skill a pack-writing skill.
-    def test_agents_md_states_the_skill_count_once_and_correctly(self):
-        text = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
-        stated = re.findall(r"The (\d+) pack-writing skills", text)
-        self.assertEqual(
-            len(stated),
-            1,
-            "state the pack-writing skill count in exactly one sentence in AGENTS.md",
-        )
-        self.assertEqual(
-            int(stated[0]),
-            len(WRITER_SKILLS),
-            "AGENTS.md disagrees with WRITER_SKILLS about how many skills write into a pack",
-        )
-        strays = re.findall(r"\ball (\d+)\b|\bEach of the (\d+)\b", text)
-        self.assertEqual(
-            strays,
-            [],
-            "phrase these count-free: the count belongs in one sentence, checked above",
-        )
-
-    # Scoped to this repository's own markdown. A dot-directory under the root is
-    # never repo content: it is `.git`, a tool cache, or a host skills directory
-    # someone installed into this checkout, and `.gitignore` already excludes those.
-    # Sweeping them makes a convention test fail on text this repo did not author
-    # and cannot fix, which is how a green suite turns into a permanently red one.
-    def test_no_typographic_dashes(self):
-        offenders = []
-        for path in sorted(ROOT.rglob("*.md")):
-            if any(part.startswith(".") for part in path.relative_to(ROOT).parts):
-                continue
-            for number, line in enumerate(
-                path.read_text(encoding="utf-8").splitlines(), start=1
-            ):
-                if re.search("[–—]", line):
-                    offenders.append(f"{path.relative_to(ROOT)}:{number}")
-        self.assertEqual(offenders, [], "use the ASCII hyphen, not an en dash or em dash")
+SET_HINT = (
+    "classify it in tests/test_references.py: WRITER_SKILLS, READER_SKILLS, "
+    "LOADER_SKILLS or RECALL_SKILLS if it ships the contract; "
+    "REPORT_STYLE_EXEMPT if it ships no report style"
+)
 
 
-if __name__ == "__main__":
-    unittest.main()
+def holders(asset):
+    return {
+        path.parents[1].name
+        for path in ROOT.glob(f"baselinedocs-*/references/{asset}")
+    }
+
+
+def test_every_contract_holder_is_classified():
+    held = holders("pack-contract.md")
+    assert held == CONTRACT_SKILLS, (
+        f"skills holding a pack-contract.md copy differ from CONTRACT_SKILLS: "
+        f"unexpected copy in {sorted(held - CONTRACT_SKILLS)}, "
+        f"missing copy in {sorted(CONTRACT_SKILLS - held)}. {SET_HINT}"
+    )
+
+
+@pytest.mark.parametrize("name", sorted(CONTRACT_SKILLS))
+def test_packaged_contract_matches_canonical_contract(name):
+    path = ROOT / name / "references" / "pack-contract.md"
+    assert path.read_bytes() == CANONICAL_CONTRACT.read_bytes(), (
+        f"{rel(path)} drifted from contract/pack-contract.md"
+    )
+
+
+@pytest.mark.parametrize("name", sorted(CONTRACT_SKILLS))
+def test_contract_skills_gate_on_reading_the_contract(name):
+    assert GATES[name] in read_skill(name), (
+        f"{name} ships the contract but never requires reading it"
+    )
+
+
+def test_every_report_style_holder_is_classified():
+    held = holders("report-style.md")
+    expected = set(REPORTERS)
+    assert held == expected, (
+        f"skills holding a report-style.md copy differ from every skill outside "
+        f"REPORT_STYLE_EXEMPT: unexpected copy in {sorted(held - expected)}, "
+        f"missing copy in {sorted(expected - held)}. {SET_HINT}"
+    )
+
+
+@pytest.mark.parametrize("name", REPORTERS)
+def test_packaged_report_style_matches_canonical(name):
+    path = ROOT / name / "references" / "report-style.md"
+    assert path.read_bytes() == CANONICAL_REPORT_STYLE.read_bytes(), (
+        f"{rel(path)} drifted from contract/report-style.md"
+    )
+
+
+@pytest.mark.parametrize("name", REPORTERS)
+def test_every_reporter_gates_on_report_style(name):
+    assert REPORT_GATES.get(name, REPORT_GATE) in read_skill(name), (
+        f"{name} ships report style but never requires reading it"
+    )
+
+
+@pytest.mark.parametrize("name", READ_ONLY_SKILLS)
+def test_read_only_skills_are_not_gated_on_writing(name):
+    assert WRITE_GATE not in read_skill(name), (
+        f"{name} writes no pack file, so the write gate can never fire in it"
+    )
+
+
+# The count of pack-writing skills is stated in prose in AGENTS.md, and prose
+# is not re-derived when CONTRACT_SKILLS changes. It went stale twice: it read
+# 14 when the real figure was 13, and a later pass corrected two of the four
+# mentions because it searched for the sentence it remembered instead of for
+# the number. The cure is one statement, pinned. Keep the count in the
+# `The N pack-writing skills` sentence only; say "every pack-writing skill"
+# everywhere else, so there is nothing else to update and nothing to disagree.
+# That count is `WRITER_SKILLS`, not `CONTRACT_SKILLS`: since a full reader also
+# ships the contract, the two differ, and pinning the prose to the wrong one
+# would make AGENTS.md call a read-only skill a pack-writing skill.
+def test_agents_md_states_the_skill_count_once_and_correctly():
+    text = read_text(ROOT / "AGENTS.md")
+    stated = re.findall(r"The (\d+) pack-writing skills", text)
+    assert len(stated) == 1, (
+        "state the pack-writing skill count in exactly one sentence in AGENTS.md"
+    )
+    assert int(stated[0]) == len(WRITER_SKILLS), (
+        "AGENTS.md disagrees with WRITER_SKILLS about how many skills write into a pack"
+    )
+    strays = re.findall(r"\ball (\d+)\b|\bEach of the (\d+)\b", text)
+    assert strays == [], (
+        "phrase these count-free: the count belongs in one sentence, checked above"
+    )

@@ -61,7 +61,7 @@ It is a second asset rather than a section of the contract on purpose. The contr
 
 ## Conventions
 
-- ASCII hyphen only. No en dash, no em dash. Enforced by `test_no_typographic_dashes` across every `*.md` in the repo.
+- ASCII hyphen only. No en dash, no em dash. Enforced by `test_no_typographic_dashes` across every `.md`, `.yaml`, `.yml`, `.txt`, `.py`, and `.ini` file Git lists for the repo.
 - State the pack-writing skill count in one sentence only, the one under `The pack contract`. Everywhere else say "every pack-writing skill". `test_references.py` pins that sentence against `WRITER_SKILLS` and fails on a second one, because a count repeated in prose goes stale the next time a skill is added or removed. It is pinned to `WRITER_SKILLS` rather than `CONTRACT_SKILLS` because a full reader ships the contract too, so the two counts differ and the prose is about writing.
 - Before merging or deleting a skill, read `docs/baseline/skill-consolidation/skill-consolidation.hallucination.md` SC-D1. The merge test is two conditions, not one, and two plausible-looking alternatives are recorded there as rejected so they are not proposed again.
 - Skill folder shape: `SKILL.md`, `agents/openai.yaml`, and `references/` only when needed.
@@ -71,7 +71,11 @@ It is a second asset rather than a section of the contract on purpose. The contr
 ## Tests
 
 ```bash
-uvx pytest tests/ -q
+uvx --from "pytest>=8,<10" --with pyyaml pytest tests/ -q
 ```
 
-The repo has no `pyproject.toml`, so `uv run python -m pytest` does not work.
+pytest is pinned because bare `uvx pytest` takes whatever is newest. PyYAML is test-only: it parses `SKILL.md` frontmatter, `agents/openai.yaml`, and pack frontmatter. The repo has no `pyproject.toml`, so `uv run python -m pytest` does not work; `pytest.ini` holds the config.
+
+Adding a skill fails a test that names the set to update: `WRITER_SKILLS`, `READER_SKILLS`, `LOADER_SKILLS`, `RECALL_SKILLS`, or `REPORT_STYLE_EXEMPT` in `tests/test_references.py`, and `ENTRYPOINTS` in `tests/test_skill_metadata.py`. Shared helpers live in `tests/helpers.py`.
+
+`.gitattributes` forces LF on the byte-compared assets, so the packaged copies compare equal under any `core.autocrlf`.

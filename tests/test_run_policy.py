@@ -1,28 +1,29 @@
-import unittest
-from pathlib import Path
+import pytest
+
+from helpers import ROOT, read_skill, read_text
+
+SKILL_PHRASES = [
+    "Apply this gate to every invocation style.",
+    "is only one example",
+    "missing or ambiguous",
+    "Do not silently apply defaults",
+    "Ask in the user's language",
+    "Do not expose internal policy identifiers",
+]
 
 
-ROOT = Path(__file__).parents[1]
+@pytest.mark.parametrize("phrase", SKILL_PHRASES)
+def test_every_ambiguous_invocation_requires_policy_questions(phrase):
+    assert phrase in read_skill("baselinedocs-run"), (
+        f"baselinedocs-run/SKILL.md lost the policy-gate phrase: {phrase!r}"
+    )
 
 
-class RunPolicyContractTests(unittest.TestCase):
-    def test_every_ambiguous_invocation_requires_policy_questions(self):
-        skill = (ROOT / "baselinedocs-run" / "SKILL.md").read_text(encoding="utf-8")
-        self.assertIn("Apply this gate to every invocation style.", skill)
-        self.assertIn("is only one example", skill)
-        self.assertIn("missing or ambiguous", skill)
-        self.assertIn("Do not silently apply defaults", skill)
-        self.assertIn("Ask in the user's language", skill)
-        self.assertIn("Do not expose internal policy identifiers", skill)
-
-    def test_execution_contract_has_no_silent_defaults(self):
-        contract = (
-            ROOT / "baselinedocs-run" / "references" / "execution-contract.md"
-        ).read_text(encoding="utf-8")
-        self.assertIn("For every invocation style", contract)
-        self.assertIn("does not clearly determine one or both choices", contract)
-        self.assertNotIn("This is the default.", contract)
-
-
-if __name__ == "__main__":
-    unittest.main()
+def test_execution_contract_has_no_silent_defaults():
+    path = ROOT / "baselinedocs-run" / "references" / "execution-contract.md"
+    contract = read_text(path)
+    assert "For every invocation style" in contract
+    assert "does not clearly determine one or both choices" in contract
+    assert "This is the default." not in contract, (
+        "execution-contract.md must not declare a silent default policy"
+    )

@@ -13,7 +13,7 @@ code_ref: "uncommitted"
 
 One row per entry. A row states what the entry is about and nothing more: never its reasoning, never the justification behind its outcome, never a summary that could be mistaken for the entry. An answer that turns on an entry whose full text was not read is unbacked, and must be reported that way rather than derived from a row.
 
-Required by `contract/pack-contract.md` above 40 KB or 20 entries. This document holds 42.
+Required by `contract/pack-contract.md` above 40 KB or 20 entries.
 
 Every identifier in this initiative carries its pack's prefix: `FD-` here, `SC-` in `skill-consolidation`. It is written that way everywhere, inside the pack as well as across packs, so a reference is unambiguous wherever it is read and greppable across the whole repository. FD-D30 records the decision.
 
@@ -59,6 +59,7 @@ Every identifier in this initiative carries its pack's prefix: `FD-` here, `SC-`
 | FD-D38 | `baselinedocs-callout` as a seventh user entrypoint owning temporary routing groups | current | FD-D1, FD-D16, FD-D31 |
 | FD-D39 | silent pack loading with single-word confirmation output | current | FD-D1, FD-D10, FD-D34 |
 | FD-D40 | `baselinedocs-recall` re-reading the rule files after a context compaction | current | FD-D1, FD-D7, FD-D37, FD-D39 |
+| FD-D41 | how the test suite is structured and which documented rules it enforces | current | FD-D1, FD-D7, FD-D30 |
 | FD-Q1 | hiding internal helpers at package level rather than by naming convention | open, deferred on a missing platform feature | FD-D1 |
 | FD-Q2 | installing checkpoint hooks across more than one repository | closed, hook mechanism removed | FD-D6, FD-D37 |
 | FD-Q5 | who, if anyone, owns misfiled-content detection now that `onboard` no longer checks it | open | FD-D34 |
@@ -567,6 +568,24 @@ A new thread is the default once the pack is current, which after a save it is. 
 **Rejected: a user entrypoint.** Fires only when the user remembers, which is the forgetting being fixed.
 
 **Rejected: resume the interrupted work after recalling.** The user chose stop-and-wait, matching `baselinedocs-load`.
+
+## FD-D41: the test suite runs one case per skill, parses what it checks, and enforces the rules the docs state
+
+**Decided.** Pin pytest with `pytest.ini` and `uvx --from "pytest>=8,<10" --with pyyaml`. Share helpers in `tests/helpers.py`. Parametrize every per-skill check. Parse `SKILL.md` frontmatter, `agents/openai.yaml`, and pack frontmatter with PyYAML. Add tests for the sibling-dependency ban, the skill folder shape, entry-index agreement with entry headings, identifier prefixes and resolution, and a hard-wrap warning. Take the file set from Git, force LF in `.gitattributes`, run the pinned command in GitHub Actions.
+
+**Why.** A loop reported only its first bad skill, a substring match passed a commented-out `allow_implicit_invocation`, the sibling-prerequisite ban in `AGENTS.md` and the prefix rule in FD-D30 had no check, and the index prose "holds 42" had already drifted from 43 entries.
+
+**What breaks if ignored.** A misclassified skill ships with the wrong invocation policy under a green suite, and an identifier resolves silently to the wrong pack.
+
+**Rejected: assert counts in prose.** Counts are removed from current-truth tables instead, because a count repeated in prose goes stale the next time a skill is added; only the one `The N pack-writing skills` sentence in `AGENTS.md` stays pinned.
+
+**Rejected: line-based YAML parsing with no dependency.** It cannot tell a comment from a key; PyYAML is test-only and ships nowhere.
+
+**Rejected: fail the suite on a hard-wrapped paragraph.** A run of plain lines cannot be told from a deliberate break, so it warns.
+
+**Rejected: walk the disk for files.** A host skills directory or nested worktree in the checkout fails convention tests on text this repo does not author; Git's file set excludes them.
+
+**Accepted gaps.** Bare identifiers quoted as examples in the documents recording the prefix rule are allowed by exact file and identifier (`BARE_EXAMPLES`), and questions closed without a heading of their own are allowed by name (`CLOSED_WITHOUT_HEADING`: `FD-Q3`, `FD-Q4`, `SC-Q1` to `SC-Q5`). Both sit in `tests/test_packs.py`; a real bare identifier in one of those files, or a dangling citation of a listed question, passes unseen.
 
 ## Open questions
 

@@ -19,7 +19,7 @@ Out of scope, and owned elsewhere:
 
 | Subject | Owner | Why not here |
 |---|---|---|
-| Which skills were merged, deleted, or renamed, and the criterion that decided each | `docs/baseline/skill-consolidation/` | That initiative has its own pack, with fourteen phases of execution history and twenty-one decisions. Restating any of it here would create a second copy that drifts |
+| Which skills were merged, deleted, or renamed, and the criterion that decided each | `docs/baseline/skill-consolidation/` | That initiative has its own pack, with its own execution history and decisions. Restating any of it here would create a second copy that drifts |
 | The definitive rules a running agent obeys | `contract/pack-contract.md` and `contract/report-style.md` | Those files ship into skill folders. This pack records why they say what they say, never what they say |
 | How a user is taught to use the family | `README.md` | This pack records the decision that the README leads with the workflow, not the workflow itself |
 | Repository conventions for a contributor | `AGENTS.md` | Same boundary: the convention ships in `AGENTS.md`, the argument for it lives here or in `skill-consolidation` |
@@ -30,19 +30,19 @@ Verified against the working tree at `0cb913f`, not read off `DESIGN.md`.
 
 | Fact | State |
 |---|---|
-| skills on disk | 17 |
-| user entrypoints | 8: `init`, `adopt`, `save`, `run`, `onboard`, `load`, `brief`, `callout`. All set `allow_implicit_invocation: false` |
-| one-time administration | 0 |
-| lifecycle skills, agent-selected | 9, all `true`. Includes `recall`, FD-D40 |
+| skills on disk | every `baselinedocs-*` folder. No count is kept here: `tests/helpers.py` enumerates them and each test classifies every one |
+| user entrypoints | `init`, `adopt`, `save`, `run`, `onboard`, `load`, `brief`, `callout`. All set `allow_implicit_invocation: false`. Pinned by `ENTRYPOINTS` in `tests/test_skill_metadata.py` |
+| one-time administration | none |
+| lifecycle skills, agent-selected | every other skill, all `true`. Includes `recall`, FD-D40 |
 | pack schema | `2.0`. Three core documents, two conditional |
-| packaged `pack-contract.md` copies | 14. Absent from `audit-claims`, `audit-drift`, `brief` |
-| packaged `report-style.md` copies | 16. Absent from `load` |
+| packaged `pack-contract.md` copies | one per skill in `CONTRACT_SKILLS` (`tests/test_references.py`). Absent from `audit-claims`, `audit-drift`, `brief` |
+| packaged `report-style.md` copies | every skill outside `REPORT_STYLE_EXEMPT`. Absent from `load` |
 | checkpoint hook | none. Automated Stop hook adapter retired and removed in FD-P8 |
 | checkpoint model | in-thread phase checkpointing by `run` |
 | `resume-*` skills | none on disk |
 | execution policies | `approval_policy` and `commit_policy`, defined in `baselinedocs-run/references/execution-contract.md`, gated by `tests/test_run_policy.py` |
-| test command and result | `uvx pytest tests/ -q`: 12 passed, 49 subtests passed |
-| baseline packs in this repository | 2: this one and `skill-consolidation`, routed by `docs/baseline/baselinedocs.index.md` |
+| test command and result | `uvx --from "pytest>=8,<10" --with pyyaml pytest tests/ -q`, green. The pass count is not recorded: it changes with every skill added |
+| baseline packs in this repository | this one and `skill-consolidation`, routed by `docs/baseline/baselinedocs.index.md` |
 | source of this pack | `DESIGN.md`, 495 lines, 60,743 bytes. Deleted 2026-08-28 after coverage was verified, and recoverable at `git show 0cb913f:DESIGN.md`. FD-D27 |
 
 ## Target
@@ -65,7 +65,7 @@ The family's design is shipped, not planned. This pack exists so the reasoning b
 
 - A skill may rely only on files inside its own folder. `npx skills add --skill <name>` installs one folder and nothing else travels with it, so a canonical asset reaches a skill as a byte-identical packaged copy or it does not reach it at all.
 - `README.md`, `AGENTS.md`, `contract/`, `tests/`, and this pack do not ship. No installed agent can open any of them, so nothing may be cut from a `SKILL.md` on the grounds that it is written down here.
-- ASCII hyphen only. `test_no_typographic_dashes` globs every `*.md` outside a dot-directory, this pack included.
+- ASCII hyphen only. `test_no_typographic_dashes` covers every `.md`, `.yaml`, `.yml`, `.txt`, `.py`, and `.ini` file Git lists for this repository, this pack included.
 - The frontmatter schema is fixed at `2.0`. Extending it is a schema change, not a convention change.
 - An install is a snapshot. An installed skill reads its own packaged copy, so this repository and any machine drift apart from the next edit onward.
 
