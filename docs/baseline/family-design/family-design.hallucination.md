@@ -3,7 +3,7 @@ baseline_schema: "2.0"
 pack: "family-design"
 document: "hallucination"
 status: "active"
-updated: "2026-09-16"
+updated: "2026-10-02"
 code_ref: "uncommitted"
 ---
 
@@ -13,7 +13,7 @@ code_ref: "uncommitted"
 
 One row per entry. A row states what the entry is about and nothing more: never its reasoning, never the justification behind its outcome, never a summary that could be mistaken for the entry. An answer that turns on an entry whose full text was not read is unbacked, and must be reported that way rather than derived from a row.
 
-Required by `contract/pack-contract.md` above 40 KB or 20 entries. This document holds 41.
+Required by `contract/pack-contract.md` above 40 KB or 20 entries. This document holds 42.
 
 Every identifier in this initiative carries its pack's prefix: `FD-` here, `SC-` in `skill-consolidation`. It is written that way everywhere, inside the pack as well as across packs, so a reference is unambiguous wherever it is read and greppable across the whole repository. FD-D30 records the decision.
 
@@ -58,6 +58,7 @@ Every identifier in this initiative carries its pack's prefix: `FD-` here, `SC-`
 | FD-D37 | removing the automated checkpoint hook mechanism and setup-hooks skill | current | FD-D6, FD-Q2, FD-D4 |
 | FD-D38 | `baselinedocs-callout` as a seventh user entrypoint owning temporary routing groups | current | FD-D1, FD-D16, FD-D31 |
 | FD-D39 | silent pack loading with single-word confirmation output | current | FD-D1, FD-D10, FD-D34 |
+| FD-D40 | `baselinedocs-recall` re-reading the rule files after a context compaction | current | FD-D1, FD-D7, FD-D37, FD-D39 |
 | FD-Q1 | hiding internal helpers at package level rather than by naming convention | open, deferred on a missing platform feature | FD-D1 |
 | FD-Q2 | installing checkpoint hooks across more than one repository | closed, hook mechanism removed | FD-D6, FD-D37 |
 | FD-Q5 | who, if anyone, owns misfiled-content detection now that `onboard` no longer checks it | open | FD-D34 |
@@ -548,6 +549,24 @@ A new thread is the default once the pack is current, which after a save it is. 
 **Rejected: omit `contract/pack-contract.md` from `baselinedocs-load`.** Rejected because a pack reader must understand document schemas and role boundaries to correctly contextualize the documents it ingests.
 
 **Rejected: ship `contract/report-style.md` to `baselinedocs-load`.** Rejected because the skill produces no conversational report, so shipping and gating on report-style rules wastes tokens on every invocation.
+
+## FD-D40: `baselinedocs-recall` re-reads the rule files after a context compaction
+
+**Decided.** Add `baselinedocs-recall`, a lifecycle skill (`allow_implicit_invocation: true`) that reads its packaged `pack-contract.md` and `report-style.md` in full, reads no pack document, replies "Sẵn sàng." / "Ready.", and stops. When the interrupted work belonged to another baselinedocs skill, it names that skill to invoke again instead of continuing from the summary. Display name `Baseline Docs: Recall`, without `Internal`, because a user calls it by hand as often as an agent selects it. Ships both assets under a third criterion beside SC-D16's writer and full-reader cases: restoring the rules is its whole job, and it reports no conformance.
+
+**Why.** After a compaction the agent keeps working from a summary that kept that a rule existed, not its wording; the `SKILL.md` body holding the read-every-time gate was compacted with it, so nothing re-fires the gate. The `description` frontmatter is the only instruction surface still in context afterwards, so a skill selected by its description is the only in-family trigger left once FD-D37 removed hooks.
+
+**What breaks if ignored.** Pack writes after a compaction drift from the contract - content in the wrong document, hard-wrapped paragraphs, narrative register - and reports drop identifier glosses, with no rule visibly broken because the rule is no longer in context.
+
+**Rejected: a PostCompact or SessionStart hook re-injecting the files.** FD-D37 removed the hook mechanism for host-specific drift and asymmetry.
+
+**Rejected: a re-read line in every `SKILL.md`.** It is compacted with the body it sits in.
+
+**Rejected: fold it into `baselinedocs-load`.** Load reads a whole pack and is explicit-only, so it costs a pack read and never fires on its own.
+
+**Rejected: a user entrypoint.** Fires only when the user remembers, which is the forgetting being fixed.
+
+**Rejected: resume the interrupted work after recalling.** The user chose stop-and-wait, matching `baselinedocs-load`.
 
 ## Open questions
 

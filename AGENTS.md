@@ -47,6 +47,7 @@ A bare prohibition with an appealing counter-argument gets overridden mid-run. A
 - Edit the canonical file, then copy it to every skill that ships it.
 - Never edit a packaged copy directly, and never restate the document roles anywhere else.
 - A skill ships a copy when it writes pack files, or when it reads every document in full and reports placement. The test is a full read, not the absence of writes: `baselinedocs-brief` reads nothing in full and neither `audit` skill compares placement, so a copy there would let a skill report conformance it never checked.
+- One exception reads no pack at all: `baselinedocs-recall` re-reads the contract and report style after a context compaction, because restoring them is its whole job. It reports nothing about a pack, so the conformance objection does not reach it.
 - Each carries one gate sentence in its `SKILL.md` sending the agent to read the contract, worded for what it does with the file: before a write, or before reporting pack state. Both wordings are pinned. That gate cannot live in the contract: an agent that skipped the file never reaches the sentence telling it not to skip the file.
 - A skill without a copy is not missing one. An onboard run reported the absent copy in a read-only skill as a defect and concluded that future pack writes were blocked; no write routes through a read-only skill, and adding a copy to one fails `test_references.py`.
 
@@ -64,7 +65,7 @@ It is a second asset rather than a section of the contract on purpose. The contr
 - State the pack-writing skill count in one sentence only, the one under `The pack contract`. Everywhere else say "every pack-writing skill". `test_references.py` pins that sentence against `WRITER_SKILLS` and fails on a second one, because a count repeated in prose goes stale the next time a skill is added or removed. It is pinned to `WRITER_SKILLS` rather than `CONTRACT_SKILLS` because a full reader ships the contract too, so the two counts differ and the prose is about writing.
 - Before merging or deleting a skill, read `docs/baseline/skill-consolidation/skill-consolidation.hallucination.md` SC-D1. The merge test is two conditions, not one, and two plausible-looking alternatives are recorded there as rejected so they are not proposed again.
 - Skill folder shape: `SKILL.md`, `agents/openai.yaml`, and `references/` only when needed.
-- User entrypoints set `allow_implicit_invocation: false`. Lifecycle skills keep it enabled and prefix their display name with `Baseline Docs Internal:`.
+- User entrypoints set `allow_implicit_invocation: false`. Lifecycle skills keep it enabled and prefix their display name with `Baseline Docs Internal:`. `baselinedocs-recall` is the one lifecycle skill named `Baseline Docs: Recall` without `Internal`, because a user calls it by hand as often as an agent selects it.
 - That policy field is Codex-only. On other hosts the `description` frontmatter is the real selection surface, so it must carry the vocabulary a user would actually type.
 
 ## Tests

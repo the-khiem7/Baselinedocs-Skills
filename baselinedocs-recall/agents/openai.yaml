@@ -1,0 +1,6 @@
+interface:
+  display_name: "Baseline Docs: Recall"
+  short_description: "Re-read the baselinedocs rules after a compaction"
+  default_prompt: "Use $baselinedocs-recall to re-read the pack contract and report style into context after a compaction."
+policy:
+  allow_implicit_invocation: true

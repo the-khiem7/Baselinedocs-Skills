@@ -3,7 +3,7 @@ baseline_schema: "2.0"
 pack: "family-design"
 document: "roadmap"
 status: "active"
-updated: "2026-09-16"
+updated: "2026-10-02"
 code_ref: "uncommitted"
 ---
 
@@ -43,6 +43,7 @@ Verified against the repository, not against `DESIGN.md`.
 | Installation profiles | FD-Q1 | deferred | no platform mechanism exists to build against |
 | Organization-wide hook rollout | FD-Q2, FD-D37 | closed | Hook mechanism removed from repository in FD-P8; rollout no longer applicable |
 | Silent loader entrypoint | FD-D39 | implemented | `baselinedocs-load` implemented as a silent pack loader with single-word confirmation output; exempt from `report-style.md` in `tests/test_references.py` |
+| Rule recall after compaction | FD-D40 | implemented | `baselinedocs-recall` ships both assets, gates on `RECALL_CONTRACT_GATE` and `RECALL_REPORT_GATE`; `RECALL_SKILLS` in `tests/test_references.py` |
 
 ## FD-P1: adopt `DESIGN.md` into this pack
 
@@ -445,19 +446,53 @@ Changes:
 | `family-design.hallucination.md` | FD-D39 added; 1 index row |
 | `family-design.roadmap.md` | this phase, design area status, and next action updated |
 
+## FD-P10: add `baselinedocs-recall` to re-read the rules after a compaction
+
+Opened 2026-10-02 when the user reported that agents forget `pack-contract.md` and `report-style.md` after a context compaction. FD-D40 carries the reasoning and rejected alternatives.
+
+Acceptance criteria:
+
+- `baselinedocs-recall` created as a lifecycle skill with `allow_implicit_invocation: true` and display name `Baseline Docs: Recall`
+- both packaged copies byte-identical to `contract/`
+- `tests/test_references.py` pins both recall gate wordings and asserts the write gate is absent
+- `uvx pytest tests/ -q` stays green, including `test_no_typographic_dashes`
+
+### Checkpoint: complete
+
+| Item | Result |
+|---|---|
+| Verification gate | 12 passed, 49 subtests passed |
+| Files created | `baselinedocs-recall/SKILL.md`, `agents/openai.yaml`, `references/pack-contract.md`, `references/report-style.md` |
+| Copies | 14 contract, 16 report style, `cmp` clean |
+| Entries written | 1: FD-D40; `skill-consolidation` SC-D16 amended |
+| Live compaction behavior | not observed. Selection after a real `/compact` is untested |
+| Commit | uncommitted |
+
+Changes:
+
+| File | Change |
+|---|---|
+| `baselinedocs-recall/` | new skill folder |
+| `tests/test_references.py` | `RECALL_SKILLS`, `RECALL_CONTRACT_GATE`, `RECALL_REPORT_GATE`, per-skill report gate lookup |
+| `AGENTS.md` | recall criterion under `The pack contract`; display-name exception under `Conventions` |
+| `family-design.hallucination.md` | FD-D40 added; 1 index row |
+| `skill-consolidation.hallucination.md` | SC-D16 amendment line and index status |
+| `family-design.introduction.md`, `family-design.sourcecode.md` | counts; compaction note under `Instruction surfaces` |
+| `family-design.roadmap.md` | this phase, design area row, risk, next action |
+
 ## Risks
 
 | Risk | Detail |
 |---|---|
 | `AGENTS.md` points four times at a file that is being retired | FD-D27 made this pack canonical and scheduled `DESIGN.md` for deletion, so `AGENTS.md` is already wrong where it tells a contributor to record decisions in `DESIGN.md`. The file is still on disk, so nothing is broken yet, but a contributor reading `AGENTS.md` today would write a new decision into the file being deleted. The rewire is the next action below |
 | `skill-consolidation` records its own state as uncommitted | Its roadmap states that SC-P9 through SC-P14 are uncommitted at the user's request. Those changes are now committed, at `959617b`, `b857216`, and `0cb913f`. This adoption did not repair it: `baselinedocs-sync-codebase` owns a pack that has fallen behind the code, and the repair belongs in that pack, not this one |
-| Installed skills are behind this repository | Widened again 2026-09-11 by FD-P8 and 2026-09-16 by FD-P9, on top of the gap FD-P7 reopened. An installed skill reads its own packaged copy, so any given machine's global install drifts from this repository from its next edit onward, and whether a particular machine is current is machine-specific state this pack does not track. Reinstalling from this local clone is the standing remedy, not a one-time phase: `npx skills remove -g -s <the 14 names>` then `npx skills add . -g -a '*' -s <the 14 names>`, run again whenever a machine's copy needs to catch up |
+| Installed skills are behind this repository | Widened again 2026-09-11 by FD-P8, 2026-09-16 by FD-P9, and 2026-10-02 by FD-P10, on top of the gap FD-P7 reopened. An installed skill reads its own packaged copy, so any given machine's global install drifts from this repository from its next edit onward, and whether a particular machine is current is machine-specific state this pack does not track. Reinstalling from this local clone is the standing remedy, not a one-time phase: `npx skills remove -g -s <the 17 names>` then `npx skills add . -g -a '*' -s <the 17 names>`, run again whenever a machine's copy needs to catch up |
 | A reference written before 2026-08-28 names an identifier that no longer exists | FD-D30 renamed every identifier in both packs to carry a pack prefix. Anything citing a bare `D16` or `P8`, in a commit message or an earlier thread, now resolves to nothing. That is the intended failure mode, chosen over a bare number that resolves silently to the wrong entry, but it is a real cost to anyone holding an old reference |
 | Nothing about the skill family itself is deferred | The rename sweep and the finished-pack marker were closed rather than postponed, in `skill-consolidation` SC-D13 and SC-D14. The only deferred item in this pack, FD-Q1, is blocked on a platform capability |
 
 ## Next action
 
-On any machine whose global install has not picked up FD-P6's, FD-P7's, FD-P8's, and FD-P9's changes, reinstall the family from a local clone of this repository, the same mechanical step FD-P3 and FD-P5 both closed out with: the widened `contract/report-style.md` and its 14 re-synced packaged copies, the rewritten `baselinedocs-onboard/SKILL.md`, the widened `contract/pack-contract.md` and its 11 re-synced packaged copies, the removal of `baselinedocs-setup-hooks`, and the addition of `baselinedocs-load`. This is per-machine state, not a repository-wide fact this pack tracks, so no phase records when a given machine last ran it.
+On any machine whose global install has not picked up FD-P6's through FD-P10's changes, reinstall the family from a local clone of this repository, the same mechanical step FD-P3 and FD-P5 both closed out with: the widened `contract/report-style.md` and its 14 re-synced packaged copies, the rewritten `baselinedocs-onboard/SKILL.md`, the widened `contract/pack-contract.md` and its 11 re-synced packaged copies, the removal of `baselinedocs-setup-hooks`, and the addition of `baselinedocs-load` and `baselinedocs-recall`. After that, check FD-P10's open item: run `/compact` mid pack work and confirm the agent selects `baselinedocs-recall` before its next pack write. This is per-machine state, not a repository-wide fact this pack tracks, so no phase records when a given machine last ran it.
 
 Separately, and explicitly deferred by the user rather than scheduled: rewriting `family-design.hallucination.md`'s and `skill-consolidation.hallucination.md`'s existing entries under FD-D36's compact register is its own piece of work, not a follow-on to this phase.
 

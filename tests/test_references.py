@@ -54,7 +54,11 @@ LOADER_SKILLS = {
     "baselinedocs-load",
 }
 
-CONTRACT_SKILLS = WRITER_SKILLS | READER_SKILLS | LOADER_SKILLS
+RECALL_SKILLS = {
+    "baselinedocs-recall",
+}
+
+CONTRACT_SKILLS = WRITER_SKILLS | READER_SKILLS | LOADER_SKILLS | RECALL_SKILLS
 
 # One gate per skill, worded for what that skill does with the contract. Both are
 # pinned: an unpinned second wording is how the family ends up with two
@@ -71,9 +75,14 @@ LOAD_GATE = (
     "Read `references/pack-contract.md` in full before loading a pack, "
     "every time."
 )
+RECALL_CONTRACT_GATE = "Read `references/pack-contract.md` in full now, every time."
 GATES = {name: WRITE_GATE for name in WRITER_SKILLS}
 GATES.update({name: READ_GATE for name in READER_SKILLS})
 GATES.update({name: LOAD_GATE for name in LOADER_SKILLS})
+GATES.update({name: RECALL_CONTRACT_GATE for name in RECALL_SKILLS})
+
+RECALL_REPORT_GATE = "Read `references/report-style.md` in full now, every time."
+REPORT_GATES = {name: RECALL_REPORT_GATE for name in RECALL_SKILLS}
 
 
 class ContractCopyTests(unittest.TestCase):
@@ -123,13 +132,13 @@ class ContractCopyTests(unittest.TestCase):
             with self.subTest(skill=name):
                 text = (ROOT / name / "SKILL.md").read_text(encoding="utf-8")
                 self.assertIn(
-                    REPORT_GATE,
+                    REPORT_GATES.get(name, REPORT_GATE),
                     text,
                     f"{name} ships report style but never requires reading it",
                 )
 
     def test_read_only_skills_are_not_gated_on_writing(self):
-        for name in sorted(READER_SKILLS | LOADER_SKILLS):
+        for name in sorted(READER_SKILLS | LOADER_SKILLS | RECALL_SKILLS):
             with self.subTest(skill=name):
                 text = (ROOT / name / "SKILL.md").read_text(encoding="utf-8")
                 self.assertNotIn(

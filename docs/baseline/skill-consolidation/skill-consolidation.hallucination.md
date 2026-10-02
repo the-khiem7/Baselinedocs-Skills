@@ -3,7 +3,7 @@ baseline_schema: "2.0"
 pack: "skill-consolidation"
 document: "hallucination"
 status: "active"
-updated: "2026-09-11"
+updated: "2026-10-02"
 code_ref: "uncommitted"
 ---
 
@@ -32,7 +32,7 @@ Required by `contract/pack-contract.md` once a journal passes its threshold. SC-
 | SC-D13 | stopping the rename sweep at the audit pair | current | SC-D3 |
 | SC-D14 | declining a pack-level finished marker | current | - |
 | SC-D15 | the installed generation gap, and the constraint that asserted it | current | SC-D8 |
-| SC-D16 | shipping the contract on a full read rather than on writing | current | SC-D12, SC-D17, SC-D20 |
+| SC-D16 | shipping the contract on a full read rather than on writing | current, amended by `family-design` FD-D40 | SC-D12, SC-D17, SC-D20 |
 | SC-D17 | shipping report style as its own asset, separate from the contract | current | SC-D16 |
 | SC-D18 | forbidding hard-wrapped paragraphs in pack documents | current | SC-Q7 |
 | SC-D19 | putting the entry index into the contract as a conditional section | current | SC-D5, SC-D6, SC-D20, SC-Q7 |
@@ -246,6 +246,8 @@ The cost is higher than SC-D8 recorded, measured in SC-P8. A machine carries sev
 ## SC-D16: the contract ships on a full read, not on writing
 
 **Decided.** The criterion for shipping `references/pack-contract.md` is that the skill reads the pack in full, not that it writes into one. `baselinedocs-onboard` gets the copy and a gate wording of its own, and a new `Workflow` step reporting content that sits in a document whose role does not cover it. No other read-only skill gets a copy. Opens SC-Q5.
+
+**Amended by `family-design` FD-D40.** A third qualifying case now exists beside writing and a full read: `baselinedocs-recall` reads no pack and ships the contract because re-reading it after a context compaction is its whole job. It reports no conformance, so the objection to a partial reader holding the role list does not apply. `baselinedocs-load`, a full reader, already ships a copy under the criterion above.
 
 **Why.** The old criterion answered the wrong question. Writing is what makes placement a *decision*, so a writer must consult the role list before it acts. A full read is what makes placement *checkable*, and that is a different property the criterion never named. SC-D12 had already assigned the detect cell for a pack against itself to `onboard` and `brief`, which report contradictions and route to `sync-reconcile` without repairing. A detector holding no role list can only see two statements that literally disagree; it cannot see correctly-stated content in the wrong file, which the contract's own opening section names as the damaging failure, because that content is duplicated as soon as the correct owner needs the same fact and the copies then drift.
 

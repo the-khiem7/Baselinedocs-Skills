@@ -3,7 +3,7 @@ baseline_schema: "2.0"
 pack: "family-design"
 document: "sourcecode"
 status: "active"
-updated: "2026-09-11"
+updated: "2026-10-02"
 code_ref: "uncommitted"
 ---
 
@@ -23,6 +23,8 @@ Four surfaces reach a running agent, and they do not offer the same guarantee. T
 | `references/*.md` | only if `SKILL.md` says to read it and the agent complies | the contract itself, and the report-style rules | `tests/test_references.py`, byte-identity against canonical |
 
 The consequence that drives the design: a rule requiring a reference file to be read cannot live in that reference file, because an agent that skipped the file never reaches the sentence telling it not to skip it. That one sentence is the only thing restated per skill.
+
+After a context compaction only `description` is still in context; the body and its references are summarized away, gate included. `baselinedocs-recall` is selected through that surface to re-read both assets, FD-D40.
 
 ## Checkpoint model
 
