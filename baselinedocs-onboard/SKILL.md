@@ -1,6 +1,7 @@
 ---
 name: baselinedocs-onboard
 description: Load, ingest, or absorb an existing adaptive baseline pack or initiative into working context completely, reading every document in full before any planning or implementation discussion. Use when the user asks for a doc pack to be loaded before work starts, and wants the agent to hold the pack's entire state rather than a forward-looking summary.
+version: "0.0.0"
 ---
 
 # Baseline Docs Onboard

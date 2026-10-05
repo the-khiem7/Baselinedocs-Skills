@@ -1,6 +1,7 @@
 ---
 name: baselinedocs-load
 description: Silently load or prime an existing adaptive baseline documentation pack into working context completely without generating an explanatory report. Use when the user asks to load or prime a doc pack into context before starting work and wants zero conversational overhead, responding only with confirmation.
+version: "0.0.0"
 ---
 
 # Baseline Docs Load

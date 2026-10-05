@@ -1,6 +1,7 @@
 ---
 name: baselinedocs-extract-wiki
 description: Extract reusable implementation guidance from a baseline pack or completed code change into a concise project wiki article. Use automatically when task-specific history is obscuring a repeatable migration, integration, conversion, or engineering pattern needed elsewhere.
+version: "0.0.0"
 ---
 
 # Baseline Docs Extract Wiki

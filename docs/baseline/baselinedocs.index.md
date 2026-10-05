@@ -15,7 +15,7 @@ Routing metadata for the packs under `docs/baseline/`. It carries links, scope, 
 
 | Pack | Scope | Depends on | Status | Next checkpoint |
 |---|---|---|---|---|
-| [`family-design`](family-design/family-design.introduction.md) | The design of the skill family as a whole: trigger architecture, pack schema, checkpoint model, rule placement, workflow sequence, onboard scope gate, the dissolved `resume-*` family, evidence retention, `useguide`, execution policy, multi-pack routing, report structure | - | active | Reinstall FD-P6 to FD-P14 changes on any machine behind them; FD-Q6 awaits a choice of version mechanism |
+| [`family-design`](family-design/family-design.introduction.md) | The design of the skill family as a whole: trigger architecture, pack schema, checkpoint model, rule placement, workflow sequence, onboard scope gate, the dissolved `resume-*` family, evidence retention, `useguide`, execution policy, multi-pack routing, report structure | - | active | Reinstall FD-P6 to FD-P14 changes on any machine behind them; confirm the first `release.yml` run (FD-P16) |
 | [`skill-consolidation`](skill-consolidation/skill-consolidation.introduction.md) | Reducing the family by removing skills whose operation duplicates another, and repairing the selection surface where two skills claim overlapping triggers | - | active | Four decisions waiting on the user, listed in its roadmap under `Next action` |
 
 Status is copied from each pack's own frontmatter. When this table and a pack disagree, that is a contradiction to report, not a conflict to settle here by preferring the index or the newer date. `baselinedocs-sync-reconcile` owns the repair.
@@ -78,7 +78,6 @@ What each pack still carries:
 |---|---|---|
 | `family-design` | FD-Q1, hiding lifecycle skills at package level | deferred on a platform mechanism that does not exist |
 | `family-design` | FD-Q5, who owns misfiled-content detection now that `onboard` no longer checks it | open, opened by FD-P6 |
-| `family-design` | FD-Q6, a skill version in the frontmatter bumped automatically, to recognize an outdated install | open, researched, no mechanism chosen |
 | `skill-consolidation` | SC-Q6, the identifier scheme and whether the contract owns it | open, minus the uniqueness clause FD-D30 settled and the heading format FD-D42 settled |
 | `skill-consolidation` | SC-Q7, what `baselinedocs-onboard` does with an entry index | open, four options recorded, none chosen |
 | `skill-consolidation` | SC-Q8, the label standard inside an entry | open |

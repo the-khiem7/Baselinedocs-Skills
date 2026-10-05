@@ -1,6 +1,7 @@
 ---
 name: baselinedocs-adr
 description: Draft an Architectural Decision Record in the AWS Prescriptive Guidance format from one closed decision in a baseline pack's hallucination document, written as a standalone file under docs/adr/. Use explicitly when the user wants a closed decision from a doc pack turned into an ADR for the repository or for promotion to a production repository.
+version: "0.0.0"
 ---
 
 # Baseline Docs ADR

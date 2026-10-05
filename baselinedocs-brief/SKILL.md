@@ -1,6 +1,7 @@
 ---
 name: baselinedocs-brief
 description: Report where work stands right now from an existing baseline pack, cheaply, without loading the pack into context. Use when the user asks where things are, which phase is blocked, or what comes next mid-task, and after a context loss or compaction when the current thread may hold work the pack does not yet record.
+version: "0.0.0"
 ---
 
 # Baseline Docs Brief

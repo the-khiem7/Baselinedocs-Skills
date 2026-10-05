@@ -1,6 +1,7 @@
 ---
 name: baselinedocs-maintain-split
 description: Split one overloaded baseline pack into directly addressable domain packs with an initiative index. Use automatically when mixed workstreams or cross-domain dependencies reduce resume quality.
+version: "0.0.0"
 ---
 
 # Baseline Docs Maintain Split

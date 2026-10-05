@@ -38,6 +38,7 @@ Verified against the working tree at `0cb913f`, not read off `DESIGN.md`.
 | packaged `pack-contract.md` copies | one per skill in `CONTRACT_SKILLS` (`tests/test_references.py`). Absent from `audit-claims`, `audit-drift`, `brief` |
 | packaged `report-style.md` copies | every skill outside `REPORT_STYLE_EXEMPT`. Absent from `load` |
 | checkpoint hook | none. Automated Stop hook adapter retired and removed in FD-P8 |
+| skill version | top-level `version:` in every `SKILL.md`, one value for the family, `0.0.0` until the first tag. A pushed `vX.Y.Z` tag makes `.github/workflows/release.yml` stamp it onto `main`. FD-D45 |
 | checkpoint model | in-thread phase checkpointing by `run` |
 | `resume-*` skills | none on disk |
 | execution policies | `approval_policy` and `commit_policy`, defined in `baselinedocs-run/references/execution-contract.md`, gated by `tests/test_run_policy.py` |

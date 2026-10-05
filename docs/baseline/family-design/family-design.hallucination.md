@@ -63,10 +63,11 @@ Every identifier in this initiative carries its pack's prefix: `FD-` here, `SC-`
 | FD-D42 | the entry index and entry headings are mandatory from the first entry, and the contract owns the heading format | current, reverses the conditional clause of SC-D19 | FD-D30, FD-D36, SC-D19, SC-Q6 |
 | FD-D43 | `baselinedocs-help` as a user entrypoint carrying its own guide to the skills and the workflow | current | FD-D1, FD-D8, FD-D9 |
 | FD-D44 | `baselinedocs-adr` drafting a standalone ADR from one closed entry, using an unmodified AWS template | current | FD-D1, FD-D7 |
+| FD-D45 | a release tag stamping one family-wide `version:` into every `SKILL.md` on `main` | current | FD-D37, FD-D41, FD-Q6 |
 | FD-Q1 | hiding internal helpers at package level rather than by naming convention | open, deferred on a missing platform feature | FD-D1 |
 | FD-Q2 | installing checkpoint hooks across more than one repository | closed, hook mechanism removed | FD-D6, FD-D37 |
 | FD-Q5 | who, if anyone, owns misfiled-content detection now that `onboard` no longer checks it | open | FD-D34 |
-| FD-Q6 | a skill version in the frontmatter, bumped automatically, to recognize an outdated install | open, researched, no mechanism chosen | FD-D37, FD-D41 |
+| FD-Q6 | a skill version in the frontmatter, bumped automatically, to recognize an outdated install | closed by FD-D45 | FD-D37, FD-D41, FD-D45 |
 
 ## FD-D1: six entrypoints stay deliberate, and the rest stay agent-selectable
 
@@ -643,6 +644,34 @@ A new thread is the default once the pack is current, which after a save it is. 
 
 **Rejected: a condensed or reworded template.** The user asked for the original.
 
+## FD-D45: a release tag stamps one family-wide `version:` into every `SKILL.md` on `main`
+
+**Decided.** Every `SKILL.md` carries a top-level `version: "MAJOR.MINOR.PATCH"`, one value for the whole family, `0.0.0` until the first release. Pushing a tag `vMAJOR.MINOR.PATCH` runs `.github/workflows/release.yml`: it checks out `main`, runs `scripts/stamp_version.py`, runs the suite, and pushes a commit `release: vX.Y.Z` to `main`. The tag stays on the commit it was cut on. `tests/test_version.py` fails when a skill lacks a semver string or two skills disagree. `baseline_schema` is not stamped: a schema change is a semantic decision (`family-design.introduction.md`, `Constraints`). Only `release.yml` holds `contents: write`; `tests.yml` stays read-only.
+
+**Why.** The need is to know which release a skill belongs to, not to track each skill alone, and the family installs as a unit, so one number per release is enough. The tag is the one step the user already performs. A tag name reaches the workflow's shell only after the trigger pattern limits it to digits and dots, and the script validates it again.
+
+**What breaks if ignored.** A tag pushed with no stamp leaves every skill with an old or absent version and nothing in a skill folder says which release it came from. Editing one `SKILL.md` by hand makes the skills disagree, which the test catches.
+
+**Accepted cost.** A checkout of the tag shows the previous value, since the stamp commit follows the tag; only `main`, which `npx skills add` installs, carries it. After the bot pushes, local `main` is behind and the next push is rejected until `git pull`. A tag cut on a commit that is not on `main` still stamps `main`'s head. The version does not show which skill changed. Nothing checks an installed copy: `npx skills check` cannot see a local-path install (web search summary, not read first-hand), and the user chose to control the version at release only. The top-level `version:` is outside the keys the Agent Skills specification allows at the top level of `SKILL.md` (`metadata.version` is the spec-valid place), so a strict validator may reject it; the user chose it to match their `kai-workflow` skill. The specification and every installer's treatment of an extra key were read only through web search summaries and remain unverified.
+
+**Rejected: bump each skill from its content diff against `HEAD`, with a pytest check.** The need is per release, and the check needs a comparison base in CI with unresolved first-commit and untracked-skill behaviour.
+
+**Rejected: `scripts/check_installed.py` with a `--verify` hash.** It checks machines, and the user wants control at release only.
+
+**Rejected: a git pre-commit hook.** Per-clone setup, rewrites staged files, and FD-D37 removed hooks for host-specific drift.
+
+**Rejected: a version derived from the tag or the commit count and never written into the frontmatter.** A machine holding only the installed folder cannot read it.
+
+**Rejected: one tag per skill, such as `baselinedocs-adr/v1.2.0`.** Many tags for a need one number meets.
+
+**Rejected: the workflow moves the tag onto the stamp commit.** Rewrites a published tag.
+
+**Rejected: a manually dispatched workflow that stamps, commits and creates the tag.** Gives a tag that matches its tree, but replaces the `git tag` step the user prefers.
+
+**Rejected: `metadata.version`.** Spec-valid and recommended, declined by the user in favour of the top-level key.
+
+**Rejected: a rule in `AGENTS.md` to stamp by hand.** Not automatic; a skipped stamp is seen by nobody.
+
 ## Open questions
 
 ### FD-Q1: can internal helpers be hidden at package level?
@@ -667,35 +696,4 @@ The trigger to reopen: a decision on whether an existing skill absorbs the check
 
 ### FD-Q6: how does a skill carry a version in its frontmatter, bumped automatically, so an outdated install on a machine can be recognized?
 
-Purpose is management: read one skill's version on any machine and tell whether it is behind this repository. Opened 2026-10-05; researched, mechanism not chosen, nothing built.
-
-Findings:
-
-| Fact | Source and confidence |
-|---|---|
-| `npx skills check` and `update` compare a folder hash stored in `~/.agents/.skill-lock.json` with the remote, for global installs from a GitHub source only; a skill installed from a local path has no remote to compare against | web search summarising the vercel-labs/skills documentation; not read first-hand |
-| this repository's standing remedy is reinstalling from a local clone, which is exactly the install nothing can check, so a stale machine is found today only by diffing folders by hand | follows from the line above and FD-P3, FD-P5 |
-| the Agent Skills specification allows only `name`, `description`, `license`, `compatibility`, `metadata`, `allowed-tools` at the top level of `SKILL.md`; a version belongs in `metadata.version`, a string-to-string map | web search summarising agentskills.io/specification and mirrors; the page was not read directly |
-| not verified: whether any installer or host reads `metadata.version` | unknown. Not needed here, since a script can read it |
-| `tests/test_skill_metadata.py` checks only `name` and `description`, so an extra key may already pass | to confirm when building |
-| no git hook, no `.pre-commit-config.yaml`, no source for `scripts/`, CI workflow has `contents: read` | repository state at 2026-10-05 |
-
-Recommended mechanism, three parts:
-
-| Part | What it does |
-|---|---|
-| `scripts/bump_skill_versions.py`, stdlib, run with `uv run` | compare each `baselinedocs-*` folder with `HEAD` through `git show HEAD:<path>`; content changed and `metadata.version` unchanged, bump the patch number in `SKILL.md`. `--minor` and `--major` for a human judgement. A change to `contract/` touches 14 folders and bumps 14 versions in one run |
-| a pytest check | a folder that differs from `HEAD` while its `metadata.version` equals the `HEAD` value fails and names the skill. Needs a comparison base in CI, `origin/main` against `HEAD~1`; behaviour for a first commit and for an untracked skill is unresolved |
-| `scripts/check_installed.py`, stdlib | on any machine, read `metadata.version` from each host skills directory and from this clone; print installed against repo per skill and flag outdated or missing ones. `--verify` also hashes folder contents, because a version label proves nothing when a bump was skipped |
-
-Rejected options:
-
-| Option | Why it loses |
-|---|---|
-| a git pre-commit hook runs the bump | per-clone setup, rewrites staged files, and FD-D37 removed hooks for host-specific drift; the user is the one who commits |
-| CI commits the bump back | needs write permission the workflow lacks and puts bot commits in history |
-| version derived from a tag or commit count | not stored in the frontmatter, so a machine holding only the installed folder cannot read it |
-| rely on `npx skills check` | cannot see local-path installs, the path this repository uses |
-| an AGENTS.md rule to bump by hand | not automatic; the failure is a skipped bump nobody sees |
-
-What is needed to close it: the user picks the mechanism, and picks the key, `metadata.version` (spec-valid, recommended) or a top-level `version:` (matches the user's `kai-workflow` skill, fails a strict validator). `baseline_schema` is not auto-bumped: a schema change is a semantic decision, per `family-design.introduction.md`, `Constraints`. The trigger to reopen is that choice plus a first-hand read of the specification and the installer's treatment of `metadata.version`.
+Closed by FD-D45, which narrowed it to a version controlled at release and stamped by a tag-triggered workflow. The findings and every option this question weighed sit inside FD-D45, including the per-skill bump, the installed-copy checker, and the key `metadata.version`, which was rejected rather than dropped.

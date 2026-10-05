@@ -9,7 +9,7 @@ This repo is the source of the `baselinedocs` skill family. Everything here is a
 | Path | Ships | Read by |
 |---|---|---|
 | `<skill>/SKILL.md`, `<skill>/agents/openai.yaml`, `<skill>/references/*` | yes | the running agent |
-| `AGENTS.md`, `README.md`, `contract/`, `tests/`, `docs/baseline/` | no | whoever works in this repo |
+| `AGENTS.md`, `README.md`, `contract/`, `tests/`, `scripts/`, `.github/`, `docs/baseline/` | no | whoever works in this repo |
 
 Consequences:
 
@@ -67,6 +67,10 @@ It is a second asset rather than a section of the contract on purpose. The contr
 - Skill folder shape: `SKILL.md`, `agents/openai.yaml`, and `references/` only when needed.
 - User entrypoints set `allow_implicit_invocation: false`. Lifecycle skills keep it enabled and prefix their display name with `Baseline Docs Internal:`. `baselinedocs-recall` is the one lifecycle skill named `Baseline Docs: Recall` without `Internal`, because a user calls it by hand as often as an agent selects it.
 - That policy field is Codex-only. On other hosts the `description` frontmatter is the real selection surface, so it must carry the vocabulary a user would actually type.
+
+## Releases
+
+Every `SKILL.md` carries one top-level `version:`, shared by the whole family. Never edit it by hand: push the commit to `main`, then push a tag `vMAJOR.MINOR.PATCH`, and `.github/workflows/release.yml` stamps the value with `scripts/stamp_version.py` and pushes a `release: vX.Y.Z` commit to `main`. Run `git pull` afterwards. The tag stays on the earlier commit, so only `main` carries the new value. `tests/test_version.py` fails when the skills disagree.
 
 ## Tests
 

@@ -1,6 +1,7 @@
 ---
 name: baselinedocs-audit-claims
 description: Check whether individual claims in a baseline pack are supported by code or an explicit decision, and classify each as verified, unverified, or contradicted. Reports without modifying files. Use automatically when documentation trust or evidence quality is low, including in a document whose provenance is current. For whether a whole document has fallen behind the code, use `baselinedocs-audit-drift` instead.
+version: "0.0.0"
 ---
 
 # Baseline Docs Audit Claims

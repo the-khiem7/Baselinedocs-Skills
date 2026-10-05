@@ -48,7 +48,7 @@ Verified against the repository, not against `DESIGN.md`.
 | Mandatory entry index and heading format | FD-D42 | implemented | `contract/pack-contract.md`, `Entry index`; 14 packaged copies `cmp` clean; `tests/test_packs.py` has no threshold and fails a `hallucination` with no index |
 | Guide to the skills | FD-D43 | implemented, selection unobserved | `baselinedocs-help/` with `references/guide.md`; `tests/test_references.py` `test_help_guide_names_every_skill` |
 | ADR from a closed decision | FD-D44 | implemented, selection unobserved | `baselinedocs-adr/` with the unmodified AWS `references/template.md` and `process.md`; checksums in FD-D44 |
-| Skill version in the frontmatter | FD-Q6 | open, researched | no key, script, or test exists |
+| Release version in the frontmatter | FD-D45, FD-Q6 | implemented, workflow unobserved | top-level `version:` in every `SKILL.md`; `scripts/stamp_version.py`; `tests/test_version.py`; `.github/workflows/release.yml` has not run on GitHub |
 
 ## FD-P1: adopt `DESIGN.md` into this pack
 
@@ -630,7 +630,23 @@ Opened 2026-10-05. Research only. FD-Q6 carries the findings, the recommended me
 | Deliverable | FD-Q6 and its index row |
 | Verified first-hand | repository state only: no hook, no `.pre-commit-config.yaml`, CI read-only |
 | Not verified first-hand | the Agent Skills specification and the installer's update mechanism, read through web search summaries |
-| Open | the user's choice of mechanism and of key, `metadata.version` or a top-level `version:` |
+| Open | closed in FD-P16: the user chose a release-time stamp and the top-level `version:` key |
+
+## FD-P16: stamp one release version into every `SKILL.md`
+
+Opened and closed 2026-10-05. Settles FD-Q6 as FD-D45: a pushed `vMAJOR.MINOR.PATCH` tag makes a workflow stamp the version into every skill on `main`.
+
+### Checkpoint: complete, workflow unobserved
+
+| Item | Result |
+|---|---|
+| Stamp script | `scripts/stamp_version.py`, stdlib: replaces or inserts `version: "X.Y.Z"` as the last frontmatter line, keeps line endings, idempotent, rejects a tag that is not semver |
+| Initial value | every skill carries `version: "0.0.0"` until the first tag |
+| Test | `tests/test_version.py`: a semver string per skill, one shared value, stamp insert, replace, CRLF, and rejection cases; a mutation to one skill failed it as intended |
+| Workflow | `.github/workflows/release.yml`, `contents: write`, on tag `v[0-9]+.[0-9]+.[0-9]+`; stamps `main`, runs the suite, pushes one commit |
+| Suite | full suite green |
+| Not observed | the workflow has never run: the push to `main` by the bot, the pytest step on a stamped tree, and the action tags are unverified |
+| Not verified first-hand | the Agent Skills specification and any installer's treatment of a top-level `version:` |
 
 ## Risks
 
@@ -654,4 +670,4 @@ One open question is new: FD-Q5 asks who, if anyone, now checks a pack for misfi
 
 One older open question remains in this pack: FD-Q1 waits on a portable hidden-skill mechanism that no installer provides. `skill-consolidation` still carries SC-Q6, SC-Q7, and SC-Q8, and SC-Q6 is the one this pack touched: FD-D30 settled its uniqueness clause and left the rest of it open.
 
-One open question is new: FD-Q6 waits on the user's choice of mechanism and of key for a skill version in the frontmatter, and on a first-hand read of the Agent Skills specification and the installer's treatment of `metadata.version`. Nothing in the repository carries a version until then.
+FD-Q6 is closed by FD-D45 and no longer waits on the user. To cut the first release, push the commit to `main`, then push the tag, for example `v1.0.0`, and `git pull` once the workflow's `release: vX.Y.Z` commit lands, since local `main` is then behind. Confirm the first `release.yml` run succeeded: it has never run, and its bot push to `main` is unobserved.
