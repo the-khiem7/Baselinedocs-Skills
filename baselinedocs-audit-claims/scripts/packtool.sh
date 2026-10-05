@@ -151,7 +151,8 @@ function ids_in(s, out,   n, rest, off, pre, post) {
 function occ(id, kind,   p, k, n) {
   p = idpfx(id); k = idkind(id); n = substr(id, index(id, "-") + 2) + 0
   if (n > maxn[p, k]) maxn[p, k] = n
-  if (mode == "find" && id == target) { found++; print loc "\t" kind "\t" short(line) }
+  # One line per location and kind: an ID cited twice on one line is one hit.
+  if (mode == "find" && id == target && !((loc, kind) in printed)) { printed[loc, kind] = 1; found++; print loc "\t" kind "\t" short(line) }
   if (kind == "citation") {
     if (!(id in cloc)) { cloc[id] = loc; cord[++ncd] = id }
     if (tolower(line) ~ /clos/) closedcite[id] = 1
@@ -325,7 +326,7 @@ FNR == 1 { if (nfiles) endfile(); startfile() }
   if (line ~ /^[ \t]*$/ || line ~ /^([ \t]|#|\||>|[-*+][ \t]|[0-9]+[.)][ \t]|<|---|===)/) endrun()
   else { if (!run) runstart = loc; run++ }
 
-  if (d == "roadmap" && line !~ /^\|/ && tolower(line) ~ /root cause|rejected/ && line !~ /[A-Z][A-Z][A-Z]?-D[0-9]/) report("WARN", loc, "reasoning-in-roadmap", "roadmap records outcomes; link the hallucination entry that holds the why")
+  if (d == "roadmap" && line !~ /^\|/ && tolower(line) ~ /root cause|rejected/ && line !~ /[A-Z][A-Z][A-Z]?-[DQ][0-9]/) report("WARN", loc, "reasoning-in-roadmap", "roadmap records outcomes; link the hallucination entry that holds the why")
   if (!isrow && (d == "roadmap" || d == "hallucination")) dq(d)
 }
 

@@ -226,6 +226,22 @@ def test_find_lists_every_occurrence_by_kind(tmp_path):
     assert run(tmp_path, "find", "tb", "TB-D99").returncode == 1
 
 
+def test_find_prints_an_identifier_cited_twice_on_one_line_once(tmp_path):
+    folder = write_pack(tmp_path)
+    edit(folder, "roadmap", "Done. TB-D1 holds the reasoning.", "Done. TB-D1 holds the reasoning; TB-D1 is current.")
+    result = run(tmp_path, "find", "tb", "TB-D1")
+    hits = [line for line in result.stdout.splitlines() if line.startswith("tb/tb.roadmap.md:")]
+    assert len(hits) == 1, result.stdout
+
+
+# A question entry holds reasoning as validly as a decision entry does.
+def test_reasoning_linked_to_a_question_does_not_warn(tmp_path):
+    folder = write_pack(tmp_path)
+    edit(folder, "roadmap", "Done. TB-D1 holds the reasoning.", "Done. TB-Q1 carries the rejected options.")
+    result = run(tmp_path, "check", "tb")
+    assert "reasoning-in-roadmap" not in rules(result, "WARN"), result.stdout
+
+
 def test_outline_reports_headings_with_current_line_numbers(tmp_path):
     write_pack(tmp_path)
     result = run(tmp_path, "outline", "tb/tb.hallucination.md")
