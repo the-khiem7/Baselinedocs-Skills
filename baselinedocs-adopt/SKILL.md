@@ -1,7 +1,7 @@
 ---
 name: baselinedocs-adopt
 description: Adopt an existing document, proposal, specification, wiki, export, or other non-baseline format into an adaptive baseline documentation pack. Use when the source material must be distributed into a durable, resumable baselinedocs structure without losing its information, decisions, assumptions, risks, provenance, or open questions.
-version: "3.0.0"
+version: "3.1.0"
 ---
 
 # Baselinedocs Adopt

@@ -1,7 +1,7 @@
 ---
 name: baselinedocs-sync-decisions
 description: Apply closed decisions to every baseline document they affect, from one targeted section to the whole pack. Use automatically when a resolved risk or business decision has not reached every affected document, including a single atomic decision update.
-version: "3.0.0"
+version: "3.1.0"
 ---
 
 # Baseline Docs Sync Decisions

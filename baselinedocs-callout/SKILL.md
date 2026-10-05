@@ -1,7 +1,7 @@
 ---
 name: baselinedocs-callout
 description: Create, update, or retire a temporary callout group inside an existing baseline pack - a named routing table that maps short group labels onto the pack elements they point at, so a later thread can name a slice of work in two words instead of restating it. Use explicitly when the user wants a shorthand to call out part of a pack in a new conversation, or when an existing callout group has met its stated deletion condition.
-version: "3.0.0"
+version: "3.1.0"
 ---
 
 # Baseline Docs Callout
