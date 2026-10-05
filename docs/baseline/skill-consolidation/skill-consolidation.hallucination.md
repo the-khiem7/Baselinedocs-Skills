@@ -3,7 +3,7 @@ baseline_schema: "2.0"
 pack: "skill-consolidation"
 document: "hallucination"
 status: "active"
-updated: "2026-10-02"
+updated: "2026-10-05"
 code_ref: "uncommitted"
 ---
 
@@ -13,7 +13,7 @@ code_ref: "uncommitted"
 
 One row per entry. A row states what the entry is about and nothing more: never its reasoning, never its outcome's justification, never a summary that could be mistaken for the entry itself. That restraint is the whole point, because a row that carried reasoning would be a second copy of the entry and the two would drift. An answer that turns on an entry whose full text was not read is unbacked, and must be reported that way rather than derived from a row.
 
-Required by `contract/pack-contract.md` once a journal passes its threshold. SC-D19 records why, and this document is the first to carry one.
+Required by `contract/pack-contract.md` from the first entry. SC-D19 records why the index exists, and FD-D42 removed its size threshold.
 
 | Entry | About | Status | Related |
 |---|---|---|---|
@@ -35,11 +35,11 @@ Required by `contract/pack-contract.md` once a journal passes its threshold. SC-
 | SC-D16 | shipping the contract on a full read rather than on writing | current, amended by `family-design` FD-D40 | SC-D12, SC-D17, SC-D20 |
 | SC-D17 | shipping report style as its own asset, separate from the contract | current | SC-D16 |
 | SC-D18 | forbidding hard-wrapped paragraphs in pack documents | current | SC-Q7 |
-| SC-D19 | putting the entry index into the contract as a conditional section | current | SC-D5, SC-D6, SC-D20, SC-Q7 |
+| SC-D19 | putting the entry index into the contract as a conditional section | current, conditional clause reversed by FD-D42 | SC-D5, SC-D6, SC-D20, SC-Q7, FD-D42 |
 | SC-D20 | who repairs content that is true but sits in the wrong document, closing SC-Q5 | current | SC-D5, SC-D12, SC-D16 |
 | SC-D21 | an edit to the contract destroyed a section heading, and every test stayed green | current, repaired | SC-D5, SC-D19 |
 | SC-D22 | deleting setup-hooks and removing the report-style exemption | current | SC-D1, SC-D8, SC-D17 |
-| SC-Q6 | what the element identifier scheme is, and whether the contract owns it | open, except the uniqueness clause settled by `family-design` FD-D30 | SC-Q7, SC-Q8, SC-D19 |
+| SC-Q6 | what the element identifier scheme is, and whether the contract owns it | open, except the uniqueness clause settled by `family-design` FD-D30 and the heading format and kinds settled by FD-D42 | SC-Q7, SC-Q8, SC-D19 |
 | SC-Q7 | what `onboard` does with the index, now that the index itself is decided | open, narrowed by SC-D19 | SC-D19, SC-D7, SC-D11 |
 | SC-Q8 | the label standard inside an entry, and how many entry kinds `hallucination` holds | open | SC-Q6, SC-D19 |
 
@@ -297,6 +297,8 @@ The cost is higher than SC-D8 recorded, measured in SC-P8. A machine carries sev
 
 ## SC-D19: the entry index enters the contract as a conditional section
 
+**Partly reversed by `family-design` FD-D42.** The threshold, the "Why conditional rather than mandatory" argument, and the "Rejected: mandatory in every pack" alternative below no longer hold: the index is now required from the first entry and an editing skill retrofits a journal lacking one. The `Status` column, the unverifiable row, and the other rejected alternatives stand.
+
 **Decided.** `contract/pack-contract.md` now requires an entry index at the top of `hallucination` once that document exceeds 40 KB or holds more than 20 entries, whichever comes first. Below the threshold it is omitted. The `Status` column is required. Nothing verifies a row against its entry, and that is accepted rather than mitigated. This closes the mechanism half of SC-Q7; the half about what `onboard` does with the index stays open.
 
 **Why conditional rather than mandatory.** The index costs 87 bytes a row and defers an average closed entry of about 1,850 bytes, so its token arithmetic is roughly 21 to 1 in favour, which means it pays for itself once more than about five percent of entries can be deferred, and that is every realistic read. On a 342 KB journal the projection is a saving near 35,000 tokens per load. What does not scale down is the maintenance burden, which is per entry regardless of pack size. A journal of six entries can be held whole by any reader, and an index there is pure upkeep. Mandating it everywhere would also make three real packs non-conformant on the day the rule landed, and the restructuring that would fix them is the pack author's work: SC-D20 gave misfiled content named owners, but delimiting an undelimited journal into entries is not a relocation, so no skill performs it and the contract says so outright.
@@ -387,6 +389,8 @@ That correction is the finding, not a footnote. `hallucination` holds at least t
 **Related, and unresolved with it: citing a part of an entry.** SC-Q6's proposal said promote the part to its own entry, which is heavy for something like one rejected alternative. The alternative on the table is a compound reference by text, `SC-D19 / Rejected: mandatory in every pack`. Its property is the reason to prefer it: if the label text changes, the reference fails loudly, because a search for it returns nothing. A renumbered identifier fails silently, still resolving, now to the wrong thing. That asymmetry, not verbosity, is the real case against sub-identifiers.
 
 ### SC-Q6: what is the identifier scheme, and does the contract own it?
+
+**A second clause is settled by `family-design` FD-D42:** the contract now states the heading format `## <PREFIX>-<KIND><N>: <subject>`, the kinds `D` and `Q` for a `hallucination`, and `P` for roadmap phases. The ban on hierarchy in a name, the ban on sub-identifiers, and the cross-document citation rule stay open.
 
 **One clause is now settled, and the rest of this entry stands as written.** `family-design` FD-D30 replaced "unique across the pack" with "unique across the initiative, by carrying the pack prefix", which is why every identifier in this journal now reads `SC-D<n>`, `SC-Q<n>`, or `SC-P<n>`. That change was forced by a second pack appearing beside this one: two independent counters made `D16` name two different entries with no signal to the reader. Everything else below remains open, including the per-kind letters, the ban on encoding hierarchy in a name, the ban on sub-identifiers, and the question in this entry's own title of whether `contract/pack-contract.md` should state any of it. The contract was deliberately left untouched by FD-D30 for that reason.
 

@@ -3,7 +3,7 @@ baseline_schema: "2.0"
 pack: "family-design"
 document: "hallucination"
 status: "active"
-updated: "2026-10-02"
+updated: "2026-10-05"
 code_ref: "uncommitted"
 ---
 
@@ -13,7 +13,7 @@ code_ref: "uncommitted"
 
 One row per entry. A row states what the entry is about and nothing more: never its reasoning, never the justification behind its outcome, never a summary that could be mistaken for the entry. An answer that turns on an entry whose full text was not read is unbacked, and must be reported that way rather than derived from a row.
 
-Required by `contract/pack-contract.md` above 40 KB or 20 entries.
+Required by `contract/pack-contract.md` from the first entry. FD-D42 records the decision.
 
 Every identifier in this initiative carries its pack's prefix: `FD-` here, `SC-` in `skill-consolidation`. It is written that way everywhere, inside the pack as well as across packs, so a reference is unambiguous wherever it is read and greppable across the whole repository. FD-D30 records the decision.
 
@@ -60,9 +60,13 @@ Every identifier in this initiative carries its pack's prefix: `FD-` here, `SC-`
 | FD-D39 | silent pack loading with single-word confirmation output | current | FD-D1, FD-D10, FD-D34 |
 | FD-D40 | `baselinedocs-recall` re-reading the rule files after a context compaction | current | FD-D1, FD-D7, FD-D37, FD-D39 |
 | FD-D41 | how the test suite is structured and which documented rules it enforces | current | FD-D1, FD-D7, FD-D30 |
+| FD-D42 | the entry index and entry headings are mandatory from the first entry, and the contract owns the heading format | current, reverses the conditional clause of SC-D19 | FD-D30, FD-D36, SC-D19, SC-Q6 |
+| FD-D43 | `baselinedocs-help` as a user entrypoint carrying its own guide to the skills and the workflow | current | FD-D1, FD-D8, FD-D9 |
+| FD-D44 | `baselinedocs-adr` drafting a standalone ADR from one closed entry, using an unmodified AWS template | current | FD-D1, FD-D7 |
 | FD-Q1 | hiding internal helpers at package level rather than by naming convention | open, deferred on a missing platform feature | FD-D1 |
 | FD-Q2 | installing checkpoint hooks across more than one repository | closed, hook mechanism removed | FD-D6, FD-D37 |
 | FD-Q5 | who, if anyone, owns misfiled-content detection now that `onboard` no longer checks it | open | FD-D34 |
+| FD-Q6 | a skill version in the frontmatter, bumped automatically, to recognize an outdated install | open, researched, no mechanism chosen | FD-D37, FD-D41 |
 
 ## FD-D1: six entrypoints stay deliberate, and the rest stay agent-selectable
 
@@ -587,6 +591,58 @@ A new thread is the default once the pack is current, which after a save it is. 
 
 **Accepted gaps.** Bare identifiers quoted as examples in the documents recording the prefix rule are allowed by exact file and identifier (`BARE_EXAMPLES`), and questions closed without a heading of their own are allowed by name (`CLOSED_WITHOUT_HEADING`: `FD-Q3`, `FD-Q4`, `SC-Q1` to `SC-Q5`). Both sit in `tests/test_packs.py`; a real bare identifier in one of those files, or a dangling citation of a listed question, passes unseen.
 
+## FD-D42: the entry index and entry headings are mandatory from the first entry, and the contract owns the heading format
+
+**Decided.** `contract/pack-contract.md` requires every `hallucination` to carry `## Entry index` and one heading per entry from the first entry, with no size threshold, in every pack including existing ones. It also states the heading format `## <PREFIX>-<KIND><N>: <subject>`: kinds `D` and `Q` in a `hallucination`, `P` reserved for roadmap phases, an append-only counter per pack and kind, open questions at level 3 under `## Open questions`. A pack-writing skill that edits a journal lacking either brings it into shape first, in the same pass, moving text verbatim. The 14 packaged copies were re-synced and `tests/test_packs.py` dropped its threshold and now fails a `hallucination` with no index.
+
+**Why.** A threshold fires when a journal is already large, which is when delimiting it costs most - the cost grows with every entry written without a heading. SC-D19 rejected "mandatory" because three real journals would be non-conformant with no owner; the retrofit rule gives them one, the skill that is editing them.
+
+**What breaks if ignored.** Journals stay undelimited until restructuring is expensive, so entries cannot be cited by identifier (SC-Q6) or read selectively (SC-Q7).
+
+**Accepted cost.** A pack with bold-text entries makes the first skill that edits it pay a one-time retrofit, and nothing detects the gap while nothing is editing (FD-Q5 stays open). The contract is loaded on every run of 14 skills and grew by a few lines.
+
+**Rejected: keep the 40 KB / 20 entry threshold.** Defers the cost to the moment it is largest.
+
+**Rejected: mandatory for new packs only.** Leaves existing journals with no path to conformance and two rules to remember.
+
+**Rejected: mandatory with no retrofit owner.** The SC-D19 alternative as it stood; produces non-conformance nobody is responsible for.
+
+**Settles part of SC-Q6.** The contract now owns the heading format and the identifier kinds. Still open there: the ban on encoding hierarchy in a name, the ban on sub-identifiers, and the rule that only pack-wide identifiers are cited between documents.
+
+## FD-D43: `baselinedocs-help` is a user entrypoint that carries its own guide
+
+**Decided.** Add `baselinedocs-help`, a user entrypoint (`allow_implicit_invocation: false`, display name `Baseline Docs Help`) that reads its own `references/guide.md` and `report-style.md`, reads no pack, writes nothing, and says which skill fits a situation, what each skill does, and the workflow order. The guide holds the skill tables, the Mermaid workflow, the branch table, and the traps. It ships no `pack-contract.md`. `tests/test_references.py` fails when a skill has no row in the guide.
+
+**Why.** The workflow existed only in `README.md`, which does not ship, so an installed agent could not tell a user which skill comes next - the guide must sit in the skill's own folder.
+
+**What breaks if ignored.** The sequence stays unreachable from an installed copy, and a new skill is invisible to anyone asking what to use.
+
+**Accepted cost.** The skill list and workflow now live in `README.md` and in the guide with no comparison between them, and the Mermaid diagram is untested. One guide row per new skill, enforced by the test.
+
+**Rejected: a lifecycle skill.** It would pull the workflow into context unasked.
+
+**Rejected: read `README.md` at run time.** It does not ship.
+
+**Rejected: ship `pack-contract.md`.** The skill reads no pack, and AGENTS.md forbids a copy in a skill that does not read every document in full.
+
+## FD-D44: `baselinedocs-adr` turns one closed decision into a standalone ADR from an unmodified AWS template
+
+**Decided.** Add `baselinedocs-adr`, a user entrypoint (`allow_implicit_invocation: false`, display name `Baseline Docs ADR`) that reads one closed decision entry, its section and its index row only, and writes one ADR under `docs/adr/` plus its row in `docs/adr/README.md`. Status is always `Proposed`; the skill never writes `Accepted`. The ADR carries no pointer into the pack. `references/template.md` and `references/process.md` are byte-identical copies of the aws-adr skill's files at `~/.agents/skills/aws-adr/references/`, sha256 `05c23063cbd91c96b229b45ddcbc2821f96e3288cae2063e100a07e9a8533abe` and `28bcb8ba6693f105b082fc7dc664ece771bdd17a21048c34bae602a4f8bce9f0`. The entry-to-section mapping lives in `SKILL.md`. It ships `report-style.md` and no `pack-contract.md`.
+
+**Why.** An ADR is the artifact promoted to a production repository and a pack never is, so a decision that matters outside the repository needs its own standalone file. The template is copied rather than reached by calling `aws-adr` because that skill lives outside this repository and AGENTS.md bans a sibling prerequisite; it is copied unmodified because the user wanted the AWS template, not a derivative.
+
+**What breaks if ignored.** The decision stays in a journal that never leaves the working repository, or an ADR is hand-copied from the entry with a pointer into the pack that resolves to nothing in production.
+
+**Accepted cost.** The copies can drift from upstream and no test compares them, because the source is outside this repository; the checksums above are the check and a re-copy is a plain overwrite. The pack does not record that an ADR exists until `baselinedocs-save` runs.
+
+**Rejected: call `aws-adr` when present.** A sibling prerequisite, absent when this skill is installed alone.
+
+**Rejected: draft ADRs in batch from every closed entry.** Most entries fall below the architectural significance the template's process requires.
+
+**Rejected: ship `pack-contract.md`.** The skill reads one entry, not every document in full, so AGENTS.md forbids the copy.
+
+**Rejected: a condensed or reworded template.** The user asked for the original.
+
 ## Open questions
 
 ### FD-Q1: can internal helpers be hidden at package level?
@@ -608,3 +664,38 @@ FD-D34 deleted `onboard`'s placement check along with its output section, becaus
 What is at stake: the failure `pack-contract.md`'s own `Misfiled content` section describes, settled material filed under an open-questions heading being the commonest form, has no detector anywhere in the family until this question is answered.
 
 The trigger to reopen: a decision on whether an existing skill absorbs the check under the same full-read criterion SC-D16 already established, whether a new skill is warranted, or whether the family accepts the gap as a deliberate cost of a lighter `onboard` report.
+
+### FD-Q6: how does a skill carry a version in its frontmatter, bumped automatically, so an outdated install on a machine can be recognized?
+
+Purpose is management: read one skill's version on any machine and tell whether it is behind this repository. Opened 2026-10-05; researched, mechanism not chosen, nothing built.
+
+Findings:
+
+| Fact | Source and confidence |
+|---|---|
+| `npx skills check` and `update` compare a folder hash stored in `~/.agents/.skill-lock.json` with the remote, for global installs from a GitHub source only; a skill installed from a local path has no remote to compare against | web search summarising the vercel-labs/skills documentation; not read first-hand |
+| this repository's standing remedy is reinstalling from a local clone, which is exactly the install nothing can check, so a stale machine is found today only by diffing folders by hand | follows from the line above and FD-P3, FD-P5 |
+| the Agent Skills specification allows only `name`, `description`, `license`, `compatibility`, `metadata`, `allowed-tools` at the top level of `SKILL.md`; a version belongs in `metadata.version`, a string-to-string map | web search summarising agentskills.io/specification and mirrors; the page was not read directly |
+| not verified: whether any installer or host reads `metadata.version` | unknown. Not needed here, since a script can read it |
+| `tests/test_skill_metadata.py` checks only `name` and `description`, so an extra key may already pass | to confirm when building |
+| no git hook, no `.pre-commit-config.yaml`, no source for `scripts/`, CI workflow has `contents: read` | repository state at 2026-10-05 |
+
+Recommended mechanism, three parts:
+
+| Part | What it does |
+|---|---|
+| `scripts/bump_skill_versions.py`, stdlib, run with `uv run` | compare each `baselinedocs-*` folder with `HEAD` through `git show HEAD:<path>`; content changed and `metadata.version` unchanged, bump the patch number in `SKILL.md`. `--minor` and `--major` for a human judgement. A change to `contract/` touches 14 folders and bumps 14 versions in one run |
+| a pytest check | a folder that differs from `HEAD` while its `metadata.version` equals the `HEAD` value fails and names the skill. Needs a comparison base in CI, `origin/main` against `HEAD~1`; behaviour for a first commit and for an untracked skill is unresolved |
+| `scripts/check_installed.py`, stdlib | on any machine, read `metadata.version` from each host skills directory and from this clone; print installed against repo per skill and flag outdated or missing ones. `--verify` also hashes folder contents, because a version label proves nothing when a bump was skipped |
+
+Rejected options:
+
+| Option | Why it loses |
+|---|---|
+| a git pre-commit hook runs the bump | per-clone setup, rewrites staged files, and FD-D37 removed hooks for host-specific drift; the user is the one who commits |
+| CI commits the bump back | needs write permission the workflow lacks and puts bot commits in history |
+| version derived from a tag or commit count | not stored in the frontmatter, so a machine holding only the installed folder cannot read it |
+| rely on `npx skills check` | cannot see local-path installs, the path this repository uses |
+| an AGENTS.md rule to bump by hand | not automatic; the failure is a skipped bump nobody sees |
+
+What is needed to close it: the user picks the mechanism, and picks the key, `metadata.version` (spec-valid, recommended) or a top-level `version:` (matches the user's `kai-workflow` skill, fails a strict validator). `baseline_schema` is not auto-bumped: a schema change is a semantic decision, per `family-design.introduction.md`, `Constraints`. The trigger to reopen is that choice plus a first-hand read of the specification and the installer's treatment of `metadata.version`.

@@ -3,7 +3,7 @@ baseline_schema: "2.0"
 pack: "family-design"
 document: "roadmap"
 status: "active"
-updated: "2026-10-02"
+updated: "2026-10-05"
 code_ref: "uncommitted"
 ---
 
@@ -45,6 +45,10 @@ Verified against the repository, not against `DESIGN.md`.
 | Silent loader entrypoint | FD-D39 | implemented | `baselinedocs-load` implemented as a silent pack loader with single-word confirmation output; exempt from `report-style.md` in `tests/test_references.py` |
 | Rule recall after compaction | FD-D40 | implemented | `baselinedocs-recall` ships both assets, gates on `RECALL_CONTRACT_GATE` and `RECALL_REPORT_GATE`; `RECALL_SKILLS` in `tests/test_references.py` |
 | Test harness | FD-D41 | implemented, CI unobserved | `tests/helpers.py`, `pytest.ini`, `tests/test_conventions.py`, `tests/test_packs.py`; `.gitattributes`; `.github/workflows/tests.yml` has not run on GitHub |
+| Mandatory entry index and heading format | FD-D42 | implemented | `contract/pack-contract.md`, `Entry index`; 14 packaged copies `cmp` clean; `tests/test_packs.py` has no threshold and fails a `hallucination` with no index |
+| Guide to the skills | FD-D43 | implemented, selection unobserved | `baselinedocs-help/` with `references/guide.md`; `tests/test_references.py` `test_help_guide_names_every_skill` |
+| ADR from a closed decision | FD-D44 | implemented, selection unobserved | `baselinedocs-adr/` with the unmodified AWS `references/template.md` and `process.md`; checksums in FD-D44 |
+| Skill version in the frontmatter | FD-Q6 | open, researched | no key, script, or test exists |
 
 ## FD-P1: adopt `DESIGN.md` into this pack
 
@@ -517,19 +521,130 @@ Changes:
 | `family-design.introduction.md`, `family-design.roadmap.md` | counts removed from current-truth tables and the next action |
 | `family-design.hallucination.md` | FD-D41 added; 1 index row; stated entry count removed |
 
+## FD-P12: make the entry index and entry headings mandatory
+
+Opened 2026-10-05 by the user. FD-D42 carries the reasoning.
+
+Acceptance criteria:
+
+- `contract/pack-contract.md` requires an index and a heading per entry from the first entry, states the heading format, and gives the retrofit to the editing skill
+- all 14 packaged contract copies are byte-identical to it
+- `tests/test_packs.py` has no size threshold and fails a `hallucination` with no `## Entry index`
+- the suite stays green
+
+### Checkpoint: complete
+
+| Item | Result |
+|---|---|
+| Verification gate | `uvx --from "pytest>=8,<10" --with pyyaml pytest tests/ -q` green. The pass count is not recorded |
+| Contract headings | 12 listed after the edit, none lost |
+| Contract copies | 14, re-synced, `cmp` clean against canonical |
+| Mutation check | renaming `## Entry index` in `skill-consolidation.hallucination.md` failed the index test, then reverted |
+| Retrofit in this repository | none needed. Both journals already carry headings and an index |
+| Commit | uncommitted |
+
+Changes:
+
+| File | Change |
+|---|---|
+| `contract/pack-contract.md` | `Entry index` loses the threshold, gains the heading format paragraph and the retrofit rule |
+| `<skill>/references/pack-contract.md` | all 14 copies re-synced |
+| `tests/test_packs.py` | `INDEX_MAX_BYTES`, `INDEX_MAX_ENTRIES` and the early return removed |
+| `family-design.hallucination.md` | FD-D42 added; index row; header line |
+| `skill-consolidation.hallucination.md`, `skill-consolidation.introduction.md` | SC-D19 marked partly reversed, SC-Q6 row and entry note the heading format, threshold mention in the introduction corrected |
+
+The threshold figures in `skill-consolidation.roadmap.md` and in FD-P1 and FD-P2 above are history of earlier phases and were left as they are.
+
+## FD-P13: add `baselinedocs-help`
+
+Opened 2026-10-05. FD-D43 carries the reasoning.
+
+Acceptance criteria:
+
+- `baselinedocs-help` is a user entrypoint with `allow_implicit_invocation: false`, ships `report-style.md` and its own guide, and ships no `pack-contract.md`
+- the guide has a row for every skill, enforced by a test
+- the suite stays green
+
+### Checkpoint: complete
+
+| Item | Result |
+|---|---|
+| Verification gate | green. The pass count is not recorded |
+| Files created | `baselinedocs-help/SKILL.md`, `agents/openai.yaml`, `references/guide.md`, `references/report-style.md` |
+| Mutation check | removing `baselinedocs-recall` from the guide failed `test_help_guide_names_every_skill`, then reverted |
+| Selection by a host | not observed |
+| Commit | uncommitted |
+
+Changes:
+
+| File | Change |
+|---|---|
+| `baselinedocs-help/` | new skill folder |
+| `tests/test_skill_metadata.py` | `ENTRYPOINTS` gains `baselinedocs-help` |
+| `tests/test_references.py` | `test_help_guide_names_every_skill` |
+| `README.md` | entrypoint table gains `help`, `adr`, and the missing `load`; heading and lead-in made count-free |
+| `family-design.introduction.md`, `family-design.hallucination.md` | entrypoint list; FD-D43 and its index row |
+
+README still names `setup-hooks` and `HOOKS.md`, which no longer exist. It is outside this phase and left for the user to decide.
+
+## FD-P14: add `baselinedocs-adr`
+
+Opened 2026-10-05. FD-D44 carries the reasoning.
+
+Acceptance criteria:
+
+- `baselinedocs-adr` is a user entrypoint with `allow_implicit_invocation: false`, ships `report-style.md`, and ships no `pack-contract.md`
+- `references/template.md` and `references/process.md` are byte-identical to the aws-adr originals
+- the suite stays green
+
+### Checkpoint: complete
+
+| Item | Result |
+|---|---|
+| Verification gate | green. The pass count is not recorded |
+| Template copies | `template.md` and `process.md`, `cmp` clean against `~/.agents/skills/aws-adr/references/`, checksums in FD-D44 |
+| Mutation check | renaming `## Compliance` in the copied template failed the heading test, then restored from the original |
+| Dash test | the verbatim copy contains no en or em dash and passes `test_no_typographic_dashes` |
+| Selection by a host | not observed. The skill has not been run against a real pack entry |
+| Commit | uncommitted |
+
+Changes:
+
+| File | Change |
+|---|---|
+| `baselinedocs-adr/` | new skill folder |
+| `tests/test_skill_metadata.py` | `ENTRYPOINTS` gains `baselinedocs-adr` |
+| `tests/test_references.py` | `test_adr_template_carries_the_aws_headings_and_no_pack_pointer` |
+| `family-design.hallucination.md` | FD-D44 and its index row |
+
+The plan named a second test, that `SKILL.md` carries no path into a pack. It was not written: `SKILL.md` has to name `docs/baseline` in order to forbid it, so the test would fail on the rule it checks. The template copy is tested instead.
+
+## FD-P15: research a skill version in the frontmatter
+
+Opened 2026-10-05. Research only. FD-Q6 carries the findings, the recommended mechanism, and the rejected options. No frontmatter key, script, or test was added.
+
+### Checkpoint: complete
+
+| Item | Result |
+|---|---|
+| Deliverable | FD-Q6 and its index row |
+| Verified first-hand | repository state only: no hook, no `.pre-commit-config.yaml`, CI read-only |
+| Not verified first-hand | the Agent Skills specification and the installer's update mechanism, read through web search summaries |
+| Open | the user's choice of mechanism and of key, `metadata.version` or a top-level `version:` |
+
 ## Risks
 
 | Risk | Detail |
 |---|---|
 | `AGENTS.md` points four times at a file that is being retired | FD-D27 made this pack canonical and scheduled `DESIGN.md` for deletion, so `AGENTS.md` is already wrong where it tells a contributor to record decisions in `DESIGN.md`. The file is still on disk, so nothing is broken yet, but a contributor reading `AGENTS.md` today would write a new decision into the file being deleted. The rewire is the next action below |
 | `skill-consolidation` records its own state as uncommitted | Closed in FD-P11. Its roadmap stated that SC-P9 through SC-P14 were uncommitted; they are committed at `959617b`, `b857216`, and `0cb913f`. `baselinedocs-sync-codebase` repaired that pack's roadmap, introduction, and sourcecode against the code, since it owns a pack that has fallen behind it |
-| Installed skills are behind this repository | Widened again 2026-09-11 by FD-P8, 2026-09-16 by FD-P9, and 2026-10-02 by FD-P10, on top of the gap FD-P7 reopened. An installed skill reads its own packaged copy, so any given machine's global install drifts from this repository from its next edit onward, and whether a particular machine is current is machine-specific state this pack does not track. Reinstalling from this local clone is the standing remedy, not a one-time phase: `npx skills remove -g -s <every skill name>` then `npx skills add . -g -a '*' -s <every skill name>`, run again whenever a machine's copy needs to catch up |
+| Installed skills are behind this repository | Widened again 2026-09-11 by FD-P8, 2026-09-16 by FD-P9, 2026-10-02 by FD-P10, and 2026-10-05 by FD-P12, FD-P13, and FD-P14, on top of the gap FD-P7 reopened. An installed skill reads its own packaged copy, so any given machine's global install drifts from this repository from its next edit onward, and whether a particular machine is current is machine-specific state this pack does not track. Reinstalling from this local clone is the standing remedy, not a one-time phase: `npx skills remove -g -s <every skill name>` then `npx skills add . -g -a '*' -s <every skill name>`, run again whenever a machine's copy needs to catch up |
 | A reference written before 2026-08-28 names an identifier that no longer exists | FD-D30 renamed every identifier in both packs to carry a pack prefix. Anything citing a bare `D16` or `P8`, in a commit message or an earlier thread, now resolves to nothing. That is the intended failure mode, chosen over a bare number that resolves silently to the wrong entry, but it is a real cost to anyone holding an old reference |
 | Nothing about the skill family itself is deferred | The rename sweep and the finished-pack marker were closed rather than postponed, in `skill-consolidation` SC-D13 and SC-D14. The only deferred item in this pack, FD-Q1, is blocked on a platform capability |
 
 ## Next action
 
-On any machine whose global install has not picked up FD-P6's through FD-P10's changes, reinstall the family from a local clone of this repository, the same mechanical step FD-P3 and FD-P5 both closed out with: the widened `contract/report-style.md` and its re-synced packaged copies, the rewritten `baselinedocs-onboard/SKILL.md`, the widened `contract/pack-contract.md` and its re-synced packaged copies, the removal of `baselinedocs-setup-hooks`, and the addition of `baselinedocs-load` and `baselinedocs-recall`. After that, check FD-P10's open item: run `/compact` mid pack work and confirm the agent selects `baselinedocs-recall` before its next pack write. This is per-machine state, not a repository-wide fact this pack tracks, so no phase records when a given machine last ran it.
+On any machine whose global install has not picked up FD-P6's through FD-P14's changes, reinstall the family from a local clone of this repository, the same mechanical step FD-P3 and FD-P5 both closed out with: the widened `contract/report-style.md` and its re-synced packaged copies, the rewritten `baselinedocs-onboard/SKILL.md`, the widened `contract/pack-contract.md` and its re-synced packaged copies, the removal of `baselinedocs-setup-hooks`, the addition of `baselinedocs-load`, `baselinedocs-recall`, `baselinedocs-help`, and `baselinedocs-adr`, and the contract's mandatory entry index (FD-P12). After that, check FD-P10's open item: run `/compact` mid pack work and confirm the agent selects `baselinedocs-recall` before its next pack write. This is per-machine state, not a repository-wide fact this pack tracks, so no phase records when a given machine last ran it.
 
 After FD-P11, push and confirm the first GitHub Actions run is green: the workflow has never run, and its two action tags are unverified and not pinned to a commit.
 
@@ -538,3 +653,5 @@ Separately, and explicitly deferred by the user rather than scheduled: rewriting
 One open question is new: FD-Q5 asks who, if anyone, now checks a pack for misfiled content, since `onboard`'s placement check was deleted along with the output section that reported it. Nothing else in the pack is waiting on a user decision.
 
 One older open question remains in this pack: FD-Q1 waits on a portable hidden-skill mechanism that no installer provides. `skill-consolidation` still carries SC-Q6, SC-Q7, and SC-Q8, and SC-Q6 is the one this pack touched: FD-D30 settled its uniqueness clause and left the rest of it open.
+
+One open question is new: FD-Q6 waits on the user's choice of mechanism and of key for a skill version in the frontmatter, and on a first-hand read of the Agent Skills specification and the installer's treatment of `metadata.version`. Nothing in the repository carries a version until then.

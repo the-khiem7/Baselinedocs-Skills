@@ -3,7 +3,7 @@ baseline_schema: "2.0"
 pack: "family-design"
 document: "introduction"
 status: "active"
-updated: "2026-10-02"
+updated: "2026-10-05"
 code_ref: "uncommitted"
 ---
 
@@ -31,7 +31,7 @@ Verified against the working tree at `0cb913f`, not read off `DESIGN.md`.
 | Fact | State |
 |---|---|
 | skills on disk | every `baselinedocs-*` folder. No count is kept here: `tests/helpers.py` enumerates them and each test classifies every one |
-| user entrypoints | `init`, `adopt`, `save`, `run`, `onboard`, `load`, `brief`, `callout`. All set `allow_implicit_invocation: false`. Pinned by `ENTRYPOINTS` in `tests/test_skill_metadata.py` |
+| user entrypoints | `init`, `adopt`, `save`, `run`, `onboard`, `load`, `brief`, `callout`, `help`, `adr`. All set `allow_implicit_invocation: false`. Pinned by `ENTRYPOINTS` in `tests/test_skill_metadata.py` |
 | one-time administration | none |
 | lifecycle skills, agent-selected | every other skill, all `true`. Includes `recall`, FD-D40 |
 | pack schema | `2.0`. Three core documents, two conditional |

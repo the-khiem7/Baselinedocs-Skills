@@ -3,7 +3,7 @@ baseline_schema: "2.0"
 pack: "skill-consolidation"
 document: "introduction"
 status: "active"
-updated: "2026-10-02"
+updated: "2026-10-05"
 code_ref: "uncommitted"
 ---
 
@@ -31,7 +31,7 @@ Out of scope: the pack schema, which is unchanged apart from the one enum remova
 | `AGENTS.md` claim about the pack-writing skill count | stated once, pinned against `WRITER_SKILLS` by `test_agents_md_states_the_skill_count_once_and_correctly`. It said 14 in all four places at `cded242`, when the real figure was 13; SC-P5 corrected four and SC-P6 found only two of them |
 | `status: archived` | removed from the enum by SC-P5. No producer, no consumer |
 | test command | `uvx --from "pytest>=8,<10" --with pyyaml pytest tests/ -q` |
-| `hallucination` entry index | required by the contract above 40 KB or 20 entries, whichever comes first. Present here, and no skill consumes it yet. SC-D19 |
+| `hallucination` entry index | required by the contract from the first entry (FD-D42 removed the 40 KB / 20 entry threshold). Present here, and no skill consumes it yet. SC-D19 |
 | existing baseline packs | none before this one |
 
 ## Target
