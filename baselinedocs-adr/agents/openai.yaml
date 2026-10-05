@@ -1,0 +1,6 @@
+interface:
+  display_name: "Baseline Docs ADR"
+  short_description: "Draft an ADR from one closed decision in a pack"
+  default_prompt: "Use $baselinedocs-adr to draft an Architectural Decision Record from one closed decision entry in the pack."
+policy:
+  allow_implicit_invocation: false

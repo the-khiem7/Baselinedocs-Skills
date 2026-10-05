@@ -180,3 +180,34 @@ def test_agents_md_states_the_skill_count_once_and_correctly():
     assert strays == [], (
         "phrase these count-free: the count belongs in one sentence, checked above"
     )
+
+
+# `baselinedocs-help` ships its own guide because the README does not ship. A
+# skill added without a row would be invisible to anyone asking which skill to use.
+@pytest.mark.parametrize("name", SKILL_NAMES)
+def test_help_guide_names_every_skill(name):
+    guide = read_text(ROOT / "baselinedocs-help" / "references" / "guide.md")
+    assert f"`{name}`" in guide, (
+        f"baselinedocs-help/references/guide.md has no row for {name}; add one"
+    )
+
+
+# `baselinedocs-adr` ships the AWS template unmodified, so its headings are the
+# AWS ones. A pointer into a pack would leave the repository inside a promoted ADR.
+ADR_HEADINGS = [
+    "# ADR-NNNN: <Title>",
+    "## Status",
+    "## Date",
+    "## Context",
+    "## Decision",
+    "## Consequences",
+    "## Compliance",
+    "## Notes",
+]
+
+
+def test_adr_template_carries_the_aws_headings_and_no_pack_pointer():
+    template = read_text(ROOT / "baselinedocs-adr" / "references" / "template.md")
+    missing = [heading for heading in ADR_HEADINGS if heading not in template]
+    assert missing == [], f"baselinedocs-adr template is missing {missing}"
+    assert "docs/baseline" not in template, "the ADR template must not point into a pack"

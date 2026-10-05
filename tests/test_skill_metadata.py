@@ -14,6 +14,8 @@ ENTRYPOINTS = {
     "baselinedocs-save",
     "baselinedocs-run",
     "baselinedocs-callout",
+    "baselinedocs-help",
+    "baselinedocs-adr",
 }
 
 # Lifecycle skills are agent-selected and say so in their display name. The one

@@ -63,7 +63,7 @@ flowchart TD
 | `save` is the step after `run` | `run` already checkpoints the roadmap each phase. `save` owns what a phase checkpoint does not: decisions closed, questions opened, scope moved.                                                                  |
 | one thing is called compact        | Two are. Host`/compact` shrinks the conversation. `baselinedocs-maintain-compact` shrinks the pack, on a different axis: not a full window, but a pack gone noisy over months.                                    |
 
-## Seven User Entrypoints
+## User Entrypoints
 
 | User intent                            | Skill                    | Outcome                                                   |
 | -------------------------------------- | ------------------------ | --------------------------------------------------------- |
@@ -74,8 +74,11 @@ flowchart TD
 | Load an existing pack before working   | `baselinedocs-onboard` | Read the selected pack in full into working context       |
 | Ask where the work stands mid-task     | `baselinedocs-brief`   | Report position cheaply, without loading the pack         |
 | Name a slice of the pack for later     | `baselinedocs-callout` | Open, update, or retire a temporary callout group         |
+| Prime the agent with a pack, silently  | `baselinedocs-load`    | Read the selected pack in full and confirm in one word    |
+| Turn a closed decision into an ADR     | `baselinedocs-adr`     | Draft one standalone ADR under `docs/adr/` from a decision entry |
+| Ask which skill to use and in what order | `baselinedocs-help`  | Explain every skill and the workflow, without reading a pack |
 
-All seven set `policy.allow_implicit_invocation: false` for Codex, so they stay deliberate user actions. Three behaviors are worth knowing before you meet them:
+All of them set `policy.allow_implicit_invocation: false` for Codex, so they stay deliberate user actions. Three behaviors are worth knowing before you meet them:
 
 - `onboard` writes nothing, and on a multi-pack initiative it routes before it loads: it reads the index, takes one domain pack rather than the whole set, and reports every point where a loaded document leaned on something that was not loaded.
 - `run` invoked without both execution policies asks whether to pause after each phase and whether to commit each verified phase. It never chooses defaults silently.
