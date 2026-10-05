@@ -1,7 +1,7 @@
 ---
 name: baselinedocs-help
 description: Explain what each baselinedocs skill does and in what order to use them, from a plain question such as which skill to use, what a skill does, what comes after run, or how the workflow goes. Use when the user asks for help, a list of the baselinedocs skills, the workflow, or which skill fits their situation, and does not need a pack read.
-version: "0.0.0"
+version: "3.0.0"
 ---
 
 # Baseline Docs Help

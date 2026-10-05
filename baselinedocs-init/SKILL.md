@@ -1,7 +1,7 @@
 ---
 name: baselinedocs-init
 description: Create the first adaptive baseline documentation pack for a new task, feature, initiative, or coordinated multi-domain workflow. Use explicitly when no suitable pack exists and the user wants durable planning and operational memory from the start.
-version: "0.0.0"
+version: "3.0.0"
 ---
 
 # Baseline Docs Init

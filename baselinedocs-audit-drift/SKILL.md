@@ -1,7 +1,7 @@
 ---
 name: baselinedocs-audit-drift
 description: Audit which baseline documents have fallen behind the code or behind a closed decision, ranking the code half by `code_ref` frontmatter provenance, and report without modifying files. Use automatically when staleness or alignment between docs, code, and decisions is uncertain. For whether an individual statement is supported by evidence, use `baselinedocs-audit-claims` instead.
-version: "0.0.0"
+version: "3.0.0"
 ---
 
 # Baseline Docs Audit Drift

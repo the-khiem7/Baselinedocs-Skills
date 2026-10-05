@@ -1,7 +1,7 @@
 ---
 name: baselinedocs-recall
 description: Recall, reload, or re-read the baselinedocs rules - the pack contract and the report style - into working context after a context compaction or summary, before the next baseline pack write or report. Use when work on a baseline pack continues past a compaction, when the thread holds only a summary of rules read earlier, or when the user says the agent forgot the baselinedocs rules.
-version: "0.0.0"
+version: "3.0.0"
 ---
 
 # Baseline Docs Recall

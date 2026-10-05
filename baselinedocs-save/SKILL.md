@@ -1,7 +1,7 @@
 ---
 name: baselinedocs-save
 description: Capture durable baseline documentation in the middle of an existing brownfield conversation or implementation task. Use explicitly when the user wants to preserve current context for later reuse without restarting the workflow from initialization.
-version: "0.0.0"
+version: "3.0.0"
 ---
 
 # Baseline Docs Save

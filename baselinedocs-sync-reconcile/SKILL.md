@@ -1,7 +1,7 @@
 ---
 name: baselinedocs-sync-reconcile
 description: Reconcile contradictions inside an existing adaptive baseline pack. Use automatically when core or conditional documents disagree about current truth or status.
-version: "0.0.0"
+version: "3.0.0"
 ---
 
 # Baseline Docs Sync Reconcile
