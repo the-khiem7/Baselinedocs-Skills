@@ -21,10 +21,6 @@ DOCUMENTS = {"introduction", "roadmap", "hallucination", "sourcecode", "useguide
 STATUSES = {"draft", "active", "blocked", "complete"}
 FRONTMATTER_KEYS = {"baseline_schema", "pack", "document", "status", "updated", "code_ref"}
 
-# The contract adds an entry index to `hallucination` above either limit.
-INDEX_MAX_BYTES = 40 * 1024
-INDEX_MAX_ENTRIES = 20
-
 HEADING = re.compile(r"^#{2,4}\s+([A-Z]{2,3}-[DQP]\d+)\b", re.MULTILINE)
 INDEX_ROW = re.compile(r"^\|\s*([A-Z]{2,3}-[DQP]\d+)\s*\|", re.MULTILINE)
 QUALIFIED = re.compile(r"(?<![\w-])([A-Z]{2,3})-([DQP]\d+)(?![\w-])")
@@ -105,16 +101,11 @@ def test_pack_filename_states_its_pack_and_document(path):
 
 @pytest.mark.parametrize("path", HALLUCINATION_FILES, ids=rel)
 def test_entry_index_lists_every_entry_and_nothing_else(path):
-    text = read_text(path)
-    section = entry_index_section(text)
+    section = entry_index_section(read_text(path))
     entries = headings(path)
-    over_threshold = len(text.encode("utf-8")) > INDEX_MAX_BYTES or len(entries) > INDEX_MAX_ENTRIES
-    if section is None:
-        assert not over_threshold, (
-            f"{rel(path)} is past the contract's index threshold "
-            f"({INDEX_MAX_BYTES} bytes or {INDEX_MAX_ENTRIES} entries) and has no Entry index"
-        )
-        return
+    assert section is not None, (
+        f"{rel(path)} has no `## Entry index`; the contract requires one from the first entry"
+    )
     rows = INDEX_ROW.findall(section)
     assert len(rows) == len(set(rows)), f"{rel(path)}: duplicate Entry index rows"
     assert len(entries) == len(set(entries)), f"{rel(path)}: duplicate entry headings"

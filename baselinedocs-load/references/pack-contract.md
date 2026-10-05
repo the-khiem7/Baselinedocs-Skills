@@ -50,7 +50,9 @@ Compression must not delete a fact. Before shortening an existing entry, confirm
 
 ## Entry index
 
-Conditional, like the documents below. Add an index at the top of `hallucination` once that document exceeds 40 KB or holds more than 20 entries, whichever comes first. Below that, omit it: the maintenance burden is per entry and does not scale down, while a reader can hold a short journal without help.
+Every `hallucination` carries an index at its top, under `## Entry index`, and every entry carries its own heading, from the first entry. Never defer either until the document grows: delimiting entries after the fact is the costliest edit a journal can need, and the cost rises with every entry written without a heading.
+
+An entry heading is `## <PREFIX>-<KIND><N>: <subject>`, for example `## FD-D42: <subject>`. `<PREFIX>` is 2-3 uppercase letters chosen once per pack and unique across an initiative, so a citation never resolves to another pack's entry. `<KIND>` is `D` for a decision or lesson entry and `Q` for an open question; `P` names a phase and belongs to `roadmap`. `<N>` is a counter per pack and kind, append-only: never reuse or renumber an identifier. Write the prefix everywhere the identifier is cited. Open questions sit under `## Open questions` as `### <PREFIX>-Q<N>: <question>`.
 
 The index is one table, one row per entry, four columns: the entry's identifier, what the entry is about, its status, and the identifiers of related entries. Status is required, not decorative, because it is the only place a reader learns an entry was later reversed without reading the entry that reversed it.
 
@@ -60,7 +62,7 @@ Nothing verifies a row against its entry. Every other duplicated file in this sy
 
 An answer that turns on an entry whose full text was not read is unbacked. Say so and offer to read the entry. A row is a locator, not a source.
 
-The index presumes each entry is delimited by its own heading carrying its identifier. Where a journal is not yet structured that way, delimiting it is the first step of adding the index and is the author's work: no skill performs that restructuring, and bold text at the start of a line does not count, because it is not an anchor, not a table-of-contents row, and not a citable target.
+Bold text at the start of a line is not a heading: it is not an anchor, not a table-of-contents row, and not a citable target. A `hallucination` lacking the index or the entry headings is brought into shape by the pack-writing skill that edits it, before the edit it came to make and in the same pass: give each entry its heading and identifier, move the text verbatim, then build the index. This is a relocation, not a rewrite; shortening is a separate operation. A skill that only reports names the gap and moves nothing.
 
 ## Reasoning ownership
 
