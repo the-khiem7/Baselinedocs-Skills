@@ -48,6 +48,7 @@ Verified against the repository, not against `DESIGN.md`.
 | Mandatory entry index and heading format | FD-D42 | implemented | `contract/pack-contract.md`, `Entry index`; 14 packaged copies `cmp` clean; `tests/test_packs.py` has no threshold and fails a `hallucination` with no index |
 | Guide to the skills | FD-D43 | implemented, selection unobserved | `baselinedocs-help/` with `references/guide.md`; `tests/test_references.py` `test_help_guide_names_every_skill` |
 | ADR from a closed decision | FD-D44 | implemented, selection unobserved | `baselinedocs-adr/` with the unmodified AWS `references/template.md` and `process.md`; checksums in FD-D44 |
+| Mechanical structure check | FD-D46 | implemented, CI matrix unobserved | `contract/packtool.sh` with byte-identical `scripts/packtool.sh` copies; gates pinned by `TOOL_SKILLS` in `tests/test_references.py`; `tests/test_packtool.py` builds one case per rule |
 | Release version in the frontmatter | FD-D45, FD-Q6 | implemented, workflow unobserved | top-level `version:` in every `SKILL.md`; `scripts/stamp_version.py`; `tests/test_version.py`; `.github/workflows/release.yml` has not run on GitHub |
 
 ## FD-P1: adopt `DESIGN.md` into this pack
@@ -648,6 +649,23 @@ Opened and closed 2026-10-05. Settles FD-Q6 as FD-D45: a pushed `vMAJOR.MINOR.PA
 | Not observed | the workflow has never run: the push to `main` by the bot, the pytest step on a stamped tree, and the action tags are unverified |
 | Not verified first-hand | the Agent Skills specification and any installer's treatment of a top-level `version:` |
 
+## FD-P17: add `packtool.sh`, a mechanical structure check
+
+Opened and closed 2026-10-05. Records FD-D46 after five mistakes in an operate session elsewhere, each one scan away from being caught.
+
+### Checkpoint: complete, CI matrix unobserved
+
+| Item | Result |
+|---|---|
+| Tool | `contract/packtool.sh`: `outline`, `find`, `next-id`, `check`; POSIX sh and awk, read-only, git read-only |
+| Copies | `scripts/packtool.sh` in every pack-writing skill, `baselinedocs-onboard`, `baselinedocs-audit-claims`, `baselinedocs-audit-drift` |
+| Contract | `Editing a pack` added; packaged copies re-synced |
+| Gates | writer gate and report gate in each `SKILL.md`, pinned; `baselinedocs-save` workflow gains a check step |
+| Test | `tests/test_packtool.py`: clean pack, CRLF pack, one case per FAIL and WARN rule, the duplicate open-question identifier reproduced, `next-id` counting a closed question cited only in prose, dogfood `check docs/baseline` with no FAIL |
+| Dogfood | `next-id docs/baseline/family-design D` returned FD-D46 before this entry was written, and the next number after it |
+| Suite | full suite green on Windows with Git for Windows sh and gawk |
+| Not observed | mawk on Ubuntu and BWK awk on macOS: `.github/workflows/tests.yml` now runs all three OS and has not run |
+
 ## Risks
 
 | Risk | Detail |
@@ -671,3 +689,5 @@ One open question is new: FD-Q5 asks who, if anyone, now checks a pack for misfi
 One older open question remains in this pack: FD-Q1 waits on a portable hidden-skill mechanism that no installer provides. `skill-consolidation` still carries SC-Q6, SC-Q7, and SC-Q8, and SC-Q6 is the one this pack touched: FD-D30 settled its uniqueness clause and left the rest of it open.
 
 FD-Q6 is closed by FD-D45 and no longer waits on the user. To cut the first release, push the commit to `main`, then push the tag, for example `v1.0.0`, and `git pull` once the workflow's `release: vX.Y.Z` commit lands, since local `main` is then behind. Confirm the first `release.yml` run succeeded: it has never run, and its bot push to `main` is unobserved.
+
+FD-P17 added `packtool.sh`: push and confirm the three-OS test matrix is green, since mawk and BWK awk have not run it. Reinstall the family on any machine that should pick up the tool and the new contract section.

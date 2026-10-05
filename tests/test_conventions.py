@@ -18,7 +18,7 @@ from helpers import (
 # The set is Git's view of the repo (see helpers.repo_files), so a host skills
 # directory installed into this checkout never makes the suite fail on text this
 # repo did not author and cannot fix.
-TEXT_SUFFIXES = (".md", ".yaml", ".yml", ".txt", ".py", ".ini")
+TEXT_SUFFIXES = (".md", ".yaml", ".yml", ".txt", ".py", ".ini", ".sh")
 # Built from code points so this file does not contain the characters it bans.
 TYPOGRAPHIC_DASH = re.compile(f"[{chr(0x2013)}{chr(0x2014)}]")
 
@@ -74,8 +74,9 @@ def test_skill_depends_on_no_sibling(name):
     )
 
 
-# Folder shape from AGENTS.md: SKILL.md, agents/openai.yaml, and references/ only
-# when needed. A stray file here ships to everyone who installs the skill.
+# Folder shape from AGENTS.md: SKILL.md, agents/openai.yaml, references/ only
+# when needed, and scripts/packtool.sh as the one script. A stray file here ships
+# to everyone who installs the skill.
 @pytest.mark.parametrize("name", SKILL_NAMES)
 def test_skill_folder_has_only_the_shipped_shape(name):
     folder = ROOT / name
@@ -90,7 +91,7 @@ def test_skill_folder_has_only_the_shipped_shape(name):
     strays = sorted(
         item
         for item in relative
-        if item not in ("SKILL.md", "agents/openai.yaml")
+        if item not in ("SKILL.md", "agents/openai.yaml", "scripts/packtool.sh")
         and not (item.startswith("references/") and item.count("/") == 1)
     )
     assert strays == [], f"{name} ships files outside the folder shape: {strays}"

@@ -64,9 +64,10 @@ Every identifier in this initiative carries its pack's prefix: `FD-` here, `SC-`
 | FD-D43 | `baselinedocs-help` as a user entrypoint carrying its own guide to the skills and the workflow | current | FD-D1, FD-D8, FD-D9 |
 | FD-D44 | `baselinedocs-adr` drafting a standalone ADR from one closed entry, using an unmodified AWS template | current | FD-D1, FD-D7 |
 | FD-D45 | a release tag stamping one family-wide `version:` into every `SKILL.md` on `main` | current | FD-D37, FD-D41, FD-Q6 |
+| FD-D46 | `packtool.sh`, a mechanical structure check every writer runs before reporting a write | current | FD-D7, FD-D41, FD-D42, FD-Q5 |
 | FD-Q1 | hiding internal helpers at package level rather than by naming convention | open, deferred on a missing platform feature | FD-D1 |
 | FD-Q2 | installing checkpoint hooks across more than one repository | closed, hook mechanism removed | FD-D6, FD-D37 |
-| FD-Q5 | who, if anyone, owns misfiled-content detection now that `onboard` no longer checks it | open | FD-D34 |
+| FD-Q5 | who, if anyone, owns misfiled-content detection now that `onboard` no longer checks it | open, structural half covered by FD-D46 | FD-D34, FD-D46 |
 | FD-Q6 | a skill version in the frontmatter, bumped automatically, to recognize an outdated install | closed by FD-D45 | FD-D37, FD-D41, FD-D45 |
 
 ## FD-D1: six entrypoints stay deliberate, and the rest stay agent-selectable
@@ -672,6 +673,28 @@ A new thread is the default once the pack is current, which after a save it is. 
 
 **Rejected: a rule in `AGENTS.md` to stamp by hand.** Not automatic; a skipped stamp is seen by nobody.
 
+## FD-D46: `packtool.sh` checks pack structure mechanically, and every writer runs it before reporting a write
+
+**Decided.** `contract/packtool.sh`, one POSIX sh file with an embedded POSIX awk program, ships byte-identical at `scripts/packtool.sh` in every pack-writing skill, `baselinedocs-onboard`, and both `audit` skills. Commands: `outline` (headings with `file:line`), `find` (every occurrence of one identifier, by kind), `next-id` (highest number among every occurrence, headings and prose citations alike, plus one), `check` (FAIL on structure, WARN on heuristics; exit 1 on any FAIL). Writers gate on running `check` after every write and allocating identifiers with `next-id`; readers and audits gate on running `check` before reporting. Both gate sentences are pinned in `tests/test_references.py`. `contract/pack-contract.md` gains `Editing a pack`, tool-agnostic because `load` and `recall` ship the contract without the script: no edit by line number, identifiers allocated from a scan, git re-run before `code_ref`.
+
+**Why.** An operate session in another repository (pack prefix `TB`) made five mistakes: allocated an open-question identifier that already existed, renamed it with `sed` by line number on a file renumbered mid-session, reported the save done with the duplicate in place, wrote `code_ref: "uncommitted"` after commit `dd28bfb` had landed, and restated two RDS disk increases already held by a decision entry. The cause was state carried in memory, not grep: each fact was one scan away and never re-read. A structural defect reports success when made, so only a mechanical check run after the write catches it.
+
+**What breaks if ignored.** A duplicate identifier makes every citation of it ambiguous and nothing fails; an index row without its entry, or the reverse, survives until a reader trusts it. Reports from `onboard` and the audits rest on a read, not a check.
+
+**Rule split.** FAIL: frontmatter keys and values, filename and folder against `pack` and `document`, missing `## Entry index`, duplicate heading, duplicate index row, row without entry and entry without row, `-Q` heading outside `## Open questions`, `-D` heading outside `hallucination` or under `## Open questions`, `-P` heading outside `roadmap`, bold pseudo-heading, prefix shared by two packs, en or em dash. WARN, read and judged rather than fixed: a question whose index status is not `open` still under `## Open questions` (this pack keeps closed stubs FD-Q2 and FD-Q6 on purpose), a citation with no heading and no `clos` on any citing line, `code_ref` against HEAD and against the working tree outside the checked path, one date and quantity appearing in both `roadmap` and `hallucination`, `root cause` or `rejected` in `roadmap` with no `-D` link on the line, possible hard wrap.
+
+**Accepted cost.** Needs `sh` and `awk`; on Windows that is Git for Windows, already required where `code_ref` is read. Without it the gate says the checks were not run. Placement by meaning (reasoning in the wrong document) stays a heuristic; FD-Q5 keeps that half open. Portability to mawk and BWK awk rests on `.github/workflows/tests.yml` running Ubuntu, macOS, and Windows, which has not run yet.
+
+**Rejected: Python.** Not installed on every machine an installed skill runs on.
+
+**Rejected: PowerShell.** Windows only.
+
+**Rejected: prebuilt Go binaries.** About 2 MB per target, six targets, 14 skills: roughly 140 MB written into git history on every change, and an unsigned executable is blocked where WDAC or AppLocker enforces user-mode code integrity.
+
+**Rejected: one sh and one ps1 implementation.** Two copies of one logic drift.
+
+**Rejected: a harness that keeps line numbers current for editing.** A line number is stale after the first write, whoever reports it; anchoring edits on unique text is the fix, and `outline` serves reading only.
+
 ## Open questions
 
 ### FD-Q1: can internal helpers be hidden at package level?
@@ -693,6 +716,8 @@ FD-D34 deleted `onboard`'s placement check along with its output section, becaus
 What is at stake: the failure `pack-contract.md`'s own `Misfiled content` section describes, settled material filed under an open-questions heading being the commonest form, has no detector anywhere in the family until this question is answered.
 
 The trigger to reopen: a decision on whether an existing skill absorbs the check under the same full-read criterion SC-D16 already established, whether a new skill is warranted, or whether the family accepts the gap as a deliberate cost of a lighter `onboard` report.
+
+FD-D46 covers the structural half: `packtool.sh check`, which `onboard` runs before reporting, fails a decision filed under `## Open questions` or a question outside it, and warns on a question whose index status is no longer `open`. Placement by meaning, such as reasoning written into `roadmap`, is only a heuristic warning there, so this question stays open on that half.
 
 ### FD-Q6: how does a skill carry a version in its frontmatter, bumped automatically, so an outdated install on a machine can be recognized?
 

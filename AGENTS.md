@@ -59,12 +59,21 @@ A bare prohibition with an appealing counter-argument gets overridden mid-run. A
 
 It is a second asset rather than a section of the contract on purpose. The contract's audience is skills that write a pack or read one in full, and `baselinedocs-brief` is neither: it must not carry the role list, because a partial reader holding it would report conformance it never checked. It still cites element identifiers in every report it produces. Folding the two files would force the wrong audience on one of them, so they stay separate and are pinned separately.
 
+## The pack tool
+
+`contract/packtool.sh` is the only implementation of the mechanical pack check: `outline`, `find`, `next-id`, `check`. Every pack-writing skill, `baselinedocs-onboard`, and both `audit` skills ship a byte-identical copy at `<skill>/scripts/packtool.sh`, for the same reason they ship the contract.
+
+- Edit the canonical file, then copy it to every skill that ships it. `tests/test_references.py` pins the copies (`TOOL_SKILLS`) and the two gate sentences.
+- POSIX sh and POSIX awk only: no gawk extensions, no regex intervals, no `find(1)`. CI runs it under mawk, BWK awk, and Git for Windows gawk.
+- It never writes, never touches the network, and runs git read-only. Keep it that way: an installed skill executes it inside other teams' repositories.
+- `tests/test_packtool.py` holds one case per rule. A new rule needs a case.
+
 ## Conventions
 
 - ASCII hyphen only. No en dash, no em dash. Enforced by `test_no_typographic_dashes` across every `.md`, `.yaml`, `.yml`, `.txt`, `.py`, and `.ini` file Git lists for the repo.
 - State the pack-writing skill count in one sentence only, the one under `The pack contract`. Everywhere else say "every pack-writing skill". `test_references.py` pins that sentence against `WRITER_SKILLS` and fails on a second one, because a count repeated in prose goes stale the next time a skill is added or removed. It is pinned to `WRITER_SKILLS` rather than `CONTRACT_SKILLS` because a full reader ships the contract too, so the two counts differ and the prose is about writing.
 - Before merging or deleting a skill, read `docs/baseline/skill-consolidation/skill-consolidation.hallucination.md` SC-D1. The merge test is two conditions, not one, and two plausible-looking alternatives are recorded there as rejected so they are not proposed again.
-- Skill folder shape: `SKILL.md`, `agents/openai.yaml`, and `references/` only when needed.
+- Skill folder shape: `SKILL.md`, `agents/openai.yaml`, `references/` only when needed, and `scripts/packtool.sh` in the skills that ship it.
 - User entrypoints set `allow_implicit_invocation: false`. Lifecycle skills keep it enabled and prefix their display name with `Baseline Docs Internal:`. `baselinedocs-recall` is the one lifecycle skill named `Baseline Docs: Recall` without `Internal`, because a user calls it by hand as often as an agent selects it.
 - That policy field is Codex-only. On other hosts the `description` frontmatter is the real selection surface, so it must carry the vocabulary a user would actually type.
 

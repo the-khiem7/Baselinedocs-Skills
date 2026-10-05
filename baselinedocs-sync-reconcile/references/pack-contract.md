@@ -64,6 +64,14 @@ An answer that turns on an entry whose full text was not read is unbacked. Say s
 
 Bold text at the start of a line is not a heading: it is not an anchor, not a table-of-contents row, and not a citable target. A `hallucination` lacking the index or the entry headings is brought into shape by the pack-writing skill that edits it, before the edit it came to make and in the same pass: give each entry its heading and identifier, move the text verbatim, then build the index. This is a relocation, not a rewrite; shortening is a separate operation. A skill that only reports names the gap and moves nothing.
 
+## Editing a pack
+
+Never edit a pack file by line number. A line number describes the file as it was when it was read and goes stale on the next write to it; an edit addressed by a stale number lands on the wrong row and still reports success. Anchor every edit on text that occurs once, such as an entry heading, and use line numbers only to read.
+
+Allocate a new identifier from a scan of every document in the pack, counting identifiers cited in prose whose heading no longer exists, never from memory of the last number. A second entry under an existing identifier makes every citation of it ambiguous, and nothing fails.
+
+Re-run git before writing `code_ref`. A commit made during the session, or one known only from a summary, is invisible to a value carried over from earlier.
+
 ## Reasoning ownership
 
 `roadmap` records the outcome: what happened, the final evidence, and the next action. `hallucination` records the why: a defect's cause, rejected alternatives, the reasoning behind a fix. When a roadmap entry needs to explain why something happened, link to the matching hallucination entry instead of restating its reasoning. Duplicating the same narrative in both documents means every later correction has to be made twice, and they drift when it isn't.

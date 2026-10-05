@@ -1,8 +1,10 @@
-# The packaged contract and report-style copies are compared byte for byte
-# against contract/. A checkout that rewrites line endings on one side of that
-# comparison fails it, so text assets are LF in every working tree.
+# The packaged contract, report-style and packtool copies are compared byte for
+# byte against contract/. A checkout that rewrites line endings on one side of
+# that comparison fails it, and sh cannot run a script with CRLF endings, so
+# text assets are LF in every working tree.
 *.md   text eol=lf
 *.yaml text eol=lf
 *.yml  text eol=lf
 *.py   text eol=lf
 *.ini  text eol=lf
+*.sh   text eol=lf

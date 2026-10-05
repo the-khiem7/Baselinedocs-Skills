@@ -24,6 +24,8 @@ Read `references/pack-contract.md` in full before creating or editing any pack f
 
 Read `references/report-style.md` in full before reporting to the user, every time. It governs how a pack element is named in conversation; an identifier stated without its meaning is a question the user has to ask.
 
+Run `sh scripts/packtool.sh check <pack-dir>` after every pack write and before reporting it, and allocate every new identifier with `sh scripts/packtool.sh next-id <pack-dir> <D|Q|P>`, never from memory. Never report a write as done while `check` prints a FAIL line: a duplicate identifier or a missing index row resolves citations to the wrong entry, and nothing else detects it. Without `sh`, say the checks were not run.
+
 ## Policy Selection Gate
 
 Before implementation, determine whether the user's current request clearly answers both execution questions, regardless of invocation style or whether internal policy names are used.

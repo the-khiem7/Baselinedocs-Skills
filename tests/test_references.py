@@ -81,7 +81,30 @@ GATES.update({name: READ_GATE for name in READER_SKILLS})
 GATES.update({name: LOAD_GATE for name in LOADER_SKILLS})
 GATES.update({name: RECALL_CONTRACT_GATE for name in RECALL_SKILLS})
 
-RECALL_REPORT_GATE = "Read `references/report-style.md` in full now, every time."
+# `contract/packtool.sh` checks pack structure mechanically: duplicate identifiers,
+# index rows against entry headings, entries filed under the wrong section. A
+# writer runs it after every write, because the failures it catches report
+# success when made; a full reader or an audit runs it before reporting, so the
+# report rests on a check rather than on a read. The copies are pinned like the
+# contract, for the same reason.
+TOOL_SKILLS = WRITER_SKILLS | READER_SKILLS | {
+    "baselinedocs-audit-claims",
+    "baselinedocs-audit-drift",
+}
+CANONICAL_TOOL = ROOT / "contract" / "packtool.sh"
+TOOL_WRITE_GATE = (
+    "Run `sh scripts/packtool.sh check <pack-dir>` after every pack write and before "
+    "reporting it, and allocate every new identifier with "
+    "`sh scripts/packtool.sh next-id <pack-dir> <D|Q|P>`, never from memory."
+)
+TOOL_REPORT_GATE = (
+    "Run `sh scripts/packtool.sh check <pack-dir>` before reporting the pack state, "
+    "and report its FAIL and WARN lines as findings; it reports, it never fixes."
+)
+TOOL_GATES = {name: TOOL_WRITE_GATE for name in WRITER_SKILLS}
+TOOL_GATES.update({name: TOOL_REPORT_GATE for name in TOOL_SKILLS - WRITER_SKILLS})
+
+RECALL_REPORT_GATE ="Read `references/report-style.md` in full now, every time."
 REPORT_GATES = {name: RECALL_REPORT_GATE for name in RECALL_SKILLS}
 
 REPORTERS = [name for name in SKILL_NAMES if name not in REPORT_STYLE_EXEMPT]
@@ -90,7 +113,8 @@ READ_ONLY_SKILLS = sorted(READER_SKILLS | LOADER_SKILLS | RECALL_SKILLS)
 SET_HINT = (
     "classify it in tests/test_references.py: WRITER_SKILLS, READER_SKILLS, "
     "LOADER_SKILLS or RECALL_SKILLS if it ships the contract; "
-    "REPORT_STYLE_EXEMPT if it ships no report style"
+    "REPORT_STYLE_EXEMPT if it ships no report style; TOOL_SKILLS if it ships "
+    "scripts/packtool.sh"
 )
 
 
@@ -122,6 +146,30 @@ def test_packaged_contract_matches_canonical_contract(name):
 def test_contract_skills_gate_on_reading_the_contract(name):
     assert GATES[name] in read_skill(name), (
         f"{name} ships the contract but never requires reading it"
+    )
+
+
+def test_every_tool_holder_is_classified():
+    held = {path.parents[1].name for path in ROOT.glob("baselinedocs-*/scripts/packtool.sh")}
+    assert held == TOOL_SKILLS, (
+        f"skills holding a packtool.sh copy differ from TOOL_SKILLS: "
+        f"unexpected copy in {sorted(held - TOOL_SKILLS)}, "
+        f"missing copy in {sorted(TOOL_SKILLS - held)}. {SET_HINT}"
+    )
+
+
+@pytest.mark.parametrize("name", sorted(TOOL_SKILLS))
+def test_packaged_tool_matches_canonical_tool(name):
+    path = ROOT / name / "scripts" / "packtool.sh"
+    assert path.read_bytes() == CANONICAL_TOOL.read_bytes(), (
+        f"{rel(path)} drifted from contract/packtool.sh"
+    )
+
+
+@pytest.mark.parametrize("name", sorted(TOOL_SKILLS))
+def test_tool_skills_gate_on_running_the_check(name):
+    assert TOOL_GATES[name] in read_skill(name), (
+        f"{name} ships packtool.sh but never requires running it"
     )
 
 
