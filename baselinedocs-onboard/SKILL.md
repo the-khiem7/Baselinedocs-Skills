@@ -12,7 +12,7 @@ Read `references/pack-contract.md` in full before reporting the pack state, ever
 
 Read `references/report-style.md` in full before reporting to the user, every time. It governs how a pack element is named in conversation; an identifier stated without its meaning is a question the user has to ask.
 
-Run `sh scripts/packtool.sh check <pack-dir>` before reporting the pack state, and report its FAIL and WARN lines as findings; it reports, it never fixes. Without `sh`, say the checks were not run.
+Run `sh <skill-dir>/scripts/packtool.sh check <pack-dir>` before reporting the pack state, and report its FAIL and WARN lines as findings; it reports, it never fixes. `<skill-dir>` is the folder this SKILL.md sits in. Without `sh`, say the checks were not run.
 
 ## Inputs
 

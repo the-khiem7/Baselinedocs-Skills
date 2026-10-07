@@ -247,6 +247,46 @@ def test_consecutive_bold_label_lines_are_not_a_hard_wrap(tmp_path):
     assert "possible-hard-wrap" in rules(run(tmp_path, "check", "tb"), "WARN")
 
 
+# The retired-identifier mistake: a question closed by deleting its heading and row
+# leaves no trace, so next-id hands the number out again.
+def test_closing_line_keeps_a_closed_question_number_reserved(tmp_path):
+    folder = write_pack(tmp_path)
+    edit(folder, "hallucination", "| TB-Q1 | broker-2 disk growth | open | TB-D1 |\n", "")
+    edit(folder, "hallucination", "### TB-Q1: why does broker-2 use more disk?\n\nUnanswered.\n", "")
+    edit(folder, "hallucination", "| TB-D1 | broker disk size | current | TB-Q1 |", "| TB-D1 | broker disk size | current | - |")
+    assert run(tmp_path, "next-id", "tb", "Q").stdout.strip() == "TB-Q1"
+    edit(folder, "hallucination", "Decided: grow the volume.", "Decided: grow the volume. Closes TB-Q1.")
+    assert run(tmp_path, "next-id", "tb", "Q").stdout.strip() == "TB-Q2"
+    assert "unresolved-citation" not in rules(run(tmp_path, "check", "tb"), "WARN")
+
+
+def test_identifier_gap_warns_when_a_number_vanished(tmp_path):
+    folder = write_pack(tmp_path)
+    edit(folder, "hallucination", "| TB-D2 | telemetry TTL | current | TB-D1 |", "| TB-D2 | telemetry TTL | current | TB-D1 |\n| TB-D4 | later | current | - |")
+    edit(folder, "hallucination", "## Open questions", "## TB-D4: later\n\nDecided.\n\n## Open questions")
+    result = run(tmp_path, "check", "tb")
+    assert result.returncode == 0, result.stdout
+    gap = next(line for line in result.stdout.splitlines() if "identifier-gap" in line)
+    assert "TB-D3" in gap and "TB-D4" in gap, gap
+    write_pack(tmp_path / "ok")
+    assert "identifier-gap" not in rules(run(tmp_path / "ok", "check", "tb"), "WARN")
+
+
+def test_close_plan_lists_every_edit_and_writes_nothing(tmp_path):
+    folder = write_pack(tmp_path)
+    edit(folder, "roadmap", "Done.", "Done. TB-Q1 stays open.")
+    before = {p.name: p.read_bytes() for p in folder.iterdir()}
+    result = run(tmp_path, "close-plan", "tb", "TB-Q1", "TB-D2")
+    assert result.returncode == 0, result.stdout + result.stderr
+    out = result.stdout
+    assert 'add the line "Closes TB-Q1."' in out and "delete the index row" in out, out
+    assert "delete the question heading" in out and "tb.roadmap.md:" in out, out
+    assert {p.name: p.read_bytes() for p in folder.iterdir()} == before
+    assert run(tmp_path, "close-plan", "tb", "TB-Q99", "TB-D2").returncode == 1
+    assert run(tmp_path, "close-plan", "tb", "TB-D1", "TB-D2").returncode == 2
+    assert run(tmp_path, "close-plan", "tb", "TB-Q1", "XX-D2").returncode == 2
+
+
 def test_next_id_needs_a_prefix_when_none_or_several_exist(tmp_path):
     write_pack(tmp_path, "tb")
     write_pack(tmp_path, "rds", hallucination=HALLUCINATION.replace("TB-", "RD-"), roadmap=ROADMAP.replace("TB-", "RD-"))

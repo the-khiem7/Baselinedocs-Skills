@@ -61,7 +61,7 @@ It is a second asset rather than a section of the contract on purpose. The contr
 
 ## The pack tool
 
-`contract/packtool.sh` is the only implementation of the mechanical pack check: `outline`, `find`, `next-id`, `check`. Every pack-writing skill, `baselinedocs-onboard`, and both `audit` skills ship a byte-identical copy at `<skill>/scripts/packtool.sh`, for the same reason they ship the contract.
+`contract/packtool.sh` is the only implementation of the mechanical pack check: `outline`, `find`, `next-id`, `close-plan`, `check`. Every pack-writing skill, `baselinedocs-onboard`, and both `audit` skills ship a byte-identical copy at `<skill>/scripts/packtool.sh`, for the same reason they ship the contract.
 
 - Edit the canonical file, then copy it to every skill that ships it. `tests/test_references.py` pins the copies (`TOOL_SKILLS`) and the two gate sentences.
 - POSIX sh and POSIX awk only: no gawk extensions, no regex intervals, no `find(1)`. CI runs it under mawk, BWK awk, and Git for Windows gawk.

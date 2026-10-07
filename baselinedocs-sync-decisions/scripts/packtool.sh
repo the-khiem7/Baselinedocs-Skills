@@ -9,10 +9,12 @@
 #   sh packtool.sh outline <file|dir>              every heading with file:line
 #   sh packtool.sh find    <dir> <ID>              every occurrence of one identifier
 #   sh packtool.sh next-id <dir> <D|Q|P> [PREFIX]  the next free identifier
+#   sh packtool.sh close-plan <dir> <Q-ID> <D-ID>  the edits that close a question into a decision
 #   sh packtool.sh check   <dir>                   FAIL and WARN findings
 #
 # Line numbers describe the file as it is now and go stale on the next write.
-# Exit status: 0 clean (find: found), 1 FAIL present (find: not found), 2 usage.
+# Exit status: 0 clean (find, close-plan: found), 1 FAIL present (find, close-plan:
+# not found), 2 usage. close-plan lists the edits; it never makes them.
 
 set -u
 LC_ALL=C
@@ -24,6 +26,7 @@ usage() {
 usage: sh packtool.sh outline <file|dir>
        sh packtool.sh find    <dir> <ID>
        sh packtool.sh next-id <dir> <D|Q|P> [PREFIX]
+       sh packtool.sh close-plan <dir> <Q-ID> <D-ID>
        sh packtool.sh check   <dir>
 EOF
   exit 2
@@ -51,6 +54,7 @@ target=${2%/}
 [ -e "$target" ] || { echo "packtool: no such path: $target" >&2; exit 2; }
 arg=
 prefix=
+closer=
 case $cmd in
   outline|check) [ $# -eq 2 ] || usage ;;
   find)
@@ -60,6 +64,19 @@ case $cmd in
       [A-Z][A-Z]-[DQP][0-9]*|[A-Z][A-Z][A-Z]-[DQP][0-9]*) ;;
       *) usage ;;
     esac ;;
+  close-plan)
+    [ $# -eq 4 ] || usage
+    arg=$3
+    closer=$4
+    case $arg in
+      [A-Z][A-Z]-Q[0-9]*|[A-Z][A-Z][A-Z]-Q[0-9]*) ;;
+      *) usage ;;
+    esac
+    case $closer in
+      [A-Z][A-Z]-D[0-9]*|[A-Z][A-Z][A-Z]-D[0-9]*) ;;
+      *) usage ;;
+    esac
+    [ "${arg%%-*}" = "${closer%%-*}" ] || { echo "packtool: $arg and $closer carry different prefixes" >&2; exit 2; } ;;
   next-id)
     [ $# -ge 3 ] && [ $# -le 4 ] || usage
     arg=$3
@@ -170,9 +187,16 @@ function ids_in(s, out,   n, rest, off, pre, post) {
 
 function occ(id, kind,   p, k, n) {
   p = idpfx(id); k = idkind(id); n = substr(id, index(id, "-") + 2) + 0
-  if (n > maxn[p, k]) maxn[p, k] = n
+  seen[id] = 1
+  if (!((p, k) in maxn)) { maxn[p, k] = 0; pkorder[++npk] = p SUBSEP k }
+  if (n > maxn[p, k]) { maxn[p, k] = n; maxloc[p, k] = loc }
   # One line per location and kind: an ID cited twice on one line is one hit.
-  if (mode == "find" && id == target && !((loc, kind) in printed)) { printed[loc, kind] = 1; found++; print loc "\t" kind "\t" short(line) }
+  if ((mode == "find" || mode == "close-plan") && id == target && !((loc, kind) in printed)) {
+    printed[loc, kind] = 1; found++; print loc "\t" kind "\t" short(line)
+    if (kind == "heading") qhead = loc
+    else if (kind == "index-row") qrow = loc
+    else cites[++ncites] = loc
+  }
   if (kind == "citation") {
     if (!(id in cloc)) { cloc[id] = loc; cord[++ncd] = id }
     if (tolower(line) ~ /clos/) closedcite[id] = 1
@@ -376,6 +400,21 @@ END {
     if (!found) print "packtool: " target " does not occur under the given path" > "/dev/stderr"
     exit (found ? 0 : 1)
   }
+  if (mode == "close-plan") {
+    if (!found) { print "packtool: " target " does not occur under the given path" > "/dev/stderr"; exit 1 }
+    print "steps to close " target " into " closer ":"
+    n = 1
+    print n++ ". in " closer ": add the line \"Closes " target ".\" and list " target " in its index Related column; that citation keeps the number reserved, so it must survive every later edit" (closer in hc ? "" : " (" closer " has no heading yet)")
+    if (qhead != "") print n++ ". move any reasoning the question holds at " qhead " into " closer ", then delete the question heading and body"
+    if (qrow != "") print n++ ". delete the index row at " qrow
+    if (ncites) {
+      c = ""
+      for (i = 1; i <= ncites; i++) c = c (i > 1 ? ", " : "") cites[i]
+      print n++ ". citations at " c " may stay or point to " closer "; an unresolved citation does not warn once a line says the question is closed"
+    }
+    print n++ ". run check, then next-id: the next question number must not be " target
+    exit 0
+  }
   if (mode != "check") exit 0
 
   for (i = 1; i <= nids; i++) {
@@ -398,6 +437,16 @@ END {
     id = cord[i]
     if ((idpfx(id) in ppack) && !(id in hc) && !(id in closedcite)) report("WARN", cloc[id], "unresolved-citation", id " is cited but no heading defines it")
   }
+  for (i = 1; i <= npk; i++) {
+    split(pkorder[i], kv, SUBSEP)
+    if (!(kv[1] in ppack)) continue
+    nm = 0; miss = ""
+    for (n = 1; n < maxn[pkorder[i]]; n++) {
+      id = kv[1] "-" kv[2] n
+      if (!(id in seen)) { nm++; if (nm <= 8) miss = miss (nm > 1 ? ", " : "") id }
+    }
+    if (nm) report("WARN", maxloc[pkorder[i]], "identifier-gap", nm " number(s) below " kv[1] "-" kv[2] maxn[pkorder[i]] " appear nowhere: " miss (nm > 8 ? ", ..." : "") "; an identifier is never reused, and a closed question stays named by the entry that closed it as \"Closes <ID>.\"")
+  }
   for (i = 1; i <= ndq; i++) {
     if (dqorder[i] in dqh) {
       split(dqorder[i], kv, SUBSEP)
@@ -409,4 +458,4 @@ END {
 }
 '
 
-exec "$AWK" -v mode="$cmd" -v target="$arg" -v prefix="$prefix" -v git_head="$git_head" -v git_state="$git_state" "$PROG" "$@"
+exec "$AWK" -v mode="$cmd" -v target="$arg" -v prefix="$prefix" -v closer="$closer" -v git_head="$git_head" -v git_state="$git_state" "$PROG" "$@"

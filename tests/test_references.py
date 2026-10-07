@@ -93,14 +93,18 @@ TOOL_SKILLS = WRITER_SKILLS | READER_SKILLS | {
 }
 CANONICAL_TOOL = ROOT / "contract" / "packtool.sh"
 TOOL_WRITE_GATE = (
-    "Run `sh scripts/packtool.sh check <pack-dir>` after every pack write and before "
-    "reporting it, and allocate every new identifier with "
-    "`sh scripts/packtool.sh next-id <pack-dir> <D|Q|P>`, never from memory."
+    "Run `sh <skill-dir>/scripts/packtool.sh check <pack-dir>` after every pack write "
+    "and before reporting it, and allocate every new identifier with "
+    "`sh <skill-dir>/scripts/packtool.sh next-id <pack-dir> <D|Q|P> [PREFIX]`, never "
+    "from memory. `<skill-dir>` is the folder this SKILL.md sits in, and a new pack's "
+    "first identifier needs its PREFIX."
 )
 TOOL_REPORT_GATE = (
-    "Run `sh scripts/packtool.sh check <pack-dir>` before reporting the pack state, "
-    "and report its FAIL and WARN lines as findings; it reports, it never fixes."
+    "Run `sh <skill-dir>/scripts/packtool.sh check <pack-dir>` before reporting the "
+    "pack state, and report its FAIL and WARN lines as findings; it reports, it never "
+    "fixes. `<skill-dir>` is the folder this SKILL.md sits in."
 )
+CLOSE_PLAN_SKILLS = {"baselinedocs-sync-decisions", "baselinedocs-save"}
 TOOL_GATES = {name: TOOL_WRITE_GATE for name in WRITER_SKILLS}
 TOOL_GATES.update({name: TOOL_REPORT_GATE for name in TOOL_SKILLS - WRITER_SKILLS})
 
@@ -171,6 +175,20 @@ def test_tool_skills_gate_on_running_the_check(name):
     assert TOOL_GATES[name] in read_skill(name), (
         f"{name} ships packtool.sh but never requires running it"
     )
+
+
+@pytest.mark.parametrize("name", sorted(CLOSE_PLAN_SKILLS))
+def test_skills_that_close_questions_run_close_plan(name):
+    assert "packtool.sh close-plan <pack-dir> <Q-ID> <D-ID>" in read_skill(name), (
+        f"{name} closes questions but never routes the closing edits through close-plan"
+    )
+
+
+def test_no_skill_calls_the_tool_from_the_current_directory():
+    for name in sorted(TOOL_SKILLS):
+        assert "`sh scripts/packtool.sh" not in read_skill(name), (
+            f"{name} writes a cwd-relative tool path; the host does not run from the skill folder"
+        )
 
 
 def test_every_report_style_holder_is_classified():
