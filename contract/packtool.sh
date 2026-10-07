@@ -76,7 +76,26 @@ if [ -f "$target" ]; then
 else
   files=$(list_files "$target" "$kind")
 fi
-[ -n "$files" ] || { echo "packtool: no baseline documents under $target" >&2; exit 2; }
+if [ -z "$files" ] && [ "$cmd" = next-id ] && [ -n "$prefix" ]; then
+  # A new pack has no identifier yet, so the first one is 1 by definition.
+  printf '%s-%s1\n' "$prefix" "$arg"
+  exit 0
+fi
+if [ -z "$files" ]; then
+  echo "packtool: no baseline documents under $target" >&2
+  [ "$cmd" = next-id ] && echo "packtool: for a new pack pass the prefix: next-id <dir> <D|Q|P> <PREFIX>" >&2
+  exit 2
+fi
+
+# The pack folder's name is read from the absolute path, so `check .` run from
+# inside a pack sees the folder's real name and not ".".
+PT_TYPED=$target
+if [ -d "$target" ]; then
+  PT_ABS=$(cd "$target" && pwd)
+else
+  PT_ABS=$(cd "$(dirname "$target")" && pwd)/$(basename "$target")
+fi
+export PT_TYPED PT_ABS
 
 # code_ref is the code state inspected. Compare it with HEAD and with the
 # working tree outside the checked path, so edits to the pack itself do not
@@ -123,6 +142,7 @@ function unq(s) {
 function base(p,   b) { b = p; sub(".*/", "", b); return b }
 function parent(p,   d) {
   d = p
+  if (PT_TYPED != "" && substr(d, 1, length(PT_TYPED)) == PT_TYPED) d = PT_ABS substr(d, length(PT_TYPED) + 1)
   if (d !~ "/") return "."
   sub("/[^/]*$", "", d); sub(".*/", "", d)
   return d
@@ -204,7 +224,7 @@ function checkfm(where,   i, k, v) {
   }
   if (pack != "" && doc != "") {
     if (base(file) != pack "." doc ".md") report("FAIL", where, "filename-mismatch", "should be named " pack "." doc ".md")
-    if (doc != "index" && parent(file) != pack) report("FAIL", where, "directory-mismatch", "sits in " parent(file) "/ but its pack is " pack)
+    if (doc != "index" && parent(file) != pack) report("WARN", where, "directory-mismatch", "sits in " parent(file) "/ but its pack is " pack "; a readable folder title is fine, the pack id in the frontmatter is what citations use")
   }
 }
 
@@ -251,7 +271,8 @@ function dq(d,   s, q, dates, nd, i, tok, post, key) {
 }
 
 BEGIN {
-  EN = "\342\200\223"; EM = "\342\200\224"
+  PT_TYPED = ENVIRON["PT_TYPED"]; PT_ABS = ENVIRON["PT_ABS"]
+  EN ="\342\200\223"; EM = "\342\200\224"
   split("baseline_schema pack document status updated code_ref", KEYS, " ")
   for (i = 1; i <= 6; i++) want[KEYS[i]] = 1
   split("introduction roadmap hallucination sourcecode useguide index", t, " ")
@@ -324,7 +345,12 @@ FNR == 1 { if (nfiles) endfile(); startfile() }
   if (match(line, /^\*\*[A-Z][A-Z][A-Z]?-[DQP][0-9]+(:|\*\*)/)) report("FAIL", loc, "bold-heading", "bold text is not a heading; write ## <PREFIX>-<KIND><N>: <subject>")
 
   if (line ~ /^[ \t]*$/ || line ~ /^([ \t]|#|\||>|[-*+][ \t]|[0-9]+[.)][ \t]|<|---|===)/) endrun()
-  else { if (!run) runstart = loc; run++ }
+  else {
+    # A line opening with a bold label is a new field, not a wrapped continuation.
+    if (line ~ /^\*\*[^*]+(:\*\*|\*\*:)/) endrun()
+    if (!run) runstart = loc
+    run++
+  }
 
   if (d == "roadmap" && line !~ /^\|/ && tolower(line) ~ /root cause|rejected/ && line !~ /[A-Z][A-Z][A-Z]?-[DQ][0-9]/) report("WARN", loc, "reasoning-in-roadmap", "roadmap records outcomes; link the hallucination entry that holds the why")
   if (!isrow && (d == "roadmap" || d == "hallucination")) dq(d)

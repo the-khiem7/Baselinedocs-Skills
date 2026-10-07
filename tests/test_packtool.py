@@ -1,3 +1,4 @@
+import re
 import shutil
 import subprocess
 
@@ -87,7 +88,10 @@ def run(cwd, *args):
 
 
 def rules(result, level):
-    return [line.split(" ")[2] for line in result.stdout.splitlines() if line.startswith(level + " ")]
+    # The location may hold spaces (a folder titled "TB Broker Fleet"), so the rule
+    # is the word after the `:<line>` that ends it, not the third field.
+    pattern = re.compile(r"^" + level + r" .*:\d+ ([a-z-]+) ")
+    return [m.group(1) for m in map(pattern.match, result.stdout.splitlines()) if m]
 
 
 def edit(folder, document, old, new, name="tb"):
@@ -139,7 +143,6 @@ FAIL_CASES = {
     "frontmatter-key-missing": ("introduction", 'status: "active"\n', ""),
     "frontmatter-value": ("introduction", 'status: "active"', 'status: "done"'),
     "filename-mismatch": ("introduction", 'document: "introduction"', 'document: "sourcecode"'),
-    "directory-mismatch": ("introduction", 'pack: "tb"', 'pack: "other"'),
     "unterminated-frontmatter": ("introduction", "---\n\n# TB: Introduction", "\n# TB: Introduction"),
 }
 
@@ -208,6 +211,40 @@ def test_next_id_counts_citations_of_closed_questions(tmp_path):
     assert run(tmp_path, "next-id", "tb", "P").stdout.strip() == "TB-P2"
     edit(folder, "roadmap", "Done.", "Done. TB-Q4 was closed by TB-D2.")
     assert run(tmp_path, "next-id", "tb", "Q").stdout.strip() == "TB-Q5"
+
+
+def test_next_id_on_an_empty_pack_starts_at_one_with_a_prefix(tmp_path):
+    (tmp_path / "new").mkdir()
+    result = run(tmp_path, "next-id", "new", "D", "NW")
+    assert result.returncode == 0 and result.stdout.strip() == "NW-D1", result.stdout + result.stderr
+    assert run(tmp_path, "next-id", "new", "Q", "NW").stdout.strip() == "NW-Q1"
+    bare = run(tmp_path, "next-id", "new", "D")
+    assert bare.returncode == 2 and "pass the prefix" in bare.stderr, bare.stderr
+
+
+# A readable folder title is not a defect: the existing packs live in such folders.
+def test_folder_title_differs_from_pack_id_only_warns(tmp_path):
+    folder = write_pack(tmp_path)
+    folder.rename(tmp_path / "TB Broker Fleet")
+    result = run(tmp_path, "check", "TB Broker Fleet")
+    assert result.returncode == 0, result.stdout
+    assert "directory-mismatch" in rules(result, "WARN"), result.stdout
+
+
+def test_check_dot_from_inside_the_pack_folder_resolves_the_folder_name(tmp_path):
+    folder = write_pack(tmp_path)
+    result = run(folder, "check", ".")
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert "directory-mismatch" not in rules(result, "WARN"), result.stdout
+    assert "0 FAIL, 0 WARN in 3 documents" in result.stdout
+
+
+def test_consecutive_bold_label_lines_are_not_a_hard_wrap(tmp_path):
+    folder = write_pack(tmp_path)
+    edit(folder, "roadmap", "Done. TB-D1 holds the reasoning.", "**Dependencies:** none\n**Status:** done. TB-D1 holds the reasoning.")
+    assert "possible-hard-wrap" not in rules(run(tmp_path, "check", "tb"), "WARN")
+    edit(folder, "roadmap", "**Status:** done.", "**Status:** done,\ncontinued here.")
+    assert "possible-hard-wrap" in rules(run(tmp_path, "check", "tb"), "WARN")
 
 
 def test_next_id_needs_a_prefix_when_none_or_several_exist(tmp_path):
