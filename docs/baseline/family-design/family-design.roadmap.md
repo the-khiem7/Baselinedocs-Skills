@@ -4,7 +4,7 @@ pack: "family-design"
 document: "roadmap"
 status: "active"
 updated: "2026-10-07"
-code_ref: "54522ef"
+code_ref: "uncommitted"
 ---
 
 # Family Design Roadmap
@@ -51,6 +51,7 @@ Verified against the repository, not against `DESIGN.md`.
 | Mechanical structure check | FD-D46, FD-D47 | implemented, CI matrix unobserved | `contract/packtool.sh` with byte-identical `scripts/packtool.sh` copies; commands `outline`, `find`, `next-id`, `close-plan`, `check`; gates pinned by `TOOL_SKILLS` in `tests/test_references.py`; `tests/test_packtool.py` builds one case per rule |
 | Closed question keeps its number | FD-D47 | implemented | contract `Entry index` states the `Closes` line; `close-plan` and WARN `identifier-gap` in the tool; `sync-decisions` and `save` run `close-plan`, pinned by `test_skills_that_close_questions_run_close_plan` |
 | Release version in the frontmatter | FD-D45, FD-Q6 | implemented, workflow unobserved | top-level `version:` in every `SKILL.md`; `scripts/stamp_version.py`; `tests/test_version.py`; `.github/workflows/release.yml` has not run on GitHub |
+| Commit skills | FD-D48 | implemented, host selection unobserved | `commit-composer/` and `commit-composer-max/` with byte-identical copies of `contract/commit-convention.md` and `contract/commitkit.sh`; `tests/test_commit_skills.py` pins copies, folder shape and gates; `tests/test_commitkit.py` holds one case per rule |
 
 ## FD-P1: adopt `DESIGN.md` into this pack
 
@@ -683,13 +684,47 @@ Opened and closed 2026-10-07. Records FD-D47 after a use report from another rep
 | Not done | `code_ref` naming the inspected repository, FD-Q7; heading and index examples in the contract were not added |
 | Not observed | mawk and BWK awk; any host other than Claude Code supplying the skill folder for `<skill-dir>`; a real `close-plan` run in the field |
 
+## FD-P19: add `commit-composer` and `commit-composer-max`
+
+Opened and closed 2026-10-07. FD-D48 carries the reasoning, the rejected options, and what the first runs changed.
+
+Acceptance criteria:
+
+- both skills are user entrypoints outside the `baselinedocs-*` naming, each shipping byte-identical copies of the two canonical files and no pack contract, report style, or `packtool.sh`
+- the kit lists units, emits a patch for a subset that `git apply --cached --unidiff-zero` accepts, scans the staged diff without printing a value, and lints a message
+- a subset patch places a pure insertion correctly when an earlier hunk is skipped
+- the suite stays green, `test_no_typographic_dashes` included
+
+### Checkpoint: complete, host selection unobserved
+
+| Item | Result |
+|---|---|
+| Verification gate | `uvx --from "pytest>=8,<10" --with pyyaml pytest tests/ -q` green. The pass count is not recorded |
+| Mutation checks | reusing the full-diff new-side start failed 3 tests, among them the pure-insertion case; dropping only the accumulated offset failed none, which showed the first mutation was aimed at the wrong line and led to the second |
+| Subagent runs | one per skill on a scratch repo with one pack, two projects and a file holding a fix and a feature: 4 commits each in the right groups, tree clean afterward, no trailer, `lint` and `scan` clean |
+| Friction fixed | project rule for a pack that claims no path, an `OK` line on a pass, the HEAD id beside the tree id, no commit cited by position, temp files outside the repository, a table of commit types |
+| Installer | `npx skills add . --list` found both skills beside the family |
+| Not observed | a host selecting either skill from a user request; mawk and BWK awk; `.github/workflows/tests.yml` on three operating systems; a run on a repository with several packs |
+| Commit | uncommitted |
+
+Changes:
+
+| File | Change |
+|---|---|
+| `contract/commit-convention.md`, `contract/commitkit.sh` | new canonical files |
+| `commit-composer/`, `commit-composer-max/` | new skill folders, each with `SKILL.md`, `agents/openai.yaml`, `references/commit-convention.md`, `scripts/commitkit.sh` |
+| `tests/test_commit_skills.py`, `tests/test_commitkit.py`, `tests/helpers.py` | new tests; `commit_skill_dirs()` |
+| `AGENTS.md` | new section `The commit skills` |
+| `README.md` | new section `Commit Skills` |
+| `family-design.hallucination.md`, `family-design.introduction.md` | FD-D48 and its index row; one current-truth row |
+
 ## Risks
 
 | Risk | Detail |
 |---|---|
 | `AGENTS.md` points four times at a file that is being retired | FD-D27 made this pack canonical and scheduled `DESIGN.md` for deletion, so `AGENTS.md` is already wrong where it tells a contributor to record decisions in `DESIGN.md`. The file is still on disk, so nothing is broken yet, but a contributor reading `AGENTS.md` today would write a new decision into the file being deleted. The rewire is the next action below |
 | `skill-consolidation` records its own state as uncommitted | Closed in FD-P11. Its roadmap stated that SC-P9 through SC-P14 were uncommitted; they are committed at `959617b`, `b857216`, and `0cb913f`. `baselinedocs-sync-codebase` repaired that pack's roadmap, introduction, and sourcecode against the code, since it owns a pack that has fallen behind it |
-| Installed skills are behind this repository | Widened again 2026-09-11 by FD-P8, 2026-09-16 by FD-P9, 2026-10-02 by FD-P10, 2026-10-05 by FD-P12, FD-P13, and FD-P14, and 2026-10-07 by FD-P18, on top of the gap FD-P7 reopened. An installed skill reads its own packaged copy, so any given machine's global install drifts from this repository from its next edit onward, and whether a particular machine is current is machine-specific state this pack does not track. Reinstalling from this local clone is the standing remedy, not a one-time phase: `npx skills remove -g -s <every skill name>` then `npx skills add . -g -a '*' -s <every skill name>`, run again whenever a machine's copy needs to catch up |
+| Installed skills are behind this repository | Widened again 2026-09-11 by FD-P8, 2026-09-16 by FD-P9, 2026-10-02 by FD-P10, 2026-10-05 by FD-P12, FD-P13, and FD-P14, and 2026-10-07 by FD-P18 and FD-P19, on top of the gap FD-P7 reopened. An installed skill reads its own packaged copy, so any given machine's global install drifts from this repository from its next edit onward, and whether a particular machine is current is machine-specific state this pack does not track. Reinstalling from this local clone is the standing remedy, not a one-time phase: `npx skills remove -g -s <every skill name>` then `npx skills add . -g -a '*' -s <every skill name>`, run again whenever a machine's copy needs to catch up |
 | A reference written before 2026-08-28 names an identifier that no longer exists | FD-D30 renamed every identifier in both packs to carry a pack prefix. Anything citing a bare `D16` or `P8`, in a commit message or an earlier thread, now resolves to nothing. That is the intended failure mode, chosen over a bare number that resolves silently to the wrong entry, but it is a real cost to anyone holding an old reference |
 | Nothing about the skill family itself is deferred | The rename sweep and the finished-pack marker were closed rather than postponed, in `skill-consolidation` SC-D13 and SC-D14. The only deferred item in this pack, FD-Q1, is blocked on a platform capability |
 
@@ -710,3 +745,5 @@ FD-Q6 is closed by FD-D45 and no longer waits on the user. To cut the first rele
 FD-P17 added `packtool.sh`: push and confirm the three-OS test matrix is green, since mawk and BWK awk have not run it. Reinstall the family on any machine that should pick up the tool and the new contract section.
 
 FD-P18 changed the tool, the contract and 14 gate sentences: reinstall again, because an installed skill still calls `sh scripts/packtool.sh` and carries the old tool. FD-Q7 (`code_ref` naming the inspected repository) waits on the user and needs its own schema decision. Nothing else in FD-P18 waits on the user.
+
+FD-P19 added `commit-composer` and `commit-composer-max`, which install with the family and are not baselinedocs skills. Push and confirm the three-operating-system matrix is green for `tests/test_commitkit.py`, since only gawk has run it. Then use each skill once on a real working tree and check that a host selects it from a plain request such as "commit these in groups"; no host has, and a commit skill that selects itself on staging may compete for the same request. Nothing in FD-P19 waits on a user decision.

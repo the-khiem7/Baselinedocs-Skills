@@ -1,0 +1,6 @@
+interface:
+  display_name: "Commit Composer Max"
+  short_description: "Group working-tree changes by hunk and commit them with audit-grade conventional commit messages"
+  default_prompt: "Use $commit-composer-max to group my uncommitted changes by project and action at hunk level and commit each group with the fullest message, so a later agent can audit the task without reading the code."
+policy:
+  allow_implicit_invocation: false

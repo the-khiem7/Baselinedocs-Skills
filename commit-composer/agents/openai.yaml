@@ -1,0 +1,6 @@
+interface:
+  display_name: "Commit Composer"
+  short_description: "Group working-tree changes by hunk and commit them as short conventional commits"
+  default_prompt: "Use $commit-composer to group my uncommitted changes by project and action at hunk level and commit each group with a short conventional commit message."
+policy:
+  allow_implicit_invocation: false

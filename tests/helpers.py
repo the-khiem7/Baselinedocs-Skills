@@ -15,6 +15,15 @@ def skill_dirs():
 SKILL_NAMES = [path.name for path in skill_dirs()]
 
 
+def commit_skill_dirs():
+    """The `commit-*` skills. They are not in the baselinedocs family, so `skill_dirs()`
+    never sees them and no family test covers them: `tests/test_commit_skills.py` does."""
+    return sorted(path for path in ROOT.glob("commit-*") if path.is_dir())
+
+
+COMMIT_SKILL_NAMES = [path.name for path in commit_skill_dirs()]
+
+
 def read_text(path):
     return Path(path).read_text(encoding="utf-8")
 

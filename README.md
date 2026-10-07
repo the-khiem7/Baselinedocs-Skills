@@ -96,6 +96,17 @@ All of them set `policy.allow_implicit_invocation: false` for Codex, so they sta
 
 All skill IDs use lowercase kebab-case, for example `baselinedocs-sync-codebase`. These are agent-selected helpers: their UI names start with `Baseline Docs Internal:` and implicit invocation stays enabled. Some hosts do not enforce the Codex-specific policy, so each skill description states the classification too.
 
+## Commit Skills
+
+Two user entrypoints that extend the family but do not read or write a pack. Both split the uncommitted changes at hunk level, group them by project, action, and target, show the grouping, and commit only after you approve it. The title is `type(project): subject`, and the project is usually the pack's name; the message never carries a pack identifier, phase number, or pack filename.
+
+| User intent                                          | Skill                 | Outcome                                                                                              |
+| ---------------------------------------------------- | --------------------- | ---------------------------------------------------------------------------------------------------- |
+| Commit with short, meaningful messages               | `commit-composer`     | Title aimed at 50 characters, an optional body of up to 5 bullets                                    |
+| Commit with messages that stand in for reading the code | `commit-composer-max` | A body with the reason, every changed file and symbol, the risks, and what was verified, for task audit |
+
+Each runs a secret scan on the staged diff and a format check on the message before every commit, never pushes, and prints the ids that undo the index and the commits. `npx skills add` installs them with the rest of this repository; add `--skill commit-composer` to install one alone.
+
 ## Adaptive Pack Contract
 
 Every pack has three core documents:
