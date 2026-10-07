@@ -3,8 +3,8 @@ baseline_schema: "2.0"
 pack: "family-design"
 document: "roadmap"
 status: "active"
-updated: "2026-10-05"
-code_ref: "uncommitted"
+updated: "2026-10-07"
+code_ref: "54522ef"
 ---
 
 # Family Design Roadmap
@@ -48,7 +48,8 @@ Verified against the repository, not against `DESIGN.md`.
 | Mandatory entry index and heading format | FD-D42 | implemented | `contract/pack-contract.md`, `Entry index`; 14 packaged copies `cmp` clean; `tests/test_packs.py` has no threshold and fails a `hallucination` with no index |
 | Guide to the skills | FD-D43 | implemented, selection unobserved | `baselinedocs-help/` with `references/guide.md`; `tests/test_references.py` `test_help_guide_names_every_skill` |
 | ADR from a closed decision | FD-D44 | implemented, selection unobserved | `baselinedocs-adr/` with the unmodified AWS `references/template.md` and `process.md`; checksums in FD-D44 |
-| Mechanical structure check | FD-D46 | implemented, CI matrix unobserved | `contract/packtool.sh` with byte-identical `scripts/packtool.sh` copies; gates pinned by `TOOL_SKILLS` in `tests/test_references.py`; `tests/test_packtool.py` builds one case per rule |
+| Mechanical structure check | FD-D46, FD-D47 | implemented, CI matrix unobserved | `contract/packtool.sh` with byte-identical `scripts/packtool.sh` copies; commands `outline`, `find`, `next-id`, `close-plan`, `check`; gates pinned by `TOOL_SKILLS` in `tests/test_references.py`; `tests/test_packtool.py` builds one case per rule |
+| Closed question keeps its number | FD-D47 | implemented | contract `Entry index` states the `Closes` line; `close-plan` and WARN `identifier-gap` in the tool; `sync-decisions` and `save` run `close-plan`, pinned by `test_skills_that_close_questions_run_close_plan` |
 | Release version in the frontmatter | FD-D45, FD-Q6 | implemented, workflow unobserved | top-level `version:` in every `SKILL.md`; `scripts/stamp_version.py`; `tests/test_version.py`; `.github/workflows/release.yml` has not run on GitHub |
 
 ## FD-P1: adopt `DESIGN.md` into this pack
@@ -666,13 +667,29 @@ Opened and closed 2026-10-05. Records FD-D46 after five mistakes in an operate s
 | Suite | full suite green on Windows with Git for Windows sh and gawk |
 | Not observed | mawk on Ubuntu and BWK awk on macOS: `.github/workflows/tests.yml` now runs all three OS and has not run |
 
+## FD-P18: act on the Atlantic use report of `packtool.sh`
+
+Opened and closed 2026-10-07. Records FD-D47 after a use report from another repository listed ten defects and frictions; the work ran in three steps, committed as `3766111` and `54522ef`.
+
+### Checkpoint: complete, CI matrix unobserved
+
+| Item | Result |
+|---|---|
+| Tool | `next-id` on an empty pack, `check .` from inside a pack, `directory-mismatch` as WARN, bold-label lines not counted as a hard wrap, `close-plan`, `identifier-gap` |
+| Contract | `Entry index` gains the level-3 decision rule and the `Closes` rule; 14 packaged copies re-synced |
+| Gates | 14 `SKILL.md` files call `<skill-dir>/scripts/packtool.sh`; `sync-decisions` and `save` gain the `close-plan` instruction; pinned in `tests/test_references.py` |
+| Test | `tests/test_packtool.py` gains empty pack, folder title, `check .`, bold labels, `Closes` reservation, `identifier-gap` and `close-plan`; 360 passed on Windows with Git for Windows sh and gawk |
+| Dogfood | `check docs/baseline` printed 0 FAIL before this phase's pack edits |
+| Not done | `code_ref` naming the inspected repository, FD-Q7; heading and index examples in the contract were not added |
+| Not observed | mawk and BWK awk; any host other than Claude Code supplying the skill folder for `<skill-dir>`; a real `close-plan` run in the field |
+
 ## Risks
 
 | Risk | Detail |
 |---|---|
 | `AGENTS.md` points four times at a file that is being retired | FD-D27 made this pack canonical and scheduled `DESIGN.md` for deletion, so `AGENTS.md` is already wrong where it tells a contributor to record decisions in `DESIGN.md`. The file is still on disk, so nothing is broken yet, but a contributor reading `AGENTS.md` today would write a new decision into the file being deleted. The rewire is the next action below |
 | `skill-consolidation` records its own state as uncommitted | Closed in FD-P11. Its roadmap stated that SC-P9 through SC-P14 were uncommitted; they are committed at `959617b`, `b857216`, and `0cb913f`. `baselinedocs-sync-codebase` repaired that pack's roadmap, introduction, and sourcecode against the code, since it owns a pack that has fallen behind it |
-| Installed skills are behind this repository | Widened again 2026-09-11 by FD-P8, 2026-09-16 by FD-P9, 2026-10-02 by FD-P10, and 2026-10-05 by FD-P12, FD-P13, and FD-P14, on top of the gap FD-P7 reopened. An installed skill reads its own packaged copy, so any given machine's global install drifts from this repository from its next edit onward, and whether a particular machine is current is machine-specific state this pack does not track. Reinstalling from this local clone is the standing remedy, not a one-time phase: `npx skills remove -g -s <every skill name>` then `npx skills add . -g -a '*' -s <every skill name>`, run again whenever a machine's copy needs to catch up |
+| Installed skills are behind this repository | Widened again 2026-09-11 by FD-P8, 2026-09-16 by FD-P9, 2026-10-02 by FD-P10, 2026-10-05 by FD-P12, FD-P13, and FD-P14, and 2026-10-07 by FD-P18, on top of the gap FD-P7 reopened. An installed skill reads its own packaged copy, so any given machine's global install drifts from this repository from its next edit onward, and whether a particular machine is current is machine-specific state this pack does not track. Reinstalling from this local clone is the standing remedy, not a one-time phase: `npx skills remove -g -s <every skill name>` then `npx skills add . -g -a '*' -s <every skill name>`, run again whenever a machine's copy needs to catch up |
 | A reference written before 2026-08-28 names an identifier that no longer exists | FD-D30 renamed every identifier in both packs to carry a pack prefix. Anything citing a bare `D16` or `P8`, in a commit message or an earlier thread, now resolves to nothing. That is the intended failure mode, chosen over a bare number that resolves silently to the wrong entry, but it is a real cost to anyone holding an old reference |
 | Nothing about the skill family itself is deferred | The rename sweep and the finished-pack marker were closed rather than postponed, in `skill-consolidation` SC-D13 and SC-D14. The only deferred item in this pack, FD-Q1, is blocked on a platform capability |
 
@@ -691,3 +708,5 @@ One older open question remains in this pack: FD-Q1 waits on a portable hidden-s
 FD-Q6 is closed by FD-D45 and no longer waits on the user. To cut the first release, push the commit to `main`, then push the tag, for example `v1.0.0`, and `git pull` once the workflow's `release: vX.Y.Z` commit lands, since local `main` is then behind. Confirm the first `release.yml` run succeeded: it has never run, and its bot push to `main` is unobserved.
 
 FD-P17 added `packtool.sh`: push and confirm the three-OS test matrix is green, since mawk and BWK awk have not run it. Reinstall the family on any machine that should pick up the tool and the new contract section.
+
+FD-P18 changed the tool, the contract and 14 gate sentences: reinstall again, because an installed skill still calls `sh scripts/packtool.sh` and carries the old tool. FD-Q7 (`code_ref` naming the inspected repository) waits on the user and needs its own schema decision. Nothing else in FD-P18 waits on the user.

@@ -3,8 +3,8 @@ baseline_schema: "2.0"
 pack: "family-design"
 document: "hallucination"
 status: "active"
-updated: "2026-10-05"
-code_ref: "uncommitted"
+updated: "2026-10-07"
+code_ref: "54522ef"
 ---
 
 # Family Design: Decisions and Open Questions
@@ -64,11 +64,13 @@ Every identifier in this initiative carries its pack's prefix: `FD-` here, `SC-`
 | FD-D43 | `baselinedocs-help` as a user entrypoint carrying its own guide to the skills and the workflow | current | FD-D1, FD-D8, FD-D9 |
 | FD-D44 | `baselinedocs-adr` drafting a standalone ADR from one closed entry, using an unmodified AWS template | current | FD-D1, FD-D7 |
 | FD-D45 | a release tag stamping one family-wide `version:` into every `SKILL.md` on `main` | current | FD-D37, FD-D41, FD-Q6 |
-| FD-D46 | `packtool.sh`, a mechanical structure check every writer runs before reporting a write | current | FD-D7, FD-D41, FD-D42, FD-Q5 |
+| FD-D46 | `packtool.sh`, a mechanical structure check every writer runs before reporting a write | current, amended by FD-D47 | FD-D7, FD-D41, FD-D42, FD-D47, FD-Q5 |
+| FD-D47 | how a closed question keeps its number, and the packtool changes a field report drove | current, amends FD-D46 | FD-D46, FD-D42, FD-D30, FD-D7, FD-Q7 |
 | FD-Q1 | hiding internal helpers at package level rather than by naming convention | open, deferred on a missing platform feature | FD-D1 |
 | FD-Q2 | installing checkpoint hooks across more than one repository | closed, hook mechanism removed | FD-D6, FD-D37 |
 | FD-Q5 | who, if anyone, owns misfiled-content detection now that `onboard` no longer checks it | open, structural half covered by FD-D46 | FD-D34, FD-D46 |
 | FD-Q6 | a skill version in the frontmatter, bumped automatically, to recognize an outdated install | closed by FD-D45 | FD-D37, FD-D41, FD-D45 |
+| FD-Q7 | how `code_ref` names the repository inspected when the code lives in a submodule | open, deferred as its own schema decision | FD-D3, FD-D45, FD-D47 |
 
 ## FD-D1: six entrypoints stay deliberate, and the rest stay agent-selectable
 
@@ -695,6 +697,32 @@ A new thread is the default once the pack is current, which after a save it is. 
 
 **Rejected: a harness that keeps line numbers current for editing.** A line number is stale after the first write, whoever reports it; anchoring edits on unique text is the fix, and `outline` serves reading only.
 
+## FD-D47: a closed question keeps its number through a `Closes` line, and packtool gains `close-plan` and `identifier-gap`
+
+**Decided.** The deciding entry states `Closes <PREFIX>-Q<N>.` and lists the question in its Related column; the question's heading and index row are deleted and any reasoning it held moves into the deciding entry. `contract/pack-contract.md`, `Entry index`, states this, and states that a decision entry may sit at level 3 under a group heading such as `## Closed decisions`. `## Entry index` stays the only accepted index name. `packtool.sh` gains `close-plan <dir> <Q-ID> <D-ID>` (read-only, lists the edits) and WARN `identifier-gap` (a number below the highest that appears nowhere). `next-id` with a PREFIX on an empty pack returns `<PREFIX>-<KIND>1`. `check` resolves the folder name from the absolute path, so `check .` works inside a pack. `directory-mismatch` moves from FAIL to WARN. A line opening with a bold label no longer counts toward `possible-hard-wrap`. The gate sentences in 14 `SKILL.md` files call `sh <skill-dir>/scripts/packtool.sh`, `<skill-dir>` being the folder holding that `SKILL.md`; `sync-decisions` and `save` run `close-plan` when a decision closes a question. The tool and contract copies were re-synced.
+
+**Why.** A use report from the Atlantic repository (pack `atlantic-uat-dms`, 2026-10-07, 12 `check` and 8 `next-id` runs) found: a question closed by deleting its heading and row had its number handed out again; three existing packs in folders titled `Atlantic UAT ThingsBoard` and the like drew 21 to 80 FAIL each from a folder rule no document states; `check .` reported a false mismatch; `next-id` printed nothing for a new pack. The reuse is the paradox: an identifier is never reused, so its use needs a durable record, but nothing is deleted (`Disproven claims`) and nothing settled sits under `## Open questions` (`Misfiled content`). `next-id` takes the highest number over every heading, row and citation, so a number survives exactly while one of them does. The deciding entry is the one place that satisfies all three rules. Measured on a scratch pack: with the `Closes` line present `next-id Q` returned the number after the closed question, without it the closed number again. This repository already did it: FD-Q3, FD-Q4 and SC-Q1 to SC-Q5 survive only as citations.
+
+**What breaks if ignored.** A reused number makes every earlier chat, commit and report that cites it resolve to a different question, silently. A FAIL that fires on every file of a legacy pack teaches the agent to ignore FAIL, which voids the gate that no write is reported while one is printed.
+
+**Accepted cost.** The guarantee holds only while the `Closes` line survives; an edit that drops it frees the number. `identifier-gap` catches a vanished number below the highest, never the highest itself: no file records it, and git history cannot because a pack closed in the same session was never committed (reasoned, not tested). `close-plan` verifies nothing, the agent makes the edits. A folder named for the wrong pack is a WARN, not a FAIL. The contract gained two paragraphs loaded on every run of 14 skills. `<skill-dir>` is not substituted by any host: Claude Code prints the base directory when it loads a skill, Codex and Cursor were not checked. The tool was run under gawk only; mawk and BWK awk wait on CI.
+
+**Rejected: a stub `### <ID>` under `## Open questions` with a closed status.** Files settled material under an unsettled heading, the form `Misfiled content` measured at 88 entries against 7 open.
+
+**Rejected: an index row with no heading.** Needs FAIL `index-row-without-entry` relaxed, and that rule exists to catch exactly a row with no entry.
+
+**Rejected: a tombstone ledger file.** A second file nothing else reads.
+
+**Rejected: a `close` command that writes.** `AGENTS.md` fixes `packtool.sh` as read-only because installed skills run it in other teams' repositories.
+
+**Rejected: a closed list of status values and debt markers.** The contract grows on every run of 14 skills; the status column stays free text.
+
+**Rejected: keep `directory-mismatch` as FAIL, with a rename helper.** The helper writes, and the FAIL still fires on every file of a legacy pack.
+
+**Rejected: decision headings at level 2 only.** Turns legacy `### <ID>` entries under `## Closed decisions` into new FAILs.
+
+**Rejected: accept `## Index` as a second index name.** The pack using it was not inspected, and a second name doubles what every consumer matches.
+
 ## Open questions
 
 ### FD-Q1: can internal helpers be hidden at package level?
@@ -718,6 +746,14 @@ What is at stake: the failure `pack-contract.md`'s own `Misfiled content` sectio
 The trigger to reopen: a decision on whether an existing skill absorbs the check under the same full-read criterion SC-D16 already established, whether a new skill is warranted, or whether the family accepts the gap as a deliberate cost of a lighter `onboard` report.
 
 FD-D46 covers the structural half: `packtool.sh check`, which `onboard` runs before reporting, fails a decision filed under `## Open questions` or a question outside it, and warns on a question whose index status is no longer `open`. Placement by meaning, such as reasoning written into `roadmap`, is only a heuristic warning there, so this question stays open on that half.
+
+### FD-Q7: how does `code_ref` name the repository inspected when the code lives in a submodule?
+
+`check` compares a commit-valued `code_ref` only with the HEAD of the repository holding the pack, so a `sourcecode` document describing a submodule warns `code-ref-behind-head` on every run while recording the submodule's real commit, which is what `Frontmatter` asks for. A field naming the inspected repository fixes it, but it changes the frontmatter and therefore `baseline_schema`, which FD-D45 treats as a semantic decision, and it reaches every packaged contract copy and the tool's key check. FD-D47 left the existing warning as a drift signal.
+
+What is at stake: a correct document is flagged after every commit of the submodule, so the signal is ignored.
+
+The trigger to reopen: a request to change the frontmatter. Options to weigh then: a repository path relative to the pack, or a repository and commit pair.
 
 ### FD-Q6: how does a skill carry a version in its frontmatter, bumped automatically, so an outdated install on a machine can be recognized?
 
