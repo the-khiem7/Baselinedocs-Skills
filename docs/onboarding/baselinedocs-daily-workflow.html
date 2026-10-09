@@ -1,0 +1,662 @@
+<title>Quy trình Baseline Docs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Be+Vietnam+Pro:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: a single reading column with a sticky section rail; a day-timeline carries the daily loop, a situation picker answers "which skill now". */
+:root {
+  --bg: #f2f5f6;
+  --surface: #ffffff;
+  --surface-2: #e8eef0;
+  --fg: #15262d;
+  --muted: #53666e;
+  --line: #cdd9dd;
+  --accent: #0a6c80;
+  --accent-ink: #ffffff;
+  --accent-soft: #d6ecf1;
+  --warn: #8f4a06;
+  --warn-soft: #fbe9d3;
+  --ok: #1b6b3a;
+  --ok-soft: #d9efe0;
+  --font-display: "Bricolage Grotesque", "Be Vietnam Pro", system-ui, sans-serif;
+  --font-body: "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1a1f;
+    --surface: #15252c;
+    --surface-2: #1c3039;
+    --fg: #e4eef1;
+    --muted: #9bb1b9;
+    --line: #2b434d;
+    --accent: #5cc3d8;
+    --accent-ink: #082329;
+    --accent-soft: #163a45;
+    --warn: #f0b36a;
+    --warn-soft: #3a2a14;
+    --ok: #7fd49a;
+    --ok-soft: #173826;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1a1f;
+  --surface: #15252c;
+  --surface-2: #1c3039;
+  --fg: #e4eef1;
+  --muted: #9bb1b9;
+  --line: #2b434d;
+  --accent: #5cc3d8;
+  --accent-ink: #082329;
+  --accent-soft: #163a45;
+  --warn: #f0b36a;
+  --warn-soft: #3a2a14;
+  --ok: #7fd49a;
+  --ok-soft: #173826;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.65;
+  padding-inline: 16px;
+  padding-block: 0 64px;
+}
+.wrap { max-width: 1040px; margin-inline: auto; }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h2 { font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.05rem); font-weight: 700; letter-spacing: -0.01em; }
+h3 { font-size: 1.15rem; font-weight: 700; }
+p { margin: 0; }
+a { color: var(--accent); }
+code, .mono { font-family: var(--font-mono); font-size: 0.88em; }
+code { background: var(--surface-2); padding: 0.1em 0.4em; border-radius: 4px; overflow-wrap: anywhere; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+/* top bar */
+.bar {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+  background: var(--bg); border-bottom: 1px solid var(--line);
+  margin-inline: -16px; padding: 10px 16px;
+}
+.bar-in { max-width: 1040px; margin-inline: auto; display: flex; align-items: center; gap: 12px; }
+.bar-name { font-family: var(--font-display); font-weight: 700; margin-right: auto; white-space: nowrap; }
+.bar nav { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; }
+.bar nav a {
+  text-decoration: none; color: var(--muted); font-size: 0.86rem; padding: 4px 10px;
+  border-radius: 999px; white-space: nowrap;
+}
+.bar nav a:hover { background: var(--surface-2); color: var(--fg); }
+
+/* hero */
+.hero { padding-block: 56px 40px; display: grid; gap: 20px; }
+.eyebrow { font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-size: clamp(2.1rem, 1.3rem + 3.6vw, 3.6rem); font-weight: 700; letter-spacing: -0.02em; max-width: 18ch; }
+.lead { font-size: 1.1rem; max-width: 62ch; color: var(--muted); }
+.lead strong { color: var(--fg); font-weight: 600; }
+.install { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; max-width: 100%; }
+.install pre {
+  margin: 0; flex: 1 1 320px; min-width: 0; overflow-x: auto;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 8px;
+  padding: 10px 14px; font-family: var(--font-mono); font-size: 0.84rem;
+}
+button {
+  font: inherit; cursor: pointer; border-radius: 8px; border: 1px solid var(--line);
+  background: var(--surface); color: var(--fg); padding: 9px 14px; min-height: 40px;
+}
+button:hover { border-color: var(--accent); }
+.btn-primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+
+section { padding-block: 48px; border-top: 1px solid var(--line); scroll-margin-top: 64px; }
+.sec-head { display: grid; gap: 10px; margin-bottom: 28px; max-width: 68ch; }
+.sec-head p { color: var(--muted); }
+
+/* pack documents */
+.docs { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; }
+.doc { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 6px; align-content: start; min-width: 0; }
+.doc .fn { font-family: var(--font-mono); font-size: 0.8rem; color: var(--accent); overflow-wrap: anywhere; }
+.doc .role { color: var(--muted); font-size: 0.93rem; }
+.doc.cond { background: transparent; border-style: dashed; }
+.tag { display: inline-block; font-size: 0.72rem; font-family: var(--font-mono); padding: 1px 8px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); width: fit-content; }
+.tag.opt { background: var(--surface-2); color: var(--muted); }
+.callout {
+  margin-top: 20px; padding: 14px 16px; border-radius: 10px; background: var(--warn-soft);
+  color: var(--fg); border: 1px solid var(--line); max-width: 78ch;
+}
+.callout b { color: var(--warn); }
+
+/* day timeline */
+.day { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+.step { display: grid; grid-template-columns: 112px 1fr; gap: 20px; padding-block: 22px; border-top: 1px solid var(--line); }
+.step:first-child { border-top: 0; padding-top: 0; }
+.when { font-family: var(--font-mono); font-size: 0.8rem; color: var(--muted); padding-top: 4px; }
+.when b { display: block; color: var(--accent); font-size: 0.95rem; font-weight: 600; margin-bottom: 2px; }
+.step-body { display: grid; gap: 10px; min-width: 0; }
+.step-body p { color: var(--muted); max-width: 66ch; }
+.step-body p strong { color: var(--fg); font-weight: 600; }
+.skills { display: flex; flex-wrap: wrap; gap: 8px; }
+.skill {
+  font-family: var(--font-mono); font-size: 0.82rem; background: var(--accent-soft); color: var(--accent);
+  padding: 3px 10px; border-radius: 6px; font-weight: 600; overflow-wrap: anywhere;
+}
+.skill.agent { background: var(--surface-2); color: var(--muted); font-weight: 400; }
+ul.plain { margin: 0; padding-left: 1.2em; color: var(--muted); max-width: 66ch; }
+ul.plain li { margin-block: 4px; }
+ul.plain li strong { color: var(--fg); font-weight: 600; }
+
+/* situation picker */
+.picker { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 20px; align-items: start; }
+.opts { display: grid; gap: 8px; }
+.opts button { text-align: left; padding: 11px 14px; line-height: 1.4; }
+.opts button[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--fg); font-weight: 500; }
+.answer {
+  position: sticky; top: calc(env(safe-area-inset-top, 0px) + 68px);
+  background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 22px;
+  display: grid; gap: 14px; min-width: 0;
+}
+.answer .label { font-family: var(--font-mono); font-size: 0.76rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.answer .big { font-family: var(--font-mono); font-size: 1.1rem; font-weight: 600; color: var(--accent); overflow-wrap: anywhere; }
+.answer ol { margin: 0; padding-left: 1.3em; color: var(--muted); }
+.answer ol li { margin-block: 5px; }
+.answer ol li strong { color: var(--fg); font-weight: 600; }
+
+/* diagram */
+.diagram { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; overflow-x: auto; }
+.diagram pre.mermaid { margin: 0; min-width: 640px; text-align: center; }
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin-top: 20px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.card .k { font-family: var(--font-mono); font-size: 0.78rem; color: var(--muted); }
+.card .n { font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; }
+.card p { color: var(--muted); font-size: 0.95rem; }
+
+/* tables */
+.tbl { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
+table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: 0.93rem; }
+th, td { text-align: left; vertical-align: top; padding: 11px 14px; border-bottom: 1px solid var(--line); }
+th { font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); background: var(--surface-2); font-weight: 600; }
+tr:last-child td { border-bottom: 0; }
+td:first-child { white-space: nowrap; }
+td.wrapfirst:first-child { white-space: normal; }
+details { margin-top: 18px; }
+summary { cursor: pointer; font-weight: 600; padding: 8px 0; }
+
+/* traps */
+.traps { display: grid; gap: 12px; }
+.trap { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: 20px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
+.trap .wrong { color: var(--warn); font-weight: 600; }
+.trap .wrong::before { content: "Hiểu nhầm"; display: block; font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); font-weight: 400; margin-bottom: 4px; }
+.trap .right::before { content: "Thực tế"; display: block; font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+.trap .right { color: var(--muted); }
+.trap .right strong { color: var(--fg); font-weight: 600; }
+
+/* rules + checklist */
+.rules { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; }
+.rule { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 6px; align-content: start; min-width: 0; }
+.rule .do { color: var(--ok); font-weight: 600; font-size: 0.78rem; font-family: var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; }
+.rule .dont { color: var(--warn); font-weight: 600; font-size: 0.78rem; font-family: var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; }
+.rule p { color: var(--muted); font-size: 0.95rem; }
+.check { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; max-width: 70ch; }
+.check label { display: flex; gap: 12px; align-items: flex-start; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; cursor: pointer; }
+.check input { margin-top: 5px; width: 18px; height: 18px; flex: none; accent-color: var(--accent); }
+.check label:has(input:checked) { background: var(--ok-soft); }
+.check label:has(input:checked) span { color: var(--muted); }
+.check .skill { margin-left: 4px; }
+
+footer { padding-top: 40px; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.88rem; }
+
+@media (max-width: 760px) {
+  .step { grid-template-columns: 1fr; gap: 6px; }
+  .picker { grid-template-columns: 1fr; }
+  .answer { position: static; }
+  .trap { grid-template-columns: 1fr; gap: 10px; }
+  .hero { padding-block: 36px 28px; }
+  .bar nav { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; transition: none !important; } }
+html { scroll-behavior: smooth; }
+</style>
+
+<div class="bar">
+  <div class="bar-in">
+    <span class="bar-name">Baseline Docs</span>
+    <nav aria-label="Các phần">
+      <a href="#pack">Pack là gì</a>
+      <a href="#ngay">Một ngày làm việc</a>
+      <a href="#chon">Chọn skill</a>
+      <a href="#so-do">Sơ đồ</a>
+      <a href="#bay">Hiểu nhầm</a>
+      <a href="#quy-tac">Quy tắc</a>
+    </nav>
+  </div>
+</div>
+
+<div class="wrap">
+  <header class="hero">
+    <div class="eyebrow">Hướng dẫn cho người mới</div>
+    <h1>Quy trình Baseline Docs mỗi ngày</h1>
+    <p class="lead">Baseline Docs ghi lại <strong>sự thật hiện tại của dự án, các quyết định, bằng chứng và điểm tiếp tục</strong> vào một bộ tài liệu nhỏ, gọi là pack. Nhờ đó một cuộc trò chuyện hoặc một agent khác có thể làm tiếp mà không cần đọc lại lịch sử chat. Trang này giải thích pack là gì và bạn dùng bộ skill như thế nào trong một ngày làm việc.</p>
+    <div class="install">
+      <pre id="install-cmd">npx skills add https://github.com/the-khiem7/Baselinedocs-Skills.git</pre>
+      <button class="btn-primary" id="copy-install" type="button">Sao chép lệnh cài</button>
+    </div>
+    <p class="lead" style="font-size:0.95rem">Cài cả bộ, không cài lẻ từng skill. Các skill chuyển việc cho nhau theo tên, nên thiếu một skill thì agent sẽ gặp ngõ cụt đúng lúc bạn đang cần. Để xem trước nội dung cài đặt, thêm <code>--list</code>. Trong Codex gọi skill bằng <code>$tên-skill</code>, trong Claude Code bằng <code>/tên-skill</code>.</p>
+  </header>
+
+  <section id="pack">
+    <div class="sec-head">
+      <h2>Pack là gì và nằm ở đâu</h2>
+      <p>Pack là các file markdown trong <code>docs/baseline/&lt;tên-pack&gt;/</code>. Mỗi file có một vai trò cố định, và skill luôn ghi nội dung vào đúng file đó. Ba file đầu có trong mọi pack, hai file sau chỉ tạo khi cần.</p>
+    </div>
+    <div class="docs">
+      <div class="doc">
+        <span class="tag">bắt buộc</span>
+        <h3>introduction</h3>
+        <span class="fn">&lt;prefix&gt;.introduction.md</span>
+        <p class="role">Phạm vi, sự thật hiện tại, mục tiêu, ràng buộc. Đọc file này để biết dự án là gì.</p>
+      </div>
+      <div class="doc">
+        <span class="tag">bắt buộc</span>
+        <h3>roadmap</h3>
+        <span class="fn">&lt;prefix&gt;.roadmap.md</span>
+        <p class="role">Các phase, phụ thuộc, trạng thái, bằng chứng cuối, rủi ro và <b>hành động tiếp theo</b>. Đọc file này để biết đang làm đến đâu.</p>
+      </div>
+      <div class="doc">
+        <span class="tag">bắt buộc</span>
+        <h3>hallucination</h3>
+        <span class="fn">&lt;prefix&gt;.hallucination.md</span>
+        <p class="role">Phần "vì sao": câu hỏi đang mở, quyết định đã chốt, nguyên nhân lỗi, phương án đã bị loại. Tên file nghe lạ, nhưng nó chính là nhật ký quyết định.</p>
+      </div>
+      <div class="doc cond">
+        <span class="tag opt">tùy chọn</span>
+        <h3>sourcecode</h3>
+        <span class="fn">&lt;prefix&gt;.sourcecode.md</span>
+        <p class="role">Kiến trúc, cấu trúc code, luồng thực thi. Chỉ tạo khi nó giúp ích cho việc sau.</p>
+      </div>
+      <div class="doc cond">
+        <span class="tag opt">tùy chọn</span>
+        <h3>useguide</h3>
+        <span class="fn">&lt;prefix&gt;.useguide.md</span>
+        <p class="role">Hợp đồng với bên dùng: API, cách dùng thư viện, quy trình migrate. Chỉ tạo khi có người ngoài pack phụ thuộc vào hành vi đó.</p>
+      </div>
+    </div>
+    <div class="callout">
+      <b>Ghi nhớ:</b> pack là bộ nhớ vận hành nội bộ. Đừng ghi tên file hay mục của pack vào code, cấu hình hoặc mô tả tài nguyên hạ tầng. Những chuỗi đó được đưa ra ngoài repo, nơi người đọc không biết file đó là gì.
+    </div>
+    <details>
+      <summary>Dự án nhiều mảng: initiative và index</summary>
+      <p style="color:var(--muted); max-width:68ch; margin-top:8px">Khi công việc trải qua nhiều domain phụ thuộc nhau, mỗi domain có một pack riêng, và thư mục gốc có thêm một file <code>&lt;initiative&gt;.index.md</code>. Index chỉ chứa liên kết, trạng thái và cạnh phụ thuộc. Nó không lặp lại nội dung của pack con. Skill <code>baselinedocs-onboard</code> đọc index trước, rồi chỉ nạp một pack domain thay vì cả bộ.</p>
+    </details>
+  </section>
+
+  <section id="ngay">
+    <div class="sec-head">
+      <h2>Một ngày làm việc điển hình</h2>
+      <p>Năm bước dưới đây theo đúng thứ tự thực tế. Skill in <span class="skill">đậm</span> là skill bạn tự gọi. Skill in <span class="skill agent">xám</span> do agent tự chọn khi nhận ra điều kiện, bạn không cần nhớ tên.</p>
+    </div>
+    <ol class="day">
+      <li class="step">
+        <div class="when"><b>Bắt đầu</b>mở thread mới</div>
+        <div class="step-body">
+          <h3>Nạp pack vào ngữ cảnh</h3>
+          <p>Nếu pack đã có, mở một thread mới rồi nạp nó. Chọn <strong>onboard</strong> nếu muốn một báo cáo trạng thái (dự án là gì, phase nào đang chạy, câu hỏi nào còn mở, bước tiếp theo). Chọn <strong>load</strong> nếu chỉ muốn agent đọc xong và trả lời đúng một từ.</p>
+          <div class="skills"><span class="skill">baselinedocs-onboard</span><span class="skill">baselinedocs-load</span></div>
+          <ul class="plain">
+            <li>Chưa có pack nào: dùng <strong>init</strong> cho việc mới, <strong>adopt</strong> khi đã có tài liệu hoặc spec, <strong>save</strong> khi đã làm dở mà chưa ghi gì.</li>
+            <li>Cả hai skill đọc đủ từng file trong phạm vi đã chọn và không ghi gì. Nếu phạm vi quá lớn, agent sẽ dừng và đề nghị thu hẹp thay vì đọc nửa chừng.</li>
+          </ul>
+        </div>
+      </li>
+      <li class="step">
+        <div class="when"><b>Làm việc</b>theo roadmap</div>
+        <div class="step-body">
+          <h3>Chạy từng phase</h3>
+          <p>Skill <strong>run</strong> thực hiện roadmap theo từng phase và tự ghi checkpoint vào roadmap sau mỗi phase. Trước khi bắt đầu, nó hỏi bạn hai điều và không bao giờ tự chọn mặc định: có tạm dừng sau mỗi phase không, và có commit mỗi phase đã xác minh không. Chọn commit theo từng phase chính là bạn cho phép commit trong lần chạy đó.</p>
+          <div class="skills"><span class="skill">baselinedocs-run</span><span class="skill agent">sync-codebase</span></div>
+          <ul class="plain">
+            <li>Code đổi hoặc phase kết thúc mà tài liệu có thể lỗi thời: agent có thể tự gọi <strong>sync-codebase</strong> để kéo tài liệu về khớp với code.</li>
+          </ul>
+        </div>
+      </li>
+      <li class="step">
+        <div class="when"><b>Khi có thay đổi</b>chốt, mở, dời</div>
+        <div class="step-body">
+          <h3>Ghi lại điều checkpoint không ghi</h3>
+          <p>Checkpoint của <strong>run</strong> chỉ ghi kết quả phase. Nếu vừa chốt một quyết định, vừa mở một câu hỏi mới, hoặc phạm vi đã dời, chạy <strong>save</strong>. Skill này viết điều thread đã xác lập vào đúng file của pack.</p>
+          <div class="skills"><span class="skill">baselinedocs-save</span><span class="skill">baselinedocs-adr</span><span class="skill agent">sync-decisions</span></div>
+          <ul class="plain">
+            <li>Quyết định đủ quan trọng với bên ngoài repo: dùng <strong>adr</strong> để soạn một ADR riêng trong <code>docs/adr/</code>, trạng thái luôn là Proposed. Muốn pack ghi nhận ADR đó tồn tại thì chạy <strong>save</strong>.</li>
+            <li>Hai tài liệu mâu thuẫn nhau: agent dùng <strong>sync-reconcile</strong> để sửa. <strong>onboard</strong> chỉ báo, không tự sửa.</li>
+          </ul>
+        </div>
+      </li>
+      <li class="step">
+        <div class="when"><b>Ngữ cảnh đầy</b>cửa sổ sắp hết</div>
+        <div class="step-body">
+          <h3>Luôn save trước khi rẽ nhánh</h3>
+          <p>Dù ở lại thread hay mở thread mới, cuộc trò chuyện đều mất một phần. Chỉ pack là còn nguyên, nên <strong>save</strong> đi trước mọi lựa chọn.</p>
+          <div class="skills"><span class="skill">baselinedocs-save</span></div>
+          <ul class="plain">
+            <li><strong>Mở thread mới</strong> (mặc định khi pack đã mới): sau save, pack là nguồn sự thật duy nhất. Thread mới chạy <strong>onboard</strong> hoặc <strong>load</strong>.</li>
+            <li><strong>Ở lại thread</strong> (khi thread còn giữ thứ chưa viết ra được, như hướng tiếp cận dang dở hay phiên debug): dùng <code>/compact</code> của host, rồi chạy <strong>brief</strong> để xem pack có tụt sau thread không.</li>
+            <li>Sau compact, agent có thể quên quy tắc ghi pack. <strong>recall</strong> đọc lại contract và report-style, rồi dừng.</li>
+          </ul>
+          <div class="skills"><span class="skill">baselinedocs-brief</span><span class="skill agent">baselinedocs-recall</span></div>
+        </div>
+      </li>
+      <li class="step">
+        <div class="when"><b>Kết thúc</b>trước khi đóng máy</div>
+        <div class="step-body">
+          <h3>Để pack đúng với thực tế</h3>
+          <p>Nếu thread đã xác lập điều gì mà pack chưa có, chạy <strong>save</strong>. Muốn commit phần thay đổi trong repo, dùng một trong hai skill commit. Cả hai nhóm thay đổi theo từng hunk, in ra cách nhóm để bạn duyệt, và chỉ commit sau khi bạn đồng ý.</p>
+          <div class="skills"><span class="skill">baselinedocs-save</span><span class="skill">commit-composer</span><span class="skill">commit-composer-max</span></div>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <section id="chon">
+    <div class="sec-head">
+      <h2>Tôi đang ở tình huống nào?</h2>
+      <p>Chọn tình huống bên trái. Bên phải cho biết skill cần gọi và các bước kế tiếp.</p>
+    </div>
+    <div class="picker">
+      <div class="opts" id="opts" role="group" aria-label="Tình huống"></div>
+      <div class="answer" id="answer" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <section id="so-do">
+    <div class="sec-head">
+      <h2>Toàn bộ vòng lặp trên một sơ đồ</h2>
+      <p>Hai điểm rẽ nhánh là phần quan trọng nhất: ngữ cảnh có đang bị ép không, và ở lại thread hay mở thread mới. Nét đứt là đường tùy chọn.</p>
+    </div>
+    <div class="diagram">
+<pre class="mermaid">
+flowchart TD
+    Q0{"Bạn đã có gì?"}
+    Q0 -->|"chưa có gì"| INIT["$baselinedocs-init"]
+    Q0 -->|"có tài liệu hoặc spec"| ADOPT["$baselinedocs-adopt"]
+    Q0 -->|"việc đã làm dở"| SAVE1["$baselinedocs-save"]
+
+    INIT --> RUN
+    ADOPT --> RUN
+    SAVE1 --> RUN
+
+    RUN["$baselinedocs-run<br/>ghi checkpoint mỗi phase"]
+    RUN --> Q1{"Ngữ cảnh<br/>có bị ép?"}
+
+    Q1 -->|"không"| SAVE2["$baselinedocs-save<br/>chốt quyết định, mở câu hỏi,<br/>dời phạm vi, run dừng giữa phase"]
+    SAVE2 --> RUN
+    SAVE2 -.->|"quyết định đáng làm ADR"| ADR["$baselinedocs-adr"]
+
+    Q1 -->|"có"| GATE["$baselinedocs-save<br/>luôn save trước khi rẽ"]
+    GATE --> Q2{"Ở lại<br/>thread này?"}
+
+    Q2 -->|"Ở lại"| CMP["/compact của host"]
+    CMP --> BRIEF["$baselinedocs-brief<br/>pack có tụt sau thread?"]
+    BRIEF -->|"không lệch"| RUN
+    BRIEF -->|"có lệch"| SAVE2
+    BRIEF -->|"cần đọc đủ chi tiết"| ONB
+
+    Q2 -->|"Rời đi"| NEW["thread mới"]
+    NEW --> ONB["$baselinedocs-onboard<br/>hoặc $baselinedocs-load"]
+    ONB --> RUN
+</pre>
+    </div>
+    <div class="two">
+      <div class="card">
+        <span class="k">Ở lại thread</span>
+        <span class="n">Hai nguồn sự thật</span>
+        <p>Pack, và bản tóm tắt sau compact có thể mâu thuẫn với pack. Chọn khi thread còn giữ thứ chưa ghi được. <code>brief</code> cho biết mức lệch.</p>
+      </div>
+      <div class="card">
+        <span class="k">Mở thread mới</span>
+        <span class="n">Một nguồn sự thật</span>
+        <p>Chỉ có pack, nên không thể mâu thuẫn, đổi lại phải đọc lại. Chọn khi pack đã mới, mà sau một lần save thì đúng như vậy.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="skill">
+    <div class="sec-head">
+      <h2>Bảng tra skill</h2>
+      <p>Tất cả đều có tiền tố <code>baselinedocs-</code>. Nhóm đầu bạn tự gọi, các skill này không tự chạy.</p>
+    </div>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Skill</th><th>Dùng khi</th><th>Kết quả</th></tr></thead>
+        <tbody>
+          <tr><td><code>init</code></td><td>Chưa có pack, công việc cần tài liệu bền</td><td>Pack đầu tiên, hoặc một initiative nhiều pack</td></tr>
+          <tr><td><code>adopt</code></td><td>Đã có tài liệu, đề xuất, spec, wiki hoặc bản export</td><td>Chuyển thành pack có truy vết, không mất thông tin</td></tr>
+          <tr><td><code>save</code></td><td>Đang làm dở chưa có pack, hoặc thread xác lập điều pack chưa có</td><td>Pack được ghi từ thread hiện tại</td></tr>
+          <tr><td><code>run</code></td><td>Roadmap đã có và cần thực thi</td><td>Từng phase được làm và ghi checkpoint, theo chính sách bạn chọn</td></tr>
+          <tr><td><code>onboard</code></td><td>Bắt đầu làm trên pack có sẵn, muốn đọc đủ và có báo cáo</td><td>Đọc hết từng file, rồi báo cáo trạng thái 5 phần</td></tr>
+          <tr><td><code>load</code></td><td>Như onboard nhưng không cần báo cáo</td><td>Đọc hết từng file, rồi xác nhận bằng một từ</td></tr>
+          <tr><td><code>brief</code></td><td>Giữa việc hoặc sau compact, muốn biết đang ở đâu</td><td>Vị trí, vướng mắc, và thứ thread có mà pack chưa có, không nạp cả pack</td></tr>
+          <tr><td><code>callout</code></td><td>Muốn một cái tên ngắn cho một phần của pack</td><td>Bảng định tuyến tạm trong <code>introduction</code></td></tr>
+          <tr><td><code>adr</code></td><td>Một quyết định đã chốt đáng thành ADR</td><td>Một ADR riêng trong <code>docs/adr/</code>, trạng thái Proposed</td></tr>
+          <tr><td><code>help</code></td><td>Hỏi skill nào làm gì, dùng cái nào</td><td>Bản hướng dẫn, không đọc pack</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <details>
+      <summary>Skill do agent tự chọn (bạn vẫn có thể gọi tên trực tiếp)</summary>
+      <div class="tbl" style="margin-top:10px">
+        <table>
+          <thead><tr><th>Skill</th><th>Agent dùng khi</th><th>Kết quả</th></tr></thead>
+          <tbody>
+            <tr><td><code>sync-codebase</code></td><td>Code đổi hoặc phase kết thúc, tài liệu có thể cũ</td><td>Tài liệu kéo về khớp code</td></tr>
+            <tr><td><code>sync-decisions</code></td><td>Một quyết định đã chốt chưa tới hết tài liệu bị ảnh hưởng</td><td>Quyết định được áp dụng ở mọi nơi</td></tr>
+            <tr><td><code>sync-reconcile</code></td><td>Hai tài liệu nói khác nhau về sự thật hiện tại</td><td>Mâu thuẫn được sửa</td></tr>
+            <tr><td><code>audit-drift</code></td><td>Không chắc tài liệu có tụt sau code hay quyết định</td><td>Báo cáo xếp hạng, không ghi gì</td></tr>
+            <tr><td><code>audit-claims</code></td><td>Không chắc một câu trong pack có đúng</td><td>Mỗi claim: verified, unverified hoặc contradicted, không ghi gì</td></tr>
+            <tr><td><code>maintain-compact</code></td><td>Pack quá nhiễu để làm tiếp</td><td>Pack ngắn hơn, giữ nguyên thông tin</td></tr>
+            <tr><td><code>maintain-split</code></td><td>Một pack trộn nhiều luồng việc</td><td>Các pack domain cùng một initiative index</td></tr>
+            <tr><td><code>extract-wiki</code></td><td>Một quy trình dùng lại được đang bị chôn trong pack của một task</td><td>Một bài wiki</td></tr>
+            <tr><td><code>recall</code></td><td>Sau compact, trước lần ghi hay báo cáo pack kế tiếp</td><td>Đọc lại contract và report-style, rồi xác nhận một từ</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+  </section>
+
+  <section id="bay">
+    <div class="sec-head">
+      <h2>Những chỗ hay hiểu nhầm</h2>
+      <p>Năm điều dưới đây đã làm người dùng lẫn tác giả bộ skill nhầm ít nhất một lần.</p>
+    </div>
+    <div class="traps">
+      <div class="trap">
+        <div class="wrong"><code>brief</code> khôi phục lại chi tiết</div>
+        <div class="right"><strong>Không.</strong> Nó là công cụ chẩn đoán, chỉ đọc frontmatter và các mục roadmap đang hoạt động. Nó cho biết việc đang ở đâu và pack có tụt sau thread không. Muốn đọc đủ chi tiết thì dùng <code>onboard</code>.</div>
+      </div>
+      <div class="trap">
+        <div class="wrong"><code>save</code> là bước sau <code>run</code></div>
+        <div class="right"><strong>Không hẳn.</strong> <code>run</code> đã ghi checkpoint roadmap sau mỗi phase. <code>save</code> lo phần checkpoint không ghi: quyết định đã chốt, câu hỏi vừa mở, phạm vi đã dời.</div>
+      </div>
+      <div class="trap">
+        <div class="wrong">Có một thứ tên là compact</div>
+        <div class="right"><strong>Có hai.</strong> <code>/compact</code> của host thu gọn cuộc trò chuyện. <code>baselinedocs-maintain-compact</code> thu gọn pack, khi pack đã nhiễu sau nhiều tháng. Hai việc khác nhau, khác trục.</div>
+      </div>
+      <div class="trap">
+        <div class="wrong"><code>onboard</code> và <code>load</code> giống nhau</div>
+        <div class="right"><strong>Cùng đọc đủ pack.</strong> Khác ở chỗ <code>onboard</code> sau đó báo cáo trạng thái, còn <code>load</code> chỉ xác nhận một từ và không nói gì thêm.</div>
+      </div>
+      <div class="trap">
+        <div class="wrong">ADR được ghi vào pack</div>
+        <div class="right"><strong>Không.</strong> <code>baselinedocs-adr</code> đọc một quyết định đã chốt và ghi một file trong <code>docs/adr/</code>. Việc ghi vào pack rằng ADR đó tồn tại là của <code>save</code>.</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="quy-tac">
+    <div class="sec-head">
+      <h2>Quy tắc khi làm việc với pack</h2>
+      <p>Pack là bộ nhớ vận hành hiện tại, không phải bản ghi các lệnh đã chạy. Mấy quy tắc này giữ cho nó đọc nhanh và đáng tin.</p>
+    </div>
+    <div class="rules">
+      <div class="rule">
+        <span class="do">Nên</span>
+        <h3>Ghi bằng chứng cuối cùng</h3>
+        <p>Kết quả pass hoặc fail đỡ cho trạng thái hiện tại. Giữ lại lỗi trung gian chỉ khi nó còn cần xử lý, giải thích vì sao thiết kế đổi, hoặc tái hiện một lỗi.</p>
+      </div>
+      <div class="rule">
+        <span class="do">Nên</span>
+        <h3>Gộp chỉnh sửa nhỏ vào phase cũ</h3>
+        <p>Chỉ mở phase mới cho một kết quả, phụ thuộc, mốc phát hành hoặc phạm vi cần review độc lập. Nếu không, roadmap sẽ thành nhật ký thay đổi.</p>
+      </div>
+      <div class="rule">
+        <span class="do">Nên</span>
+        <h3>Ghi lý do cùng với quyết định</h3>
+        <p>Mỗi quyết định ghi: đã chốt gì, vì sao, hỏng gì nếu bỏ qua, phương án nào bị loại và lý do. Phương án bị loại mà không ghi sẽ bị đề xuất lại.</p>
+      </div>
+      <div class="rule">
+        <span class="do">Nên</span>
+        <h3>Đưa quy trình dùng lại vào wiki</h3>
+        <p>Pack giữ trạng thái riêng của một task. Quy trình dùng được cho nhiều task nằm ở <code>docs/wiki/&lt;chủ-đề&gt;.md</code>, và <code>extract-wiki</code> làm việc chuyển đó.</p>
+      </div>
+      <div class="rule">
+        <span class="dont">Không</span>
+        <h3>Sửa pack theo số dòng</h3>
+        <p>Số dòng cũ ngay sau lần ghi đầu tiên. Neo mọi thay đổi vào một đoạn văn bản duy nhất, như tiêu đề của một entry.</p>
+      </div>
+      <div class="rule">
+        <span class="dont">Không</span>
+        <h3>Ngắt dòng cứng trong đoạn văn</h3>
+        <p>Một đoạn là một dòng, dù dài. Ngắt dòng cứng làm đoạn văn vỡ thành những mảnh rời rạc và làm sai mọi tham chiếu số dòng.</p>
+      </div>
+      <div class="rule">
+        <span class="dont">Không</span>
+        <h3>Đưa mã pack vào commit message</h3>
+        <p>Commit tồn tại lâu hơn pack, và người đọc nó không mở được pack. Một mã như entry hay phase sẽ không trỏ tới đâu cả.</p>
+      </div>
+      <div class="rule">
+        <span class="dont">Không</span>
+        <h3>Tự chọn chính sách cho agent</h3>
+        <p>Phê duyệt sau mỗi phase và commit mỗi phase là việc bạn quyết. <code>run</code> sẽ hỏi, và bạn cần trả lời rõ ràng.</p>
+      </div>
+    </div>
+    <p style="margin-top:20px; color:var(--muted); max-width:70ch">Mỗi tài liệu pack có frontmatter gồm <code>baseline_schema</code>, <code>pack</code>, <code>document</code>, <code>status</code>, <code>updated</code> và <code>code_ref</code>. <code>updated</code> là ngày sửa tài liệu lần cuối. <code>code_ref</code> là trạng thái code thực sự đã được kiểm tra. Commit mới hơn chỉ là tín hiệu lệch, chưa phải bằng chứng.</p>
+  </section>
+
+  <section id="cuoi-ngay">
+    <div class="sec-head">
+      <h2>Danh sách kiểm tra mỗi ngày</h2>
+      <p>Tick để theo dõi trong trình duyệt của bạn. Trạng thái chỉ lưu trên máy này.</p>
+    </div>
+    <ul class="check" id="check">
+      <li><label><input type="checkbox" id="c1"><span>Thread mới thì nạp pack trước khi làm: <span class="skill">onboard</span> <span class="skill">load</span></span></label></li>
+      <li><label><input type="checkbox" id="c2"><span>Khi gọi <span class="skill">run</span>, trả lời rõ cả hai chính sách: tạm dừng sau mỗi phase và commit mỗi phase</span></label></li>
+      <li><label><input type="checkbox" id="c3"><span>Vừa chốt quyết định, mở câu hỏi hoặc dời phạm vi thì chạy <span class="skill">save</span></span></label></li>
+      <li><label><input type="checkbox" id="c4"><span>Quyết định cần ra ngoài repo thì soạn ADR bằng <span class="skill">adr</span></span></label></li>
+      <li><label><input type="checkbox" id="c5"><span>Ngữ cảnh sắp đầy thì <span class="skill">save</span> trước, rồi mới chọn ở lại hay mở thread mới</span></label></li>
+      <li><label><input type="checkbox" id="c6"><span>Sau <code>/compact</code>, chạy <span class="skill">brief</span> xem pack có tụt sau thread không, và <span class="skill">recall</span> nếu cần ghi pack tiếp</span></label></li>
+      <li><label><input type="checkbox" id="c7"><span>Trước khi đóng máy, <span class="skill">save</span> điều thread đã xác lập mà pack chưa có</span></label></li>
+      <li><label><input type="checkbox" id="c8"><span>Commit bằng <span class="skill">commit-composer</span> hoặc <span class="skill">commit-composer-max</span>, duyệt cách nhóm trước khi đồng ý</span></label></li>
+    </ul>
+  </section>
+
+  <footer>
+    <p>Nguồn: bản hướng dẫn trong skill <code>baselinedocs-help</code> và <code>README.md</code> của repository. Khi chưa chắc dùng skill nào, gọi <code>baselinedocs-help</code>.</p>
+  </footer>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.0/dist/mermaid.min.js"></script>
+<script>
+if (window.mermaid) mermaid.initialize({ startOnLoad: true, theme: matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "default" });
+</script>
+<script>
+(function () {
+  var SITUATIONS = [
+    { q: "Chưa có gì, bắt đầu một việc mới", skill: "baselinedocs-init",
+      steps: ["<strong>init</strong> tạo pack đầu tiên (hoặc initiative nhiều pack nếu việc trải qua nhiều domain).", "Sau đó chạy <strong>run</strong> để thực hiện roadmap."] },
+    { q: "Đã có tài liệu, đề xuất hoặc spec", skill: "baselinedocs-adopt",
+      steps: ["<strong>adopt</strong> chuyển tài liệu nguồn thành pack có truy vết, không mất thông tin, quyết định hay câu hỏi mở.", "Sau đó chạy <strong>run</strong>."] },
+    { q: "Đã làm dở rồi nhưng chưa có pack", skill: "baselinedocs-save",
+      steps: ["<strong>save</strong> ghi ngữ cảnh hiện tại vào pack mà không phải khởi động lại từ đầu.", "Sau đó chạy <strong>run</strong>."] },
+    { q: "Pack đã có, tôi vừa mở thread mới", skill: "baselinedocs-onboard  hoặc  baselinedocs-load",
+      steps: ["<strong>onboard</strong> đọc hết pack rồi báo cáo trạng thái, đáng dùng khi bạn muốn nghe tóm tắt.", "<strong>load</strong> đọc hết pack và chỉ xác nhận một từ, đáng dùng khi bạn muốn bắt tay làm ngay.", "Initiative nhiều pack: cả hai đọc index trước và chỉ nạp một pack domain."] },
+    { q: "Đang làm giữa chừng, muốn biết đang ở đâu", skill: "baselinedocs-brief",
+      steps: ["<strong>brief</strong> báo vị trí, vướng mắc, và thứ thread có mà pack chưa có. Nó không nạp cả pack.", "Có lệch: chạy <strong>save</strong>. Cần đủ chi tiết: chạy <strong>onboard</strong>."] },
+    { q: "Vừa chốt một quyết định hoặc mở câu hỏi mới", skill: "baselinedocs-save",
+      steps: ["<strong>save</strong> ghi điều đó vào đúng file của pack. Checkpoint của run không bao gồm phần này.", "Quyết định đủ quan trọng với bên ngoài repo: tiếp tục với <strong>adr</strong>."] },
+    { q: "Quyết định đã chốt đáng thành một ADR", skill: "baselinedocs-adr",
+      steps: ["<strong>adr</strong> đọc đúng một entry đã chốt và ghi một file trong <code>docs/adr/</code>, trạng thái luôn là Proposed.", "Muốn pack ghi nhận ADR đó tồn tại thì chạy <strong>save</strong>."] },
+    { q: "Ngữ cảnh sắp đầy", skill: "baselinedocs-save",
+      steps: ["Luôn <strong>save</strong> trước, vì cả hai nhánh đều làm mất một phần thread.", "Pack đã mới: mở thread mới rồi <strong>onboard</strong> hoặc <strong>load</strong>.", "Thread còn giữ thứ chưa ghi được: <code>/compact</code> rồi <strong>brief</strong>."] },
+    { q: "Vừa compact xong và agent quên quy tắc ghi pack", skill: "baselinedocs-recall",
+      steps: ["<strong>recall</strong> đọc lại pack contract và report-style rồi xác nhận một từ. Nó không đọc pack nào.", "Nếu việc dở thuộc một skill khác, <strong>recall</strong> nói tên skill để gọi lại, không tự làm tiếp từ bản tóm tắt."] },
+    { q: "Hai tài liệu trong pack nói khác nhau", skill: "baselinedocs-sync-reconcile",
+      steps: ["<strong>sync-reconcile</strong> sửa mâu thuẫn. <strong>onboard</strong> chỉ báo mà không sửa.", "Không chắc tài liệu có tụt sau code: <strong>audit-drift</strong>. Không chắc một câu có đúng: <strong>audit-claims</strong>."] },
+    { q: "Pack quá nhiễu, hoặc trộn nhiều luồng việc", skill: "baselinedocs-maintain-compact  hoặc  baselinedocs-maintain-split",
+      steps: ["<strong>maintain-compact</strong> làm pack ngắn hơn mà không đổi thông tin.", "<strong>maintain-split</strong> tách một pack nhiều luồng thành các pack domain kèm initiative index."] },
+    { q: "Muốn đặt tên ngắn cho một phần của pack", skill: "baselinedocs-callout",
+      steps: ["<strong>callout</strong> mở một nhóm tên gọi tạm trong <code>introduction</code>, trỏ tới những mục đã có.", "Nó không tạo nội dung mới, và yêu cầu bạn nêu điều kiện kết thúc nhóm."] },
+    { q: "Một quy trình dùng lại được đang nằm trong pack", skill: "baselinedocs-extract-wiki",
+      steps: ["<strong>extract-wiki</strong> rút quy trình thành bài wiki ở <code>docs/wiki/</code> và liên kết ngược từ pack."] },
+    { q: "Muốn commit các thay đổi", skill: "commit-composer  hoặc  commit-composer-max",
+      steps: ["<strong>commit-composer</strong>: tiêu đề khoảng 50 ký tự, thân tùy chọn tối đa 5 gạch đầu dòng.", "<strong>commit-composer-max</strong>: thân đầy đủ gồm lý do, từng file và symbol đã đổi, rủi ro, điều đã kiểm chứng.", "Cả hai quét bí mật trên diff trước khi commit, in cách nhóm để bạn duyệt, và không bao giờ push."] },
+    { q: "Không biết nên dùng skill nào", skill: "baselinedocs-help",
+      steps: ["<strong>help</strong> giải thích từng skill và thứ tự dùng. Nó không đọc pack và không ghi gì."] }
+  ];
+
+  var opts = document.getElementById("opts");
+  var answer = document.getElementById("answer");
+
+  function show(i) {
+    var s = SITUATIONS[i];
+    var btns = opts.querySelectorAll("button");
+    for (var b = 0; b < btns.length; b++) btns[b].setAttribute("aria-pressed", b === i ? "true" : "false");
+    var html = '<span class="label">Gọi skill</span><div class="big">' + s.skill.replace(/  hoặc  /g, " &nbsp;hoặc&nbsp; ") + "</div>";
+    html += '<span class="label">Các bước</span><ol>';
+    for (var k = 0; k < s.steps.length; k++) html += "<li>" + s.steps[k] + "</li>";
+    html += "</ol>";
+    answer.innerHTML = html;
+  }
+
+  SITUATIONS.forEach(function (s, i) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.textContent = s.q;
+    b.setAttribute("aria-pressed", "false");
+    b.addEventListener("click", function () { show(i); });
+    opts.appendChild(b);
+  });
+  show(3);
+
+  // copy install command
+  var copyBtn = document.getElementById("copy-install");
+  copyBtn.addEventListener("click", function () {
+    var pre = document.getElementById("install-cmd");
+    var text = pre.textContent;
+    function selectIt() {
+      var r = document.createRange(); r.selectNodeContents(pre);
+      var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+      copyBtn.textContent = "Đã chọn, nhấn Ctrl+C";
+    }
+    try {
+      navigator.clipboard.writeText(text).then(function () {
+        copyBtn.textContent = "Đã sao chép";
+        setTimeout(function () { copyBtn.textContent = "Sao chép lệnh cài"; }, 1800);
+      }, selectIt);
+    } catch (e) { selectIt(); }
+  });
+
+  // checklist persistence (per-viewer convenience only)
+  var KEY = "baselinedocs-daily-checklist";
+  var boxes = document.querySelectorAll("#check input");
+  var saved = {};
+  try { saved = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { saved = {}; }
+  boxes.forEach(function (bx) {
+    bx.checked = !!saved[bx.id];
+    bx.addEventListener("change", function () {
+      saved[bx.id] = bx.checked;
+      try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch (e) {}
+    });
+  });
+})();
+</script>

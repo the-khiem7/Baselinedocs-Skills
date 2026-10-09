@@ -14,6 +14,10 @@ From a local clone, replace the repository URL with `.`. To see what the install
 
 Install the family, not individual skills. The skills hand off to each other by name: `baselinedocs-onboard` names `baselinedocs-sync-reconcile` for a contradiction it must not repair itself, and `baselinedocs-brief` names `baselinedocs-save` for a delta it must not write itself. A pointer to a skill that was never installed is a dead end the agent reaches only after the user has already asked for something.
 
+## Daily Guide
+
+[Daily workflow guide](https://raw.githack.com/the-khiem7/Baselinedocs-Skills/main/docs/onboarding/baselinedocs-daily-workflow.html) is the complete day-to-day reference for using this family, written in Vietnamese. It covers what a pack contains, a typical workday, a picker that answers which skill to call in a given situation, the full workflow diagram, common misreadings, and a daily checklist. It is a single HTML page that opens in a browser and needs no install.
+
 ## Workflow
 
 ```mermaid
