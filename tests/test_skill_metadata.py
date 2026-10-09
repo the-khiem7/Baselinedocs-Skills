@@ -16,6 +16,7 @@ ENTRYPOINTS = {
     "baselinedocs-callout",
     "baselinedocs-help",
     "baselinedocs-adr",
+    "baselinedocs-self-upgrade",
 }
 
 # Lifecycle skills are agent-selected and say so in their display name. The one

@@ -81,12 +81,14 @@ flowchart TD
 | Prime the agent with a pack, silently  | `baselinedocs-load`    | Read the selected pack in full and confirm in one word    |
 | Turn a closed decision into an ADR     | `baselinedocs-adr`     | Draft one standalone ADR under `docs/adr/` from a decision entry |
 | Ask which skill to use and in what order | `baselinedocs-help`  | Explain every skill and the workflow, without reading a pack |
+| Upgrade the installed skills to the latest release | `baselinedocs-self-upgrade` | Compare every installed copy in every agent with the latest tag, then upgrade after you confirm |
 
 All of them set `policy.allow_implicit_invocation: false` for Codex, so they stay deliberate user actions. Three behaviors are worth knowing before you meet them:
 
 - `onboard` writes nothing, and on a multi-pack initiative it routes before it loads: it reads the index, takes one domain pack rather than the whole set, and reports every point where a loaded document leaned on something that was not loaded.
 - `run` invoked without both execution policies asks whether to pause after each phase and whether to commit each verified phase. It never chooses defaults silently.
 - `callout` writes no fact and creates no pack content. It points at elements that already exist, refuses when one does not, and requires a stated condition that ends the group before it will open one.
+- `self-upgrade` upgrades the installed skills, never a pack. It finds the highest `vX.Y.Z` tag, scans your home directory for every agent folder holding a `baselinedocs-*` skill, reports which are behind, and overwrites nothing until you confirm. It uses `npx skills update` first and a shallow clone of the tag for real copies `npx` leaves behind; it never writes through a link or junction.
 
 ## Agent-Selected Skills
 
@@ -195,7 +197,7 @@ Each skill follows the Agent Skills folder shape:
   scripts/        # only when the skill runs a bundled script
 ```
 
-`scripts/packtool.sh` is a read-only structure check for packs (`outline`, `find`, `next-id`, `close-plan`, `check`). Writer and audit skills run it after every write and before every report, and each one ships its own copy. The commit skills ship `scripts/commitkit.sh` the same way.
+`scripts/packtool.sh` is a read-only structure check for packs (`outline`, `find`, `next-id`, `close-plan`, `check`). Writer and audit skills run it after every write and before every report, and each one ships its own copy. The commit skills ship `scripts/commitkit.sh` the same way, and `baselinedocs-self-upgrade` ships `scripts/upgradekit.sh`, a read-only scan that compares installed versions with a release.
 
 Every `SKILL.md` carries one top-level `version:` shared by the whole family. It is stamped on `main` when a `vX.Y.Z` tag is pushed, so the value changes only at release.
 

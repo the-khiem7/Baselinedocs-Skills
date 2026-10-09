@@ -78,12 +78,21 @@ It is a second asset rather than a section of the contract on purpose. The contr
 - A unit id is a hash of the file and the hunk body, not a position, because line numbers move after every commit. `patch` recomputes each selected hunk's new-side offset when an earlier hunk of the file is left out; `git apply --cached --unidiff-zero` positions a hunk by that offset and rejects a stale one.
 - Test fixtures that look like a secret are assembled at run time. A scanner reading this repository would otherwise flag the test file.
 
+## The self-upgrade skill
+
+`baselinedocs-self-upgrade` upgrades the installed skills, not a pack. It is a family skill (`baselinedocs-*`, shared `version:`, stamped by the release) so it can compare and upgrade itself; a `commit-*` name would forbid the `version:` it needs.
+
+- It ships `scripts/upgradekit.sh` (`inventory`, `compare`), the one script a family skill owns outright. There is no canonical copy in `contract/`: a single consumer makes a byte-identical copy a duplication to keep in sync. `tests/test_conventions.py` names it in `OWN_SCRIPTS`, and `tests/test_upgradekit.py` is its test surface and builds a fake home in a temporary directory.
+- `upgradekit.sh` obeys the `packtool.sh` rules: POSIX sh and awk only, never writes, never touches the network, does not run git. The agent runs `git ls-remote`, `npx skills update`, the clone, and every write, so the script stays safe to run inside any machine.
+- It finds installs by globbing `$HOME/.<agent>/skills` and `$HOME/.<agent>/<sub>/skills`, not from a list of agents. A list goes stale with every new agent; `.config/devin`, `.config/goose`, and `.gemini/skills` were found only because the scan is a glob.
+- The `kind` column is a hint. Git for Windows `[ -L ]` reads a junction as a plain directory, so the skill checks the link type itself before it replaces or deletes a path. Writing through a junction would damage the shared copy every agent reads.
+
 ## Conventions
 
 - ASCII hyphen only. No en dash, no em dash. Enforced by `test_no_typographic_dashes` across every `.md`, `.yaml`, `.yml`, `.txt`, `.py`, and `.ini` file Git lists for the repo.
 - State the pack-writing skill count in one sentence only, the one under `The pack contract`. Everywhere else say "every pack-writing skill". `test_references.py` pins that sentence against `WRITER_SKILLS` and fails on a second one, because a count repeated in prose goes stale the next time a skill is added or removed. It is pinned to `WRITER_SKILLS` rather than `CONTRACT_SKILLS` because a full reader ships the contract too, so the two counts differ and the prose is about writing.
 - Before merging or deleting a skill, read `docs/baseline/skill-consolidation/skill-consolidation.hallucination.md` SC-D1. The merge test is two conditions, not one, and two plausible-looking alternatives are recorded there as rejected so they are not proposed again.
-- Skill folder shape: `SKILL.md`, `agents/openai.yaml`, `references/` only when needed, and `scripts/packtool.sh` in the skills that ship it.
+- Skill folder shape: `SKILL.md`, `agents/openai.yaml`, `references/` only when needed, and `scripts/packtool.sh` in the skills that ship it. `baselinedocs-self-upgrade` also owns `scripts/upgradekit.sh`.
 - User entrypoints set `allow_implicit_invocation: false`. Lifecycle skills keep it enabled and prefix their display name with `Baseline Docs Internal:`. `baselinedocs-recall` is the one lifecycle skill named `Baseline Docs: Recall` without `Internal`, because a user calls it by hand as often as an agent selects it.
 - That policy field is Codex-only. On other hosts the `description` frontmatter is the real selection surface, so it must carry the vocabulary a user would actually type.
 

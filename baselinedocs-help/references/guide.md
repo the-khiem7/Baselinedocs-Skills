@@ -18,6 +18,7 @@ The user names these. Each one is explicit-only, so none fires on its own.
 | `baselinedocs-callout` | wanting a two-word name for a slice of the pack | a temporary named routing table inside `introduction` |
 | `baselinedocs-adr` | a closed decision in `hallucination` deserves an Architectural Decision Record | one standalone ADR under `docs/adr/`, status Proposed |
 | `baselinedocs-help` | asking what the skills do or which to use | this guide |
+| `baselinedocs-self-upgrade` | the installed baselinedocs skills may be behind the latest release, in any agent on this machine | every installed copy compared with the latest tag, then upgraded after you confirm; no pack is touched |
 
 ## Skills the agent picks
 
@@ -87,3 +88,4 @@ When a host cannot render the diagram, give the path in words: start with `init`
 | one thing is called compact | Two are. Host `/compact` shrinks the conversation. `baselinedocs-maintain-compact` shrinks the pack, on a different axis: a pack gone noisy over months |
 | `onboard` and `load` are the same | Both read the pack in full. `onboard` then reports its state; `load` confirms in one word and nothing else |
 | an ADR is written into the pack | It is not. `baselinedocs-adr` reads a closed decision and writes a file under `docs/adr/`; recording that the ADR exists in the pack is `baselinedocs-save` |
+| `self-upgrade` updates a pack | It does not. It upgrades the installed skills. Bringing a pack's documents up to the code is `baselinedocs-sync-codebase` |

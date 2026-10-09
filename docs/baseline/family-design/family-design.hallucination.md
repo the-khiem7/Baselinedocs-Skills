@@ -3,7 +3,7 @@ baseline_schema: "2.0"
 pack: "family-design"
 document: "hallucination"
 status: "active"
-updated: "2026-10-07"
+updated: "2026-10-09"
 code_ref: "uncommitted"
 ---
 
@@ -67,6 +67,7 @@ Every identifier in this initiative carries its pack's prefix: `FD-` here, `SC-`
 | FD-D46 | `packtool.sh`, a mechanical structure check every writer runs before reporting a write | current, amended by FD-D47 | FD-D7, FD-D41, FD-D42, FD-D47, FD-Q5 |
 | FD-D47 | how a closed question keeps its number, and the packtool changes a field report drove | current, amends FD-D46 | FD-D46, FD-D42, FD-D30, FD-D7, FD-Q7 |
 | FD-D48 | `commit-composer` and `commit-composer-max` committing a working tree at hunk level through a shared convention and a read-only kit | current | FD-D1, FD-D7, FD-D39, FD-D46 |
+| FD-D49 | `baselinedocs-self-upgrade` upgrading the installed skills in every agent through a read-only scan and a confirmed overwrite | current | FD-D1, FD-D45, FD-D46, FD-D48 |
 | FD-Q1 | hiding internal helpers at package level rather than by naming convention | open, deferred on a missing platform feature | FD-D1 |
 | FD-Q2 | installing checkpoint hooks across more than one repository | closed, hook mechanism removed | FD-D6, FD-D37 |
 | FD-Q5 | who, if anyone, owns misfiled-content detection now that `onboard` no longer checks it | open, structural half covered by FD-D46 | FD-D34, FD-D46 |
@@ -751,6 +752,34 @@ A new thread is the default once the pack is current, which after a save it is. 
 **Rejected: committing without showing the grouping.** Grouping is a judgement and a commit is costly to undo.
 
 **Rejected: a Python or Go kit.** The reasons FD-D46 gave for `packtool.sh`.
+
+## FD-D49: `baselinedocs-self-upgrade` upgrades the installed skills in every agent through a read-only scan and a confirmed overwrite
+
+**Decided.** Add `baselinedocs-self-upgrade`, a user entrypoint (`allow_implicit_invocation: false`, display name `Baseline Docs Self-Upgrade`) that upgrades the installed baselinedocs skills, never a pack. The agent takes the latest release from `git ls-remote --tags` (highest `vMAJOR.MINOR.PATCH`), falling back to the `version:` line of the skill's own `SKILL.md` on `main` when the tag listing fails, and stops when `main` reads lower than the tag. `scripts/upgradekit.sh` (`inventory`, `compare <latest>`) globs `$HOME/.<agent>/skills` and `$HOME/.<agent>/<sub>/skills` for `baselinedocs-*/SKILL.md` and prints one row per skill per agent folder: status, skill, version, kind, path. The agent reports by agent folder and asks for confirmation as its own question before any write. Upgrade runs `npx skills update -g -y`, re-runs `compare`, then replaces each real folder still behind or unparsable from a shallow clone of the tag, this skill's own folders last. It never writes or deletes through a link or junction, never deletes a skill folder, never adds a skill that is not installed. The skill is `baselinedocs-*` so it carries the family `version:` (FD-D45) and can upgrade itself; its one script has no canonical copy in `contract/`, and `tests/test_conventions.py` names it in `OWN_SCRIPTS`.
+
+**Why.** Measured on this machine 2026-10-09: 190 installs of 19 skills across `.agents`, `.agent`, `.claude`, `.gemini/skills`, `.kilocode`, `.kiro`, `.config/crush`, `.config/devin`, `.config/goose`, `.snowflake/cortex`, all `3.1.0` except 17 real copies under `.gemini/config/skills` whose `SKILL.md` has no `version:` at all. Most agent folders are links into `~/.agents/skills`, which `npx` refreshes; the real copies are invisible to it and stay old. FD-D45 stamps the version and nothing reads it back, so a stale machine is invisible. Discovery is a glob because three of those folders were absent from every list written beforehand. The network commands belong to the agent because `AGENTS.md` fixes the scripts as no-network and read-only, so the helper stays safe to run in any repository. The stamp check exists because the tag precedes the stamp commit (FD-D45): an upgrade in that window installs the old version and the machine still reads as outdated.
+
+**What breaks if ignored.** A machine runs rules several releases old with nothing saying so. An upgrade that writes through a junction deletes the shared copy every other agent reads. An upgrade without confirmation overwrites edits a user made in an agent's skill folder.
+
+**Accepted cost.** Not run end to end: `npx skills update -g -y` and the clone fallback have not been executed against a real install, only `inventory` and `compare` (190 rows read; `compare 3.1.0` reported the 17 unparsable rows, `compare 9.9.9` reported all 190 behind and exited 1). Whether `npx skills update` honours the lock file's `sourceUrl` for an install made from an https URL is unverified; the re-run of `compare` is what catches a no-op. The `kind` column reads a junction as `dir`, so the link check is the agent's, not the script's. The version of a symbolic link and of its target are the same file, so a row set over-counts one physical copy per link. The scan reaches two levels below a dot-directory in `$HOME` only, so an install elsewhere, a project-scope install for example, is not seen. mawk and BWK awk wait on CI, as for the other kits. No host has selected the skill from a plain request.
+
+**Rejected: name `baselinedocs-update`.** Reads as updating a pack's documents, which the family calls `sync-*` and `maintain-*`; the user asked for a name that says the skills themselves are upgraded.
+
+**Rejected: a `commit-*` name.** Escapes the family tests, but forbids the `version:` the skill needs to compare itself.
+
+**Rejected: automatic upgrade on detection.** Overwrites every agent's folder on the machine, including a user's local edits.
+
+**Rejected: `npx skills update` alone.** Does not reach real copies, the 17 found here.
+
+**Rejected: clone and copy alone.** Reimplements link handling and the lock file that the installer already keeps.
+
+**Rejected: a hard-coded list of agent folders.** Missed `.config/devin`, `.config/goose`, `.gemini/skills` when first written.
+
+**Rejected: the script fetching the release.** Breaks the no-network rule every other kit holds.
+
+**Rejected: a canonical copy in `contract/` with a pinned packaged copy.** One consumer makes the copy a duplication to keep in sync.
+
+**Rejected: deleting skills the repository dropped.** The installer adds and overwrites but never removes; a deletion is not an upgrade.
 
 ## Open questions
 

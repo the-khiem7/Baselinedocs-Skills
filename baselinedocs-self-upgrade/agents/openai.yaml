@@ -1,0 +1,6 @@
+interface:
+  display_name: "Baseline Docs Self-Upgrade"
+  short_description: "Upgrade the installed baselinedocs skills to the latest release in every agent"
+  default_prompt: "Use $baselinedocs-self-upgrade to check the latest baselinedocs release and upgrade every installed copy on this machine."
+policy:
+  allow_implicit_invocation: false

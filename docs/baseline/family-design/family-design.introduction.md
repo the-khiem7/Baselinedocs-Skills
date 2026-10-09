@@ -3,7 +3,7 @@ baseline_schema: "2.0"
 pack: "family-design"
 document: "introduction"
 status: "active"
-updated: "2026-10-07"
+updated: "2026-10-09"
 code_ref: "uncommitted"
 ---
 
@@ -31,7 +31,7 @@ Verified against the working tree at `0cb913f`, not read off `DESIGN.md`.
 | Fact | State |
 |---|---|
 | skills on disk | every `baselinedocs-*` folder. No count is kept here: `tests/helpers.py` enumerates them and each test classifies every one |
-| user entrypoints | `init`, `adopt`, `save`, `run`, `onboard`, `load`, `brief`, `callout`, `help`, `adr`. All set `allow_implicit_invocation: false`. Pinned by `ENTRYPOINTS` in `tests/test_skill_metadata.py` |
+| user entrypoints | `init`, `adopt`, `save`, `run`, `onboard`, `load`, `brief`, `callout`, `help`, `adr`, `self-upgrade`. All set `allow_implicit_invocation: false`. Pinned by `ENTRYPOINTS` in `tests/test_skill_metadata.py` |
 | one-time administration | none |
 | lifecycle skills, agent-selected | every other skill, all `true`. Includes `recall`, FD-D40 |
 | pack schema | `2.0`. Three core documents, two conditional |
@@ -44,6 +44,7 @@ Verified against the working tree at `0cb913f`, not read off `DESIGN.md`.
 | execution policies | `approval_policy` and `commit_policy`, defined in `baselinedocs-run/references/execution-contract.md`, gated by `tests/test_run_policy.py` |
 | test command and result | `uvx --from "pytest>=8,<10" --with pyyaml pytest tests/ -q`, green. The pass count is not recorded: it changes with every skill added |
 | commit skills | `commit-composer` and `commit-composer-max`: user entrypoints outside the `baselinedocs-*` naming, so the family tests and the release stamp skip them. Tested by `tests/test_commit_skills.py` and `tests/test_commitkit.py`. FD-D48 |
+| installed-skill upgrade | `baselinedocs-self-upgrade`: a family skill that upgrades the installed baselinedocs skills in every agent on a machine, never a pack. Its read-only `scripts/upgradekit.sh` is the one script a single family skill owns. Tested by `tests/test_upgradekit.py`. FD-D49 |
 | baseline packs in this repository | this one and `skill-consolidation`, routed by `docs/baseline/baselinedocs.index.md` |
 | source of this pack | `DESIGN.md`, 495 lines, 60,743 bytes. Deleted 2026-08-28 after coverage was verified, and recoverable at `git show 0cb913f:DESIGN.md`. FD-D27 |
 

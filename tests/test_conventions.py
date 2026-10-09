@@ -76,7 +76,11 @@ def test_skill_depends_on_no_sibling(name):
 
 # Folder shape from AGENTS.md: SKILL.md, agents/openai.yaml, references/ only
 # when needed, and scripts/packtool.sh as the one script. A stray file here ships
-# to everyone who installs the skill.
+# to everyone who installs the skill. The one exception is a script a single skill
+# owns outright and no other skill ships, named here so a second one is a decision.
+OWN_SCRIPTS = {"baselinedocs-self-upgrade": "scripts/upgradekit.sh"}
+
+
 @pytest.mark.parametrize("name", SKILL_NAMES)
 def test_skill_folder_has_only_the_shipped_shape(name):
     folder = ROOT / name
@@ -91,7 +95,13 @@ def test_skill_folder_has_only_the_shipped_shape(name):
     strays = sorted(
         item
         for item in relative
-        if item not in ("SKILL.md", "agents/openai.yaml", "scripts/packtool.sh")
+        if item
+        not in (
+            "SKILL.md",
+            "agents/openai.yaml",
+            "scripts/packtool.sh",
+            OWN_SCRIPTS.get(name),
+        )
         and not (item.startswith("references/") and item.count("/") == 1)
     )
     assert strays == [], f"{name} ships files outside the folder shape: {strays}"
