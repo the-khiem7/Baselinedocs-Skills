@@ -9,7 +9,7 @@ This repo is the source of the `baselinedocs` skill family. Everything here is a
 | Path | Ships | Read by |
 |---|---|---|
 | `<skill>/SKILL.md`, `<skill>/agents/openai.yaml`, `<skill>/references/*` | yes | the running agent |
-| `AGENTS.md`, `README.md`, `contract/`, `tests/`, `scripts/`, `.github/`, `docs/baseline/` | no | whoever works in this repo |
+| `AGENTS.md`, `README.md`, `contract/`, `tests/`, `scripts/`, `.github/`, `assets/`, `docs/baseline/` | no | whoever works in this repo |
 
 Consequences:
 

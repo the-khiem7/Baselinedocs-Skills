@@ -1,4 +1,4 @@
-![Baselinedocs](logo.png)
+![Baselinedocs](assets/banner.png)
 
 **Adaptive operational memory for agent-assisted software work.**
 

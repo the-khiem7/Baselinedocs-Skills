@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>banner</title>
+<!-- Source of ../banner.png. Serve the assets folder over HTTP, open source/banner.html in a 2400x630 viewport, and screenshot it at CSS scale. Fonts load from Google Fonts. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap">
+<style>
+:root {
+  --paper: #f3f8fc;
+  --rule: #d3e2ee;
+  --sky: #4fb6ec;
+  --mid: #2e86c8;
+  --navy: #0a4796;
+  --ink: #12324f;
+  --muted: #4d6679;
+  --red: #ff3b1d;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: var(--paper); }
+/* stage is 1600x420 and zoomed 1.5x so the PNG comes out at 2400x630 */
+.stage {
+  zoom: 1.5;
+  position: relative; width: 1600px; height: 420px; overflow: hidden;
+  background:
+    linear-gradient(90deg, rgba(255,59,29,0.34) 0 2px, transparent 2px) 64px 0 / 2px 100% no-repeat,
+    repeating-linear-gradient(180deg, transparent 0 41px, var(--rule) 41px 42px) 0 20px / 100% 100%,
+    linear-gradient(115deg, #f8fbfe 0%, var(--paper) 55%, #e6f1f9 100%);
+  font-family: "Outfit", "Segoe UI", system-ui, sans-serif;
+}
+/* logo.png is 2000x313 with a white ground: crop to the mark and wordmark (x 240-1760, y 20-295) and multiply the white away */
+.logo {
+  position: absolute; left: 100px; top: 44px; width: 800px; height: 144.7px; overflow: hidden;
+  mix-blend-mode: multiply;
+}
+.logo img { position: absolute; left: -126.3px; top: -10.5px; width: 1052.6px; max-width: none; }
+.tag {
+  position: absolute; left: 100px; top: 212px; width: 870px; white-space: nowrap;
+  font-size: 27px; line-height: 1.25; font-weight: 500; color: var(--ink); letter-spacing: -0.005em;
+}
+.sub {
+  position: absolute; left: 100px; top: 262px; width: 740px;
+  font-size: 19px; line-height: 1.45; color: var(--muted);
+}
+.flow {
+  position: absolute; left: 100px; top: 346px; display: flex; align-items: center; gap: 10px;
+  font-family: "JetBrains Mono", ui-monospace, Consolas, monospace; font-size: 15px; font-weight: 500;
+}
+.flow span.c { padding: 4px 12px; border: 1.5px solid var(--mid); border-radius: 6px; color: var(--navy); background: rgba(255,255,255,0.7); }
+.flow span.c.on { background: var(--navy); border-color: var(--navy); color: #fff; }
+.flow span.a { color: var(--red); font-weight: 600; }
+
+.card {
+  position: absolute; width: 470px; background: #fff; border: 1.5px solid #bfd3e3; border-radius: 12px;
+  box-shadow: 0 10px 26px rgba(10, 71, 150, 0.12);
+}
+.hd {
+  height: 42px; display: flex; align-items: center; justify-content: space-between; padding: 0 16px;
+  font-family: "JetBrains Mono", ui-monospace, Consolas, monospace; font-size: 14px; font-weight: 600; color: var(--navy);
+}
+.chip { font-size: 12px; padding: 2px 9px; border-radius: 999px; background: #e3f1fa; color: var(--mid); font-weight: 600; }
+.chip.red { background: #ffe6e1; color: #c92a10; }
+.c1 { left: 1050px; top: 34px; }
+.c2 { left: 1018px; top: 78px; }
+.c3 { left: 986px; top: 122px; height: 246px; }
+.body { padding: 4px 18px 0 18px; border-top: 1.5px solid #e3edf5; }
+.row { display: grid; grid-template-columns: 62px 1fr 64px; align-items: center; gap: 12px; height: 44px; font-size: 16px; color: var(--ink); }
+.row b { font-family: "JetBrains Mono", ui-monospace, Consolas, monospace; font-size: 13px; color: var(--muted); font-weight: 600; }
+.bar { height: 8px; border-radius: 4px; background: #e3edf5; overflow: hidden; }
+.bar i { display: block; height: 100%; border-radius: 4px; }
+.st { font-family: "JetBrains Mono", ui-monospace, Consolas, monospace; font-size: 12px; font-weight: 600; text-align: right; }
+.next {
+  margin-top: 8px; padding: 10px 12px; border-radius: 8px; background: #f3f8fc;
+  font-size: 14px; color: var(--muted); border-left: 3px solid var(--red); line-height: 1.35;
+}
+.next em { font-style: normal; font-weight: 600; color: var(--ink); }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="logo"><img src="../logo.png" alt="baselinedocs"></div>
+  <div class="tag">Adaptive operational memory for agent-assisted software work.</div>
+  <div class="sub">Decisions, evidence, and the exact continuation point, so the next conversation resumes without chat history.</div>
+  <div class="flow"><span class="c">init</span><span class="a">&rarr;</span><span class="c on">run</span><span class="a">&rarr;</span><span class="c">save</span><span class="a">&rarr;</span><span class="c">onboard</span></div>
+
+  <div class="card c1"><div class="hd"><span>pack.hallucination.md</span><span class="chip red">FD-D7</span></div></div>
+  <div class="card c2"><div class="hd"><span>pack.introduction.md</span><span class="chip">scope</span></div></div>
+  <div class="card c3">
+    <div class="hd"><span>pack.roadmap.md</span><span class="chip">active</span></div>
+    <div class="body">
+      <div class="row"><b>Phase 1</b><div class="bar"><i style="width:100%;background:var(--navy)"></i></div><span class="st" style="color:var(--navy)">done</span></div>
+      <div class="row"><b>Phase 2</b><div class="bar"><i style="width:62%;background:var(--sky)"></i></div><span class="st" style="color:var(--mid)">active</span></div>
+      <div class="row"><b>Phase 3</b><div class="bar"><i style="width:0%"></i></div><span class="st" style="color:var(--muted)">next</span></div>
+      <div class="next"><em>Next action:</em> run phase 2, then save the closed decision.</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
