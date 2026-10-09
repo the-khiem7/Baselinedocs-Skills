@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>daily-guide-card</title>
+<!-- Source of ../daily-guide-card.webp and ../daily-guide-card-dark.webp. Serve the assets folder over HTTP, open source/daily-guide-card.html?theme=light and ?theme=dark in a viewport at least 2500 px wide, wait for fonts, screenshot the .item (id daily-guide-card) at CSS scale, and finish it with finish.py (rounded corners, border, lossless WebP): uvx --from pillow python -I assets/source/finish.py light|dark <dst.webp> <src.png>. The item is 1200x300 CSS px, so 2400x600 px. -->
+<script src="shared.js"></script>
+<link rel="stylesheet" href="shared.css">
+<style>
+#daily-guide-card { height: 300px; }
+.wrap { position: absolute; inset: 0; padding: 40px 48px; display: flex; align-items: center; gap: 40px; }
+.left { flex: 1; }
+.head { display: flex; align-items: center; gap: 14px; }
+h2 { margin: 12px 0 0; font-size: 44px; line-height: 1.1; font-weight: 600; color: var(--ink); letter-spacing: -0.01em; }
+.sub { margin-top: 10px; font-size: 21px; line-height: 1.4; color: var(--muted); max-width: 700px; }
+.chips { margin-top: 20px; display: flex; flex-wrap: wrap; gap: 10px; max-width: 760px; }
+.right { width: 300px; text-align: center; }
+.go { display: flex; align-items: center; justify-content: center; gap: 12px; height: 76px; border-radius: 14px; background: var(--navy); color: var(--on); font-size: 26px; font-weight: 600; box-shadow: 0 10px 24px var(--shadow); }
+.go b { color: var(--on); font-family: "JetBrains Mono", ui-monospace, Consolas, monospace; }
+.note { margin-top: 14px; font-size: 18px; color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="sheet">
+<div class="item" id="daily-guide-card">
+  <div class="wrap">
+    <div class="left">
+      <div class="head"><span class="eyebrow">Daily guide</span><span class="chip red">Vietnamese</span></div>
+      <h2>The working day, in one page</h2>
+      <div class="sub">What a pack holds, how a day runs, and which skill to call.</div>
+      <div class="chips">
+        <span class="chip">what a pack holds</span><span class="chip">a typical workday</span><span class="chip">skill picker</span>
+        <span class="chip">workflow diagram</span><span class="chip">common misreadings</span><span class="chip">daily checklist</span>
+      </div>
+    </div>
+    <div class="right">
+      <div class="go">Open the guide <b>&rarr;</b></div>
+      <div class="note">One HTML page. Opens in a browser, no install.</div>
+    </div>
+  </div>
+</div>
+</div>
+</body>
+</html>

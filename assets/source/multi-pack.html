@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>multi-pack</title>
+<!-- Source of ../multi-pack.webp and ../multi-pack-dark.webp. Serve the assets folder over HTTP, open source/multi-pack.html?theme=light and ?theme=dark in a viewport at least 2500 px wide, wait for fonts, screenshot the .item (id multi-pack) at CSS scale, and finish it with finish.py (rounded corners, border, lossless WebP): uvx --from pillow python -I assets/source/finish.py light|dark <dst.webp> <src.png>. The item is 1200x580 CSS px, so 2400x1160 px. -->
+<script src="shared.js"></script>
+<link rel="stylesheet" href="shared.css">
+<style>
+#multi-pack { height: 580px; }
+.abs { position: absolute; }
+.index { left: 200px; top: 34px; width: 800px; height: 200px; overflow: hidden; }
+.hd { height: 50px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; border-bottom: 1.5px solid var(--cardline); }
+table { border-collapse: collapse; width: 100%; font-size: 18px; }
+th { font-family: "JetBrains Mono", ui-monospace, Consolas, monospace; font-size: 15px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); text-align: left; font-weight: 600; padding: 9px 20px; background: var(--soft); }
+td { padding: 10px 20px; border-top: 1.5px solid var(--cardline); }
+td.id { font-family: "JetBrains Mono", ui-monospace, Consolas, monospace; font-weight: 600; color: var(--navy); }
+.pack { top: 340px; width: 470px; height: 170px; padding: 16px 20px; }
+.pack .top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.pack .nm { font-size: 22px; }
+.files { font-family: "JetBrains Mono", ui-monospace, Consolas, monospace; font-size: 17px; line-height: 1.7; color: var(--muted); }
+.cap { left: 0; right: 0; top: 534px; text-align: center; font-size: 20px; color: var(--muted); }
+.lbl { top: 396px; left: 543px; width: 114px; text-align: center; font-family: "JetBrains Mono", ui-monospace, Consolas, monospace; font-size: 17px; font-weight: 600; color: var(--redtext); }
+</style>
+</head>
+<body>
+<div class="sheet">
+<div class="item" id="multi-pack">
+  <svg class="abs" style="left:0;top:0" width="1200" height="580" viewBox="0 0 1200 580" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="ah" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path class="ah" d="M0 0L10 5L0 10z"/></marker>
+      <marker id="ahb" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path class="ahb" d="M0 0L10 5L0 10z"/></marker>
+    </defs>
+    <path class="ln dot" d="M400 234V290H295V338"/>
+    <path class="ln dot" d="M800 234V290H905V338"/>
+    <path class="ln" d="M660 438H538"/>
+  </svg>
+  <div class="card abs index">
+    <div class="hd"><span class="nm">avatar-modernization.index.md</span><span class="chip red">routing only</span></div>
+    <table>
+      <tr><th>Pack</th><th>Status</th><th>Depends on</th><th>Next checkpoint</th></tr>
+      <tr><td class="id">identity-api</td><td>active</td><td>-</td><td>schema verified</td></tr>
+      <tr><td class="id">avatar-ui</td><td>blocked</td><td>identity-api</td><td>consume signed URL</td></tr>
+    </table>
+  </div>
+  <div class="card abs pack" style="left:60px">
+    <div class="top"><span class="nm">identity-api</span><span class="chip on">active</span></div>
+    <div class="files">identity-api.introduction.md<br>identity-api.roadmap.md<br>identity-api.hallucination.md</div>
+  </div>
+  <div class="card abs pack" style="left:670px">
+    <div class="top"><span class="nm">avatar-ui</span><span class="chip red">blocked</span></div>
+    <div class="files">avatar-ui.introduction.md<br>avatar-ui.roadmap.md<br>avatar-ui.hallucination.md</div>
+  </div>
+  <div class="abs lbl">depends on</div>
+  <div class="abs cap">The index routes. Every domain pack stays directly addressable.</div>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>nav</title>
+<!-- Source of ../nav-*.webp and ../nav-*-dark.webp. Serve the assets folder over HTTP, open source/nav.html?theme=light and ?theme=dark in a viewport at least 500 px wide, wait for fonts, screenshot each .item (its id is the output name) at CSS scale, and finish it with finish.py (rounded corners, border, lossless WebP): uvx --from pillow python -I assets/source/finish.py light|dark <dst.webp> <src.png>. Each item is 200x56 CSS px, so 400x112 px. -->
+<script src="shared.js"></script>
+<link rel="stylesheet" href="shared.css">
+<style>
+.btn { width: 200px; height: 56px; display: flex; align-items: center; justify-content: center; gap: 10px; background: var(--card); box-shadow: inset 0 0 0 1.5px var(--cardline); }
+.btn::before { content: ""; width: 4px; height: 24px; border-radius: 2px; background: var(--red); }
+.btn span { font-family: "JetBrains Mono", ui-monospace, Consolas, monospace; font-size: 20px; font-weight: 600; color: var(--navy); }
+</style>
+</head>
+<body>
+<div class="sheet">
+  <div class="item btn" id="nav-install"><span>Install</span></div>
+  <div class="item btn" id="nav-workflow"><span>Workflow</span></div>
+  <div class="item btn" id="nav-scenarios"><span>Scenarios</span></div>
+  <div class="item btn" id="nav-skills"><span>Skills</span></div>
+  <div class="item btn" id="nav-contract"><span>Contract</span></div>
+  <div class="item btn" id="nav-guide"><span>Daily Guide</span></div>
+</div>
+</body>
+</html>

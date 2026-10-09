@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>scenarios</title>
+<!-- Source of ../scenario-*.webp and ../scenario-*-dark.webp. Serve the assets folder over HTTP, open source/scenarios.html?theme=light and ?theme=dark in a viewport at least 2500 px wide, wait for fonts, screenshot each .item (its id is the output name) at CSS scale, and finish it with finish.py (rounded corners, border, lossless WebP): uvx --from pillow python -I assets/source/finish.py light|dark <dst.webp> <src.png>. Items are 1200 CSS px wide and 300 tall (scenario-pressure 410), so 2400x600 px (2400x820). -->
+<script src="shared.js"></script>
+<link rel="stylesheet" href="shared.css">
+<style>
+.strip { padding: 30px 44px 0; height: 300px; }
+.strip.tall { height: 410px; }
+.hd { display: flex; align-items: baseline; gap: 16px; }
+h3 { margin: 0; font-size: 32px; line-height: 1.15; font-weight: 600; letter-spacing: -0.01em; }
+.sit { margin-top: 6px; font-size: 20px; color: var(--muted); }
+.steps { margin-top: 22px; display: flex; align-items: stretch; }
+.steps .ar { align-self: center; width: 32px; }
+.step { flex: 1; padding: 14px 16px 16px; min-height: 150px; }
+.step .ds { margin-top: 6px; }
+.lanes { margin-top: 22px; display: flex; align-items: stretch; }
+.lanes .save { width: 230px; padding: 14px 16px 16px; }
+.lanes .save .ds { margin-top: 6px; }
+.fork { width: 44px; flex: none; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 60px 0; }
+.fork .ar { width: 44px; }
+.lane-col { flex: 1; display: flex; flex-direction: column; gap: 16px; }
+.lane { display: flex; align-items: stretch; height: 120px; }
+.lane .tag { width: 74px; flex: none; align-self: center; }
+.lane .ar { align-self: center; width: 28px; }
+.lane .step { min-height: 0; }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+<div class="item strip" id="scenario-start">
+  <div class="hd"><span class="eyebrow">Scenario 1</span><h3>Start something new</h3></div>
+  <div class="sit">No documents yet, and the work will outlive one conversation.</div>
+  <div class="steps">
+    <div class="card step"><div class="nm" data-skill="baselinedocs-init">init</div><div class="ds">Creates the first pack: scope, roadmap, decision journal.</div></div><i class="ar"></i>
+    <div class="card step"><div class="nm" data-skill="baselinedocs-run">run</div><div class="ds">Asks for an approval and commit policy, then executes a phase.</div></div><i class="ar"></i>
+    <div class="card step"><div class="nm" data-skill="baselinedocs-save">save</div><div class="ds">Records a decision that closed or a question that opened.</div></div><i class="ar"></i>
+    <div class="card on step"><div class="nm">result</div><div class="ds">The next conversation resumes from the pack, not from memory.</div></div>
+  </div>
+</div>
+
+<div class="item strip" id="scenario-adopt">
+  <div class="hd"><span class="eyebrow">Scenario 2</span><h3>You already have a spec</h3></div>
+  <div class="sit">A proposal, a wiki export or a design document holds the plan.</div>
+  <div class="steps">
+    <div class="card step"><div class="nm" data-skill="baselinedocs-adopt">adopt</div><div class="ds">Distributes the source into a pack without losing information or provenance.</div></div><i class="ar"></i>
+    <div class="card step"><div class="nm" data-skill="baselinedocs-run">run</div><div class="ds">Executes the roadmap phase by phase, checkpointing each one.</div></div><i class="ar"></i>
+    <div class="card on step"><div class="nm">result</div><div class="ds">Decisions, assumptions and open questions sit apart from the plan.</div></div>
+  </div>
+</div>
+
+<div class="item strip tall" id="scenario-pressure">
+  <div class="hd"><span class="eyebrow">Scenario 3</span><h3>The context window is filling up</h3></div>
+  <div class="sit">Save first, then choose: stay in this thread, or leave it.</div>
+  <div class="lanes">
+    <div class="card save"><div class="nm" data-skill="baselinedocs-save">save</div><div class="ds">Always first. Both branches lose the thread, so the pack must hold it.</div></div>
+    <div class="fork"><i class="ar"></i><i class="ar"></i></div>
+    <div class="lane-col">
+      <div class="lane">
+        <span class="chip tag">stay</span>
+        <div class="card step"><div class="nm">/compact</div><div class="ds">The host shrinks the conversation.</div></div><i class="ar"></i>
+        <div class="card step"><div class="nm" data-skill="baselinedocs-brief">brief</div><div class="ds">Is the pack behind this thread?</div></div><i class="ar"></i>
+        <div class="card on step"><div class="nm">run or save</div><div class="ds">No delta: carry on. Delta: write it down.</div></div>
+      </div>
+      <div class="lane">
+        <span class="chip tag">leave</span>
+        <div class="card step"><div class="nm">new thread</div><div class="ds">The pack is now the only source of truth.</div></div><i class="ar"></i>
+        <div class="card step"><div class="nm"><span data-skill="baselinedocs-onboard">onboard</span> or <span data-skill="baselinedocs-load">load</span></div><div class="ds">Read the pack in full, with or without a report.</div></div><i class="ar"></i>
+        <div class="card on step"><div class="nm">run</div><div class="ds">Continue from the recorded next action.</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="item strip" id="scenario-initiative">
+  <div class="hd"><span class="eyebrow">Scenario 4</span><h3>One initiative, several domains</h3></div>
+  <div class="sit">An API, a UI and infrastructure move at different speeds.</div>
+  <div class="steps">
+    <div class="card step"><div class="nm" data-skill="baselinedocs-init">init</div><div class="ds">One first-class pack per domain, plus an index that only routes.</div></div><i class="ar"></i>
+    <div class="card step"><div class="nm" data-skill="baselinedocs-onboard">onboard</div><div class="ds">Reads the index, loads one pack, lists what it did not load.</div></div><i class="ar"></i>
+    <div class="card step"><div class="nm" data-skill="baselinedocs-callout">callout</div><div class="ds">Names a slice of a pack for later, with a condition that ends it.</div></div><i class="ar"></i>
+    <div class="card on step"><div class="nm">result</div><div class="ds">Each domain resumes on its own. Nothing is hidden behind a parent.</div></div>
+  </div>
+</div>
+
+<div class="item strip" id="scenario-adr">
+  <div class="hd"><span class="eyebrow">Scenario 5</span><h3>A decision deserves an ADR</h3></div>
+  <div class="sit">A closed decision matters outside the repository that made it.</div>
+  <div class="steps">
+    <div class="card step"><div class="nm" data-skill="baselinedocs-save">save</div><div class="ds">Closes the decision in the journal, with its reasoning.</div></div><i class="ar"></i>
+    <div class="card step"><div class="nm" data-skill="baselinedocs-adr">adr</div><div class="ds">Drafts one standalone ADR under docs/adr/, status Proposed.</div></div><i class="ar"></i>
+    <div class="card step"><div class="nm">save</div><div class="ds">Records in the pack that the ADR exists.</div></div><i class="ar"></i>
+    <div class="card on step"><div class="nm">result</div><div class="ds">A file that can be promoted, with no pointer into the pack.</div></div>
+  </div>
+</div>
+
+</div>
+</body>
+</html>

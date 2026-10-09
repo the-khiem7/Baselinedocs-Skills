@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>workflow</title>
+<!-- Source of ../workflow.webp and ../workflow-dark.webp. Serve the assets folder over HTTP, open source/workflow.html?theme=light and ?theme=dark in a viewport at least 2500 px wide, wait for fonts, screenshot the .item (id workflow) at CSS scale, and finish it with finish.py (rounded corners, border, lossless WebP): uvx --from pillow python -I assets/source/finish.py light|dark <dst.webp> <src.png>. The item is 1200x960 CSS px, so 2400x1920 px. -->
+<script src="shared.js"></script>
+<link rel="stylesheet" href="shared.css">
+<style>#workflow { height: 960px; }</style>
+</head>
+<body>
+<div class="sheet">
+<div class="item" id="workflow">
+<svg width="1200" height="960" viewBox="0 0 1200 960" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="ah" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path class="ah" d="M0 0L10 5L0 10z"/></marker>
+    <marker id="ahb" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path class="ahb" d="M0 0L10 5L0 10z"/></marker>
+  </defs>
+
+  <!-- entry doors -->
+  <text class="ink" x="600" y="30">What do you already have?</text>
+  <text class="ds" x="200" y="64">nothing yet</text>
+  <text class="ds" x="600" y="64">a document or spec</text>
+  <text class="ds" x="1000" y="64">work already underway</text>
+  <rect class="node" x="70" y="76" width="260" height="56" rx="10"/><text class="nm" x="200" y="112">init</text>
+  <rect class="node" x="470" y="76" width="260" height="56" rx="10"/><text class="nm" x="600" y="112">adopt</text>
+  <rect class="node" x="870" y="76" width="260" height="56" rx="10"/><text class="nm" x="1000" y="112">save</text>
+  <path class="ln" d="M200 132V160H440V188"/>
+  <path class="ln" d="M600 132V188"/>
+  <path class="ln" d="M1000 132V160H760V188"/>
+
+  <!-- run -->
+  <rect class="node on" x="340" y="190" width="520" height="64" rx="10"/>
+  <text class="nm w" x="600" y="219">run</text>
+  <text class="ds w" x="600" y="243">checkpoints the roadmap after every phase</text>
+  <path class="ln" d="M600 254V283"/>
+
+  <!-- pressure gate -->
+  <polygon class="node gate" points="450,340 600,285 750,340 600,395"/>
+  <text class="ink" x="600" y="335">Context under</text>
+  <text class="ink" x="600" y="358">pressure?</text>
+
+  <!-- no: save and loop back -->
+  <path class="ln" d="M750 340H818"/><text class="lb" x="784" y="328">no</text>
+  <rect class="node" x="820" y="290" width="360" height="110" rx="10"/>
+  <text class="nm" x="1000" y="322">save</text>
+  <text class="ds" x="1000" y="351">decision closed, question opened,</text>
+  <text class="ds" x="1000" y="375">scope moved, run stopped mid-phase</text>
+  <path class="ln" d="M1000 290V222H862"/>
+  <path class="ln dot" d="M1000 400V448"/>
+  <rect class="node ghost" x="870" y="450" width="300" height="80" rx="10"/>
+  <text class="nm" x="1020" y="482">adr</text>
+  <text class="ds" x="1020" y="509">a decision worth its own ADR</text>
+
+  <!-- yes: save before branching -->
+  <path class="ln" d="M450 340H402"/><text class="lb" x="426" y="328">yes</text>
+  <rect class="node" x="60" y="290" width="340" height="110" rx="10"/>
+  <text class="nm" x="230" y="322">save</text>
+  <text class="ds" x="230" y="351">always before branching:</text>
+  <text class="ds" x="230" y="375">both branches lose the thread</text>
+  <path class="ln" d="M230 400V448"/>
+
+  <!-- stay or leave -->
+  <polygon class="node gate" points="90,500 230,450 370,500 230,550"/>
+  <text class="ink" x="230" y="495">Stay in</text>
+  <text class="ink" x="230" y="518">this thread?</text>
+
+  <path class="ln" d="M230 550V598"/><text class="lb s" x="246" y="580">stay</text>
+  <rect class="node" x="80" y="600" width="300" height="70" rx="10"/>
+  <text class="nm" x="230" y="628">/compact</text>
+  <text class="ds" x="230" y="654">host shrinks the conversation</text>
+  <path class="ln" d="M230 670V716"/>
+  <rect class="node" x="50" y="718" width="360" height="84" rx="10"/>
+  <text class="nm" x="230" y="748">brief</text>
+  <text class="ds" x="230" y="777">is the pack behind this thread?</text>
+  <path class="ln" d="M140 802V852"/>
+  <path class="ln" d="M325 802V852"/>
+  <rect class="node" x="50" y="854" width="180" height="70" rx="10"/>
+  <text class="ds" x="140" y="880">no delta</text><text class="nm" x="140" y="908">run</text>
+  <rect class="node" x="240" y="854" width="170" height="70" rx="10"/>
+  <text class="ds" x="325" y="880">delta</text><text class="nm" x="325" y="908">save</text>
+
+  <path class="ln" d="M370 500H608"/><text class="lb" x="489" y="488">leave</text>
+  <rect class="node" x="610" y="470" width="200" height="60" rx="10"/>
+  <text class="ds" x="710" y="507">a new thread</text>
+  <path class="ln" d="M710 530V718"/>
+  <rect class="node" x="560" y="720" width="300" height="86" rx="10"/>
+  <text class="nm" x="710" y="750">onboard or load</text>
+  <text class="ds" x="710" y="779">read the pack, not the thread</text>
+  <path class="ln" d="M410 763H558"/><text class="lb" x="484" y="751">full detail</text>
+  <path class="ln" d="M710 806V850"/>
+  <rect class="node on" x="660" y="852" width="100" height="52" rx="10"/>
+  <text class="nm w" x="710" y="885">run</text>
+
+  <!-- why save first -->
+  <rect class="node" x="890" y="610" width="280" height="200" rx="10"/>
+  <text class="ink" x="1030" y="642">Why save comes first</text>
+  <text class="ds" x="1030" y="676">Both branches lose the thread.</text>
+  <text class="ds" x="1030" y="702">Stay keeps a lossy summary,</text>
+  <text class="ds" x="1030" y="728">leave keeps none. The pack is</text>
+  <text class="ds" x="1030" y="754">the only thing that survives</text>
+  <text class="ds" x="1030" y="780">either one.</text>
+
+  <text class="ds e" x="1170" y="940">Every skill name carries the baselinedocs- prefix.</text>
+</svg>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>problem</title>
+<!-- Source of ../problem.webp and ../problem-dark.webp. Serve the assets folder over HTTP, open source/problem.html?theme=light and ?theme=dark in a viewport at least 2500 px wide, wait for fonts, screenshot the .item (id problem) at CSS scale, and finish it with finish.py (rounded corners, border, lossless WebP): uvx --from pillow python -I assets/source/finish.py light|dark <dst.webp> <src.png>. The item is 1200x450 CSS px, so 2400x900 px. -->
+<script src="shared.js"></script>
+<link rel="stylesheet" href="shared.css">
+<style>
+#problem { height: 450px; }
+.lane { position: absolute; left: 48px; right: 48px; }
+.lane .eyebrow { margin-bottom: 14px; }
+.lane.a { top: 34px; }
+.lane.b { top: 246px; }
+.row { display: flex; align-items: center; }
+.step { width: 240px; height: 136px; padding: 16px 18px; }
+.step .ds { margin-top: 6px; }
+.row .ar { width: 48px; }
+.sep { position: absolute; left: 48px; right: 48px; top: 220px; border-top: 2px dashed var(--cardline); }
+</style>
+</head>
+<body>
+<div class="sheet">
+<div class="item" id="problem">
+  <div class="lane a">
+    <div class="eyebrow">Without a pack</div>
+    <div class="row">
+      <div class="card step"><div class="nm">a long thread</div><div class="ds">Decisions, evidence and the next step live only in the chat.</div></div>
+      <i class="ar"></i>
+      <div class="card step"><div class="nm">compaction</div><div class="ds">Or a fresh chat, started from whatever was copied across.</div></div>
+      <i class="ar"></i>
+      <div class="card step"><div class="nm">a summary</div><div class="ds">It keeps that a rule existed, not what the rule said.</div></div>
+      <i class="ar"></i>
+      <div class="card bad step"><div class="nm">lost</div><div class="ds">The exact continuation point is gone.</div></div>
+    </div>
+  </div>
+  <div class="sep"></div>
+  <div class="lane b">
+    <div class="eyebrow">With a pack</div>
+    <div class="row">
+      <div class="card step"><div class="nm">a long thread</div><div class="ds">The same work, in the same chat.</div></div>
+      <i class="ar"></i>
+      <div class="card step"><div class="nm">save</div><div class="ds">What the thread established goes into the pack.</div></div>
+      <i class="ar"></i>
+      <div class="card step"><div class="nm">onboard</div><div class="ds">Any new thread or agent reads the pack in full.</div></div>
+      <i class="ar"></i>
+      <div class="card on step"><div class="nm">resume</div><div class="ds">At the recorded next action, with the decisions intact.</div></div>
+    </div>
+  </div>
+</div>
+</div>
+</body>
+</html>

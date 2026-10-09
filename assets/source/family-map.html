@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>family-map</title>
+<!-- Source of ../family-map.webp and ../family-map-dark.webp. Every baselinedocs-* skill folder must appear here as a data-skill attribute: tests/test_readme_assets.py fails otherwise. Serve the assets folder over HTTP, open source/family-map.html?theme=light and ?theme=dark in a viewport at least 2500 px wide, wait for fonts, screenshot the .item (id family-map) at CSS scale, and finish it with finish.py (rounded corners, border, lossless WebP): uvx --from pillow python -I assets/source/finish.py light|dark <dst.webp> <src.png>. The item is 1200x650 CSS px, so 2400x1300 px. -->
+<script src="shared.js"></script>
+<link rel="stylesheet" href="shared.css">
+<style>
+#family-map { height: 650px; }
+.col { position: absolute; top: 30px; }
+.left { left: 48px; width: 600px; }
+.right { left: 684px; width: 468px; }
+.panel { padding: 16px 20px 14px; margin-bottom: 18px; }
+.panel h4 { margin: 0 0 8px; font-size: 24px; font-weight: 600; letter-spacing: -0.005em; }
+.panel .sub { font-size: 18px; color: var(--muted); margin-bottom: 8px; }
+.grp { font-family: "JetBrains Mono", ui-monospace, Consolas, monospace; font-size: 15px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--redtext); margin: 10px 0 4px; }
+.row { display: flex; align-items: center; gap: 14px; height: 36px; }
+.row .nm { width: 150px; flex: none; font-size: 19px; }
+.row .ds { font-size: 18px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 2px 0 2px; }
+.chips .chip { font-size: 18px; }
+.fine { margin-top: 10px; font-size: 18px; color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="sheet">
+<div class="item" id="family-map">
+  <div class="col left">
+    <div class="card panel">
+      <h4>You call these</h4>
+      <div class="sub">Deliberate entrypoints. Each name carries the baselinedocs- prefix.</div>
+      <div class="grp">Start</div>
+      <div class="row"><span class="nm" data-skill="baselinedocs-init">init</span><span class="ds">a new pack for new work</span></div>
+      <div class="row"><span class="nm" data-skill="baselinedocs-adopt">adopt</span><span class="ds">a pack from an existing document</span></div>
+      <div class="row"><span class="nm" data-skill="baselinedocs-save">save</span><span class="ds">what a thread established, written down</span></div>
+      <div class="grp">Work</div>
+      <div class="row"><span class="nm" data-skill="baselinedocs-run">run</span><span class="ds">execute phases, checkpoint each</span></div>
+      <div class="row"><span class="nm" data-skill="baselinedocs-onboard">onboard</span><span class="ds">load a pack and report its state</span></div>
+      <div class="row"><span class="nm" data-skill="baselinedocs-load">load</span><span class="ds">load a pack, answer in one word</span></div>
+      <div class="row"><span class="nm" data-skill="baselinedocs-brief">brief</span><span class="ds">where work stands, without loading</span></div>
+      <div class="row"><span class="nm" data-skill="baselinedocs-callout">callout</span><span class="ds">name a slice of a pack for later</span></div>
+      <div class="grp">Decide and look after</div>
+      <div class="row"><span class="nm" data-skill="baselinedocs-adr">adr</span><span class="ds">a closed decision, as a standalone ADR</span></div>
+      <div class="row"><span class="nm" data-skill="baselinedocs-help">help</span><span class="ds">which skill, in what order</span></div>
+      <div class="row"><span class="nm" data-skill="baselinedocs-self-upgrade">self-upgrade</span><span class="ds">bring installed skills to the latest release</span></div>
+    </div>
+  </div>
+  <div class="col right">
+    <div class="card panel">
+      <h4>The agent reaches for these</h4>
+      <div class="sub">Selected on their own when the condition shows up.</div>
+      <div class="grp">Sync: keep the pack true</div>
+      <div class="chips"><span class="chip" data-skill="baselinedocs-sync-codebase">sync-codebase</span><span class="chip" data-skill="baselinedocs-sync-decisions">sync-decisions</span><span class="chip" data-skill="baselinedocs-sync-reconcile">sync-reconcile</span></div>
+      <div class="grp">Audit: find what fell behind</div>
+      <div class="chips"><span class="chip" data-skill="baselinedocs-audit-drift">audit-drift</span><span class="chip" data-skill="baselinedocs-audit-claims">audit-claims</span></div>
+      <div class="grp">Maintain: keep it usable</div>
+      <div class="chips"><span class="chip" data-skill="baselinedocs-maintain-compact">maintain-compact</span><span class="chip" data-skill="baselinedocs-maintain-split">maintain-split</span></div>
+      <div class="grp">Knowledge and recall</div>
+      <div class="chips"><span class="chip" data-skill="baselinedocs-extract-wiki">extract-wiki</span><span class="chip" data-skill="baselinedocs-recall">recall</span></div>
+    </div>
+    <div class="card ghost panel">
+      <h4>Beside the pack</h4>
+      <div class="sub">Commit skills. They never read or write a pack.</div>
+      <div class="chips"><span class="chip">commit-composer</span><span class="chip">commit-composer-max</span></div>
+    </div>
+  </div>
+</div>
+</div>
+</body>
+</html>

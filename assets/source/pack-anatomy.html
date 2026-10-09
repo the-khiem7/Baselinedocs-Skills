@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>pack-anatomy</title>
+<!-- Source of ../pack-anatomy.webp and ../pack-anatomy-dark.webp. Serve the assets folder over HTTP, open source/pack-anatomy.html?theme=light and ?theme=dark in a viewport at least 2500 px wide, wait for fonts, screenshot the .item (id pack-anatomy) at CSS scale, and finish it with finish.py (rounded corners, border, lossless WebP): uvx --from pillow python -I assets/source/finish.py light|dark <dst.webp> <src.png>. The item is 1200x652 CSS px, so 2400x1304 px. -->
+<script src="shared.js"></script>
+<link rel="stylesheet" href="shared.css">
+<style>
+#pack-anatomy { height: 652px; }
+.col { position: absolute; top: 34px; }
+.left { left: 48px; width: 560px; }
+.right { left: 648px; width: 504px; }
+.eyebrow { margin-bottom: 12px; }
+.doc { padding: 12px 18px 14px; margin-bottom: 14px; height: 92px; }
+.doc .top { display: flex; align-items: center; justify-content: space-between; }
+.doc .ds { margin-top: 4px; }
+.gap { margin-top: 22px; }
+.mini { padding: 0; margin-bottom: 22px; overflow: hidden; }
+.mini .hd { height: 46px; display: flex; align-items: center; justify-content: space-between; padding: 0 18px; border-bottom: 1.5px solid var(--cardline); }
+.code { padding: 12px 18px 14px; font-family: "JetBrains Mono", ui-monospace, Consolas, monospace; font-size: 18px; line-height: 1.55; color: var(--ink); }
+.code .k { color: var(--mid); }
+.code .v { color: var(--redtext); }
+table { border-collapse: collapse; width: 100%; font-size: 18px; }
+th { font-family: "JetBrains Mono", ui-monospace, Consolas, monospace; font-size: 15px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); text-align: left; font-weight: 600; padding: 8px 14px; background: var(--soft); }
+td { padding: 8px 14px; border-top: 1.5px solid var(--cardline); color: var(--ink); }
+td.id { font-family: "JetBrains Mono", ui-monospace, Consolas, monospace; font-weight: 600; color: var(--navy); white-space: nowrap; }
+.h { padding: 10px 18px 14px; font-family: "JetBrains Mono", ui-monospace, Consolas, monospace; font-size: 18px; font-weight: 600; color: var(--ink); border-top: 1.5px solid var(--cardline); }
+
+
+</style>
+</head>
+<body>
+<div class="sheet">
+<div class="item" id="pack-anatomy">
+  <div class="col left">
+    <div class="eyebrow">Three core documents</div>
+    <div class="card doc"><div class="top"><span class="nm">pack.introduction.md</span><span class="chip">scope</span></div><div class="ds">Scope, current truth, target, constraints.</div></div>
+    <div class="card doc"><div class="top"><span class="nm">pack.roadmap.md</span><span class="chip">phases</span></div><div class="ds">Phases, evidence, risks, and the exact next action.</div></div>
+    <div class="card doc"><div class="top"><span class="nm">pack.hallucination.md</span><span class="chip red">the why</span></div><div class="ds">Open questions, closed decisions, rejected alternatives.</div></div>
+    <div class="eyebrow gap">Two conditional documents</div>
+    <div class="card ghost doc"><div class="top"><span class="nm">pack.sourcecode.md</span><span class="chip">if it helps</span></div><div class="ds">Architecture and execution flow.</div></div>
+    <div class="card ghost doc"><div class="top"><span class="nm">pack.useguide.md</span><span class="chip">if a consumer exists</span></div><div class="ds">Contract for whoever depends on the behavior.</div></div>
+  </div>
+  <div class="col right">
+    <div class="eyebrow">Every document starts with</div>
+    <div class="card mini">
+      <div class="hd"><span class="nm">frontmatter</span><span class="chip">yaml</span></div>
+      <div class="code">
+        <span class="k">baseline_schema:</span> <span class="v">"2.0"</span><br>
+        <span class="k">pack:</span> <span class="v">"avatar-rollout"</span><br>
+        <span class="k">document:</span> <span class="v">"roadmap"</span><br>
+        <span class="k">status:</span> <span class="v">"active"</span><br>
+        <span class="k">updated:</span> <span class="v">"2026-07-30"</span><br>
+        <span class="k">code_ref:</span> <span class="v">"2d0bf83"</span>
+      </div>
+    </div>
+    <div class="eyebrow">The decision journal opens with</div>
+    <div class="card mini">
+      <div class="hd"><span class="nm">## Entry index</span><span class="chip red">required</span></div>
+      <table>
+        <tr><th>Entry</th><th>About</th><th>Status</th></tr>
+        <tr><td class="id">AR-D7</td><td>where a rule is stated</td><td>current</td></tr>
+        <tr><td class="id">AR-Q2</td><td>whether to split the pack</td><td>open</td></tr>
+      </table>
+      <div class="h">## AR-D7: the pointer lives in SKILL.md</div>
+    </div>
+  </div>
+</div>
+</div>
+</body>
+</html>
