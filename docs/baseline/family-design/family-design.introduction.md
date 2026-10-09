@@ -3,7 +3,7 @@ baseline_schema: "2.0"
 pack: "family-design"
 document: "introduction"
 status: "active"
-updated: "2026-10-09"
+updated: "2026-10-10"
 code_ref: "uncommitted"
 ---
 
@@ -45,6 +45,7 @@ Verified against the working tree at `0cb913f`, not read off `DESIGN.md`.
 | test command and result | `uvx --from "pytest>=8,<10" --with pyyaml pytest tests/ -q`, green. The pass count is not recorded: it changes with every skill added |
 | commit skills | `commit-composer` and `commit-composer-max`: user entrypoints outside the `baselinedocs-*` naming, so the family tests and the release stamp skip them. Tested by `tests/test_commit_skills.py` and `tests/test_commitkit.py`. FD-D48 |
 | installed-skill upgrade | `baselinedocs-self-upgrade`: a family skill that upgrades the installed baselinedocs skills in every agent on a machine, never a pack. Its read-only `scripts/upgradekit.sh` is the one script a single family skill owns. Tested by `tests/test_upgradekit.py`. FD-D49 |
+| README illustrations | light and dark WebP pairs under `assets/`, rendered from `assets/source/*.html`; the README selects them with `<picture>` and has no Mermaid. `banner.png` is the one PNG and has no dark variant. Tested by `tests/test_readme_assets.py` against the family map source only. FD-D50 |
 | baseline packs in this repository | this one and `skill-consolidation`, routed by `docs/baseline/baselinedocs.index.md` |
 | source of this pack | `DESIGN.md`, 495 lines, 60,743 bytes. Deleted 2026-08-28 after coverage was verified, and recoverable at `git show 0cb913f:DESIGN.md`. FD-D27 |
 

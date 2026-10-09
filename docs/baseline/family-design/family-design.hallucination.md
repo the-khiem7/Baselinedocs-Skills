@@ -3,7 +3,7 @@ baseline_schema: "2.0"
 pack: "family-design"
 document: "hallucination"
 status: "active"
-updated: "2026-10-09"
+updated: "2026-10-10"
 code_ref: "uncommitted"
 ---
 
@@ -27,7 +27,7 @@ Every identifier in this initiative carries its pack's prefix: `FD-` here, `SC-`
 | FD-D6 | how much the checkpoint hook is allowed to work out for itself | retired, superseded by FD-D37 | FD-D4, FD-D26, FD-D37 |
 | FD-D7 | which instruction surface carries a rule's pointer and which carries its content | current | FD-D2, FD-D21 |
 | FD-D8 | writing the family's intended order down, and where `save` sits in it | current | FD-D5, FD-D9, FD-D19 |
-| FD-D9 | what the README leads with | current | FD-D1, FD-D8 |
+| FD-D9 | what the README leads with | current, Mermaid format of the flowchart replaced by FD-D50 | FD-D1, FD-D8, FD-D50 |
 | FD-D10 | how `onboard` avoids reading half a pack and believing it read all of it | current | FD-D11, FD-D17 |
 | FD-D11 | what `onboard` loads when the target is an initiative rather than one pack | current | FD-D10, FD-D12, FD-D24 |
 | FD-D12 | when `onboard` may skip asking which sub-pack to load | current | FD-D11 |
@@ -68,6 +68,7 @@ Every identifier in this initiative carries its pack's prefix: `FD-` here, `SC-`
 | FD-D47 | how a closed question keeps its number, and the packtool changes a field report drove | current, amends FD-D46 | FD-D46, FD-D42, FD-D30, FD-D7, FD-Q7 |
 | FD-D48 | `commit-composer` and `commit-composer-max` committing a working tree at hunk level through a shared convention and a read-only kit | current | FD-D1, FD-D7, FD-D39, FD-D46 |
 | FD-D49 | `baselinedocs-self-upgrade` upgrading the installed skills in every agent through a read-only scan and a confirmed overwrite | current | FD-D1, FD-D45, FD-D46, FD-D48 |
+| FD-D50 | README illustrations rendered from HTML sources as light and dark WebP pairs, and Mermaid leaving the README | current, amends FD-D9 | FD-D9, FD-D41, FD-D43, FD-D45 |
 | FD-Q1 | hiding internal helpers at package level rather than by naming convention | open, deferred on a missing platform feature | FD-D1 |
 | FD-Q2 | installing checkpoint hooks across more than one repository | closed, hook mechanism removed | FD-D6, FD-D37 |
 | FD-Q5 | who, if anyone, owns misfiled-content detection now that `onboard` no longer checks it | open, structural half covered by FD-D46 | FD-D34, FD-D46 |
@@ -178,6 +179,8 @@ A new thread is the default once the pack is current, which after a save it is. 
 **What breaks if ignored, and it already did.** The author of this family placed `brief` at the node meaning "make sure no detail was forgotten after a compaction", which is the one thing brief is built to refuse, its first rule being to state that it is not a load. A structure that lets its own author put a skill in the wrong place will not teach anyone else the right one.
 
 **Why the install commands went.** The skills route to each other by name, so a partial install turns a pointer into a dead end that surfaces only after the user has already asked for something. This is a teaching decision, not an enforcement one: `npx skills add --skill <name>` still works and is merely no longer advertised.
+
+**Amended by FD-D50.** The workflow is a rendered image, not a Mermaid flowchart. The order, the branch table, and the trap table are unchanged.
 
 ## FD-D10: `onboard` enumerates before it reads, and narrows in the open
 
@@ -780,6 +783,30 @@ A new thread is the default once the pack is current, which after a save it is. 
 **Rejected: a canonical copy in `contract/` with a pinned packaged copy.** One consumer makes the copy a duplication to keep in sync.
 
 **Rejected: deleting skills the repository dropped.** The installer adds and overwrites but never removes; a deletion is not an upgrade.
+
+## FD-D50: the README teaches through rendered images in light and dark pairs, built from HTML sources, and carries no Mermaid
+
+**Decided.** `README.md` is rebuilt around 17 illustrations: six navigation buttons, `problem`, `daily-guide-card`, `pack-anatomy`, `workflow`, five `scenario-*` strips, `family-map`, `multi-pack`. Each is an `.item` in an HTML page under `assets/source/` (`shared.css` tokens, `shared.js` reading `?theme=dark`, the element id is the output name), screenshotted at 2x CSS scale and finished by `assets/source/finish.py` (rounded corners, border, lossless WebP through Pillow, run as `uvx --from pillow python -I`). Each ships as `<name>.webp` and `<name>-dark.webp` under `assets/`, chosen in the README by `<picture>` with `prefers-color-scheme`; 34 files, 3.7 MB, each under 300 KB. `banner.png` and `assets/source/banner.html` are untouched and light only. The navigation row and the Daily Guide card are images inside `<a>`, one image per link, because GitHub has no image map. Mermaid is removed: the workflow exists as `workflow.webp`, whose `alt` text narrates every node and edge, beside the branch table and the trap table. Section order: banner and navigation, problem, install, Daily Guide, pack, workflow, scenarios, skills, multi-domain, reference. The agent-selected table, the commit table, and the directory layout sit in `<details>`. `tests/test_readme_assets.py` has one case per skill: `data-skill="<skill>"` appears in `assets/source/family-map.html`. A README identifier-shaped token must resolve to a heading (`tests/test_packs.py`), so the example identifiers of the fictional `avatar-rollout` pack appear inside images only.
+
+**Why.** The banner was the only visual; a first-time reader crossed about ten text sections to learn the problem, the order, and which skill fits. HTML rendering keeps the banner's Outfit and JetBrains Mono. Minimum 18 CSS px at a 1200 px stage shows about 12 px at the 830 px README column.
+
+**What breaks if ignored.** A skill added without a chip leaves the family map silently incomplete, caught by the test. A README that cites an example identifier fails `test_packs.py` because the token names no heading; this happened once, in the `alt` text of `pack-anatomy`.
+
+**Accepted cost.** The workflow now lives in the README image, the help guide Mermaid, and the Daily Guide, with no comparison between them (extends FD-D43). Images are shot by hand: an edit to an HTML source changes nothing shipped until both themes are re-shot, and only the HTML source is tested, never a WebP against it. A reader without image support gets `alt` text and two tables, no flowchart text. Each re-render adds up to 3.7 MB to history. The `<picture>` selection and WebP rendering were not observed on github.com; the files were decoded here only. Banner has no dark variant: `logo.png` has a white ground blended with multiply.
+
+**Rejected: SVG.** GitHub does not load web fonts for an SVG used through `<img>`, so the fonts fall back (platform behaviour, not tested here).
+
+**Rejected: PNG.** Same pixels as the lossless WebP at a larger size; the PNG size was not measured.
+
+**Rejected: one light image with a border.** Halves the shots; the user chose a dark variant of every image.
+
+**Rejected: a render script.** Needs Playwright and a browser download from every contributor; the user chose a manual procedure written in each HTML source header.
+
+**Rejected: shields.io badges for navigation.** Every viewer's browser requests a third-party service.
+
+**Rejected: Mermaid kept in `<details>` as the text form.** The user chose to remove it.
+
+**Rejected: a test that every README image exists.** The user dropped it.
 
 ## Open questions
 

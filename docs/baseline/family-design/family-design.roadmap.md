@@ -3,7 +3,7 @@ baseline_schema: "2.0"
 pack: "family-design"
 document: "roadmap"
 status: "active"
-updated: "2026-10-09"
+updated: "2026-10-10"
 code_ref: "uncommitted"
 ---
 
@@ -27,7 +27,7 @@ Verified against the repository, not against `DESIGN.md`.
 | Hook infers nothing | FD-D6, FD-D37 | retired | Hook adapter retired and removed in FD-P8. Checkpoint execution handled in-thread by `run` |
 | Rule placement | FD-D7 | implemented | byte-identical packaged `pack-contract.md` and `report-style.md` copies, `baselinedocs-load` exempt from the latter, each with a gate sentence in its `SKILL.md`. Pinned by `tests/test_references.py` |
 | Workflow sequence written down | FD-D8 | implemented | `README.md` Mermaid flowchart plus the branch table |
-| README leads with the workflow | FD-D9 | implemented | `README.md` order is Install, Workflow, Six User Entrypoints; no per-skill install command present |
+| README leads with the workflow | FD-D9, FD-D50 | implemented | `README.md` order is problem image, Install, Daily Guide card, pack image, Workflow (image, branch table, trap table), Scenarios, Skills; the workflow is an image, not Mermaid; no per-skill install command for the family present |
 | Onboard scope gate | FD-D10 | implemented | `baselinedocs-onboard/SKILL.md` steps 4 and 5, and its first two Reading Rules |
 | Initiative routing | FD-D11, FD-D12, FD-D13 | implemented | `onboard` steps 2 and 3; `Never write the index` in step 2 |
 | Dependency edges and coupling | FD-D14, FD-D15, FD-D16 | implemented | `onboard` Reading Rules, four consecutive rules covering edges, collected references, unresolved references, and the index-status contradiction |
@@ -53,6 +53,7 @@ Verified against the repository, not against `DESIGN.md`.
 | Release version in the frontmatter | FD-D45, FD-Q6 | implemented, workflow unobserved | top-level `version:` in every `SKILL.md`; `scripts/stamp_version.py`; `tests/test_version.py`; `.github/workflows/release.yml` has not run on GitHub |
 | Commit skills | FD-D48 | implemented, host selection unobserved | `commit-composer/` and `commit-composer-max/` with byte-identical copies of `contract/commit-convention.md` and `contract/commitkit.sh`; `tests/test_commit_skills.py` pins copies, folder shape and gates; `tests/test_commitkit.py` holds one case per rule |
 | Installed-skill upgrade | FD-D49 | implemented, upgrade path unobserved | `baselinedocs-self-upgrade/` with `scripts/upgradekit.sh`; `tests/test_upgradekit.py` holds one case per rule; `OWN_SCRIPTS` in `tests/test_conventions.py`; `compare` run against this machine's 190 installs |
+| README illustrations | FD-D50 | implemented, GitHub render unobserved | 34 WebP under `assets/` (17 light, 17 dark) rendered from `assets/source/*.html` with `shared.css`, `shared.js`, `finish.py`; `README.md` selects them with `<picture>`; `tests/test_readme_assets.py` pins one `data-skill` chip per skill in `family-map.html` |
 
 ## FD-P1: adopt `DESIGN.md` into this pack
 
@@ -749,6 +750,42 @@ Changes:
 | `baselinedocs-help/references/guide.md`, `README.md`, `AGENTS.md` | a guide row and a trap; a table row, a note and the scripts line; new section `The self-upgrade skill` |
 | `family-design.hallucination.md`, `family-design.introduction.md`, `baselinedocs.index.md` | FD-D49 and its index row; one current-truth row; the checkpoint cell |
 
+## FD-P21: redesign the README around rendered illustrations
+
+Opened and closed 2026-10-10 by the user's request to improve how a visitor reads `README.md`. FD-D50 carries the reasoning, the rejected options, and the accepted costs.
+
+Acceptance criteria:
+
+- `README.md` is restructured so the problem, the pack, the workflow, and five scenarios are each a picture, with the existing text kept or relocated and none dropped
+- every new image ships as a light and a dark WebP, selected by `<picture>`, each under about 300 KB, with `alt` text carrying the content
+- every image is rendered from an HTML source under `assets/source/` whose header states the procedure
+- `banner.png` and `assets/source/banner.html` unchanged
+- the suite stays green, `test_no_typographic_dashes` and the identifier-resolution test in `tests/test_packs.py` included
+
+### Checkpoint: complete, GitHub render unobserved
+
+| Item | Result |
+|---|---|
+| Images | 17 illustrations, 34 WebP, 3.7 MB in total, lossless, none above 300 KB |
+| Viewed after rendering | problem, workflow, pack-anatomy, family-map, multi-pack and daily-guide-card in both themes; scenario-start and scenario-pressure in light, scenario-initiative, scenario-adopt and scenario-adr in one theme each; nav-guide dark. Not viewed: the other scenario variants and the other 11 navigation buttons, rendered from the same sources and tokens |
+| Layout fixes found by viewing | workflow: the new-thread box touched the adr box; scenario-pressure: the brief card text overflowed its card; each strip had spare height |
+| Test added | `tests/test_readme_assets.py`: one `data-skill` case per `baselinedocs-*` skill |
+| Failure found by the suite | `tests/test_packs.py` failed twice: the `alt` text of `pack-anatomy` cited an example identifier that names no heading. Removed from the README |
+| Suite | `uvx --from "pytest>=8,<10" --with pyyaml pytest tests/ -q` green after the last edit to the pack documents. The pass count is not recorded. `packtool.sh check docs/baseline`: 0 FAIL |
+| Not observed | `<picture>` dark selection and WebP rendering on github.com, the navigation anchors, and any viewer other than github.com |
+| Commit | uncommitted. The new files appeared staged (`git status` showed `A`) although this session ran no `git add`; the cause was not investigated |
+
+Changes:
+
+| File | Change |
+|---|---|
+| `README.md` | rewritten: 17 images, `<details>` for the agent-selected table, the commit table and the directory layout, a `Reference` group; the trap table and one sentence naming branches A and B repaired |
+| `assets/source/` | new: `shared.css`, `shared.js`, `finish.py`, `nav.html`, `problem.html`, `daily-guide-card.html`, `pack-anatomy.html`, `workflow.html`, `scenarios.html`, `family-map.html`, `multi-pack.html` |
+| `assets/*.webp` | new: 34 files |
+| `tests/test_readme_assets.py` | new |
+| `family-design.hallucination.md` | FD-D50 and its index row; FD-D9 row and an amendment line |
+| `family-design.introduction.md`, `family-design.roadmap.md` | one current-truth row; one design-area row; this phase and the next action |
+
 ## Risks
 
 | Risk | Detail |
@@ -778,5 +815,7 @@ FD-P17 added `packtool.sh`: push and confirm the three-OS test matrix is green, 
 FD-P18 changed the tool, the contract and 14 gate sentences: reinstall again, because an installed skill still calls `sh scripts/packtool.sh` and carries the old tool. FD-Q7 (`code_ref` naming the inspected repository) waits on the user and needs its own schema decision. Nothing else in FD-P18 waits on the user.
 
 FD-P19 added `commit-composer` and `commit-composer-max`, which install with the family and are not baselinedocs skills. Push and confirm the three-operating-system matrix is green for `tests/test_commitkit.py`, since only gawk has run it. Then use each skill once on a real working tree and check that a host selects it from a plain request such as "commit these in groups"; no host has, and a commit skill that selects itself on staging may compete for the same request. Nothing in FD-P19 waits on a user decision.
+
+FD-P21 rebuilt the README around images. After the user pushes, open the repository page on github.com in the light and the dark theme and confirm: `<picture>` picks the matching WebP, the navigation buttons jump to their sections, the Daily Guide card opens the guide, and the text in each image is readable at desktop and phone width. Whenever a skill is added or renamed, add its chip to `assets/source/family-map.html`, then re-shoot `family-map` in both themes by the procedure in that file's header. Nothing in FD-P21 waits on a user decision.
 
 FD-P20 added `baselinedocs-self-upgrade`. The first real use is its test: run it on a machine with a stale install, confirm `npx skills update -g -y` refreshes the linked folders, and confirm the clone fallback replaces a real copy such as `~/.gemini/config/skills` without touching a junction. Nothing in FD-P20 waits on a user decision.
