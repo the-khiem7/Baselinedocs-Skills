@@ -18,9 +18,6 @@ Install the family, not individual skills. The skills hand off to each other by 
 
 ```mermaid
 flowchart TD
-    HOOK["$baselinedocs-setup-hooks<br/>optional, once per repository"]
-    HOOK -.-> Q0
-
     Q0{"What do you<br/>already have?"}
     Q0 -->|"nothing yet"| INIT["$baselinedocs-init"]
     Q0 -->|"a document or spec"| ADOPT["$baselinedocs-adopt"]
@@ -35,6 +32,7 @@ flowchart TD
 
     Q1 -->|"no"| SAVE2["$baselinedocs-save<br/>decision closed, question opened,<br/>scope moved, run stopped mid-phase"]
     SAVE2 --> RUN
+    SAVE2 -.->|"a decision worth an ADR"| ADR["$baselinedocs-adr"]
 
     Q1 -->|"yes"| GATE["$baselinedocs-save<br/>always save before branching"]
     GATE --> Q2{"Stay in<br/>this thread?"}
@@ -46,7 +44,7 @@ flowchart TD
     BRIEF -->|"need full detail"| ONB
 
     Q2 -->|"Leave"| NEW["new conversation thread"]
-    NEW --> ONB["$baselinedocs-onboard"]
+    NEW --> ONB["$baselinedocs-onboard<br/>or $baselinedocs-load"]
     ONB --> RUN
 ```
 
@@ -62,6 +60,8 @@ flowchart TD
 | `brief` recovers detail          | It is a diagnostic, not a restore. It reads frontmatter and the active roadmap sections, and says so. It reports where work stands and whether the pack fell behind;`onboard` is what reads every document in full. |
 | `save` is the step after `run` | `run` already checkpoints the roadmap each phase. `save` owns what a phase checkpoint does not: decisions closed, questions opened, scope moved.                                                                  |
 | one thing is called compact        | Two are. Host`/compact` shrinks the conversation. `baselinedocs-maintain-compact` shrinks the pack, on a different axis: not a full window, but a pack gone noisy over months.                                    |
+| `onboard` and `load` are the same | Both read the pack in full. `onboard` then reports its state; `load` confirms in one word and nothing else |
+| an ADR is written into the pack | It is not. `baselinedocs-adr` reads a closed decision and writes a file under `docs/adr/`; recording that the ADR exists in the pack is `baselinedocs-save` |
 
 ## User Entrypoints
 
@@ -82,7 +82,6 @@ All of them set `policy.allow_implicit_invocation: false` for Codex, so they sta
 
 - `onboard` writes nothing, and on a multi-pack initiative it routes before it loads: it reads the index, takes one domain pack rather than the whole set, and reports every point where a loaded document leaned on something that was not loaded.
 - `run` invoked without both execution policies asks whether to pause after each phase and whether to commit each verified phase. It never chooses defaults silently.
-- `setup-hooks` is a one-time per-repository administration utility, not part of the daily loop.
 - `callout` writes no fact and creates no pack content. It points at elements that already exist, refuses when one does not, and requires a stated condition that ends the group before it will open one.
 
 ## Agent-Selected Skills
@@ -93,8 +92,9 @@ All of them set `policy.allow_implicit_invocation: false` for Codex, so they sta
 | Audit     | `audit-drift`, `audit-claims`                                                  |
 | Maintain  | `maintain-compact`, `maintain-split` |
 | Knowledge | `extract-wiki`                                                                   |
+| Recall    | `recall`                                                                         |
 
-All skill IDs use lowercase kebab-case, for example `baselinedocs-sync-codebase`. These are agent-selected helpers: their UI names start with `Baseline Docs Internal:` and implicit invocation stays enabled. Some hosts do not enforce the Codex-specific policy, so each skill description states the classification too.
+All skill IDs use lowercase kebab-case, for example `baselinedocs-sync-codebase`. These are agent-selected helpers: their UI names start with `Baseline Docs Internal:` and implicit invocation stays enabled. The exception is `recall`, which a user also calls by hand, so its UI name is `Baseline Docs: Recall`. After a context compaction it re-reads the pack contract and the report style, so the next pack write follows the rules. Some hosts do not enforce the Codex-specific policy, so each skill description states the classification too.
 
 ## Commit Skills
 
@@ -121,6 +121,8 @@ Two extensions are conditional:
 - `<prefix>.useguide.md`: consumer contract, API or method usage, migration procedure, or operator guidance
 
 Do not create conditional files that would contain only filler. Existing five-file packs remain compatible; lifecycle skills preserve useful content and prune only when safe.
+
+The `hallucination` document opens with an `## Entry index` table, and every entry has its own heading, `## <PREFIX>-<KIND><N>: <subject>`. `D` marks a decision, `Q` an open question, and `P` a phase in `roadmap`. Both the index and the headings are required from the first entry. Identifiers carry the pack's prefix wherever they are cited, so a reference stays unambiguous across an initiative.
 
 Each document carries frontmatter:
 
@@ -176,12 +178,6 @@ docs/baseline/avatar-modernization/
 
 The index contains direct links, status, and dependency edges. It routes work without repeating child content.
 
-## Phase Checkpoint Hooks
-
-The repository includes a portable prompt-centric Stop hook for Codex, Claude Code, and Cursor. It creates one thread-local continuation and lets the agent decide whether the clearly identified pack in that thread needs a checkpoint. Python never searches globally for roadmaps or infers ownership from Git state.
-
-Use `$baselinedocs-setup-hooks` to install or update it without copying files or replacing existing hook configuration. See [HOOKS.md](HOOKS.md) for behavior and manual fallback instructions. Hooks are a safety net; the roadmap workflow remains the source of truth.
-
 ## Compatibility
 
 Each skill follows the Agent Skills folder shape:
@@ -192,6 +188,11 @@ Each skill follows the Agent Skills folder shape:
   agents/
     openai.yaml
   references/     # only when needed
+  scripts/        # only when the skill runs a bundled script
 ```
+
+`scripts/packtool.sh` is a read-only structure check for packs (`outline`, `find`, `next-id`, `close-plan`, `check`). Writer and audit skills run it after every write and before every report, and each one ships its own copy. The commit skills ship `scripts/commitkit.sh` the same way.
+
+Every `SKILL.md` carries one top-level `version:` shared by the whole family. It is stamped on `main` when a `vX.Y.Z` tag is pushed, so the value changes only at release.
 
 The repository is compatible with Skills.sh discovery. Codex-specific invocation policy lives in `agents/openai.yaml`; other hosts can still use the portable `name` and `description` frontmatter.
