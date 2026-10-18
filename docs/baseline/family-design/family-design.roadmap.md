@@ -3,7 +3,7 @@ baseline_schema: "2.0"
 pack: "family-design"
 document: "roadmap"
 status: "active"
-updated: "2026-10-10"
+updated: "2026-10-18"
 code_ref: "uncommitted"
 ---
 
@@ -31,7 +31,7 @@ Verified against the repository, not against `DESIGN.md`.
 | Onboard scope gate | FD-D10 | implemented | `baselinedocs-onboard/SKILL.md` steps 4 and 5, and its first two Reading Rules |
 | Initiative routing | FD-D11, FD-D12, FD-D13 | implemented | `onboard` steps 2 and 3; `Never write the index` in step 2 |
 | Dependency edges and coupling | FD-D14, FD-D15, FD-D16 | implemented | `onboard` Reading Rules, four consecutive rules covering edges, collected references, unresolved references, and the index-status contradiction |
-| Output leads with state | FD-D17 | implemented | `onboard` step 11 and the `Output` section, whose two parts are `I. Pack status` then `II. Read record` |
+| Output leads with state | FD-D17, FD-D34, FD-D51 | implemented, amended | `baselinedocs-onboard/SKILL.md` `Output`: six sections, `Needs you now` first, progress as chips, bar, strip and board |
 | Source material excluded | FD-D18 | implemented | `onboard` Reading Rules, retained-source-material rule keyed on absent baseline frontmatter |
 | Resume family dissolved | FD-D19, FD-D20 | implemented | no `resume-*` folder on disk; `baselinedocs-brief` present and set to `false` |
 | Evidence retention | FD-D21, FD-D29 | implemented | `contract/pack-contract.md`, `Evidence density`, carries both lists, the resolved-mistake distinction, and the external-log permission. Packaged copies re-synced |
@@ -53,6 +53,7 @@ Verified against the repository, not against `DESIGN.md`.
 | Release version in the frontmatter | FD-D45, FD-Q6 | implemented, workflow unobserved | top-level `version:` in every `SKILL.md`; `scripts/stamp_version.py`; `tests/test_version.py`; `.github/workflows/release.yml` has not run on GitHub |
 | Commit skills | FD-D48 | implemented, host selection unobserved | `commit-composer/` and `commit-composer-max/` with byte-identical copies of `contract/commit-convention.md` and `contract/commitkit.sh`; `tests/test_commit_skills.py` pins copies, folder shape and gates; `tests/test_commitkit.py` holds one case per rule |
 | Installed-skill upgrade | FD-D49 | implemented, upgrade path unobserved | `baselinedocs-self-upgrade/` with `scripts/upgradekit.sh`; `tests/test_upgradekit.py` holds one case per rule; `OWN_SCRIPTS` in `tests/test_conventions.py`; `compare` run against this machine's 190 installs |
+| Onboard report as visuals | FD-D51 | implemented, host render unobserved | `baselinedocs-onboard/SKILL.md`: no file record, no `Unresolved references` section, one `Not read:` line in `Caveats`, fixed chip table, HTML page with Mermaid only on request |
 | README illustrations | FD-D50 | implemented, GitHub render unobserved | 34 WebP under `assets/` (17 light, 17 dark) rendered from `assets/source/*.html` with `shared.css`, `shared.js`, `finish.py`; `README.md` selects them with `<picture>`; `tests/test_readme_assets.py` pins one `data-skill` chip per skill in `family-map.html` |
 
 ## FD-P1: adopt `DESIGN.md` into this pack
@@ -786,6 +787,36 @@ Changes:
 | `family-design.hallucination.md` | FD-D50 and its index row; FD-D9 row and an amendment line |
 | `family-design.introduction.md`, `family-design.roadmap.md` | one current-truth row; one design-area row; this phase and the next action |
 
+## FD-P22: redraw the `onboard` report as visuals
+
+Opened and closed 2026-10-18 by the user's requirement for `baselinedocs-onboard`. FD-D51 carries the reasoning, the rejected options, and the accepted costs.
+
+Acceptance criteria:
+
+- `Output` has no file record and no `Unresolved references` section, and the references are still noted and surfaced as one line
+- what waits on the user is the first thing shown, then progress, then the project introduction
+- progress is counts of recorded statuses only, with a fixed chip table
+- `Next actions` keeps every instruction of the pack's recorded next action
+- the suite stays green, `test_no_typographic_dashes` included
+
+### Checkpoint: complete, host render unobserved
+
+| Item | Result |
+|---|---|
+| Verification gate | see the Suite row |
+| Files changed | `baselinedocs-onboard/SKILL.md`; this pack |
+| Suite | `uvx --from "pytest>=8,<10" --with pyyaml pytest tests/ -q` and `packtool.sh check docs/baseline`, run after the last edit |
+| Not observed | terminal width of the chips and box characters on a host other than this one; the HTML page; selection by a host |
+| Commit | uncommitted |
+
+Changes:
+
+| File | Change |
+|---|---|
+| `baselinedocs-onboard/SKILL.md` | `Output` rewritten to six sections; steps 4, 9 and 10 and four Reading Rules reworded; version line untouched |
+| `family-design.hallucination.md` | FD-D51 and its index row; amendment lines under FD-D15, FD-D17 and FD-D34; three index statuses |
+| `family-design.roadmap.md`, `family-design.introduction.md` | this phase; a design-area row; one current-truth row |
+
 ## Risks
 
 | Risk | Detail |
@@ -817,5 +848,7 @@ FD-P18 changed the tool, the contract and 14 gate sentences: reinstall again, be
 FD-P19 added `commit-composer` and `commit-composer-max`, which install with the family and are not baselinedocs skills. Push and confirm the three-operating-system matrix is green for `tests/test_commitkit.py`, since only gawk has run it. Then use each skill once on a real working tree and check that a host selects it from a plain request such as "commit these in groups"; no host has, and a commit skill that selects itself on staging may compete for the same request. Nothing in FD-P19 waits on a user decision.
 
 FD-P21 rebuilt the README around images. After the user pushes, open the repository page on github.com in the light and the dark theme and confirm: `<picture>` picks the matching WebP, the navigation buttons jump to their sections, the Daily Guide card opens the guide, and the text in each image is readable at desktop and phone width. Whenever a skill is added or renamed, add its chip to `assets/source/family-map.html`, then re-shoot `family-map` in both themes by the procedure in that file's header. Nothing in FD-P21 waits on a user decision.
+
+FD-P22 redrew the `onboard` report. Run `baselinedocs-onboard` on a real pack in the terminal you use and confirm the chips, the bar and the card line up; if a character is cut or misaligned, the chip table is the thing to change. Reinstall the family on any machine that should pick it up. Nothing in FD-P22 waits on a user decision.
 
 FD-P20 added `baselinedocs-self-upgrade`. The first real use is its test: run it on a machine with a stale install, confirm `npx skills update -g -y` refreshes the linked folders, and confirm the clone fallback replaces a real copy such as `~/.gemini/config/skills` without touching a junction. Nothing in FD-P20 waits on a user decision.

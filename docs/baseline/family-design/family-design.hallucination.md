@@ -3,7 +3,7 @@ baseline_schema: "2.0"
 pack: "family-design"
 document: "hallucination"
 status: "active"
-updated: "2026-10-10"
+updated: "2026-10-18"
 code_ref: "uncommitted"
 ---
 
@@ -33,9 +33,9 @@ Every identifier in this initiative carries its pack's prefix: `FD-` here, `SC-`
 | FD-D12 | when `onboard` may skip asking which sub-pack to load | current | FD-D11 |
 | FD-D13 | what `onboard` does when an initiative has sub-packs and no index | current | FD-D11, FD-D24 |
 | FD-D14 | what a dependency edge tells a reader, and what it does not | current | FD-D11, FD-D24 |
-| FD-D15 | what `onboard` does about a loaded pack leaning on one that was not loaded | current | FD-D10, FD-D13 |
+| FD-D15 | what `onboard` does about a loaded pack leaning on one that was not loaded | current, report form amended by FD-D51 | FD-D10, FD-D13, FD-D51 |
 | FD-D16 | what happens when the index and a pack disagree about status | current | FD-D24 |
-| FD-D17 | what `onboard` reports first | current | FD-D10 |
+| FD-D17 | what `onboard` reports first | current, section order amended by FD-D51 | FD-D10, FD-D51 |
 | FD-D18 | whether the source document an adopted pack came from is loaded with the pack | current | FD-D3, FD-D10 |
 | FD-D19 | dissolving the `resume-*` family, and what replaced `resume-continue` | current | FD-D8, FD-D20 |
 | FD-D20 | deleting the last three `resume-*` skills with nothing in their place | current | FD-D19 |
@@ -52,7 +52,7 @@ Every identifier in this initiative carries its pack's prefix: `FD-` here, `SC-`
 | FD-D31 | what `report-style.md` governs beyond the naming of an element | current | FD-D7, FD-D17 |
 | FD-D32 | whether a next action is quoted verbatim or restructured for reading | current, reverses the rule as shipped | FD-D31, FD-D17 |
 | FD-D33 | whether `onboard`'s load manifest is removed or compressed | reversed by FD-D34 | FD-D10, FD-D17, FD-D31 |
-| FD-D34 | dropping `onboard`'s `Read record` half entirely, reversing FD-D33 | current | FD-D33, FD-D17, FD-D10 |
+| FD-D34 | dropping `onboard`'s `Read record` half entirely, reversing FD-D33 | current, five sections replaced by FD-D51 | FD-D33, FD-D17, FD-D10, FD-D51 |
 | FD-D35 | a stated four-column exception in `report-style.md`, extending FD-D31 | current | FD-D31, FD-D34 |
 | FD-D36 | `hallucination` entries are written in a compact agent-directed register, not narrative prose | current | FD-D7, FD-D21 |
 | FD-D37 | removing the automated checkpoint hook mechanism and setup-hooks skill | current | FD-D6, FD-Q2, FD-D4 |
@@ -69,6 +69,7 @@ Every identifier in this initiative carries its pack's prefix: `FD-` here, `SC-`
 | FD-D48 | `commit-composer` and `commit-composer-max` committing a working tree at hunk level through a shared convention and a read-only kit | current | FD-D1, FD-D7, FD-D39, FD-D46 |
 | FD-D49 | `baselinedocs-self-upgrade` upgrading the installed skills in every agent through a read-only scan and a confirmed overwrite | current | FD-D1, FD-D45, FD-D46, FD-D48 |
 | FD-D50 | README illustrations rendered from HTML sources as light and dark WebP pairs, and Mermaid leaving the README | current, amends FD-D9 | FD-D9, FD-D41, FD-D43, FD-D45 |
+| FD-D51 | `onboard` reporting progress and what waits on the user as visuals, and dropping the file record and the unresolved-reference section | current, amends FD-D34, FD-D17 and FD-D15 | FD-D15, FD-D17, FD-D31, FD-D34, FD-D35 |
 | FD-Q1 | hiding internal helpers at package level rather than by naming convention | open, deferred on a missing platform feature | FD-D1 |
 | FD-Q2 | installing checkpoint hooks across more than one repository | closed, hook mechanism removed | FD-D6, FD-D37 |
 | FD-Q5 | who, if anyone, owns misfiled-content detection now that `onboard` no longer checks it | open, structural half covered by FD-D46 | FD-D34, FD-D46 |
@@ -240,6 +241,8 @@ A new thread is the default once the pack is current, which after a save it is. 
 
 **Rejected: auto-load on a non-empty reference list.** It reinstates the scope expansion the routing default exists to prevent, and the offer costs one turn.
 
+**Amended by FD-D51.** The references are still noted, but the report shows them as one `Not read:` line in `Caveats`, without a quotation and a location per reference.
+
 ## FD-D16: an index-versus-pack status disagreement is reported, never resolved
 
 **Decided.** Index status is routing metadata that restates a status each pack also owns. When the two disagree, `onboard` reports a contradiction. It does not prefer the index, and it does not prefer the newer `updated` date. `baselinedocs-sync-reconcile` owns the repair.
@@ -257,6 +260,8 @@ A new thread is the default once the pack is current, which after a save it is. 
 **What this does not turn onboard into.** A brief. `onboard` reports what the documents record from a complete read; `brief` reports position from a deliberately partial one. The rule keeping onboard descriptive is explicit because a skill that has just read everything is well placed to start assessing progress and recommending action, which is a different job on a different reading strategy.
 
 **What breaks if ignored.** The reader gets bookkeeping and has to ask a second question to get the answer they came for, which spends the turn the manifest was supposed to save.
+
+**Amended by FD-D51.** Pack state still leads, but the first thing shown is what waits on the user, then progress, then the project introduction.
 
 ## FD-D18: retained source material is out of scope by default
 
@@ -491,6 +496,8 @@ A new thread is the default once the pack is current, which after a save it is. 
 **Rejected: compress every guarantee into short lines folded inside Pack Status.** The option recommended when this trade-off was put to the user: a one-line proof-of-read per pack, an excluded-material line per pack, placement findings folded into a short bullet list, dependency edges folded into `Cross-pack checkpoint`. Rejected in favor of the simpler report; the user judged the four guarantees above worth losing rather than worth the lines they cost on every run.
 
 **Rejected: keep proof-of-read only, drop the rest.** A narrower middle ground, keeping FD-D33's core guarantee while still dropping placement findings, dependency edges, and the excluded list. Also rejected, for the same reason: the user chose the fully flat report over any partial retention.
+
+**Amended by FD-D51.** The five flat sections are replaced by six, drawn as visuals. The loss of the file record stands.
 
 ## FD-D35: `report-style.md` gains a four-column exception for identifier-shaped tables, extending FD-D31
 
@@ -807,6 +814,32 @@ A new thread is the default once the pack is current, which after a save it is. 
 **Rejected: Mermaid kept in `<details>` as the text form.** The user chose to remove it.
 
 **Rejected: a test that every README image exists.** The user dropped it.
+
+## FD-D51: `onboard` shows progress and what waits on the user as visuals, and drops the file record and the unresolved-reference section
+
+**Decided.** `baselinedocs-onboard` `Output` is six sections: `Needs you now`, `Progress`, `Doc pack introduction`, `Next actions`, `Pack map`, `Caveats`. `Needs you now` is a card of one to three items the pack records as waiting on the user. `Progress` per pack, ordered by `updated` newest first: a badge line, a bar and a strip of recorded phase statuses (fixed chips: complete, active, blocked, draft, planned, other), a four-column table of the phases not complete plus the last one recorded, a three-column board (`Needs your decision`, `In progress`, `Waiting`), and open risks. `Pack map` draws the index's recorded edges as boxes and arrows, only for a multi-pack scope with an edge or coupling note. `Caveats` holds at most one `Not read:` line and one line per `packtool.sh check` FAIL or WARN, and is omitted when empty. Step 4 enumerates the scope silently; no file list and no line counts are reported, and the size gate still presents the total when it stops. `Unresolved references` as a section is gone; step 9 still notes the references and the Reading Rule that an answer touching one is unbacked stays. Counting recorded statuses is describing; a percentage, a forecast, or "on track" is assessing and stays forbidden. Terminal visuals are Unicode and emoji text; Mermaid appears only in an HTML page rendered when the user asks, which writes a file and is published only on request. The visual rules live in `SKILL.md`, not in `report-style.md`.
+
+**Why.** The user wants a reader to see what is going on and not tire on a wall of text; five sections of headings, tables and bullets were still read line by line. A fixed chip vocabulary makes a report read the same every run. Sorting by `updated` puts the pack that changed last first. Detail only for incomplete phases keeps a pack with 21 phases to one strip plus a short table.
+
+**What breaks if ignored.** The report goes back to text a reader scans for the answer, and a long pack renders a table row per finished phase.
+
+**Accepted cost.** The user can no longer see which files were read, so a short read is visible only through the size gate. A reference left unread now shows as one line and no quotation, so an answer leaning on it is checked against a summary of the gap, not against the quoted passage. `Not read:` also names an exclusion such as retained source material, which FD-D34 had removed; it sits inside the one line the user kept. Emoji and box-drawing width differ across terminals and fonts and were not observed on a host other than this one. A chip is chosen from the status word the pack records, so a pack whose word matches none shows `❔` with its own word. The HTML page and Mermaid path were not run. No host has selected the changed skill.
+
+**Found by running it.** A subagent ran the skill on a 4-document pack of another repository (755 lines read, 0 FAIL, 2 WARN) and reported four defects, now fixed in `SKILL.md`: an item with no identifier forced an invented code (`DMS-Q-DNS`), which reads as the pack's own, so such an item is named by a short phrase; `Waiting` required a "blocked on" record the pack did not hold, so it shows a dash without one; an unlabelled continuation passage and a stale labelled `Next action` conflicted, so the passage counts and a conflict shows both and goes to `Caveats`; the card repeated `Next actions`, so it carries a label only. The same run found the gloss rule produced bullets under each table two to three times longer than the table, so a gloss now sits in the cell and no bullet block follows a table. Also added: ties keep recorded order, "recorded against" is defined, `updated` is the newest among the pack's documents, and a link or token in a pack is never reproduced. A second run on the same pack measured 89 lines (`Progress` 38, `Next actions` 17), no cell over 6 words, one text line under a table, and read the first two sections at a glance, with `Progress` still densest. It reported the phase table unbounded (8 rows), 6 question identifiers in one row because the rule counted citations, about 9 dated continuation passages with no rule for which counts, a stale `Next action` with no rule for it, and risks with no recorded state. Fixed: the phase table holds at most five rows (blocked and active, the nearest not started, the last recorded) and at most two question identifiers per row, counting only questions the phase waits on; only the newest continuation passage counts and a next action it contradicts is stale and goes to `Caveats`; risks are listed only when recorded as not mitigated; a contradiction between documents is a `Caveats` line. The user then removed the two caps only, five rows and two question identifiers per row: the table still holds the phases not complete plus the last recorded, and still counts only questions the phase waits on, with no cap on either. A pack with many incomplete phases returns a long table. The report was not run a third time: the pack contradicts itself in several places, so a third measurement would be skewed, and whether the fixes shorten it is unobserved. `Next actions` and `Caveats` were reported as still the densest parts, and the instruction-preservation rule of FD-D32 keeps `Next actions` long.
+
+**Rejected: remove `Unresolved references` and its rules with no trace.** An answer leaning on an unread document then reads as backed; the user kept one line.
+
+**Rejected: keep the rule silent and print nothing.** The gap surfaces only if the user happens to ask about the unread passage.
+
+**Rejected: an HTML Artifact on every run.** Writes a file, sends the pack's content to claude.ai, and does not run on a host without it.
+
+**Rejected: Mermaid in the conversation.** A terminal shows it as source text.
+
+**Rejected: the visual rules in `report-style.md`.** The file is loaded on every run of 16 skills and only `onboard` draws these.
+
+**Rejected: a percentage or a completion forecast.** It assesses, which `onboard` does not do.
+
+**Rejected: a table row for every phase.** A pack with 21 phases returns to the wall the change removes.
 
 ## Open questions
 
