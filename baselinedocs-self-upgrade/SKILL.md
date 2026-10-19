@@ -1,7 +1,7 @@
 ---
 name: baselinedocs-self-upgrade
 description: Upgrade the installed baselinedocs skills themselves, never a pack, to the latest GitHub release in every agent on this machine (Claude, Codex, Gemini, Kiro, Kilo, Crush, and others). Finds the latest version tag, locates every installed baselinedocs skill, compares semver, reports which agents are outdated, and after confirmation upgrades them. Use explicitly when the user asks to update, upgrade, or refresh baselinedocs, asks whether a newer version exists, or suspects the installed skills are outdated. To bring a pack's documents up to the code, use `baselinedocs-sync-codebase` instead.
-version: "3.2.0"
+version: "3.2.1"
 ---
 
 # Baseline Docs Self-Upgrade

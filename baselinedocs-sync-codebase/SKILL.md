@@ -1,7 +1,7 @@
 ---
 name: baselinedocs-sync-codebase
 description: Synchronize an existing baseline documentation pack with current implementation evidence. Use automatically after code changes, phase completion, or a checkpoint when related baseline docs may be stale.
-version: "3.2.0"
+version: "3.2.1"
 ---
 
 # Baseline Docs Sync Codebase
