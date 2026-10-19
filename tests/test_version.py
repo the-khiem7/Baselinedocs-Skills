@@ -61,3 +61,15 @@ def test_stamp_rejects_a_tag_that_is_not_semver(raw):
 
 def test_stamp_accepts_a_leading_v():
     assert stamp_version.parse_version("v1.2.3") == "1.2.3"
+
+
+def test_check_reports_a_skill_that_differs_and_writes_nothing(capsys):
+    current = next(iter(set(versions().values())))
+    assert stamp_version.main(["stamp_version.py", "--check", f"v{current}"]) == 0
+    assert stamp_version.main(["stamp_version.py", "--check", "v99.0.0"]) == 1
+    assert "version is not 99.0.0" in capsys.readouterr().out
+    assert set(versions().values()) == {current}
+
+
+def test_check_needs_a_version_argument():
+    assert stamp_version.main(["stamp_version.py", "--check"]) == 2

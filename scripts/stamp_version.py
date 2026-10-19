@@ -1,8 +1,10 @@
 """Write one release version into every skill's SKILL.md frontmatter.
 
     uv run scripts/stamp_version.py v1.2.3
+    uv run scripts/stamp_version.py --check v1.2.3
 
-Replaces an existing top-level `version:` line or inserts one as the last
+With --check nothing is written: it lists every SKILL.md whose version differs
+from the one given and exits 1 when there is any. Otherwise it replaces an existing top-level `version:` line or inserts one as the last
 frontmatter line. Nothing else in the file is touched, and bytes are read and
 written as-is so line endings survive. Running it twice with the same version
 changes nothing.
@@ -39,10 +41,22 @@ def stamp_text(text, version):
 
 
 def main(argv):
-    if len(argv) != 2:
+    check = len(argv) == 3 and argv[1] == "--check"
+    if (len(argv) != 2 and not check) or argv[1:] == ["--check"]:
         print(__doc__)
         return 2
-    version = parse_version(argv[1])
+    version = parse_version(argv[-1])
+    if check:
+        behind = [
+            path.parent.name
+            for path in sorted(ROOT.glob("baselinedocs-*/SKILL.md"))
+            if stamp_text(path.read_bytes().decode("utf-8"), version)
+            != path.read_bytes().decode("utf-8")
+        ]
+        for name in behind:
+            print(f"{name}: version is not {version}")
+        print(f"version {version}: {len(behind)} SKILL.md file(s) differ")
+        return 1 if behind else 0
     changed = 0
     for path in sorted(ROOT.glob("baselinedocs-*/SKILL.md")):
         before = path.read_bytes().decode("utf-8")
