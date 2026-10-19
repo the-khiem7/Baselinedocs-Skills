@@ -63,13 +63,14 @@ Every identifier in this initiative carries its pack's prefix: `FD-` here, `SC-`
 | FD-D42 | the entry index and entry headings are mandatory from the first entry, and the contract owns the heading format | current, reverses the conditional clause of SC-D19 | FD-D30, FD-D36, SC-D19, SC-Q6 |
 | FD-D43 | `baselinedocs-help` as a user entrypoint carrying its own guide to the skills and the workflow | current | FD-D1, FD-D8, FD-D9 |
 | FD-D44 | `baselinedocs-adr` drafting a standalone ADR from one closed entry, using an unmodified AWS template | current | FD-D1, FD-D7 |
-| FD-D45 | a release tag stamping one family-wide `version:` into every `SKILL.md` on `main` | current | FD-D37, FD-D41, FD-Q6 |
+| FD-D45 | a release tag stamping one family-wide `version:` into every `SKILL.md` on `main` | current, stamping step amended by FD-D52 | FD-D37, FD-D41, FD-D52, FD-Q6 |
 | FD-D46 | `packtool.sh`, a mechanical structure check every writer runs before reporting a write | current, amended by FD-D47 | FD-D7, FD-D41, FD-D42, FD-D47, FD-Q5 |
 | FD-D47 | how a closed question keeps its number, and the packtool changes a field report drove | current, amends FD-D46 | FD-D46, FD-D42, FD-D30, FD-D7, FD-Q7 |
 | FD-D48 | `commit-composer` and `commit-composer-max` committing a working tree at hunk level through a shared convention and a read-only kit | current | FD-D1, FD-D7, FD-D39, FD-D46 |
 | FD-D49 | `baselinedocs-self-upgrade` upgrading the installed skills in every agent through a read-only scan and a confirmed overwrite | current | FD-D1, FD-D45, FD-D46, FD-D48 |
 | FD-D50 | README illustrations rendered from HTML sources as light and dark WebP pairs, and Mermaid leaving the README | current, amends FD-D9 | FD-D9, FD-D41, FD-D43, FD-D45 |
 | FD-D51 | `onboard` reporting progress and what waits on the user as visuals, and dropping the file record and the unresolved-reference section | current, amends FD-D34, FD-D17 and FD-D15 | FD-D15, FD-D17, FD-D31, FD-D34, FD-D35 |
+| FD-D52 | a release script run on the maintainer's machine stamping and tagging in one commit, and the release workflow only verifying | current, amends FD-D45 | FD-D45, FD-D49 |
 | FD-Q1 | hiding internal helpers at package level rather than by naming convention | open, deferred on a missing platform feature | FD-D1 |
 | FD-Q2 | installing checkpoint hooks across more than one repository | closed, hook mechanism removed | FD-D6, FD-D37 |
 | FD-Q5 | who, if anyone, owns misfiled-content detection now that `onboard` no longer checks it | open, structural half covered by FD-D46 | FD-D34, FD-D46 |
@@ -842,6 +843,26 @@ A new thread is the default once the pack is current, which after a save it is. 
 **Rejected: a percentage or a completion forecast.** It assesses, which `onboard` does not do.
 
 **Rejected: a table row for every phase.** A pack with 21 phases returns to the wall the change removes.
+
+## FD-D52: `scripts/release.py` stamps, tests, commits and tags in one commit on the maintainer's machine, and `release.yml` only verifies
+
+**Decided.** `scripts/release.py vX.Y.Z` refuses unless the branch is `main`, the tree is clean, and the tag exists neither locally nor on origin; then it runs `stamp_version.py`, runs the suite, commits `release: vX.Y.Z`, tags that commit, and prints `git push origin main` and `git push origin vX.Y.Z` without running them. A failing suite or a missing `uvx` reverts the stamp and commits nothing. `stamp_version.py` gains `--check vX.Y.Z`, which writes nothing and exits 1 when any `SKILL.md` carries another version. `.github/workflows/release.yml` runs `--check` and the suite on a tag push, with `contents: read` and no push. Tags up to `v3.2.1` stay on the commit before their stamp. `AGENTS.md` `Releases` and the `README.md` version line describe the new order. This amends the stamping step of FD-D45 and leaves its single family-wide `version:`, the semver tag, and the test unchanged.
+
+**Why.** Under FD-D45 the tag sits on the commit before the stamp, so a checkout of the tag shows the previous version. That produced a real failure: the `baselinedocs-self-upgrade` fallback cloned the tag and installed `3.1.0` on 17 folders (FD-D49). Stamping before tagging puts the tag on the tree it names, so a clone of the tag is correct, the bot commit and the `git pull` after it disappear, and the workflow no longer needs write access.
+
+**What breaks if ignored.** Each consumer must remember to read `main` and not the tag, and each release leaves local `main` behind until a pull.
+
+**Accepted cost.** A maintainer who runs `git tag` by hand and pushes it skips the stamp; the workflow then fails after the tag is public, and the repair is to delete and re-push the tag, which rewrites a published tag. Nothing server-side prevents it. The push is three commands, not two. `release.py` reaches origin once, for `git ls-remote`, and skips that check when origin is unreachable. The commit and tag path of `release.py` was not run, only the refusal on a dirty tree; `--check` has tests. `release.yml` has not run in its new form. The stamp check in the self-upgrade skill stays, for tags cut the earlier way.
+
+**Rejected: keep the workflow stamping after the tag (FD-D45).** Produces the tag on the earlier commit and the failure above.
+
+**Rejected: a `workflow_dispatch` that stamps, commits and tags.** Tag matches its tree, but keeps a bot commit and write access, and replaces the `git tag` step the maintainer chose to keep.
+
+**Rejected: the workflow moves the tag onto the stamp commit.** Rewrites a published tag on every release.
+
+**Rejected: `release.py` pushing.** A push is outward-facing and the maintainer decides it.
+
+**Rejected: rewriting the existing tags onto their stamp commits.** Rewrites published tags that installs already reference.
 
 ## Open questions
 

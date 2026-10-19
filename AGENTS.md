@@ -98,7 +98,7 @@ It is a second asset rather than a section of the contract on purpose. The contr
 
 ## Releases
 
-Every `SKILL.md` carries one top-level `version:`, shared by the whole family. Never edit it by hand: push the commit to `main`, then push a tag `vMAJOR.MINOR.PATCH`, and `.github/workflows/release.yml` stamps the value with `scripts/stamp_version.py` and pushes a `release: vX.Y.Z` commit to `main`. Run `git pull` afterwards. The tag stays on the earlier commit, so only `main` carries the new value. `tests/test_version.py` fails when the skills disagree.
+Every `SKILL.md` carries one top-level `version:`, shared by the whole family. Never edit it by hand: commit the work to `main`, then run `uv run scripts/release.py vMAJOR.MINOR.PATCH`. It stamps every `SKILL.md`, runs the suite, commits `release: vX.Y.Z`, and tags that commit, so the tag holds the stamped tree. It never pushes: run the two `git push` commands it prints. `.github/workflows/release.yml` only verifies, with `stamp_version.py --check`, that every `SKILL.md` carries the tag's version, and holds read-only permission. Tags up to `v3.2.1` were cut the earlier way, on the commit before the stamp. `tests/test_version.py` fails when the skills disagree.
 
 ## Tests
 
