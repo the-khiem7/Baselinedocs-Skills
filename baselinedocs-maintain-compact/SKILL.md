@@ -1,7 +1,7 @@
 ---
 name: baselinedocs-maintain-compact
 description: Compact an existing baseline pack by reducing repetition, retries, and verbosity, keeping its informational performance unchanged. Use automatically when the pack is too noisy to resume efficiently.
-version: "3.2.1"
+version: "3.3.0"
 ---
 
 # Baseline Docs Maintain Compact
