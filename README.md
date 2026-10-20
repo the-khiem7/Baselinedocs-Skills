@@ -72,7 +72,7 @@ The full contract, including the frontmatter fields and the identifier rules, is
 
 ## Skills
 
-<picture><source media="(prefers-color-scheme: dark)" srcset="assets/family-map-dark.webp"><img src="assets/family-map.webp" alt="Map of the skill family. Skills you call: init, adopt and save to start; run, onboard, load, brief and callout to work; adr, help and self-upgrade to decide and look after the install. Skills the agent reaches for on its own: sync-codebase, sync-decisions and sync-reconcile keep the pack true; audit-drift and audit-claims find what fell behind; maintain-compact and maintain-split keep a pack usable; extract-wiki and recall cover knowledge and recall. Beside the pack: commit-composer and commit-composer-max, which never read or write a pack. Every name carries the baselinedocs- prefix except the two commit skills." width="100%"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/family-map-dark.webp"><img src="assets/family-map.webp" alt="Map of the skill family. Skills you call: init, adopt and save to start; run, onboard, load, brief and callout to work; adr, help and self-upgrade to decide and look after the install. Skills the agent reaches for on its own: sync-codebase, sync-decisions and sync-reconcile keep the pack true; audit-drift and audit-claims find what fell behind; maintain-compact and maintain-split keep a pack usable; extract-wiki and recall cover knowledge and recall. Every name carries the baselinedocs- prefix." width="100%"></picture>
 
 ### User Entrypoints
 
@@ -109,20 +109,6 @@ All of them set `policy.allow_implicit_invocation: false` for Codex, so they sta
 | Recall    | `recall`                                                                           |
 
 All skill IDs use lowercase kebab-case, for example `baselinedocs-sync-codebase`. These are agent-selected helpers: their UI names start with `Baseline Docs Internal:` and implicit invocation stays enabled. The exception is `recall`, which a user also calls by hand, so its UI name is `Baseline Docs: Recall`. After a context compaction it re-reads the pack contract and the report style, so the next pack write follows the rules. Some hosts do not enforce the Codex-specific policy, so each skill description states the classification too.
-
-</details>
-
-<details>
-<summary><b>Commit Skills</b></summary>
-
-Two user entrypoints that extend the family but do not read or write a pack. Both split the uncommitted changes at hunk level, group them by project, action, and target, show the grouping, and commit only after you approve it. The title is `type(project): subject`, and the project is usually the pack's name; the message never carries a pack identifier, phase number, or pack filename.
-
-| User intent                                          | Skill                 | Outcome                                                                                              |
-| ---------------------------------------------------- | --------------------- | ---------------------------------------------------------------------------------------------------- |
-| Commit with short, meaningful messages               | `commit-composer`     | Title aimed at 50 characters, an optional body of up to 5 bullets                                    |
-| Commit with messages that stand in for reading the code | `commit-composer-max` | A body with the reason, every changed file and symbol, the risks, and what was verified, for task audit |
-
-Each runs a secret scan on the staged diff and a format check on the message before every commit, never pushes, and prints the ids that undo the index and the commits. `npx skills add` installs them with the rest of this repository; add `--skill commit-composer` to install one alone.
 
 </details>
 
@@ -217,7 +203,7 @@ Each skill follows the Agent Skills folder shape:
   scripts/        # only when the skill runs a bundled script
 ```
 
-`scripts/packtool.sh` is a read-only structure check for packs (`outline`, `find`, `next-id`, `close-plan`, `check`). Writer and audit skills run it after every write and before every report, and each one ships its own copy. The commit skills ship `scripts/commitkit.sh` the same way, and `baselinedocs-self-upgrade` ships `scripts/upgradekit.sh`, a read-only scan that compares installed versions with a release.
+`scripts/packtool.sh` is a read-only structure check for packs (`outline`, `find`, `next-id`, `close-plan`, `check`). Writer and audit skills run it after every write and before every report, and each one ships its own copy. `baselinedocs-self-upgrade` ships `scripts/upgradekit.sh`, a read-only scan that compares installed versions with a release.
 
 Every `SKILL.md` carries one top-level `version:` shared by the whole family. `scripts/release.py` stamps it and tags the stamped commit, so the value changes only at release.
 

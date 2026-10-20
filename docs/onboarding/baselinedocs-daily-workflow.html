@@ -351,8 +351,8 @@ html { scroll-behavior: smooth; }
         <div class="when"><b>Kết thúc</b>trước khi đóng máy</div>
         <div class="step-body">
           <h3>Để pack đúng với thực tế</h3>
-          <p>Nếu thread đã xác lập điều gì mà pack chưa có, chạy <strong>save</strong>. Muốn commit phần thay đổi trong repo, dùng một trong hai skill commit. Cả hai nhóm thay đổi theo từng hunk, in ra cách nhóm để bạn duyệt, và chỉ commit sau khi bạn đồng ý.</p>
-          <div class="skills"><span class="skill">baselinedocs-save</span><span class="skill">commit-composer</span><span class="skill">commit-composer-max</span></div>
+          <p>Nếu thread đã xác lập điều gì mà pack chưa có, chạy <strong>save</strong>.</p>
+          <div class="skills"><span class="skill">baselinedocs-save</span></div>
         </div>
       </li>
     </ol>
@@ -556,7 +556,6 @@ flowchart TD
       <li><label><input type="checkbox" id="c5"><span>Ngữ cảnh sắp đầy thì <span class="skill">save</span> trước, rồi mới chọn ở lại hay mở thread mới</span></label></li>
       <li><label><input type="checkbox" id="c6"><span>Sau <code>/compact</code>, chạy <span class="skill">brief</span> xem pack có tụt sau thread không, và <span class="skill">recall</span> nếu cần ghi pack tiếp</span></label></li>
       <li><label><input type="checkbox" id="c7"><span>Trước khi đóng máy, <span class="skill">save</span> điều thread đã xác lập mà pack chưa có</span></label></li>
-      <li><label><input type="checkbox" id="c8"><span>Commit bằng <span class="skill">commit-composer</span> hoặc <span class="skill">commit-composer-max</span>, duyệt cách nhóm trước khi đồng ý</span></label></li>
     </ul>
   </section>
 
@@ -598,8 +597,6 @@ if (window.mermaid) mermaid.initialize({ startOnLoad: true, theme: matchMedia("(
       steps: ["<strong>callout</strong> mở một nhóm tên gọi tạm trong <code>introduction</code>, trỏ tới những mục đã có.", "Nó không tạo nội dung mới, và yêu cầu bạn nêu điều kiện kết thúc nhóm."] },
     { q: "Một quy trình dùng lại được đang nằm trong pack", skill: "baselinedocs-extract-wiki",
       steps: ["<strong>extract-wiki</strong> rút quy trình thành bài wiki ở <code>docs/wiki/</code> và liên kết ngược từ pack."] },
-    { q: "Muốn commit các thay đổi", skill: "commit-composer  hoặc  commit-composer-max",
-      steps: ["<strong>commit-composer</strong>: tiêu đề khoảng 50 ký tự, thân tùy chọn tối đa 5 gạch đầu dòng.", "<strong>commit-composer-max</strong>: thân đầy đủ gồm lý do, từng file và symbol đã đổi, rủi ro, điều đã kiểm chứng.", "Cả hai quét bí mật trên diff trước khi commit, in cách nhóm để bạn duyệt, và không bao giờ push."] },
     { q: "Không biết nên dùng skill nào", skill: "baselinedocs-help",
       steps: ["<strong>help</strong> giải thích từng skill và thứ tự dùng. Nó không đọc pack và không ghi gì."] }
   ];

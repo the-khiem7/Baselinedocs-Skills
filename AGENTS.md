@@ -68,19 +68,9 @@ It is a second asset rather than a section of the contract on purpose. The contr
 - It never writes, never touches the network, and runs git read-only. Keep it that way: an installed skill executes it inside other teams' repositories.
 - `tests/test_packtool.py` holds one case per rule. A new rule needs a case.
 
-## The commit skills
-
-`commit-composer` and `commit-composer-max` extend the family but are not baselinedocs skills: they ship no pack contract, no report style, and no `packtool.sh`. They ship two assets of their own, byte-identical copies of `contract/commit-convention.md` (message format, project naming, the rule keeping pack identifiers out of a message, grouping, and the whole procedure) and `contract/commitkit.sh` (`hunks`, `patch`, `scan`, `lint`). Each `SKILL.md` holds only what differs, the message shape, plus its two gate sentences.
-
-- Edit the canonical file, then copy it into both skills. `tests/test_commit_skills.py` pins the copies, the folder shape, and the gate sentences.
-- Their folders are named `commit-*`, so `tests/helpers.py` `skill_dirs()`, the family metadata, version, and reference tests, and `scripts/stamp_version.py` never see them. `test_commit_skills.py` is their whole test surface, and a `version:` in their frontmatter fails it because nothing would ever update it.
-- `commitkit.sh` obeys the same rules as `packtool.sh`: POSIX sh and awk only, no gawk extension, no regex interval, and it computes without writing. Staging and committing are the agent's git commands, never the tool's, because an installed skill runs it inside other teams' repositories. `tests/test_commitkit.py` holds one case per rule and builds its repositories in a temporary directory.
-- A unit id is a hash of the file and the hunk body, not a position, because line numbers move after every commit. `patch` recomputes each selected hunk's new-side offset when an earlier hunk of the file is left out; `git apply --cached --unidiff-zero` positions a hunk by that offset and rejects a stale one.
-- Test fixtures that look like a secret are assembled at run time. A scanner reading this repository would otherwise flag the test file.
-
 ## The self-upgrade skill
 
-`baselinedocs-self-upgrade` upgrades the installed skills, not a pack. It is a family skill (`baselinedocs-*`, shared `version:`, stamped by the release) so it can compare and upgrade itself; a `commit-*` name would forbid the `version:` it needs.
+`baselinedocs-self-upgrade` upgrades the installed skills, not a pack. It is a family skill (`baselinedocs-*`, shared `version:`, stamped by the release) so it can compare and upgrade itself.
 
 - It ships `scripts/upgradekit.sh` (`inventory`, `compare`), the one script a family skill owns outright. There is no canonical copy in `contract/`: a single consumer makes a byte-identical copy a duplication to keep in sync. `tests/test_conventions.py` names it in `OWN_SCRIPTS`, and `tests/test_upgradekit.py` is its test surface and builds a fake home in a temporary directory.
 - `upgradekit.sh` obeys the `packtool.sh` rules: POSIX sh and awk only, never writes, never touches the network, does not run git. The agent runs `git ls-remote`, `npx skills update`, the clone, and every write, so the script stays safe to run inside any machine.
