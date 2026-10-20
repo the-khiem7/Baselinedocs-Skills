@@ -3,7 +3,7 @@ baseline_schema: "2.0"
 pack: "family-design"
 document: "roadmap"
 status: "active"
-updated: "2026-10-18"
+updated: "2026-10-20"
 code_ref: "uncommitted"
 ---
 
@@ -51,7 +51,7 @@ Verified against the repository, not against `DESIGN.md`.
 | Mechanical structure check | FD-D46, FD-D47 | implemented, CI matrix unobserved | `contract/packtool.sh` with byte-identical `scripts/packtool.sh` copies; commands `outline`, `find`, `next-id`, `close-plan`, `check`; gates pinned by `TOOL_SKILLS` in `tests/test_references.py`; `tests/test_packtool.py` builds one case per rule |
 | Closed question keeps its number | FD-D47 | implemented | contract `Entry index` states the `Closes` line; `close-plan` and WARN `identifier-gap` in the tool; `sync-decisions` and `save` run `close-plan`, pinned by `test_skills_that_close_questions_run_close_plan` |
 | Release version in the frontmatter | FD-D45, FD-Q6 | implemented, workflow unobserved | top-level `version:` in every `SKILL.md`; `scripts/stamp_version.py`; `tests/test_version.py`; `.github/workflows/release.yml` has not run on GitHub |
-| Commit skills | FD-D48 | implemented, host selection unobserved | `commit-composer/` and `commit-composer-max/` with byte-identical copies of `contract/commit-convention.md` and `contract/commitkit.sh`; `tests/test_commit_skills.py` pins copies, folder shape and gates; `tests/test_commitkit.py` holds one case per rule |
+| Commit skills | FD-D48, FD-D53 | moved to the `commit-composer` repository | no `commit-*` folder, contract file or test remains here; the history of those paths lives in the new repository |
 | Installed-skill upgrade | FD-D49 | implemented, upgrade path unobserved | `baselinedocs-self-upgrade/` with `scripts/upgradekit.sh`; `tests/test_upgradekit.py` holds one case per rule; `OWN_SCRIPTS` in `tests/test_conventions.py`; `compare` run against this machine's 190 installs |
 | Onboard report as visuals | FD-D51 | implemented, host render unobserved | `baselinedocs-onboard/SKILL.md`: no file record, no `Unresolved references` section, one `Not read:` line in `Caveats`, fixed chip table, HTML page with Mermaid only on request |
 | README illustrations | FD-D50 | implemented, GitHub render unobserved | 34 WebP under `assets/` (17 light, 17 dark) rendered from `assets/source/*.html` with `shared.css`, `shared.js`, `finish.py`; `README.md` selects them with `<picture>`; `tests/test_readme_assets.py` pins one `data-skill` chip per skill in `family-map.html` |
@@ -817,6 +817,32 @@ Changes:
 | `family-design.hallucination.md` | FD-D51 and its index row; amendment lines under FD-D15, FD-D17 and FD-D34; three index statuses |
 | `family-design.roadmap.md`, `family-design.introduction.md` | this phase; a design-area row; one current-truth row |
 
+## FD-P23: move the commit skills to their own repository
+
+Opened and closed 2026-10-20 by the user's decision. FD-D53 carries the reasoning and the rejected options.
+
+Acceptance criteria:
+
+- no commit skill, canonical asset or test remains here, and no file outside `docs/baseline/` names them
+- the new repository holds the history of the moved paths and a green suite
+- the suite here stays green, `test_no_typographic_dashes` and the identifier-resolution test included
+
+### Checkpoint: complete
+
+| Item | Result |
+|---|---|
+| Verification gate | `uvx --from "pytest>=8,<10" --with pyyaml pytest tests/ -q` here and in the new repository, run after the last edit |
+| Images | `assets/family-map.webp` and `assets/family-map-dark.webp` re-shot from `assets/source/family-map.html` at 2400x1300 and viewed in both themes; the right-hand column ends higher than the left |
+| Commit | uncommitted, in both repositories |
+
+Changes:
+
+| File | Change |
+|---|---|
+| `commit-composer/`, `commit-composer-max/`, `contract/commit-*`, `tests/test_commit*.py` | removed |
+| `tests/helpers.py`, `AGENTS.md`, `README.md`, `assets/source/family-map.html`, `docs/onboarding/baselinedocs-daily-workflow.html` | commit-skill content removed |
+| `family-design.hallucination.md`, `family-design.introduction.md`, `family-design.roadmap.md` | FD-D53 and its row; FD-D48 row and a moved line; one current-truth row; one design-area row; this phase |
+
 ## Risks
 
 | Risk | Detail |
@@ -845,7 +871,7 @@ FD-P17 added `packtool.sh`: push and confirm the three-OS test matrix is green, 
 
 FD-P18 changed the tool, the contract and 14 gate sentences: reinstall again, because an installed skill still calls `sh scripts/packtool.sh` and carries the old tool. FD-Q7 (`code_ref` naming the inspected repository) waits on the user and needs its own schema decision. Nothing else in FD-P18 waits on the user.
 
-FD-P19 added `commit-composer` and `commit-composer-max`, which install with the family and are not baselinedocs skills. Push and confirm the three-operating-system matrix is green for `tests/test_commitkit.py`, since only gawk has run it. Then use each skill once on a real working tree and check that a host selects it from a plain request such as "commit these in groups"; no host has, and a commit skill that selects itself on staging may compete for the same request. Nothing in FD-P19 waits on a user decision.
+FD-P19 added the commit skills and FD-P23 moved them to the `commit-composer` repository, which now owns their open items. Nothing in FD-P23 waits on a user decision.
 
 FD-P21 rebuilt the README around images. After the user pushes, open the repository page on github.com in the light and the dark theme and confirm: `<picture>` picks the matching WebP, the navigation buttons jump to their sections, the Daily Guide card opens the guide, and the text in each image is readable at desktop and phone width. Whenever a skill is added or renamed, add its chip to `assets/source/family-map.html`, then re-shoot `family-map` in both themes by the procedure in that file's header. Nothing in FD-P21 waits on a user decision.
 

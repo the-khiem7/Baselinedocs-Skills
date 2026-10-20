@@ -3,7 +3,7 @@ baseline_schema: "2.0"
 pack: "family-design"
 document: "hallucination"
 status: "active"
-updated: "2026-10-18"
+updated: "2026-10-20"
 code_ref: "uncommitted"
 ---
 
@@ -66,11 +66,12 @@ Every identifier in this initiative carries its pack's prefix: `FD-` here, `SC-`
 | FD-D45 | a release tag stamping one family-wide `version:` into every `SKILL.md` on `main` | current, stamping step amended by FD-D52 | FD-D37, FD-D41, FD-D52, FD-Q6 |
 | FD-D46 | `packtool.sh`, a mechanical structure check every writer runs before reporting a write | current, amended by FD-D47 | FD-D7, FD-D41, FD-D42, FD-D47, FD-Q5 |
 | FD-D47 | how a closed question keeps its number, and the packtool changes a field report drove | current, amends FD-D46 | FD-D46, FD-D42, FD-D30, FD-D7, FD-Q7 |
-| FD-D48 | `commit-composer` and `commit-composer-max` committing a working tree at hunk level through a shared convention and a read-only kit | current | FD-D1, FD-D7, FD-D39, FD-D46 |
+| FD-D48 | `commit-composer` and `commit-composer-max` committing a working tree at hunk level through a shared convention and a read-only kit | moved out of this repository by FD-D53, which reverses its rejected separate-repository option | FD-D1, FD-D7, FD-D39, FD-D46, FD-D53 |
 | FD-D49 | `baselinedocs-self-upgrade` upgrading the installed skills in every agent through a read-only scan and a confirmed overwrite | current | FD-D1, FD-D45, FD-D46, FD-D48 |
 | FD-D50 | README illustrations rendered from HTML sources as light and dark WebP pairs, and Mermaid leaving the README | current, amends FD-D9 | FD-D9, FD-D41, FD-D43, FD-D45 |
 | FD-D51 | `onboard` reporting progress and what waits on the user as visuals, and dropping the file record and the unresolved-reference section | current, amends FD-D34, FD-D17 and FD-D15 | FD-D15, FD-D17, FD-D31, FD-D34, FD-D35 |
 | FD-D52 | a release script run on the maintainer's machine stamping and tagging in one commit, and the release workflow only verifying | current, amends FD-D45 | FD-D45, FD-D49 |
+| FD-D53 | the commit skills leaving this repository for their own, with the history of their paths | current, reverses the rejected separate-repository option of FD-D48 | FD-D48, FD-D45, FD-D49 |
 | FD-Q1 | hiding internal helpers at package level rather than by naming convention | open, deferred on a missing platform feature | FD-D1 |
 | FD-Q2 | installing checkpoint hooks across more than one repository | closed, hook mechanism removed | FD-D6, FD-D37 |
 | FD-Q5 | who, if anyone, owns misfiled-content detection now that `onboard` no longer checks it | open, structural half covered by FD-D46 | FD-D34, FD-D46 |
@@ -764,6 +765,8 @@ A new thread is the default once the pack is current, which after a save it is. 
 
 **Rejected: a Python or Go kit.** The reasons FD-D46 gave for `packtool.sh`.
 
+**Moved by FD-D53.** The skills, their assets and their tests no longer live in this repository. The decision is carried in full in the `commit-composer` repository's own pack.
+
 ## FD-D49: `baselinedocs-self-upgrade` upgrades the installed skills in every agent through a read-only scan and a confirmed overwrite
 
 **Decided.** Add `baselinedocs-self-upgrade`, a user entrypoint (`allow_implicit_invocation: false`, display name `Baseline Docs Self-Upgrade`) that upgrades the installed baselinedocs skills, never a pack. The agent takes the latest release from `git ls-remote --tags` (highest `vMAJOR.MINOR.PATCH`), falling back to the `version:` line of the skill's own `SKILL.md` on `main` when the tag listing fails, and stops when `main` reads lower than the tag. `scripts/upgradekit.sh` (`inventory`, `compare <latest>`) globs `$HOME/.<agent>/skills` and `$HOME/.<agent>/<sub>/skills` for `baselinedocs-*/SKILL.md` and prints one row per skill per agent folder: status, skill, version, kind, path. The agent reports by agent folder and asks for confirmation as its own question before any write. Upgrade runs `npx skills update -g -y`, re-runs `compare`, then replaces each real folder still behind or unparsable from a shallow clone of `main` whose `version:` is not below the release, this skill's own folders last. It never writes or deletes through a link or junction, never deletes a skill folder, never adds a skill that is not installed. The skill is `baselinedocs-*` so it carries the family `version:` (FD-D45) and can upgrade itself; its one script has no canonical copy in `contract/`, and `tests/test_conventions.py` names it in `OWN_SCRIPTS`.
@@ -863,6 +866,22 @@ A new thread is the default once the pack is current, which after a save it is. 
 **Rejected: `release.py` pushing.** A push is outward-facing and the maintainer decides it.
 
 **Rejected: rewriting the existing tags onto their stamp commits.** Rewrites published tags that installs already reference.
+
+## FD-D53: the commit skills leave this repository for their own, with the history of their paths
+
+**Decided.** `commit-composer`, `commit-composer-max`, `contract/commit-convention.md`, `contract/commitkit.sh`, `tests/test_commit_skills.py` and `tests/test_commitkit.py` are removed from this repository. They live in the `commit-composer` repository (`C:\.repos\Personal\commit-composer`, personal account), created with `git filter-repo` so the history of those paths carries over, with the same release script, stamp script, workflows and a pack of its own. Initial version there `1.0.0`. The `AGENTS.md` section `The commit skills`, the README `Commit Skills` block and its mentions, the `Beside the pack` card of `assets/source/family-map.html`, the commit entries of `docs/onboarding/baselinedocs-daily-workflow.html` and `commit_skill_dirs()` in `tests/helpers.py` are removed. This repository's history is unchanged.
+
+**Why.** The skills read no pack contract, report style or `packtool.sh`, and every family test skipped them by folder name, so what tied them to the family was one install and one CI run. Separate repositories give each its own release number, so a commit-skill fix is not a family release and a family install no longer brings a skill the user may not want.
+
+**What breaks if ignored.** Two unrelated release cadences stay under one version, and only a `--skill` install separates them.
+
+**Accepted cost.** A machine that installed the skills from this repository keeps the folders: `baselinedocs-self-upgrade` upgrades only `baselinedocs-*` skills and never removes one (FD-D49). The user chose to ignore it. Both `family-map` images were re-shot without the commit card, so the right-hand column now ends higher than the left. The `commit-composer` repository's `.github/workflows` have not run.
+
+**Rejected: keep a copy here.** Two canonical sources for one convention drift, and no test compares across repositories.
+
+**Rejected: copy without history.** Drops the history of the convention and tests, which carry the measured findings of FD-D48.
+
+**Rejected: leave a pointer to the new repository in the README.** The user chose complete removal.
 
 ## Open questions
 

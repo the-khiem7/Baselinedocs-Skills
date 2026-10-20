@@ -3,7 +3,7 @@ baseline_schema: "2.0"
 pack: "family-design"
 document: "introduction"
 status: "active"
-updated: "2026-10-18"
+updated: "2026-10-20"
 code_ref: "uncommitted"
 ---
 
@@ -43,7 +43,7 @@ Verified against the working tree at `0cb913f`, not read off `DESIGN.md`.
 | `resume-*` skills | none on disk |
 | execution policies | `approval_policy` and `commit_policy`, defined in `baselinedocs-run/references/execution-contract.md`, gated by `tests/test_run_policy.py` |
 | test command and result | `uvx --from "pytest>=8,<10" --with pyyaml pytest tests/ -q`, green. The pass count is not recorded: it changes with every skill added |
-| commit skills | `commit-composer` and `commit-composer-max`: user entrypoints outside the `baselinedocs-*` naming, so the family tests and the release stamp skip them. Tested by `tests/test_commit_skills.py` and `tests/test_commitkit.py`. FD-D48 |
+| commit skills | none on disk. Moved to the `commit-composer` repository. FD-D53 |
 | installed-skill upgrade | `baselinedocs-self-upgrade`: a family skill that upgrades the installed baselinedocs skills in every agent on a machine, never a pack. Its read-only `scripts/upgradekit.sh` is the one script a single family skill owns. Tested by `tests/test_upgradekit.py`. FD-D49 |
 | README illustrations | light and dark WebP pairs under `assets/`, rendered from `assets/source/*.html`; the README selects them with `<picture>` and has no Mermaid. `banner.png` is the one PNG and has no dark variant. Tested by `tests/test_readme_assets.py` against the family map source only. FD-D50 |
 | onboard report | six sections drawn as visuals: `Needs you now`, `Progress`, `Doc pack introduction`, `Next actions`, `Pack map`, `Caveats`; no file record, no `Unresolved references` section. Not pinned by a test. FD-D51 |
