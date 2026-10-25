@@ -13,21 +13,22 @@ This repo is the source of the `baselinedocs` skill family. Everything here is a
 
 Consequences:
 
-- **A skill may rely on anything inside its own folder.** That is what `<skill>/references/` is for, and it ships. The one exception is `baseline-core`, below. The boundary is the folder, not the act of reading a file.
+- **A skill may rely on anything inside its own folder.** That is what `<skill>/references/` is for, and it ships. The exceptions are the two core skills, below. The boundary is the folder, not the act of reading a file.
 - **Name a sibling skill for routing.** "`baselinedocs-maintain-split` creates one" tells the reader where to go next and holds whether or not that skill is installed. The `Non-Goals` sections across the family are built on this.
-- **Never make a sibling's content a prerequisite, except `baseline-core`.** Not "read `baselinedocs-init`", not a path through `../`, not a sibling's `references/`. `baseline-core` is the single exception (BLD-D54): it is installed with the family, every reading skill fails closed without it, and no other sibling may be read this way. Naming a skill is routing; requiring its content is a dependency that resolves to nothing when the skill is installed alone. That is the historical bug here: `baselinedocs-adopt` shipped with "Read `baselinedocs-init` when creating a new pack", and the folder it named was usually absent. Note that the broken line contained no path at all, so "avoid paths" is not the test - "does this run need another folder present" is.
+- **Never make a sibling's content a prerequisite, except the two core skills.** Not "read `baselinedocs-init`", not a path through `../`, not a sibling's `references/`. `baseline-core` is the first exception (BLD-D54): it is installed with the family, every reading skill fails closed without it. `baseline-academic-core` is the second (BLD-D55): only the `baselinedocs-academic-*` skills read it, and they fail closed without it. No other sibling may be read this way. Naming a skill is routing; requiring its content is a dependency that resolves to nothing when the skill is installed alone. That is the historical bug here: `baselinedocs-adopt` shipped with "Read `baselinedocs-init` when creating a new pack", and the folder it named was usually absent. Note that the broken line contained no path at all, so "avoid paths" is not the test - "does this run need another folder present" is.
 - Do not justify cutting something from a `SKILL.md` on the grounds that it is written down in `docs/baseline/`. No installed agent can open a doc pack.
 
 ## Where reasoning goes
 
-`docs/baseline/` is the decision log: the full argument, the alternatives that were rejected, and why. Record decisions there, including what breaks if one is ignored. Two packs, routed by `docs/baseline/baseline-gateway.index.md`:
+`docs/baseline/` is the decision log: the full argument, the alternatives that were rejected, and why. Record decisions there, including what breaks if one is ignored. Three packs, routed by `docs/baseline/baseline-gateway.index.md`:
 
 | Pack | Owns |
 |---|---|
 | `docs/baseline/baselinedocs/` | the design of the family as a whole: trigger architecture, pack schema, checkpoint model, rule placement, workflow sequence, the onboard scope gate, evidence retention, `useguide`, execution policy, multi-pack routing |
 | `docs/baseline/skill-consolidation/` | which skills were merged, deleted, or renamed, and the criterion that decided each |
+| `docs/baseline/academy/` | the `academic` sub-family: skills that build anonymized lessons from the packs of many projects, and the rules of `baseline-academic-core` |
 
-Identifiers carry their pack prefix, `BLD-` or `SC-`, so a reference is unambiguous wherever it is read. `baselinedocs.hallucination.md` BLD-D30 records why.
+Identifiers carry their pack prefix, `BLD-`, `SC-` or `ACA-`, so a reference is unambiguous wherever it is read. `baselinedocs.hallucination.md` BLD-D30 records why.
 
 A `SKILL.md` is an instruction executed fresh on every run, not a decision log. It carries a WHY clause only where the agent has a plausible reason to break the rule and would otherwise talk itself out of it.
 
@@ -75,6 +76,14 @@ It is a second asset rather than a section of the contract on purpose. The contr
 - It never writes, never touches the network, and runs git read-only. Keep it that way: an installed skill executes it inside other teams' repositories.
 - `tests/test_packtool.py` holds one case per rule. A new rule needs a case.
 
+## The academic core
+
+`baseline-academic-core` is a second core skill. It holds `references/academic-contract.md`, the lesson format, the citation rule and the anonymization rules every `baselinedocs-academic-*` skill reads. Pack documents are still read through `baseline-core`; an academic skill needs both folders beside its own. `docs/baseline/baselinedocs/` BLD-D55 records why it is not part of `baseline-core`.
+
+- Edit the file in `baseline-academic-core/` and nothing else. No academic skill ships a copy, and `baseline-core` holds none of its rules.
+- It follows the `baseline-core` shape: `allow_implicit_invocation: false`, the `Baseline Docs Internal:` display prefix, and the family `version:`, stamped by the release.
+- `tests/test_references.py` pins that the asset exists and that no skill ships a copy. The sentence that defines the academic core's folder, and its gate, are pinned when the first academic skill is added.
+
 ## The self-upgrade skill
 
 `baselinedocs-self-upgrade` upgrades the installed skills, not a pack. It is a family skill (`baselinedocs-*`, shared `version:`, stamped by the release) so it can compare and upgrade itself.
@@ -89,7 +98,7 @@ It is a second asset rather than a section of the contract on purpose. The contr
 - ASCII hyphen only. No en dash, no em dash. Enforced by `test_no_typographic_dashes` across every `.md`, `.yaml`, `.yml`, `.txt`, `.py`, and `.ini` file Git lists for the repo.
 - State the pack-writing skill count in one sentence only, the one under `The pack contract`. Everywhere else say "every pack-writing skill". `test_references.py` pins that sentence against `WRITER_SKILLS` and fails on a second one, because a count repeated in prose goes stale the next time a skill is added or removed. It is pinned to `WRITER_SKILLS` rather than `CONTRACT_SKILLS` because a full reader ships the contract too, so the two counts differ and the prose is about writing.
 - Before merging or deleting a skill, read `docs/baseline/skill-consolidation/skill-consolidation.hallucination.md` SC-D1. The merge test is two conditions, not one, and two plausible-looking alternatives are recorded there as rejected so they are not proposed again.
-- Skill folder shape: `SKILL.md`, `agents/openai.yaml`, `references/` only when needed, and no copy of the shared assets. `baselinedocs-self-upgrade` also owns `scripts/upgradekit.sh`. `baseline-core` holds `references/` and `scripts/packtool.sh` only.
+- Skill folder shape: `SKILL.md`, `agents/openai.yaml`, `references/` only when needed, and no copy of the shared assets. `baselinedocs-self-upgrade` also owns `scripts/upgradekit.sh`. `baseline-core` holds `references/` and `scripts/packtool.sh` only. `baseline-academic-core` holds `references/` only.
 - User entrypoints set `allow_implicit_invocation: false`. Lifecycle skills keep it enabled and prefix their display name with `Baseline Docs Internal:`. `baselinedocs-recall` is the one lifecycle skill named `Baseline Docs: Recall` without `Internal`, because a user calls it by hand as often as an agent selects it.
 - That policy field is Codex-only. On other hosts the `description` frontmatter is the real selection surface, so it must carry the vocabulary a user would actually type.
 

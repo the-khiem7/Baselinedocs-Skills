@@ -27,7 +27,7 @@ npx skills add https://github.com/the-khiem7/Baselinedocs-Skills.git
 
 From a local clone, replace the repository URL with `.`. To see what the install contains first, add `--list`.
 
-Install the family, not individual skills. The skills hand off to each other by name: `baselinedocs-onboard` names `baselinedocs-sync-reconcile` for a contradiction it must not repair itself, and `baselinedocs-brief` names `baselinedocs-save` for a delta it must not write itself. A pointer to a skill that was never installed is a dead end the agent reaches only after the user has already asked for something. The same holds for `baseline-core`, which carries the pack contract, the report style and `packtool.sh`: every `baselinedocs-*` skill reads it from beside its own folder and stops when it is missing.
+Install the family, not individual skills. The skills hand off to each other by name: `baselinedocs-onboard` names `baselinedocs-sync-reconcile` for a contradiction it must not repair itself, and `baselinedocs-brief` names `baselinedocs-save` for a delta it must not write itself. A pointer to a skill that was never installed is a dead end the agent reaches only after the user has already asked for something. The same holds for `baseline-core`, which carries the pack contract, the report style and `packtool.sh`: every `baselinedocs-*` skill reads it from beside its own folder and stops when it is missing. `baseline-academic-core` carries the lesson format, citation rule and anonymization rules for the `baselinedocs-academic-*` skills, which read it the same way; no academic skill ships yet.
 
 ## Daily Guide
 
@@ -95,7 +95,7 @@ All of them set `policy.allow_implicit_invocation: false` for Codex, so they sta
 - `onboard` writes nothing, and on a multi-pack initiative it routes before it loads: it reads the index, takes one domain pack rather than the whole set, and reports every point where a loaded document leaned on something that was not loaded.
 - `run` invoked without both execution policies asks whether to pause after each phase and whether to commit each verified phase. It never chooses defaults silently.
 - `callout` writes no fact and creates no pack content. It points at elements that already exist, refuses when one does not, and requires a stated condition that ends the group before it will open one.
-- `self-upgrade` upgrades the installed skills, never a pack. It finds the highest `vX.Y.Z` tag, scans your home directory for every agent folder holding a `baselinedocs-*` skill or `baseline-core`, reports which are behind, and overwrites nothing until you confirm. It uses `npx skills update` first and a shallow clone of the tag for real copies `npx` leaves behind; it never writes through a link or junction.
+- `self-upgrade` upgrades the installed skills, never a pack. It finds the highest `vX.Y.Z` tag, scans your home directory for every agent folder holding a `baselinedocs-*` skill, `baseline-core` or `baseline-academic-core`, reports which are behind, and overwrites nothing until you confirm. It uses `npx skills update` first and a shallow clone of the tag for real copies `npx` leaves behind; it never writes through a link or junction.
 
 <details>
 <summary><b>Agent-Selected Skills</b></summary>
