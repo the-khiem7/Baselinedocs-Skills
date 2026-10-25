@@ -33,7 +33,7 @@ Applies to every lesson drawn from more than one project, and to a single-projec
 
 - Replace five classes before any page is written: project names, account identifiers, host names, customer names, person names.
 - Labels: `Project A`, `Account 1`, `Host 1`, `Customer 1`, `Person 1`. One real value keeps one label for the whole series.
-- Keep the real-to-label mapping in one file outside every repository, one file per series. Never print its contents, never copy it into a page, never place it in a folder a repository tracks.
+- Keep the real-to-label mapping in one file per series, in the directory the skill was called from. Before writing it, check with `git check-ignore` that git ignores it; when it does not, add one entry for that file to the directory's ignore file and check again, and stop without writing when it is still not ignored. Never print its contents and never copy it into a page.
 - Report the count of replacements per class after each run, and state that replacement is a heuristic that was not proven complete. The user reviews the page for identifiers it missed before it leaves the machine.
 - Before writing a page, scan its text for keys, tokens, passwords and connection strings. On a finding, stop and name the file and the rule, never the value.
 
