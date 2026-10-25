@@ -4,7 +4,7 @@ pack: "academy"
 document: "introduction"
 status: "draft"
 updated: "2026-10-25"
-code_ref: "d26f99f"
+code_ref: "958d18e"
 ---
 
 # Academy
@@ -42,6 +42,6 @@ One skill, `baselinedocs-academic-compose`, works in three modes (ACA-D10): proj
 | output is anonymized before it is written | ACA-D5 |
 | every claim in a lesson cites a source entry; a gap is marked, not filled | ACA-D7, ACA-D8 |
 | no external skill is installed; reused `teach` text keeps its MIT notice | ACA-D7, ACA-D15 |
-| the anonymizer's mapping file lives outside every repository | ACA-D13 |
+| the anonymizer's mapping file sits where the skill is called and is git-ignored before it is written | ACA-D18 |
 | HTML is written in the directory the skill is called from | ACA-D14 |
 | user is a standard Windows account; no step may need elevation | machine privileges rule in the user's global instructions |

@@ -31,7 +31,7 @@ BARE = re.compile(r"(?<![\w-])([DQP]\d+)(?![\w-])")
 # that it is stated rather than deleted. Anything else cited must have a heading.
 CLOSED_WITHOUT_HEADING = {
     "BLD-Q3", "BLD-Q4", "SC-Q1", "SC-Q2", "SC-Q3", "SC-Q4", "SC-Q5",
-    "ACA-Q1", "ACA-Q2", "ACA-Q3", "ACA-Q4", "ACA-Q5", "ACA-Q6", "ACA-Q7",
+    "ACA-Q1", "ACA-Q2", "ACA-Q3", "ACA-Q4", "ACA-Q5", "ACA-Q6", "ACA-Q7", "ACA-Q8",
 }
 
 # The documents recording the prefix rule quote the banned bare form as an

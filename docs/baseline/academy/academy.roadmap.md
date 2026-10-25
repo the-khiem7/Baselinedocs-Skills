@@ -4,7 +4,7 @@ pack: "academy"
 document: "roadmap"
 status: "draft"
 updated: "2026-10-25"
-code_ref: "d26f99f"
+code_ref: "958d18e"
 ---
 
 # Academy Roadmap
@@ -17,7 +17,7 @@ Verification gate for every phase that touches code: `uvx --from "pytest>=8,<10"
 |---|---|---|---|---|
 | ACA-P1 | design recorded in this pack and the gateway index | ACA-D1 to ACA-D17 | - | complete |
 | ACA-P2 | `baseline-academic-core` created, family files updated | ACA-D3, ACA-D9 | ACA-P1 | complete |
-| ACA-P3 | `baselinedocs-academic-compose` written, three modes | ACA-D2, ACA-D7, ACA-D8, ACA-D10, ACA-D12, ACA-D14, ACA-D16 | ACA-P2, ACA-Q8 | not started |
+| ACA-P3 | `baselinedocs-academic-compose` written, three modes | ACA-D2, ACA-D7, ACA-D8, ACA-D10, ACA-D12, ACA-D14, ACA-D16, ACA-D18 | ACA-P2 | not started |
 | ACA-P4 | trial run in each mode, project scoped first | ACA-D4, ACA-D5, ACA-D6, ACA-D10, ACA-D17 | ACA-P3 | not started |
 | ACA-P5 | release of the sub-family | ACA-D9 | ACA-P4 | not started |
 
@@ -41,6 +41,8 @@ Acceptance criteria:
 
 Evidence: `uvx --from "pytest>=8,<10" --with pyyaml pytest tests/ -q` gave 474 passed and 2 skipped (the two skips need a symbolic link or a preserved `HOME`, unchanged by this phase); `scripts/stamp_version.py --check v3.3.0` reported 0 files differing; `packtool.sh check docs/baseline` gave 0 FAIL and 5 WARN, all in the older packs. Files changed: `baseline-academic-core/` (new), `scripts/stamp_version.py`, `baselinedocs-self-upgrade/SKILL.md` and `scripts/upgradekit.sh`, `tests/test_references.py`, `test_skill_metadata.py`, `test_version.py`, `test_upgradekit.py`, `test_packs.py`, `AGENTS.md`, `README.md`, and the `baselinedocs` pack (a new decision and an introduction edit). The decision is in `baselinedocs` hallucination as BLD-D55 (the second shared core, read only by the academic skills). The sentence that defines the academic core's folder and its gate are not pinned yet: no academic skill exists, so they are pinned in ACA-P3.
 
+Revision summary: the anonymization rules in `academic-contract.md` were changed after the phase was committed, to move the mapping file into the calling directory and require it to be git-ignored (ACA-D18). The acceptance criteria and dependencies are unchanged.
+
 ## ACA-P3: the compose skill
 
 Acceptance criteria:
@@ -49,6 +51,7 @@ Acceptance criteria:
 - it writes only the local HTML folder and never a source project
 - its description names "baseline pack" and internal knowledge, so it is not selected for paper writing
 - it scans output for keys and credentials before writing
+- it writes the mapping file only after `git check-ignore` confirms git ignores it, and stops otherwise
 
 ## ACA-P4: trial run
 
@@ -72,10 +75,10 @@ Acceptance criteria:
 |---|---|
 | wrong family selected for paper-writing requests | ACA-D1 |
 | anonymizer misses an identifier | ACA-D5, ACA-D13 |
-| mapping file leaks the real names | ACA-D13 |
+| mapping file leaks the real names | ACA-D18 |
 | sensitive project read by default | ACA-D4 |
 | multi-project output written into a project repo | ACA-D14 |
 
 ## Next action
 
-Answer ACA-Q8 (where the anonymizer mapping file lives), then start ACA-P3: write `baselinedocs-academic-compose` and pin its core-folder sentence and gates in `tests/test_references.py`.
+Start ACA-P3 once the user approves it: write `baselinedocs-academic-compose` and pin its core-folder sentence and gates in `tests/test_references.py`.

@@ -4,7 +4,7 @@ pack: "academy"
 document: "hallucination"
 status: "draft"
 updated: "2026-10-25"
-code_ref: "d26f99f"
+code_ref: "958d18e"
 ---
 
 # Academy: Decisions and Open Questions
@@ -25,12 +25,12 @@ code_ref: "d26f99f"
 | ACA-D10 | three ways to choose topics: project scoped, named topic across projects, suggested topics across projects | current | ACA-D4, ACA-D12, ACA-Q5 |
 | ACA-D11 | keeping the pack folder `academy` beside the brand `academic` | current | ACA-D1, ACA-Q1 |
 | ACA-D12 | running inside one project repo and writing its HTML there | current | ACA-D4, ACA-D10, ACA-Q7 |
-| ACA-D13 | the anonymizer: five classes, counts reported, mapping kept outside every repository | current | ACA-D5, ACA-Q2 |
+| ACA-D13 | the anonymizer: five classes, counts reported, a mapping file kept | current, mapping location amended by ACA-D18 | ACA-D5, ACA-D18, ACA-Q2 |
 | ACA-D14 | writing the HTML where the skill is called | current | ACA-D6, ACA-D12, ACA-Q3 |
 | ACA-D15 | reusing `teach` text under its MIT licence | current | ACA-D7, ACA-Q4 |
 | ACA-D16 | suggest mode stops when `baselinedocs-load` is missing | current | ACA-D10, ACA-Q6 |
 | ACA-D17 | anonymizing project-scoped output only when it will be shared | current | ACA-D5, ACA-D12, ACA-Q7 |
-| ACA-Q8 | where the anonymizer's mapping file lives | open | ACA-D13 |
+| ACA-D18 | the mapping file sitting where the skill is called, git-ignored before it is written | current, amends ACA-D13 and makes one exception to ACA-D17 | ACA-D13, ACA-D17, ACA-Q8 |
 
 ## Closed decisions
 
@@ -127,11 +127,11 @@ code_ref: "d26f99f"
 - What breaks if ignored: the skill reads `C:\.repos\Work\` wide for a user who wanted one project, and the lesson sits away from its project.
 - Rejected: writing project-scoped output into this repository.
 
-### ACA-D13: the anonymizer replaces five classes and keeps a mapping outside every repository
+### ACA-D13: the anonymizer replaces five classes and keeps a mapping file
 
-- Decision: before any HTML is written, the anonymizer replaces project names, account IDs, hostnames, customer names and person names with neutral labels, reports the count replaced per class, and keeps the real-to-label mapping in one file outside every repository. The path of that file is set when the skill is built.
+- Decision: before any HTML is written, the anonymizer replaces project names, account IDs, hostnames, customer names and person names with neutral labels, reports the count replaced per class, and keeps the real-to-label mapping in one file per series. Where that file sits is decided by ACA-D18.
 - Why: the user wants to trace a label back to its real name, which a mapping allows and the no-mapping option does not.
-- What breaks if ignored: a mapping inside a repository ships a list of real names with the repository.
+- What breaks if ignored: a mapping that a repository tracks ships a list of real names with the repository.
 - Known risk: the mapping holds exactly what the anonymizer hides, so it is handled like a secret: never printed, never committed, never copied into HTML.
 - Closes ACA-Q2.
 - Rejected: replacing the five classes and keeping no mapping (cannot trace a label back); replacing only account IDs and hostnames (project and customer names stay visible).
@@ -170,8 +170,15 @@ code_ref: "d26f99f"
 - Closes ACA-Q7.
 - Rejected: always anonymizing (loses detail the team needs); always adding the HTML folder to the ignore file (edits a project unasked, and the page is not kept with it).
 
+### ACA-D18: the mapping file sits where the skill is called and is git-ignored first
+
+- Decision: the anonymizer's mapping file is written in the directory the skill was called from, one file per series. Before writing it the skill checks with `git check-ignore` that git ignores it; when it is not ignored the skill adds one entry for that file to the directory's ignore file, checks again, and stops without writing when it is still not ignored. The file name is set when the skill is built.
+- Why: the user builds a series in its own repository and wants the mapping beside the pages it decodes, kept out of version control.
+- What breaks if ignored: a tracked mapping commits a list of real names with the series repository.
+- Known risk: the mapping sits next to the pages it decodes, and the ignore entry protects only git; copying the folder as a plain archive carries both. A directory under another version control system gets no protection.
+- Closes ACA-Q8. Amends ACA-D13, which placed the file outside every repository, and makes one exception to ACA-D17, which edits a project's ignore file only when asked: the mapping file's entry is added without being asked.
+- Rejected: a per-user folder under `%LOCALAPPDATA%` (the agent's default; the user chose the calling directory); a location outside every repository (ACA-D13's first form).
+
 ## Open questions
 
-### ACA-Q8: where the anonymizer's mapping file lives
-
-ACA-D13 puts the real-to-label mapping in one file outside every repository but leaves the path open. A per-user folder such as one under `%LOCALAPPDATA%` needs no elevation on the standard account. The mapping must survive between runs for labels to stay stable across lessons of one series, and must never be inside a folder a repository tracks. Default: a per-user folder under `%LOCALAPPDATA%`, one file per series, path printed on first creation and the contents never printed.
+None open.
