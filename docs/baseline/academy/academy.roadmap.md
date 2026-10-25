@@ -18,7 +18,7 @@ Verification gate for every phase that touches code: `uvx --from "pytest>=8,<10"
 | ACA-P1 | design recorded in this pack and the gateway index | ACA-D1 to ACA-D17 | - | complete |
 | ACA-P2 | `baseline-academic-core` created, family files updated | ACA-D3, ACA-D9 | ACA-P1 | complete |
 | ACA-P3 | `baselinedocs-academic-compose` written, three modes | ACA-D2, ACA-D7, ACA-D8, ACA-D10, ACA-D12, ACA-D14, ACA-D16, ACA-D18 | ACA-P2 | complete |
-| ACA-P4 | trial run in each mode, project scoped first | ACA-D4, ACA-D5, ACA-D6, ACA-D10, ACA-D17 | ACA-P3 | not started |
+| ACA-P4 | trial run in each mode, project scoped first | ACA-D4, ACA-D5, ACA-D6, ACA-D10, ACA-D17 | ACA-P3 | in progress |
 | ACA-P5 | release of the sub-family | ACA-D9 | ACA-P4 | not started |
 
 ## ACA-P1: record the design
@@ -65,6 +65,8 @@ Acceptance criteria:
 - every lesson point cites a source entry; single-source points and disagreements are visible
 - the anonymizer's replacement count per class is reported and the user reviews the page for leaked identifiers
 
+Evidence, project scoped mode (2026-10-25): run by following `SKILL.md` by hand in a project repo, because the skill is not installed on this machine, so host skill loading was not exercised. One topic (porting a CI pipeline) from one pack, six decision entries read in full, three pages written in the repo (index, reference, one lesson): 8 points, 7 single source, 1 missing, 0 disagreement, 0 inferred. Not anonymized by the user's choice, so the anonymizer and the mapping-file path did not run. A pattern scan of the pages found nothing. Pages not opened in a browser. Named topic and suggested topics modes not run.
+
 ## ACA-P5: release
 
 Acceptance criteria:
@@ -83,4 +85,4 @@ Acceptance criteria:
 
 ## Next action
 
-Start ACA-P4 once the user approves it: run the skill in project-scoped mode first, inside one project repo with one topic, and review the page for leaked identifiers. Re-render the two family-map images before ACA-P5.
+Finish ACA-P4: run the project-scoped mode once more with the page marked as shared, so the anonymizer, the mapping file and the ignore-entry path run, and review that page for leaked identifiers; then run the named-topic and suggested-topics modes. Re-render the two family-map images before ACA-P5.
