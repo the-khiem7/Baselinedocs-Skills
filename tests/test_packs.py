@@ -29,7 +29,10 @@ BARE = re.compile(r"(?<![\w-])([DQP]\d+)(?![\w-])")
 # A question closed by a decision keeps its identifier in prose but loses its own
 # heading: the decision that closed it carries the analysis, and the pack states
 # that it is stated rather than deleted. Anything else cited must have a heading.
-CLOSED_WITHOUT_HEADING = {"BLD-Q3", "BLD-Q4", "SC-Q1", "SC-Q2", "SC-Q3", "SC-Q4", "SC-Q5"}
+CLOSED_WITHOUT_HEADING = {
+    "BLD-Q3", "BLD-Q4", "SC-Q1", "SC-Q2", "SC-Q3", "SC-Q4", "SC-Q5",
+    "ACA-Q1", "ACA-Q2", "ACA-Q3", "ACA-Q4", "ACA-Q5", "ACA-Q6", "ACA-Q7",
+}
 
 # The documents recording the prefix rule quote the banned bare form as an
 # example. An exact (file, identifier) allowance, so the same bare form anywhere

@@ -20,8 +20,9 @@ VERSION_LINE = re.compile(r"^version:.*$", re.MULTILINE)
 
 
 def skill_files():
-    """Every family skill plus baseline-core, which shares the family version."""
-    return sorted([*ROOT.glob("baselinedocs-*/SKILL.md"), ROOT / "baseline-core" / "SKILL.md"])
+    """Every family skill plus the two core skills, which share the family version."""
+    cores = [ROOT / name / "SKILL.md" for name in ("baseline-core", "baseline-academic-core")]
+    return sorted([*ROOT.glob("baselinedocs-*/SKILL.md"), *cores])
 
 
 def parse_version(raw):

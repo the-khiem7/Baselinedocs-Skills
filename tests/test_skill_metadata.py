@@ -42,6 +42,25 @@ def load_openai(name):
     return yaml.safe_load(read_text(ROOT / name / "agents" / "openai.yaml"))
 
 
+CORE_SKILLS = ["baseline-core", "baseline-academic-core"]
+
+
+@pytest.mark.parametrize("name", CORE_SKILLS)
+def test_core_skills_are_not_workflows(name):
+    frontmatter, _ = split_frontmatter(read_text(ROOT / name / "SKILL.md"))
+    assert frontmatter.get("name") == name
+    assert re.fullmatch(r"\d+\.\d+\.\d+", frontmatter.get("version", "")), (
+        f"{name}/SKILL.md carries no family version, so the release cannot stamp it"
+    )
+    data = yaml.safe_load(read_text(ROOT / name / "agents" / "openai.yaml"))
+    assert data["policy"].get("allow_implicit_invocation") is False, (
+        f"{name} is shared rules, not a workflow: allow_implicit_invocation stays false"
+    )
+    assert data["interface"]["display_name"].startswith(LIFECYCLE_PREFIX), (
+        f"{name}: display_name starts {LIFECYCLE_PREFIX!r}"
+    )
+
+
 def test_entrypoints_are_real_skill_folders():
     assert ENTRYPOINTS <= set(SKILL_NAMES), (
         f"ENTRYPOINTS names folders that do not exist: "

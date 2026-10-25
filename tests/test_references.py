@@ -123,6 +123,33 @@ def test_baseline_core_holds_the_shared_asset(asset):
     assert (CORE / asset).is_file(), f"baseline-core/{asset} is missing"
 
 
+# `baseline-academic-core` holds the lesson rules the academic skills read. It is a
+# second core, kept apart from `baseline-core` so a pack-writing skill never loads
+# rules only a lesson needs.
+ACADEMIC_CORE = ROOT / "baseline-academic-core"
+ACADEMIC_ASSETS = ["references/academic-contract.md"]
+
+
+@pytest.mark.parametrize("asset", ACADEMIC_ASSETS)
+def test_baseline_academic_core_holds_the_lesson_asset(asset):
+    assert (ACADEMIC_CORE / asset).is_file(), f"baseline-academic-core/{asset} is missing"
+
+
+@pytest.mark.parametrize("name", SKILL_NAMES)
+def test_no_skill_ships_a_copy_of_an_academic_core_asset(name):
+    copies = [asset for asset in ACADEMIC_ASSETS if (ROOT / name / asset).exists()]
+    assert copies == [], (
+        f"{name} ships {copies}; the only copy lives in baseline-academic-core"
+    )
+
+
+def test_baseline_academic_core_ships_no_core_asset_of_baseline_core():
+    copies = [asset for asset in CORE_ASSETS if (ACADEMIC_CORE / asset).exists()]
+    assert copies == [], (
+        f"baseline-academic-core ships {copies}; those live only in baseline-core"
+    )
+
+
 @pytest.mark.parametrize("name", SKILL_NAMES)
 def test_no_skill_ships_a_copy_of_a_core_asset(name):
     copies = [asset for asset in CORE_ASSETS if (ROOT / name / asset).exists()]

@@ -61,6 +61,16 @@ def test_inventory_lists_baseline_core_beside_the_family(tmp_path):
     }
 
 
+def test_inventory_lists_baseline_academic_core(tmp_path):
+    install(tmp_path, ".claude/skills", "baseline-academic-core")
+    install(tmp_path, ".gemini/config/skills", "baseline-academic-core")
+    _, found = inventory(tmp_path)
+    assert set(found) == {
+        ("baseline-academic-core", ".claude"),
+        ("baseline-academic-core", ".gemini/config"),
+    }
+
+
 def test_inventory_finds_installs_at_both_depths(tmp_path):
     install(tmp_path, ".claude/skills", "baselinedocs-help")
     install(tmp_path, ".gemini/config/skills", "baselinedocs-help")

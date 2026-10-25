@@ -5,7 +5,7 @@ import pytest
 
 from helpers import ROOT, SKILL_NAMES, read_skill, split_frontmatter
 
-VERSIONED = [*SKILL_NAMES, "baseline-core"]
+VERSIONED = [*SKILL_NAMES, "baseline-core", "baseline-academic-core"]
 
 spec = importlib.util.spec_from_file_location(
     "stamp_version", ROOT / "scripts" / "stamp_version.py"
