@@ -128,6 +128,24 @@ def test_baseline_core_holds_the_shared_asset(asset):
 # rules only a lesson needs.
 ACADEMIC_CORE = ROOT / "baseline-academic-core"
 ACADEMIC_ASSETS = ["references/academic-contract.md"]
+ACADEMIC_SENTENCE = (
+    "`<academic-dir>` is the folder `baseline-academic-core`, a sibling of the folder this "
+    "SKILL.md sits in (`<skill-dir>/../baseline-academic-core`). When it is not there, stop "
+    "and tell the user to install `baseline-academic-core`; never write a lesson from "
+    "memory instead."
+)
+# An academic skill reads the lesson rules in full before composing, and the pack
+# contract in full before reading a pack, because the citation form names a
+# document and an entry heading. Both gates fail closed through their sentences.
+ACADEMIC_SKILLS = {"baselinedocs-academic-compose"}
+ACADEMIC_GATE = (
+    "Read `<academic-dir>/references/academic-contract.md` in full before composing a "
+    "lesson, every time."
+)
+ACADEMIC_PACK_GATE = (
+    "Read `<core-dir>/references/pack-contract.md` in full before reading a pack for a "
+    "lesson, every time."
+)
 
 
 @pytest.mark.parametrize("asset", ACADEMIC_ASSETS)
@@ -272,3 +290,26 @@ def test_adr_template_carries_the_aws_headings_and_no_pack_pointer():
     missing = [heading for heading in ADR_HEADINGS if heading not in template]
     assert missing == [], f"baselinedocs-adr template is missing {missing}"
     assert "docs/baseline" not in template, "the ADR template must not point into a pack"
+
+
+@pytest.mark.parametrize("name", sorted(ACADEMIC_SKILLS))
+def test_academic_skills_define_the_academic_core_and_gate_on_it(name):
+    text = read_skill(name)
+    assert ACADEMIC_SENTENCE in text, (
+        f"{name} reads baseline-academic-core but never defines <academic-dir> and stops without it"
+    )
+    assert ACADEMIC_GATE in text, f"{name} never requires reading the academic contract"
+    assert ACADEMIC_PACK_GATE in text, f"{name} reads packs but never requires the pack contract"
+
+
+# `baselinedocs-self-upgrade` names the core only to install and compare it.
+ACADEMIC_CORE_ROUTERS = {"baselinedocs-self-upgrade"}
+
+
+@pytest.mark.parametrize(
+    "name", [n for n in SKILL_NAMES if n not in ACADEMIC_SKILLS | ACADEMIC_CORE_ROUTERS]
+)
+def test_only_academic_skills_name_the_academic_core(name):
+    assert "baseline-academic-core" not in read_skill(name), (
+        f"{name} is not an academic skill and must not depend on baseline-academic-core"
+    )

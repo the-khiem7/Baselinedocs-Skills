@@ -41,8 +41,10 @@ def test_no_typographic_dashes():
 # written - a path out of the folder, a path into another skill's folder, or an
 # instruction to read a sibling - and leaves bare names alone. The one allowed
 # path is the sentence that locates `baseline-core`, the shared core every skill
-# reads and fails closed without.
+# reads and fails closed without, and the matching sentence for
+# `baseline-academic-core` in the academic skills.
 CORE_PATH = "`<skill-dir>/../baseline-core`"
+ACADEMIC_CORE_PATH = "`<skill-dir>/../baseline-academic-core`"
 
 
 def skill_files(name):
@@ -58,7 +60,7 @@ def sibling_dependencies(name):
     found = []
     for path in skill_files(name):
         for number, line in enumerate(read_text(path).splitlines(), start=1):
-            if CORE_PATH in line:
+            if CORE_PATH in line or ACADEMIC_CORE_PATH in line:
                 continue
             if "../" in line or "..\\" in line:
                 found.append((path, number, "a path out of the skill folder"))

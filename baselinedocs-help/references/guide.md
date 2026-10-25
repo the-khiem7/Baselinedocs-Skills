@@ -17,6 +17,7 @@ The user names these. Each one is explicit-only, so none fires on its own.
 | `baselinedocs-brief` | mid-task or after a compaction, wanting to know where work stands | position, blockers, and what the thread holds that the pack does not, without loading the pack |
 | `baselinedocs-callout` | wanting a two-word name for a slice of the pack | a temporary named routing table inside `introduction` |
 | `baselinedocs-adr` | a closed decision in `hallucination` deserves an Architectural Decision Record | one standalone ADR under `docs/adr/`, status Proposed |
+| `baselinedocs-academic-compose` | wanting lessons built from the packs of one project or many, to learn from or hand to another person | anonymized local HTML lesson pages written where the skill was called; no pack is touched |
 | `baselinedocs-help` | asking what the skills do or which to use | this guide |
 | `baselinedocs-self-upgrade` | the installed baselinedocs skills may be behind the latest release, in any agent on this machine | every installed copy compared with the latest tag, then upgraded after you confirm; no pack is touched |
 

@@ -1,0 +1,6 @@
+interface:
+  display_name: "Baseline Docs Academic Compose"
+  short_description: "Compose anonymized HTML lessons from baseline packs"
+  default_prompt: "Use $baselinedocs-academic-compose to build a lesson series from baseline pack decisions and lessons."
+policy:
+  allow_implicit_invocation: false
