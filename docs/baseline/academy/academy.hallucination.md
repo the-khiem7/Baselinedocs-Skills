@@ -4,7 +4,7 @@ pack: "academy"
 document: "hallucination"
 status: "draft"
 updated: "2026-10-25"
-code_ref: "958d18e"
+code_ref: "02f17f4"
 ---
 
 # Academy: Decisions and Open Questions

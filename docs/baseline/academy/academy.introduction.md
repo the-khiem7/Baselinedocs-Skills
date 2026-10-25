@@ -4,7 +4,7 @@ pack: "academy"
 document: "introduction"
 status: "draft"
 updated: "2026-10-25"
-code_ref: "958d18e"
+code_ref: "02f17f4"
 ---
 
 # Academy
@@ -22,7 +22,7 @@ Out of scope: any change to the pack schema or to `baseline-core`; any write int
 | Fact | State |
 |---|---|
 | `baseline-academic-core` | exists, holding `references/academic-contract.md`; stamped with the family version |
-| any `baselinedocs-academic-*` skill | none exists yet |
+| `baselinedocs-academic-compose` | exists, three modes, never run |
 | source projects | every folder under `C:\.repos\Work\` that holds `docs/baseline/`; not enumerated here, because the set changes |
 | external course-building skill | none installed; ACA-D7 records what was read and rejected |
 | `baseline-core` | holds `pack-contract.md`, `report-style.md` and `packtool.sh` once, reached as `<skill-dir>/../baseline-core` (`baselinedocs` BLD-D54) |

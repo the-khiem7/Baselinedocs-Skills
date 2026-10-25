@@ -4,7 +4,7 @@ pack: "academy"
 document: "roadmap"
 status: "draft"
 updated: "2026-10-25"
-code_ref: "958d18e"
+code_ref: "02f17f4"
 ---
 
 # Academy Roadmap
@@ -17,7 +17,7 @@ Verification gate for every phase that touches code: `uvx --from "pytest>=8,<10"
 |---|---|---|---|---|
 | ACA-P1 | design recorded in this pack and the gateway index | ACA-D1 to ACA-D17 | - | complete |
 | ACA-P2 | `baseline-academic-core` created, family files updated | ACA-D3, ACA-D9 | ACA-P1 | complete |
-| ACA-P3 | `baselinedocs-academic-compose` written, three modes | ACA-D2, ACA-D7, ACA-D8, ACA-D10, ACA-D12, ACA-D14, ACA-D16, ACA-D18 | ACA-P2 | not started |
+| ACA-P3 | `baselinedocs-academic-compose` written, three modes | ACA-D2, ACA-D7, ACA-D8, ACA-D10, ACA-D12, ACA-D14, ACA-D16, ACA-D18 | ACA-P2 | complete |
 | ACA-P4 | trial run in each mode, project scoped first | ACA-D4, ACA-D5, ACA-D6, ACA-D10, ACA-D17 | ACA-P3 | not started |
 | ACA-P5 | release of the sub-family | ACA-D9 | ACA-P4 | not started |
 
@@ -53,6 +53,8 @@ Acceptance criteria:
 - it scans output for keys and credentials before writing
 - it writes the mapping file only after `git check-ignore` confirms git ignores it, and stops otherwise
 
+Evidence: `uvx --from "pytest>=8,<10" --with pyyaml pytest tests/ -q` gave 508 passed and 2 skipped. Files changed: `baselinedocs-academic-compose/` (new), `baselinedocs-help/references/guide.md`, `tests/test_references.py`, `test_conventions.py`, `test_skill_metadata.py`, `README.md`, `AGENTS.md`, `assets/source/family-map.html`. The core-folder sentence and two gates are pinned for `ACADEMIC_SKILLS`. Choices the skill made that no decision names: the mapping file is `academic-mapping.json` and its ignore entry goes in the calling directory's `.gitignore`; outside a git repository, or when the file is already tracked, the check cannot pass and the skill stops; pages are `academic-*.html` and only a file with the generator meta tag is overwritten, so a page never replaces an unrelated file. No run exists in any mode. `family-map.webp` and `family-map-dark.webp` were not re-rendered, so the README picture omits the skill and the added row may overflow the 650 px panel.
+
 ## ACA-P4: trial run
 
 Acceptance criteria:
@@ -81,4 +83,4 @@ Acceptance criteria:
 
 ## Next action
 
-Start ACA-P3 once the user approves it: write `baselinedocs-academic-compose` and pin its core-folder sentence and gates in `tests/test_references.py`.
+Start ACA-P4 once the user approves it: run the skill in project-scoped mode first, inside one project repo with one topic, and review the page for leaked identifiers. Re-render the two family-map images before ACA-P5.
