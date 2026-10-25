@@ -171,7 +171,7 @@ function isid(s) { return s ~ /^[A-Z][A-Z][A-Z]?-[DQP][0-9]+$/ }
 function idpfx(id) { return substr(id, 1, index(id, "-") - 1) }
 function idkind(id) { return substr(id, index(id, "-") + 1, 1) }
 
-# Every identifier in s, bounded so FD-D1 never matches inside XFD-D12 or FD-D1a.
+# Every identifier in s, bounded so BLD-D1 never matches inside XBLD-D12 or BLD-D1a.
 function ids_in(s, out,   n, rest, off, pre, post) {
   split("", out)
   n = 0; off = 0; rest = s

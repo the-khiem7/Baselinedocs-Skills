@@ -13,7 +13,7 @@ code_ref: "uncommitted"
 
 Reduce the `baselinedocs` skill family by removing skills whose operation duplicates another, and repair the selection surface where two skills claim overlapping triggers but produce different outcomes.
 
-In scope: skill folders in this repository, `contract/pack-contract.md` and its packaged copies, `tests/`, `README.md`, and `AGENTS.md`. `DESIGN.md` was in scope while this pack ran and was deleted once `family-design` took over its record (`family-design` FD-D27).
+In scope: skill folders in this repository, `contract/pack-contract.md` and its packaged copies, `tests/`, `README.md`, and `AGENTS.md`. `DESIGN.md` was in scope while this pack ran and was deleted once `baselinedocs` took over its record (`baselinedocs` BLD-D27).
 
 Out of scope: the pack schema, which is unchanged apart from the one enum removal SC-D11 records, and hook behavior.
 
@@ -21,17 +21,17 @@ Out of scope: the pack schema, which is unchanged apart from the one enum remova
 
 | Fact | State |
 |---|---|
-| skills on disk | every `baselinedocs-*` folder, none counted here. Entrypoints: `init`, `adopt`, `save`, `run`, `onboard`, `load`, `brief`, `callout`; every other skill is lifecycle. 18 skills at `cded242`, before SC-P1; `callout`, `load`, and `recall` were added after this pack closed (`family-design` FD-D38, FD-D39, FD-D40) |
+| skills on disk | every `baselinedocs-*` folder, none counted here. Entrypoints: `init`, `adopt`, `save`, `run`, `onboard`, `load`, `brief`, `callout`; every other skill is lifecycle. 18 skills at `cded242`, before SC-P1; `callout`, `load`, and `recall` were added after this pack closed (`baselinedocs` BLD-D38, BLD-D39, BLD-D40) |
 | skills shipping `references/pack-contract.md` | byte-identical, one per skill in `CONTRACT_SKILLS` (`tests/test_references.py`): every writer, `onboard`, `load`, `recall`. Absent from `brief`, `audit-drift`, `audit-claims`. 13 at `cded242`, 10 at `c6eb29a` |
-| criterion for shipping it | a full read of the pack, not the act of writing. SC-D16. `recall` ships it under a third criterion, `family-design` FD-D40 |
-| skills shipping `references/report-style.md` | byte-identical, every skill outside `REPORT_STYLE_EXEMPT`, which holds `load` (`family-design` FD-D39). SC-D17, SC-D22 |
-| `contract/pack-contract.md` | size not recorded here. 74 lines at `cded242` before the SC-P2 `Disproven claims` section, 84 before the SC-P12 entry-index and SC-P13 misfiled-content sections; later `family-design` phases widened it further |
+| criterion for shipping it | a full read of the pack, not the act of writing. SC-D16. `recall` ships it under a third criterion, `baselinedocs` BLD-D40 |
+| skills shipping `references/report-style.md` | byte-identical, every skill outside `REPORT_STYLE_EXEMPT`, which holds `load` (`baselinedocs` BLD-D39). SC-D17, SC-D22 |
+| `contract/pack-contract.md` | size not recorded here. 74 lines at `cded242` before the SC-P2 `Disproven claims` section, 84 before the SC-P12 entry-index and SC-P13 misfiled-content sections; later `baselinedocs` phases widened it further |
 | entry kinds in `hallucination` | at least 3, and never enumerated: a closed decision with four required parts, a disproven-claim relocation with a different shape, and an open question. SC-Q8 |
-| installed copies, any machine | per-machine state, not tracked here. SC-P8 replaced every host copy on this machine from this clone, SC-P9 reopened the gap one phase later, and every later repository edit reopens it. The standing remedy is in the `family-design` roadmap, Risks |
+| installed copies, any machine | per-machine state, not tracked here. SC-P8 replaced every host copy on this machine from this clone, SC-P9 reopened the gap one phase later, and every later repository edit reopens it. The standing remedy is in the `baselinedocs` roadmap, Risks |
 | `AGENTS.md` claim about the pack-writing skill count | stated once, pinned against `WRITER_SKILLS` by `test_agents_md_states_the_skill_count_once_and_correctly`. It said 14 in all four places at `cded242`, when the real figure was 13; SC-P5 corrected four and SC-P6 found only two of them |
 | `status: archived` | removed from the enum by SC-P5. No producer, no consumer |
 | test command | `uvx --from "pytest>=8,<10" --with pyyaml pytest tests/ -q` |
-| `hallucination` entry index | required by the contract from the first entry (FD-D42 removed the 40 KB / 20 entry threshold). Present here, and no skill consumes it yet. SC-D19 |
+| `hallucination` entry index | required by the contract from the first entry (BLD-D42 removed the 40 KB / 20 entry threshold). Present here, and no skill consumes it yet. SC-D19 |
 | existing baseline packs | none before this one |
 
 ## Target
@@ -44,10 +44,10 @@ Out of scope: the pack schema, which is unchanged apart from the one enum remova
 | `maintain-archive` deleted | with `status: archived` and `onboard`'s exclusion, so no orphaned affordance is left behind |
 | `maintain-compact` gains a revert gate | compaction is lossless or it is reverted |
 | merge criterion recorded | SC-D1 carries a testable rule instead of a pointer heuristic, and `AGENTS.md` points at it |
-| contract shipped on a full read, not on writing | `onboard` could report content sitting in a document whose role does not cover it. It no longer does: `family-design` FD-D34 deleted the check, and FD-Q5 asks who owns it |
+| contract shipped on a full read, not on writing | `onboard` could report content sitting in a document whose role does not cover it. It no longer does: `baselinedocs` BLD-D34 deleted the check, and BLD-Q5 asks who owns it |
 | report style shipped to every reporting skill | an element identifier is glossed in conversation regardless of whose machine the skill runs on |
 
-End state reached at SC-P14: 14 skills, 11 packaged contract copies, 14 packaged report-style copies. Later changes belong to `family-design`.
+End state reached at SC-P14: 14 skills, 11 packaged contract copies, 14 packaged report-style copies. Later changes belong to `baselinedocs`.
 
 ## Constraints
 

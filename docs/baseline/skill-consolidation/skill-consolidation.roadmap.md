@@ -9,7 +9,7 @@ code_ref: "uncommitted"
 
 # Skill Consolidation Roadmap
 
-Verification gate for every phase: `uvx --from "pytest>=8,<10" --with pyyaml pytest tests/ -q` green. The repository has no `pyproject.toml`, so `uv run python -m pytest` does not work. Until `family-design` FD-P11 the command was bare `uvx pytest tests/ -q`, and every checkpoint below met the gate under it: 20 passed and 23 subtests passed for SC-P1 through SC-P7, 21 passed and 23 subtests for SC-P8 once the test it adds landed, 22 passed and 35 subtests for SC-P9, and 24 passed and 63 subtests for SC-P10 through SC-P14.
+Verification gate for every phase: `uvx --from "pytest>=8,<10" --with pyyaml pytest tests/ -q` green. The repository has no `pyproject.toml`, so `uv run python -m pytest` does not work. Until `baselinedocs` BLD-P11 the command was bare `uvx pytest tests/ -q`, and every checkpoint below met the gate under it: 20 passed and 23 subtests passed for SC-P1 through SC-P7, 21 passed and 23 subtests for SC-P8 once the test it adds landed, 22 passed and 35 subtests for SC-P9, and 24 passed and 63 subtests for SC-P10 through SC-P14.
 
 Reasoning for each phase lives in `skill-consolidation.hallucination.md` under the decision named in its Basis column. Do not restate it here.
 
@@ -550,7 +550,7 @@ An earlier count in this thread reported SC-D8, SC-D9, and SC-D15 as closed deci
 
 | Risk | Detail |
 |---|---|
-| Installed skills are stale | Reopened by SC-P9, exactly as this row predicted. SC-P8 closed it on this machine; SC-P9 then changed the repository, so the four host directories held SC-P8's snapshot: 15 skills with 10 contract copies against the repository's 11, and an `onboard` with no copy and no read gate. Per-machine state since then, not tracked here; the standing remedy is in the `family-design` roadmap, Risks. |
+| Installed skills are stale | Reopened by SC-P9, exactly as this row predicted. SC-P8 closed it on this machine; SC-P9 then changed the repository, so the four host directories held SC-P8's snapshot: 15 skills with 10 contract copies against the repository's 11, and an `onboard` with no copy and no read gate. Per-machine state since then, not tracked here; the standing remedy is in the `baselinedocs` roadmap, Risks. |
 | Direct delete cannot reach installed machines | Accepted under SC-D8, and made concrete by SC-P8's manual deletion of eight obsolete folders in each of four directories. |
 | Uncommitted work is the only copy | Closed. SC-P1 through SC-P8 are committed at `c6eb29a` on `main`, and SC-P9 through SC-P14 at `959617b`, `b857216`, and `0cb913f`. |
 | The separate description batch closed empty | SC-D9 split description sharpening into its own batch, for pairs sharing triggers while producing different outcomes. Its last candidate pair was `sync-codebase` against `audit-drift`, and SC-D12 established the two are not on one axis. SC-P7 gave each side a pointer to the other side of the work instead of rewriting either description to compete. No batch remains. |
@@ -563,12 +563,12 @@ Four decisions are waiting on the user, and nothing else in this pack can procee
 |---|---|---|
 | SC-Q8 | fix the exact text of the required labels per entry kind in the contract, and test it | yes. It is the first structural rule in `hallucination` a machine could check, and it answers the readability objection that raised SC-Q8 |
 | SC-Q8 | allow a compound reference such as `SC-D19 / Rejected: mandatory in every pack` for citing a part of an entry | yes. A text reference fails loudly when the label changes; a renumbered identifier fails silently |
-| SC-Q6 | adopt the rest of the identifier scheme now, or keep waiting for further pack samples. `family-design` FD-D30 already settled uniqueness across packs, by a pack prefix on every identifier; still open are the per-kind letters, the ban on encoding hierarchy in a name, the ban on sub-identifiers, and whether the contract states any of it | adopt now. SC-D19 put an index into the contract whose first column is an identifier, and the contract still defines no format for that column |
+| SC-Q6 | adopt the rest of the identifier scheme now, or keep waiting for further pack samples. `baselinedocs` BLD-D30 already settled uniqueness across packs, by a pack prefix on every identifier; still open are the per-kind letters, the ban on encoding hierarchy in a name, the ban on sub-identifiers, and whether the contract states any of it | adopt now. SC-D19 put an index into the contract whose first column is an identifier, and the contract still defines no format for that column |
 | SC-Q7 | which of the four options `onboard` takes for using the index | option four, entry-level scoping as the size gate's third outcome rather than the default read |
 
 SC-D9 also needs a decision that is not a design question: it is the one closed decision in this journal with no why, no consequence, and no rejected alternative. Filling those in means writing reasoning for a decision closed long ago, which the brownfield rule forbids reconstructing from inference, so the choice is repair it from the record or leave it non-conformant and say so. SC-Q8 carries the detail.
 
-Reinstalling the family is per-machine state this pack no longer tracks; the standing remedy is in the `family-design` roadmap, Risks. It was deferred on 2026-08-27 at the user's request with the host directories on SC-P8's snapshot. Installing is a machine action taken deliberately, not a side effect of a repository edit.
+Reinstalling the family is per-machine state this pack no longer tracks; the standing remedy is in the `baselinedocs` roadmap, Risks. It was deferred on 2026-08-27 at the user's request with the host directories on SC-P8's snapshot. Installing is a machine action taken deliberately, not a side effect of a repository edit.
 
 All phases are complete. SC-P1 through SC-P8 are committed at `c6eb29a` on `main`, and SC-P9 through SC-P14 at `959617b`, `b857216`, and `0cb913f`.
 
@@ -576,7 +576,7 @@ Three open questions are live in `skill-consolidation.hallucination.md`. SC-Q5 w
 
 | Question | Subject | Why it is open rather than decided |
 |---|---|---|
-| SC-Q6 | what the element identifier scheme is, and whether the contract owns it. Uniqueness across packs is settled by `family-design` FD-D30; the rest is open | opened to wait for further pack samples. That reason has weakened: the index SC-D19 requires has an identifier as its first column, and the contract still defines no format for it |
+| SC-Q6 | what the element identifier scheme is, and whether the contract owns it. Uniqueness across packs is settled by `baselinedocs` BLD-D30; the rest is open | opened to wait for further pack samples. That reason has weakened: the index SC-D19 requires has an identifier as its first column, and the contract still defines no format for it |
 | SC-Q7 | what `onboard` does with the index, now that SC-D19 settled the index itself | changing what `onboard` reads touches its central promise. Four options are recorded in the entry and none is chosen, so the index currently serves a human reader and saves no tokens |
 | SC-Q8 | the label standard inside an entry, and how many entry kinds `hallucination` holds | raised against SC-Q6's proposal by the user. Answering it needs the entry kinds enumerated first, which is more work than the standard appeared to be |
 

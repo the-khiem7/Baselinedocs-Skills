@@ -41,7 +41,7 @@ A skill may rely only on files inside its own folder, because `npx skills add --
 |---|---|
 | `init`, `adopt`, `save`, `run`, `callout`, `sync-codebase`, `sync-decisions`, `sync-reconcile`, `maintain-compact`, `maintain-split`, `extract-wiki`, `onboard`, `load`, `recall` | `brief`, `audit-drift`, `audit-claims` |
 
-The criterion is a full read of the pack, not the act of writing: every writer qualifies, and so do `onboard` and `load`, which write nothing but read every document. `recall` carries the copy under a third criterion, restoring the rules being its whole job (`family-design` FD-D40). `onboard` once also reported content sitting in a document whose role does not cover it; `family-design` FD-D34 deleted that check, and FD-Q5 asks who owns it now. `brief` reads nothing in full and neither `audit` skill compares placement, so a copy there would let a skill report conformance it never checked.
+The criterion is a full read of the pack, not the act of writing: every writer qualifies, and so do `onboard` and `load`, which write nothing but read every document. `recall` carries the copy under a third criterion, restoring the rules being its whole job (`baselinedocs` BLD-D40). `onboard` once also reported content sitting in a document whose role does not cover it; `baselinedocs` BLD-D34 deleted that check, and BLD-Q5 asks who owns it now. `brief` reads nothing in full and neither `audit` skill compares placement, so a copy there would let a skill report conformance it never checked.
 
 Each skill in `CONTRACT_SKILLS` carries one gate sentence sending the agent to read the contract, in one pinned wording per role: the writers trigger before creating or editing a pack file, `onboard` before reporting the pack state, `load` before loading a pack, `recall` now. `test_read_only_skills_are_not_gated_on_writing` asserts `onboard`, `load`, and `recall` do not carry the write wording, whose precondition they can never meet. That gate cannot live in the contract, because an agent that skipped the file never reaches the sentence telling it not to skip the file.
 
@@ -49,7 +49,7 @@ Editing the canonical file means re-copying it to all of them. SC-P2 added a sec
 
 ## Report style fanout
 
-`contract/report-style.md` governs what the agent says to the user, and nothing about what goes inside a document. Every skill outside `REPORT_STYLE_EXEMPT` ships a byte-identical copy at `<skill>/references/report-style.md`. The exemption holds `load`, which reports a single confirmation word and cites no pack element (`family-design` FD-D39).
+`contract/report-style.md` governs what the agent says to the user, and nothing about what goes inside a document. Every skill outside `REPORT_STYLE_EXEMPT` ships a byte-identical copy at `<skill>/references/report-style.md`. The exemption holds `load`, which reports a single confirmation word and cites no pack element (`baselinedocs` BLD-D39).
 
 Its audience is deliberately wider than the contract's, and the two sets are not nested the same way: `brief`, `audit-claims`, and `audit-drift` carry report style without carrying the contract, because each produces a user-facing report that cites identifiers while none of them writes a pack or reads one in full. SC-D17 records why merging the two files would force the wrong audience on one of them.
 
@@ -80,7 +80,7 @@ Three of the five consult code and decisions both, which is why a comparison-sco
 
 Detect for a pack against itself has no dedicated skill because `onboard` and `brief` both report contradictions and route to `sync-reconcile`. Repair for a claim against evidence has none because the contract's disproven-claim rule already names its three owners.
 
-SC-P9 added a third finding type, and SC-D20 gave it owners without adding a skill. `onboard` reported content sitting where the role lists do not put it until `family-design` FD-D34 deleted the check; the contract's misfiled-content rule still names who moves it: `sync-decisions` when a decision settled what it was filed under, `sync-reconcile` when the misplacement already produced a contradiction, `save` when the current thread established where it belongs. The pattern follows the disproven-claims rule, which also names owners rather than occupying a matrix cell with a new skill.
+SC-P9 added a third finding type, and SC-D20 gave it owners without adding a skill. `onboard` reported content sitting where the role lists do not put it until `baselinedocs` BLD-D34 deleted the check; the contract's misfiled-content rule still names who moves it: `sync-decisions` when a decision settled what it was filed under, `sync-reconcile` when the misplacement already produced a contradiction, `save` when the current thread established where it belongs. The pattern follows the disproven-claims rule, which also names owners rather than occupying a matrix cell with a new skill.
 
 ## Pointer graph
 
@@ -132,4 +132,4 @@ The audit pair now carries a mutual reference of its own, added by SC-P3, and it
 | `test_packs.py` | pack frontmatter schema, entry index agrees with entry headings, identifiers carry a pack prefix and resolve to a heading |
 | `helpers.py` | not a test: repo root, skill list, frontmatter parser, Git's file set |
 
-`test_checkpoint.py` and `test_install_hooks.py` pinned the hook adapter and were deleted with it in `family-design` FD-P8. `test_no_typographic_dashes` covers every `.md`, `.yaml`, `.yml`, `.txt`, `.py`, and `.ini` file Git lists for this repository, so it covers this pack and skips a host skills directory installed into the checkout, because Git ignores it.
+`test_checkpoint.py` and `test_install_hooks.py` pinned the hook adapter and were deleted with it in `baselinedocs` BLD-P8. `test_no_typographic_dashes` covers every `.md`, `.yaml`, `.yml`, `.txt`, `.py`, and `.ini` file Git lists for this repository, so it covers this pack and skips a host skills directory installed into the checkout, because Git ignores it.

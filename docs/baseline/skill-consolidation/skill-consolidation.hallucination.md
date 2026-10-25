@@ -13,7 +13,7 @@ code_ref: "uncommitted"
 
 One row per entry. A row states what the entry is about and nothing more: never its reasoning, never its outcome's justification, never a summary that could be mistaken for the entry itself. That restraint is the whole point, because a row that carried reasoning would be a second copy of the entry and the two would drift. An answer that turns on an entry whose full text was not read is unbacked, and must be reported that way rather than derived from a row.
 
-Required by `contract/pack-contract.md` from the first entry. SC-D19 records why the index exists, and FD-D42 removed its size threshold.
+Required by `contract/pack-contract.md` from the first entry. SC-D19 records why the index exists, and BLD-D42 removed its size threshold.
 
 | Entry | About | Status | Related |
 |---|---|---|---|
@@ -32,14 +32,14 @@ Required by `contract/pack-contract.md` from the first entry. SC-D19 records why
 | SC-D13 | stopping the rename sweep at the audit pair | current | SC-D3 |
 | SC-D14 | declining a pack-level finished marker | current | - |
 | SC-D15 | the installed generation gap, and the constraint that asserted it | current | SC-D8 |
-| SC-D16 | shipping the contract on a full read rather than on writing | current, amended by `family-design` FD-D40 | SC-D12, SC-D17, SC-D20 |
+| SC-D16 | shipping the contract on a full read rather than on writing | current, amended by `baselinedocs` BLD-D40 | SC-D12, SC-D17, SC-D20 |
 | SC-D17 | shipping report style as its own asset, separate from the contract | current | SC-D16 |
 | SC-D18 | forbidding hard-wrapped paragraphs in pack documents | current | SC-Q7 |
-| SC-D19 | putting the entry index into the contract as a conditional section | current, conditional clause reversed by FD-D42 | SC-D5, SC-D6, SC-D20, SC-Q7, FD-D42 |
+| SC-D19 | putting the entry index into the contract as a conditional section | current, conditional clause reversed by BLD-D42 | SC-D5, SC-D6, SC-D20, SC-Q7, BLD-D42 |
 | SC-D20 | who repairs content that is true but sits in the wrong document, closing SC-Q5 | current | SC-D5, SC-D12, SC-D16 |
 | SC-D21 | an edit to the contract destroyed a section heading, and every test stayed green | current, repaired | SC-D5, SC-D19 |
 | SC-D22 | deleting setup-hooks and removing the report-style exemption | current | SC-D1, SC-D8, SC-D17 |
-| SC-Q6 | what the element identifier scheme is, and whether the contract owns it | open, except the uniqueness clause settled by `family-design` FD-D30 and the heading format and kinds settled by FD-D42 | SC-Q7, SC-Q8, SC-D19 |
+| SC-Q6 | what the element identifier scheme is, and whether the contract owns it | open, except the uniqueness clause settled by `baselinedocs` BLD-D30 and the heading format and kinds settled by BLD-D42 | SC-Q7, SC-Q8, SC-D19 |
 | SC-Q7 | what `onboard` does with the index, now that the index itself is decided | open, narrowed by SC-D19 | SC-D19, SC-D7, SC-D11 |
 | SC-Q8 | the label standard inside an entry, and how many entry kinds `hallucination` holds | open | SC-Q6, SC-D19 |
 
@@ -247,7 +247,7 @@ The cost is higher than SC-D8 recorded, measured in SC-P8. A machine carries sev
 
 **Decided.** The criterion for shipping `references/pack-contract.md` is that the skill reads the pack in full, not that it writes into one. `baselinedocs-onboard` gets the copy and a gate wording of its own, and a new `Workflow` step reporting content that sits in a document whose role does not cover it. No other read-only skill gets a copy. Opens SC-Q5.
 
-**Amended by `family-design` FD-D40.** A third qualifying case now exists beside writing and a full read: `baselinedocs-recall` reads no pack and ships the contract because re-reading it after a context compaction is its whole job. It reports no conformance, so the objection to a partial reader holding the role list does not apply. `baselinedocs-load`, a full reader, already ships a copy under the criterion above.
+**Amended by `baselinedocs` BLD-D40.** A third qualifying case now exists beside writing and a full read: `baselinedocs-recall` reads no pack and ships the contract because re-reading it after a context compaction is its whole job. It reports no conformance, so the objection to a partial reader holding the role list does not apply. `baselinedocs-load`, a full reader, already ships a copy under the criterion above.
 
 **Why.** The old criterion answered the wrong question. Writing is what makes placement a *decision*, so a writer must consult the role list before it acts. A full read is what makes placement *checkable*, and that is a different property the criterion never named. SC-D12 had already assigned the detect cell for a pack against itself to `onboard` and `brief`, which report contradictions and route to `sync-reconcile` without repairing. A detector holding no role list can only see two statements that literally disagree; it cannot see correctly-stated content in the wrong file, which the contract's own opening section names as the damaging failure, because that content is duplicated as soon as the correct owner needs the same fact and the copies then drift.
 
@@ -297,7 +297,7 @@ The cost is higher than SC-D8 recorded, measured in SC-P8. A machine carries sev
 
 ## SC-D19: the entry index enters the contract as a conditional section
 
-**Partly reversed by `family-design` FD-D42.** The threshold, the "Why conditional rather than mandatory" argument, and the "Rejected: mandatory in every pack" alternative below no longer hold: the index is now required from the first entry and an editing skill retrofits a journal lacking one. The `Status` column, the unverifiable row, and the other rejected alternatives stand.
+**Partly reversed by `baselinedocs` BLD-D42.** The threshold, the "Why conditional rather than mandatory" argument, and the "Rejected: mandatory in every pack" alternative below no longer hold: the index is now required from the first entry and an editing skill retrofits a journal lacking one. The `Status` column, the unverifiable row, and the other rejected alternatives stand.
 
 **Decided.** `contract/pack-contract.md` now requires an entry index at the top of `hallucination` once that document exceeds 40 KB or holds more than 20 entries, whichever comes first. Below the threshold it is omitted. The `Status` column is required. Nothing verifies a row against its entry, and that is accepted rather than mitigated. This closes the mechanism half of SC-Q7; the half about what `onboard` does with the index stays open.
 
@@ -355,7 +355,7 @@ The cost is higher than SC-D8 recorded, measured in SC-P8. A machine carries sev
 
 **Decided.** Delete the one-time administrative skill `baselinedocs-setup-hooks` outright without a stub, reducing total skills from 15 to 14 and user entrypoints from 7 to 6, eliminating the `REPORT_STYLE_EXEMPT` exemption so 100 percent of remaining skills ship `contract/report-style.md`.
 
-**Why.** `setup-hooks` existed solely to merge host configurations for the external Stop hook adapter retired in `family-design` FD-D37 - removing the hook mechanism eliminates the skill's only purpose and leaves every remaining skill in the family producing reports that cite pack elements under `report-style.md`.
+**Why.** `setup-hooks` existed solely to merge host configurations for the external Stop hook adapter retired in `baselinedocs` BLD-D37 - removing the hook mechanism eliminates the skill's only purpose and leaves every remaining skill in the family producing reports that cite pack elements under `report-style.md`.
 
 **What breaks if ignored.** Leaving an administrative skill for a decommissioned subsystem creates dead user entrypoints, lingering host configuration dependencies, and preserves an arbitrary exemption in the report-style distribution test.
 
@@ -390,9 +390,9 @@ That correction is the finding, not a footnote. `hallucination` holds at least t
 
 ### SC-Q6: what is the identifier scheme, and does the contract own it?
 
-**A second clause is settled by `family-design` FD-D42:** the contract now states the heading format `## <PREFIX>-<KIND><N>: <subject>`, the kinds `D` and `Q` for a `hallucination`, and `P` for roadmap phases. The ban on hierarchy in a name, the ban on sub-identifiers, and the cross-document citation rule stay open.
+**A second clause is settled by `baselinedocs` BLD-D42:** the contract now states the heading format `## <PREFIX>-<KIND><N>: <subject>`, the kinds `D` and `Q` for a `hallucination`, and `P` for roadmap phases. The ban on hierarchy in a name, the ban on sub-identifiers, and the cross-document citation rule stay open.
 
-**One clause is now settled, and the rest of this entry stands as written.** `family-design` FD-D30 replaced "unique across the pack" with "unique across the initiative, by carrying the pack prefix", which is why every identifier in this journal now reads `SC-D<n>`, `SC-Q<n>`, or `SC-P<n>`. That change was forced by a second pack appearing beside this one: two independent counters made `D16` name two different entries with no signal to the reader. Everything else below remains open, including the per-kind letters, the ban on encoding hierarchy in a name, the ban on sub-identifiers, and the question in this entry's own title of whether `contract/pack-contract.md` should state any of it. The contract was deliberately left untouched by FD-D30 for that reason.
+**One clause is now settled, and the rest of this entry stands as written.** `baselinedocs` BLD-D30 replaced "unique across the pack" with "unique across the initiative, by carrying the pack prefix", which is why every identifier in this journal now reads `SC-D<n>`, `SC-Q<n>`, or `SC-P<n>`. That change was forced by a second pack appearing beside this one: two independent counters made `D16` name two different entries with no signal to the reader. Everything else below remains open, including the per-kind letters, the ban on encoding hierarchy in a name, the ban on sub-identifiers, and the question in this entry's own title of whether `contract/pack-contract.md` should state any of it. The contract was deliberately left untouched by BLD-D30 for that reason.
 
 Raised 2026-08-27, after the user reported that the prefix and its hierarchy vary by whichever agent last wrote the pack. Confirmed at the source: the contract says nothing about identifiers. No mention of numbering, of a prefix, or of an ID anywhere in its 84 lines. It defines document roles, the frontmatter schema, evidence density, and writing rules, and leaves element naming blank. So every agent invents a scheme and none of them is wrong by the standard that exists.
 
@@ -402,7 +402,7 @@ The position to be argued when this is decided, recorded now so it is not lost: 
 
 The second half of the proposal, also unargued yet: only pack-wide identifiers may be cited across documents, and anything numbered inside a single document is local detail. A real pack cites "Phase 3 Step 11" from its Phase 4 section; inserting a step or moving that one to another phase breaks the citation with nothing to report it. Under the rule, a step that needs citing from elsewhere has to be promoted to an entry with its own identifier.
 
-**The proposed scheme, in full, so it can be argued with rather than re-derived.** One letter for the kind plus an integer. Flat, append-only, unique across the pack. The last clause is the one `family-design` FD-D30 replaced: unique across the initiative, by carrying the pack prefix.
+**The proposed scheme, in full, so it can be argued with rather than re-derived.** One letter for the kind plus an integer. Flat, append-only, unique across the pack. The last clause is the one `baselinedocs` BLD-D30 replaced: unique across the initiative, by carrying the pack prefix.
 
 | Kind | Identifier | Written as |
 |---|---|---|

@@ -20,14 +20,14 @@ Consequences:
 
 ## Where reasoning goes
 
-`docs/baseline/` is the decision log: the full argument, the alternatives that were rejected, and why. Record decisions there, including what breaks if one is ignored. Two packs, routed by `docs/baseline/baselinedocs.index.md`:
+`docs/baseline/` is the decision log: the full argument, the alternatives that were rejected, and why. Record decisions there, including what breaks if one is ignored. Two packs, routed by `docs/baseline/baseline-gateway.index.md`:
 
 | Pack | Owns |
 |---|---|
-| `docs/baseline/family-design/` | the design of the family as a whole: trigger architecture, pack schema, checkpoint model, rule placement, workflow sequence, the onboard scope gate, evidence retention, `useguide`, execution policy, multi-pack routing |
+| `docs/baseline/baselinedocs/` | the design of the family as a whole: trigger architecture, pack schema, checkpoint model, rule placement, workflow sequence, the onboard scope gate, evidence retention, `useguide`, execution policy, multi-pack routing |
 | `docs/baseline/skill-consolidation/` | which skills were merged, deleted, or renamed, and the criterion that decided each |
 
-Identifiers carry their pack prefix, `FD-` or `SC-`, so a reference is unambiguous wherever it is read. `family-design.hallucination.md` FD-D30 records why.
+Identifiers carry their pack prefix, `BLD-` or `SC-`, so a reference is unambiguous wherever it is read. `baselinedocs.hallucination.md` BLD-D30 records why.
 
 A `SKILL.md` is an instruction executed fresh on every run, not a decision log. It carries a WHY clause only where the agent has a plausible reason to break the rule and would otherwise talk itself out of it.
 
