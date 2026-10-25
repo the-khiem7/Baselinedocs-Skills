@@ -1,6 +1,6 @@
 ---
 baseline_schema: "2.0"
-pack: "family-design"
+pack: "baselinedocs"
 document: "introduction"
 status: "active"
 updated: "2026-10-20"
@@ -33,22 +33,22 @@ Verified against the working tree at `0cb913f`, not read off `DESIGN.md`.
 | skills on disk | every `baselinedocs-*` folder. No count is kept here: `tests/helpers.py` enumerates them and each test classifies every one |
 | user entrypoints | `init`, `adopt`, `save`, `run`, `onboard`, `load`, `brief`, `callout`, `help`, `adr`, `self-upgrade`. All set `allow_implicit_invocation: false`. Pinned by `ENTRYPOINTS` in `tests/test_skill_metadata.py` |
 | one-time administration | none |
-| lifecycle skills, agent-selected | every other skill, all `true`. Includes `recall`, FD-D40 |
+| lifecycle skills, agent-selected | every other skill, all `true`. Includes `recall`, BLD-D40 |
 | pack schema | `2.0`. Three core documents, two conditional |
 | packaged `pack-contract.md` copies | one per skill in `CONTRACT_SKILLS` (`tests/test_references.py`). Absent from `audit-claims`, `audit-drift`, `brief` |
 | packaged `report-style.md` copies | every skill outside `REPORT_STYLE_EXEMPT`. Absent from `load` |
-| checkpoint hook | none. Automated Stop hook adapter retired and removed in FD-P8 |
-| skill version | top-level `version:` in every `SKILL.md`, one value for the family, `0.0.0` until the first tag. A pushed `vX.Y.Z` tag makes `.github/workflows/release.yml` stamp it onto `main`. FD-D45 |
+| checkpoint hook | none. Automated Stop hook adapter retired and removed in BLD-P8 |
+| skill version | top-level `version:` in every `SKILL.md`, one value for the family, `0.0.0` until the first tag. A pushed `vX.Y.Z` tag makes `.github/workflows/release.yml` stamp it onto `main`. BLD-D45 |
 | checkpoint model | in-thread phase checkpointing by `run` |
 | `resume-*` skills | none on disk |
 | execution policies | `approval_policy` and `commit_policy`, defined in `baselinedocs-run/references/execution-contract.md`, gated by `tests/test_run_policy.py` |
 | test command and result | `uvx --from "pytest>=8,<10" --with pyyaml pytest tests/ -q`, green. The pass count is not recorded: it changes with every skill added |
-| commit skills | none on disk. Moved to the `commit-composer` repository. FD-D53 |
-| installed-skill upgrade | `baselinedocs-self-upgrade`: a family skill that upgrades the installed baselinedocs skills in every agent on a machine, never a pack. Its read-only `scripts/upgradekit.sh` is the one script a single family skill owns. Tested by `tests/test_upgradekit.py`. FD-D49 |
-| README illustrations | light and dark WebP pairs under `assets/`, rendered from `assets/source/*.html`; the README selects them with `<picture>` and has no Mermaid. `banner.png` is the one PNG and has no dark variant. Tested by `tests/test_readme_assets.py` against the family map source only. FD-D50 |
-| onboard report | six sections drawn as visuals: `Needs you now`, `Progress`, `Doc pack introduction`, `Next actions`, `Pack map`, `Caveats`; no file record, no `Unresolved references` section. Not pinned by a test. FD-D51 |
-| baseline packs in this repository | this one and `skill-consolidation`, routed by `docs/baseline/baselinedocs.index.md` |
-| source of this pack | `DESIGN.md`, 495 lines, 60,743 bytes. Deleted 2026-08-28 after coverage was verified, and recoverable at `git show 0cb913f:DESIGN.md`. FD-D27 |
+| commit skills | none on disk. Moved to the `commit-composer` repository. BLD-D53 |
+| installed-skill upgrade | `baselinedocs-self-upgrade`: a family skill that upgrades the installed baselinedocs skills in every agent on a machine, never a pack. Its read-only `scripts/upgradekit.sh` is the one script a single family skill owns. Tested by `tests/test_upgradekit.py`. BLD-D49 |
+| README illustrations | light and dark WebP pairs under `assets/`, rendered from `assets/source/*.html`; the README selects them with `<picture>` and has no Mermaid. `banner.png` is the one PNG and has no dark variant. Tested by `tests/test_readme_assets.py` against the family map source only. BLD-D50 |
+| onboard report | six sections drawn as visuals: `Needs you now`, `Progress`, `Doc pack introduction`, `Next actions`, `Pack map`, `Caveats`; no file record, no `Unresolved references` section. Not pinned by a test. BLD-D51 |
+| baseline packs in this repository | this one and `skill-consolidation`, routed by `docs/baseline/baseline-gateway.index.md` |
+| source of this pack | `DESIGN.md`, 495 lines, 60,743 bytes. Deleted 2026-08-28 after coverage was verified, and recoverable at `git show 0cb913f:DESIGN.md`. BLD-D27 |
 
 ## Target
 
@@ -63,8 +63,8 @@ The family's design is shipped, not planned. This pack exists so the reasoning b
 | Workflow sequence | The intended order is written down and taught by the README | yes |
 | Onboard scope gate | A reader either knows what it holds or knows it holds nothing; never a silent partial read | yes |
 | Resume family | Dissolved, with one owner per question it used to claim | yes |
-| Installation profiles | Internal helpers hidden at package level | no, deferred. FD-Q1 |
-| Hook rollout | Retired in FD-P8; hook mechanism removed | yes |
+| Installation profiles | Internal helpers hidden at package level | no, deferred. BLD-Q1 |
+| Hook rollout | Retired in BLD-P8; hook mechanism removed | yes |
 
 ## Constraints
 

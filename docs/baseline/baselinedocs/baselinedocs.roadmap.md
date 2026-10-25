@@ -1,6 +1,6 @@
 ---
 baseline_schema: "2.0"
-pack: "family-design"
+pack: "baselinedocs"
 document: "roadmap"
 status: "active"
 updated: "2026-10-20"
@@ -9,9 +9,9 @@ code_ref: "uncommitted"
 
 # Family Design Roadmap
 
-Reasoning for every row below lives in `family-design.hallucination.md` under the entry named in its Basis column. Do not restate it here.
+Reasoning for every row below lives in `baselinedocs.hallucination.md` under the entry named in its Basis column. Do not restate it here.
 
-**Provenance, and a limit on how this document may be read.** This pack was adopted from `DESIGN.md`, which is a decision log and records no execution history for the family design: no phases, no dates, no checkpoints. The area rows below are therefore a status view built by verifying each design claim against the working tree at `0cb913f`. They are not a recorded sequence, and nobody should read them as one. FD-P1 is the only real phase in this pack, because it is the only work this pack watched happen.
+**Provenance, and a limit on how this document may be read.** This pack was adopted from `DESIGN.md`, which is a decision log and records no execution history for the family design: no phases, no dates, no checkpoints. The area rows below are therefore a status view built by verifying each design claim against the working tree at `0cb913f`. They are not a recorded sequence, and nobody should read them as one. BLD-P1 is the only real phase in this pack, because it is the only work this pack watched happen.
 
 ## Design area status
 
@@ -19,44 +19,44 @@ Verified against the repository, not against `DESIGN.md`.
 
 | Area | Basis | Status | Evidence |
 |---|---|---|---|
-| Trigger architecture | FD-D1, FD-D38, FD-D39 | implemented | `agents/openai.yaml` sets `allow_implicit_invocation: false` in exactly the user entrypoints; every other skill sets `true`. Pinned by `tests/test_skill_metadata.py` |
-| Pack schema 2.0 | FD-D2 | implemented | `contract/pack-contract.md` defines 3 required and 2 conditional documents; the `status` enum holds `draft`, `active`, `blocked`, `complete` |
-| Frontmatter semantics | FD-D3 | implemented | contract states `updated` as the edit date and `code_ref` as the inspected code state, with `uncommitted` and `unknown` as valid values |
-| Checkpoint contents | FD-D4 | implemented | `baselinedocs-run/references/execution-contract.md`, `Phase checkpoint`, lists outcome, evidence, changed files, unresolved risk, next phase, and routes reasoning to `hallucination` |
-| Run and save boundary | FD-D5 | implemented | `README.md` trap table states it; `run` checkpoints each phase |
-| Hook infers nothing | FD-D6, FD-D37 | retired | Hook adapter retired and removed in FD-P8. Checkpoint execution handled in-thread by `run` |
-| Rule placement | FD-D7 | implemented | byte-identical packaged `pack-contract.md` and `report-style.md` copies, `baselinedocs-load` exempt from the latter, each with a gate sentence in its `SKILL.md`. Pinned by `tests/test_references.py` |
-| Workflow sequence written down | FD-D8 | implemented | `README.md` Mermaid flowchart plus the branch table |
-| README leads with the workflow | FD-D9, FD-D50 | implemented | `README.md` order is problem image, Install, Daily Guide card, pack image, Workflow (image, branch table, trap table), Scenarios, Skills; the workflow is an image, not Mermaid; no per-skill install command for the family present |
-| Onboard scope gate | FD-D10 | implemented | `baselinedocs-onboard/SKILL.md` steps 4 and 5, and its first two Reading Rules |
-| Initiative routing | FD-D11, FD-D12, FD-D13 | implemented | `onboard` steps 2 and 3; `Never write the index` in step 2 |
-| Dependency edges and coupling | FD-D14, FD-D15, FD-D16 | implemented | `onboard` Reading Rules, four consecutive rules covering edges, collected references, unresolved references, and the index-status contradiction |
-| Output leads with state | FD-D17, FD-D34, FD-D51 | implemented, amended | `baselinedocs-onboard/SKILL.md` `Output`: six sections, `Needs you now` first, progress as chips, bar, strip and board |
-| Source material excluded | FD-D18 | implemented | `onboard` Reading Rules, retained-source-material rule keyed on absent baseline frontmatter |
-| Resume family dissolved | FD-D19, FD-D20 | implemented | no `resume-*` folder on disk; `baselinedocs-brief` present and set to `false` |
-| Evidence retention | FD-D21, FD-D29 | implemented | `contract/pack-contract.md`, `Evidence density`, carries both lists, the resolved-mistake distinction, and the external-log permission. Packaged copies re-synced |
-| `useguide` role | FD-D22, FD-D29 | implemented | contract, `Conditional documents`, carries the criterion, the five valid forms, and the wiki routing rule |
-| Execution policy gate | FD-D23 | implemented | `execution-contract.md`, `Selection gate`. Pinned by `tests/test_run_policy.py` |
-| Multi-pack routing | FD-D24 | implemented | contract, `Multi-pack initiatives`; and `docs/baseline/baselinedocs.index.md` now exercises it |
-| Report structure | FD-D31, FD-D32, FD-D33, FD-D34, FD-D35 | implemented | `contract/report-style.md` carries the layout rules plus the four-column exception; packaged copies `cmp` clean; `baselinedocs-onboard/SKILL.md` `Output` is five flat sections, `Read record` removed |
-| Decision entry register | FD-D36 | implemented | `contract/pack-contract.md`, `Register`, a standalone section after `Required documents`, states the compact form for a decision's four required parts and the loss-verification step; packaged copies `cmp` clean |
-| Installation profiles | FD-Q1 | deferred | no platform mechanism exists to build against |
-| Organization-wide hook rollout | FD-Q2, FD-D37 | closed | Hook mechanism removed from repository in FD-P8; rollout no longer applicable |
-| Silent loader entrypoint | FD-D39 | implemented | `baselinedocs-load` implemented as a silent pack loader with single-word confirmation output; exempt from `report-style.md` in `tests/test_references.py` |
-| Rule recall after compaction | FD-D40 | implemented | `baselinedocs-recall` ships both assets, gates on `RECALL_CONTRACT_GATE` and `RECALL_REPORT_GATE`; `RECALL_SKILLS` in `tests/test_references.py` |
-| Test harness | FD-D41 | implemented, CI unobserved | `tests/helpers.py`, `pytest.ini`, `tests/test_conventions.py`, `tests/test_packs.py`; `.gitattributes`; `.github/workflows/tests.yml` has not run on GitHub |
-| Mandatory entry index and heading format | FD-D42 | implemented | `contract/pack-contract.md`, `Entry index`; 14 packaged copies `cmp` clean; `tests/test_packs.py` has no threshold and fails a `hallucination` with no index |
-| Guide to the skills | FD-D43 | implemented, selection unobserved | `baselinedocs-help/` with `references/guide.md`; `tests/test_references.py` `test_help_guide_names_every_skill` |
-| ADR from a closed decision | FD-D44 | implemented, selection unobserved | `baselinedocs-adr/` with the unmodified AWS `references/template.md` and `process.md`; checksums in FD-D44 |
-| Mechanical structure check | FD-D46, FD-D47 | implemented, CI matrix unobserved | `contract/packtool.sh` with byte-identical `scripts/packtool.sh` copies; commands `outline`, `find`, `next-id`, `close-plan`, `check`; gates pinned by `TOOL_SKILLS` in `tests/test_references.py`; `tests/test_packtool.py` builds one case per rule |
-| Closed question keeps its number | FD-D47 | implemented | contract `Entry index` states the `Closes` line; `close-plan` and WARN `identifier-gap` in the tool; `sync-decisions` and `save` run `close-plan`, pinned by `test_skills_that_close_questions_run_close_plan` |
-| Release version in the frontmatter | FD-D45, FD-Q6 | implemented, workflow unobserved | top-level `version:` in every `SKILL.md`; `scripts/stamp_version.py`; `tests/test_version.py`; `.github/workflows/release.yml` has not run on GitHub |
-| Commit skills | FD-D48, FD-D53 | moved to the `commit-composer` repository | no `commit-*` folder, contract file or test remains here; the history of those paths lives in the new repository |
-| Installed-skill upgrade | FD-D49 | implemented, upgrade path unobserved | `baselinedocs-self-upgrade/` with `scripts/upgradekit.sh`; `tests/test_upgradekit.py` holds one case per rule; `OWN_SCRIPTS` in `tests/test_conventions.py`; `compare` run against this machine's 190 installs |
-| Onboard report as visuals | FD-D51 | implemented, host render unobserved | `baselinedocs-onboard/SKILL.md`: no file record, no `Unresolved references` section, one `Not read:` line in `Caveats`, fixed chip table, HTML page with Mermaid only on request |
-| README illustrations | FD-D50 | implemented, GitHub render unobserved | 34 WebP under `assets/` (17 light, 17 dark) rendered from `assets/source/*.html` with `shared.css`, `shared.js`, `finish.py`; `README.md` selects them with `<picture>`; `tests/test_readme_assets.py` pins one `data-skill` chip per skill in `family-map.html` |
+| Trigger architecture | BLD-D1, BLD-D38, BLD-D39 | implemented | `agents/openai.yaml` sets `allow_implicit_invocation: false` in exactly the user entrypoints; every other skill sets `true`. Pinned by `tests/test_skill_metadata.py` |
+| Pack schema 2.0 | BLD-D2 | implemented | `contract/pack-contract.md` defines 3 required and 2 conditional documents; the `status` enum holds `draft`, `active`, `blocked`, `complete` |
+| Frontmatter semantics | BLD-D3 | implemented | contract states `updated` as the edit date and `code_ref` as the inspected code state, with `uncommitted` and `unknown` as valid values |
+| Checkpoint contents | BLD-D4 | implemented | `baselinedocs-run/references/execution-contract.md`, `Phase checkpoint`, lists outcome, evidence, changed files, unresolved risk, next phase, and routes reasoning to `hallucination` |
+| Run and save boundary | BLD-D5 | implemented | `README.md` trap table states it; `run` checkpoints each phase |
+| Hook infers nothing | BLD-D6, BLD-D37 | retired | Hook adapter retired and removed in BLD-P8. Checkpoint execution handled in-thread by `run` |
+| Rule placement | BLD-D7 | implemented | byte-identical packaged `pack-contract.md` and `report-style.md` copies, `baselinedocs-load` exempt from the latter, each with a gate sentence in its `SKILL.md`. Pinned by `tests/test_references.py` |
+| Workflow sequence written down | BLD-D8 | implemented | `README.md` Mermaid flowchart plus the branch table |
+| README leads with the workflow | BLD-D9, BLD-D50 | implemented | `README.md` order is problem image, Install, Daily Guide card, pack image, Workflow (image, branch table, trap table), Scenarios, Skills; the workflow is an image, not Mermaid; no per-skill install command for the family present |
+| Onboard scope gate | BLD-D10 | implemented | `baselinedocs-onboard/SKILL.md` steps 4 and 5, and its first two Reading Rules |
+| Initiative routing | BLD-D11, BLD-D12, BLD-D13 | implemented | `onboard` steps 2 and 3; `Never write the index` in step 2 |
+| Dependency edges and coupling | BLD-D14, BLD-D15, BLD-D16 | implemented | `onboard` Reading Rules, four consecutive rules covering edges, collected references, unresolved references, and the index-status contradiction |
+| Output leads with state | BLD-D17, BLD-D34, BLD-D51 | implemented, amended | `baselinedocs-onboard/SKILL.md` `Output`: six sections, `Needs you now` first, progress as chips, bar, strip and board |
+| Source material excluded | BLD-D18 | implemented | `onboard` Reading Rules, retained-source-material rule keyed on absent baseline frontmatter |
+| Resume family dissolved | BLD-D19, BLD-D20 | implemented | no `resume-*` folder on disk; `baselinedocs-brief` present and set to `false` |
+| Evidence retention | BLD-D21, BLD-D29 | implemented | `contract/pack-contract.md`, `Evidence density`, carries both lists, the resolved-mistake distinction, and the external-log permission. Packaged copies re-synced |
+| `useguide` role | BLD-D22, BLD-D29 | implemented | contract, `Conditional documents`, carries the criterion, the five valid forms, and the wiki routing rule |
+| Execution policy gate | BLD-D23 | implemented | `execution-contract.md`, `Selection gate`. Pinned by `tests/test_run_policy.py` |
+| Multi-pack routing | BLD-D24 | implemented | contract, `Multi-pack initiatives`; and `docs/baseline/baseline-gateway.index.md` now exercises it |
+| Report structure | BLD-D31, BLD-D32, BLD-D33, BLD-D34, BLD-D35 | implemented | `contract/report-style.md` carries the layout rules plus the four-column exception; packaged copies `cmp` clean; `baselinedocs-onboard/SKILL.md` `Output` is five flat sections, `Read record` removed |
+| Decision entry register | BLD-D36 | implemented | `contract/pack-contract.md`, `Register`, a standalone section after `Required documents`, states the compact form for a decision's four required parts and the loss-verification step; packaged copies `cmp` clean |
+| Installation profiles | BLD-Q1 | deferred | no platform mechanism exists to build against |
+| Organization-wide hook rollout | BLD-Q2, BLD-D37 | closed | Hook mechanism removed from repository in BLD-P8; rollout no longer applicable |
+| Silent loader entrypoint | BLD-D39 | implemented | `baselinedocs-load` implemented as a silent pack loader with single-word confirmation output; exempt from `report-style.md` in `tests/test_references.py` |
+| Rule recall after compaction | BLD-D40 | implemented | `baselinedocs-recall` ships both assets, gates on `RECALL_CONTRACT_GATE` and `RECALL_REPORT_GATE`; `RECALL_SKILLS` in `tests/test_references.py` |
+| Test harness | BLD-D41 | implemented, CI unobserved | `tests/helpers.py`, `pytest.ini`, `tests/test_conventions.py`, `tests/test_packs.py`; `.gitattributes`; `.github/workflows/tests.yml` has not run on GitHub |
+| Mandatory entry index and heading format | BLD-D42 | implemented | `contract/pack-contract.md`, `Entry index`; 14 packaged copies `cmp` clean; `tests/test_packs.py` has no threshold and fails a `hallucination` with no index |
+| Guide to the skills | BLD-D43 | implemented, selection unobserved | `baselinedocs-help/` with `references/guide.md`; `tests/test_references.py` `test_help_guide_names_every_skill` |
+| ADR from a closed decision | BLD-D44 | implemented, selection unobserved | `baselinedocs-adr/` with the unmodified AWS `references/template.md` and `process.md`; checksums in BLD-D44 |
+| Mechanical structure check | BLD-D46, BLD-D47 | implemented, CI matrix unobserved | `contract/packtool.sh` with byte-identical `scripts/packtool.sh` copies; commands `outline`, `find`, `next-id`, `close-plan`, `check`; gates pinned by `TOOL_SKILLS` in `tests/test_references.py`; `tests/test_packtool.py` builds one case per rule |
+| Closed question keeps its number | BLD-D47 | implemented | contract `Entry index` states the `Closes` line; `close-plan` and WARN `identifier-gap` in the tool; `sync-decisions` and `save` run `close-plan`, pinned by `test_skills_that_close_questions_run_close_plan` |
+| Release version in the frontmatter | BLD-D45, BLD-Q6 | implemented, workflow unobserved | top-level `version:` in every `SKILL.md`; `scripts/stamp_version.py`; `tests/test_version.py`; `.github/workflows/release.yml` has not run on GitHub |
+| Commit skills | BLD-D48, BLD-D53 | moved to the `commit-composer` repository | no `commit-*` folder, contract file or test remains here; the history of those paths lives in the new repository |
+| Installed-skill upgrade | BLD-D49 | implemented, upgrade path unobserved | `baselinedocs-self-upgrade/` with `scripts/upgradekit.sh`; `tests/test_upgradekit.py` holds one case per rule; `OWN_SCRIPTS` in `tests/test_conventions.py`; `compare` run against this machine's 190 installs |
+| Onboard report as visuals | BLD-D51 | implemented, host render unobserved | `baselinedocs-onboard/SKILL.md`: no file record, no `Unresolved references` section, one `Not read:` line in `Caveats`, fixed chip table, HTML page with Mermaid only on request |
+| README illustrations | BLD-D50 | implemented, GitHub render unobserved | 34 WebP under `assets/` (17 light, 17 dark) rendered from `assets/source/*.html` with `shared.css`, `shared.js`, `finish.py`; `README.md` selects them with `<picture>`; `tests/test_readme_assets.py` pins one `data-skill` chip per skill in `family-map.html` |
 
-## FD-P1: adopt `DESIGN.md` into this pack
+## BLD-P1: adopt `DESIGN.md` into this pack
 
 Acceptance criteria:
 
@@ -74,7 +74,7 @@ Acceptance criteria:
 | Files created | 5: 4 pack documents and the initiative index |
 | Source sections mapped | 22 of 22 |
 | Sections deferred to `skill-consolidation` rather than restated | 7 |
-| Entries written here | 30: FD-D1 to FD-D26, FD-Q1 to FD-Q4 |
+| Entries written here | 30: BLD-D1 to BLD-D26, BLD-Q1 to BLD-Q4 |
 | Entry index | required and present. 30 entries, above the 20-entry threshold |
 | Content dropped | none |
 
@@ -82,11 +82,11 @@ Changes:
 
 | File | Change |
 |---|---|
-| `docs/baseline/family-design/family-design.introduction.md` | new. Scope, the out-of-scope table naming each other owner, verified current truth, target, constraints, platform basis |
-| `docs/baseline/family-design/family-design.roadmap.md` | new. This document |
-| `docs/baseline/family-design/family-design.hallucination.md` | new. 30 entries with an entry index |
-| `docs/baseline/family-design/family-design.sourcecode.md` | new. Instruction surfaces, checkpoint hook execution flow, execution policy, pack layout |
-| `docs/baseline/baselinedocs.index.md` | new. Routes the two packs, carries the dependency edge and the cross-pack checkpoint |
+| `docs/baseline/baselinedocs/baselinedocs.introduction.md` | new. Scope, the out-of-scope table naming each other owner, verified current truth, target, constraints, platform basis |
+| `docs/baseline/baselinedocs/baselinedocs.roadmap.md` | new. This document |
+| `docs/baseline/baselinedocs/baselinedocs.hallucination.md` | new. 30 entries with an entry index |
+| `docs/baseline/baselinedocs/baselinedocs.sourcecode.md` | new. Instruction surfaces, checkpoint hook execution flow, execution policy, pack layout |
+| `docs/baseline/baseline-gateway.index.md` | new. Routes the two packs, carries the dependency edge and the cross-pack checkpoint |
 | `DESIGN.md` | untouched. Retention was not authorized either way, so the source is retained as it stands |
 
 ### Coverage ledger
@@ -95,30 +95,30 @@ Every section of `DESIGN.md` at `0cb913f`, with its destination. A destination n
 
 | Source section | Lines | Destination |
 |---|---|---|
-| Decision Summary | 3-38 | split by row. Rows about the family design became entries FD-D1 to FD-D26 here; rows about the consolidation are already `skill-consolidation` SC-D1 to SC-D21. The table's own function is served by the entry index in each `hallucination` |
-| Trigger Architecture | 40-51 | FD-D1. Mechanics in `family-design.sourcecode.md`, `Instruction surfaces`; counts in `family-design.introduction.md`, `Current truth` |
-| Pack Schema | 53-68 | FD-D2 |
-| Frontmatter Semantics | 70-74 | FD-D3 |
-| Checkpoint Model | 76-92 | FD-D4, FD-D5, FD-D6. Execution flow in `family-design.sourcecode.md`, `Checkpoint hook` |
-| Rule Placement | 94-124 | FD-D7, and the surface table in `family-design.sourcecode.md`. The criterion for which skill ships which asset is `skill-consolidation` SC-D16 and SC-D17, cited and not restated |
+| Decision Summary | 3-38 | split by row. Rows about the family design became entries BLD-D1 to BLD-D26 here; rows about the consolidation are already `skill-consolidation` SC-D1 to SC-D21. The table's own function is served by the entry index in each `hallucination` |
+| Trigger Architecture | 40-51 | BLD-D1. Mechanics in `baselinedocs.sourcecode.md`, `Instruction surfaces`; counts in `baselinedocs.introduction.md`, `Current truth` |
+| Pack Schema | 53-68 | BLD-D2 |
+| Frontmatter Semantics | 70-74 | BLD-D3 |
+| Checkpoint Model | 76-92 | BLD-D4, BLD-D5, BLD-D6. Execution flow in `baselinedocs.sourcecode.md`, `Checkpoint hook` |
+| Rule Placement | 94-124 | BLD-D7, and the surface table in `baselinedocs.sourcecode.md`. The criterion for which skill ships which asset is `skill-consolidation` SC-D16 and SC-D17, cited and not restated |
 | Report Style As A Shipped Asset | 126-136 | `skill-consolidation` SC-D17 |
 | Hard-Wrapped Paragraphs | 138-146 | `skill-consolidation` SC-D18 |
 | Entry Index | 148-164 | `skill-consolidation` SC-D19 |
 | Misfiled Content | 166-178 | `skill-consolidation` SC-D20 |
-| Workflow Sequence | 180-195 | FD-D8 |
-| README Shape | 197-205 | FD-D9 |
-| Onboard Scope Gate | 207-237 | FD-D10, FD-D11, FD-D12, FD-D13, FD-D14, FD-D15, FD-D16, FD-D17, FD-D18 |
-| Resume Family Dissolved | 239-272 | FD-D19, FD-D20 |
+| Workflow Sequence | 180-195 | BLD-D8 |
+| README Shape | 197-205 | BLD-D9 |
+| Onboard Scope Gate | 207-237 | BLD-D10, BLD-D11, BLD-D12, BLD-D13, BLD-D14, BLD-D15, BLD-D16, BLD-D17, BLD-D18 |
+| Resume Family Dissolved | 239-272 | BLD-D19, BLD-D20 |
 | Skill Consolidation, all subsections | 274-379 | `skill-consolidation` SC-D1 to SC-D14 and SC-D21, and its roadmap SC-P1 to SC-P14 |
 | Detect And Repair | 381-430 | `skill-consolidation` SC-D12, and `skill-consolidation.sourcecode.md`, `The sync and audit skills` |
-| Evidence Retention | 432-451 | FD-D21, and the shipping gap as FD-Q3 |
-| Useguide Role | 453-463 | FD-D22, and the shipping gap as FD-Q3 |
-| Loop Engineering | 465-469 | FD-D23. Policy tables in `family-design.sourcecode.md`, `Execution policy` |
-| Multi-Pack Routing | 471-480 | FD-D24. Layout in `family-design.sourcecode.md`, `Pack layout on disk`; instantiated by `docs/baseline/baselinedocs.index.md` |
-| Deferred Work | 482-487 | FD-Q1, FD-Q2, and FD-D26. The closing line that nothing about the skill family remains deferred is carried by the Risks table below |
-| Research Basis | 489-495 | `family-design.introduction.md`, `Platform basis`. All five links preserved |
+| Evidence Retention | 432-451 | BLD-D21, and the shipping gap as BLD-Q3 |
+| Useguide Role | 453-463 | BLD-D22, and the shipping gap as BLD-Q3 |
+| Loop Engineering | 465-469 | BLD-D23. Policy tables in `baselinedocs.sourcecode.md`, `Execution policy` |
+| Multi-Pack Routing | 471-480 | BLD-D24. Layout in `baselinedocs.sourcecode.md`, `Pack layout on disk`; instantiated by `docs/baseline/baseline-gateway.index.md` |
+| Deferred Work | 482-487 | BLD-Q1, BLD-Q2, and BLD-D26. The closing line that nothing about the skill family remains deferred is carried by the Risks table below |
+| Research Basis | 489-495 | `baselinedocs.introduction.md`, `Platform basis`. All five links preserved |
 
-Two entries here are not in the source. FD-Q3 and FD-Q4 were found during this adoption and are marked as such in their own text, so a later reader does not attribute them to `DESIGN.md`.
+Two entries here are not in the source. BLD-Q3 and BLD-Q4 were found during this adoption and are marked as such in their own text, so a later reader does not attribute them to `DESIGN.md`.
 
 ### Finding: seven sections were already owned, and copying them would have been the easy mistake
 
@@ -126,13 +126,13 @@ Two entries here are not in the source. FD-Q3 and FD-Q4 were found during this a
 
 The check that caught it was reading the existing pack in full first, all 1,254 lines, before deciding the layout. Reading it by headings would have shown a pack named for consolidation and would not have shown that it already owns the report-style, hard-wrap, entry-index, and misfiled-content decisions, none of which is about consolidating a skill.
 
-## FD-P2: close the coverage gaps a planned deletion exposes
+## BLD-P2: close the coverage gaps a planned deletion exposes
 
-Opened when FD-D27 settled that `DESIGN.md` is deleted rather than retained. A ledger row routing a section to another pack was sufficient while the source stayed on disk; it is not sufficient once the source goes. FD-D28 carries the reasoning.
+Opened when BLD-D27 settled that `DESIGN.md` is deleted rather than retained. A ledger row routing a section to another pack was sufficient while the source stayed on disk; it is not sufficient once the source goes. BLD-D28 carries the reasoning.
 
 Acceptance criteria:
 
-- every fact in the seven sections FD-P1 routed to `skill-consolidation` is present in the pack that owns it, checked at fact granularity rather than section granularity
+- every fact in the seven sections BLD-P1 routed to `skill-consolidation` is present in the pack that owns it, checked at fact granularity rather than section granularity
 - each addition lands in the entry whose subject already covers it, with no new entry and no new document
 - `DESIGN.md` still unchanged, byte for byte
 - `uvx pytest tests/ -q` stays green
@@ -159,13 +159,13 @@ Changes:
 | File | Change |
 |---|---|
 | `skill-consolidation.hallucination.md` | two facts added to SC-D12 and SC-D19; frontmatter `updated` to 2026-08-28 and `code_ref` to `0cb913f`, the state inspected |
-| `family-design.hallucination.md` | FD-D27 records the replacement decision and its prerequisites; FD-D28 records the ledger-versus-coverage lesson; two index rows added |
+| `baselinedocs.hallucination.md` | BLD-D27 records the replacement decision and its prerequisites; BLD-D28 records the ledger-versus-coverage lesson; two index rows added |
 
 `skill-consolidation`'s roadmap still states that its phases SC-P9 through SC-P14 are uncommitted, and that is left alone here. It is a pack that has fallen behind the code, which `baselinedocs-sync-codebase` owns, and repairing it in passing would mix an unrelated correction into a coverage phase.
 
-## FD-P3: close both open questions and finish the handover
+## BLD-P3: close both open questions and finish the handover
 
-Three deliverables, joined because all three were unblocked by the same round of user decisions. Reasoning is in FD-D29 and FD-D30; the `AGENTS.md` work is the last prerequisite FD-D27 listed.
+Three deliverables, joined because all three were unblocked by the same round of user decisions. Reasoning is in BLD-D29 and BLD-D30; the `AGENTS.md` work is the last prerequisite BLD-D27 listed.
 
 Acceptance criteria:
 
@@ -195,27 +195,27 @@ Changes:
 |---|---|
 | `contract/pack-contract.md` | `Evidence density` gains the keep and discard lists, the resolved-mistake distinction, and the external-log permission; `Conditional documents` gains the `useguide` definition, its five valid forms, and the wiki routing rule |
 | `<skill>/references/pack-contract.md` | all 11 copies re-synced |
-| `family-design.hallucination.md` | FD-D29 and FD-D30 added; FD-D21 and FD-D22 reduced to reasoning now that the contract carries the rule; FD-Q3 and FD-Q4 closed and their analysis carried into the decisions; every identifier prefixed |
-| `skill-consolidation.hallucination.md` | every identifier prefixed; SC-Q6 records which of its clauses FD-D30 settled and which stay open |
+| `baselinedocs.hallucination.md` | BLD-D29 and BLD-D30 added; BLD-D21 and BLD-D22 reduced to reasoning now that the contract carries the rule; BLD-Q3 and BLD-Q4 closed and their analysis carried into the decisions; every identifier prefixed |
+| `skill-consolidation.hallucination.md` | every identifier prefixed; SC-Q6 records which of its clauses BLD-D30 settled and which stay open |
 | `skill-consolidation.roadmap.md`, `skill-consolidation.sourcecode.md`, `skill-consolidation.introduction.md` | every identifier prefixed |
 | `AGENTS.md` | four references to `DESIGN.md` rewired to the packs: the ships table, the rule against citing a non-shipping file to justify a cut, `Where reasoning goes` with a pack-ownership table, and the merge pointer under `Conventions` |
-| `baselinedocs.index.md` | identifier rule, dependency edge, and cross-pack checkpoint updated |
+| `baseline-gateway.index.md` | identifier rule, dependency edge, and cross-pack checkpoint updated |
 
 ### Finding: the contract edit was verified by reading the whole file, and that is why it can be trusted
 
 `skill-consolidation` SC-D21 records an earlier contract edit that destroyed the `## Conditional documents` heading, passed `cmp` across all 11 copies, and kept the suite green, because every check available measures whether the copies agree rather than whether the source is still correct. This phase touched the same two regions of the same file. The structure check above is that lesson applied rather than restated: the heading list and the bullet-to-heading mapping were both produced mechanically after the edit, before the copies were made.
 
-### Finding: closing FD-Q3 moved a rule, so a duplicate had to be removed in a fixed order
+### Finding: closing BLD-Q3 moved a rule, so a duplicate had to be removed in a fixed order
 
-FD-D21 and FD-D22 each carried the full text of a rule the contract only summarized. Once the contract carried it, those two entries held a second copy, and a second copy of a rule is the thing this repository spends the most effort removing. The order was forced: widen the contract, re-copy to all 11, verify, then trim the pack entries. Trimming first would have dropped the rule for as long as it took to notice, which is the sequencing `skill-consolidation` SC-D10 already records. What is left in FD-D21 and FD-D22 is reasoning, which the contract deliberately does not carry.
+BLD-D21 and BLD-D22 each carried the full text of a rule the contract only summarized. Once the contract carried it, those two entries held a second copy, and a second copy of a rule is the thing this repository spends the most effort removing. The order was forced: widen the contract, re-copy to all 11, verify, then trim the pack entries. Trimming first would have dropped the rule for as long as it took to notice, which is the sequencing `skill-consolidation` SC-D10 already records. What is left in BLD-D21 and BLD-D22 is reasoning, which the contract deliberately does not carry.
 
-## FD-P4: delete the source
+## BLD-P4: delete the source
 
-The last step of the adoption, kept as its own phase because it is the one act in this sequence the repository cannot undo by editing a file. FD-D27 carries the decision and the prerequisites it had to clear.
+The last step of the adoption, kept as its own phase because it is the one act in this sequence the repository cannot undo by editing a file. BLD-D27 carries the decision and the prerequisites it had to clear.
 
 Acceptance criteria:
 
-- the full-file coverage check runs once more, over all 22 sections rather than the 7 FD-P2 checked, and every apparent gap is either closed or shown to be a formatting difference
+- the full-file coverage check runs once more, over all 22 sections rather than the 7 BLD-P2 checked, and every apparent gap is either closed or shown to be a formatting difference
 - `DESIGN.md` is recoverable from Git history after the deletion, and the exact command is recorded
 - no file outside `docs/baseline/` names `DESIGN.md`
 - `uvx pytest tests/ -q` stays green
@@ -236,28 +236,28 @@ The five apparent gaps, each checked rather than waved through:
 
 | Flagged | Verdict |
 |---|---|
-| `2415` and `3460` | present as `2,415` and `3,460` in FD-D18. The source wrote them without thousands separators; this pack writes them with. Same fact |
+| `2415` and `3460` | present as `2,415` and `3,460` in BLD-D18. The source wrote them without thousands separators; this pack writes them with. Same fact |
 | `Concern` | a column header in the source's decision-summary table, not a fact |
 | `Consequences` | a section heading in the source's detect-and-repair section. Its content is in `skill-consolidation` SC-D12 and `skill-consolidation.sourcecode.md` |
-| `Inconsistent` | the label on a decision-summary row. The decision on that row, adding schema, status, date, and code provenance frontmatter, is FD-D2 and FD-D3 |
+| `Inconsistent` | the label on a decision-summary row. The decision on that row, adding schema, status, date, and code provenance frontmatter, is BLD-D2 and BLD-D3 |
 
 Changes:
 
 | File | Change |
 |---|---|
 | `DESIGN.md` | deleted |
-| `family-design.introduction.md` | the source row now records the deletion and the recovery command; `DESIGN.md` removed from the does-not-ship constraint, since it no longer exists to not ship |
-| `family-design.roadmap.md` | this phase; next action; the line-count figure corrected from 496 to the 495 Git reports |
-| `family-design.hallucination.md` | FD-D27 records the deletion as done |
-| `baselinedocs.index.md` | cross-pack checkpoint updated |
+| `baselinedocs.introduction.md` | the source row now records the deletion and the recovery command; `DESIGN.md` removed from the does-not-ship constraint, since it no longer exists to not ship |
+| `baselinedocs.roadmap.md` | this phase; next action; the line-count figure corrected from 496 to the 495 Git reports |
+| `baselinedocs.hallucination.md` | BLD-D27 records the deletion as done |
+| `baseline-gateway.index.md` | cross-pack checkpoint updated |
 
-### Finding: the line count in FD-P1 was wrong by one, and only the deletion exposed it
+### Finding: the line count in BLD-P1 was wrong by one, and only the deletion exposed it
 
-FD-P1 recorded the source as 496 lines. `git show 0cb913f:DESIGN.md | wc -l` returns 495. The figure came from a reader that numbers a trailing blank line; `wc -l` counts newline characters. One line is not a consequential error, but the way it survived is: it was written into a checkpoint, carried into the introduction, and read back twice without being questioned, because a number in a table looks like a measurement whether or not anything measured it. Corrected in both places to the figure a command returns.
+BLD-P1 recorded the source as 496 lines. `git show 0cb913f:DESIGN.md | wc -l` returns 495. The figure came from a reader that numbers a trailing blank line; `wc -l` counts newline characters. One line is not a consequential error, but the way it survived is: it was written into a checkpoint, carried into the introduction, and read back twice without being questioned, because a number in a table looks like a measurement whether or not anything measured it. Corrected in both places to the figure a command returns.
 
-## FD-P5: give `report-style.md` the shape of a report, and reinstall
+## BLD-P5: give `report-style.md` the shape of a report, and reinstall
 
-Opened 2026-08-29 by a user review of a real `onboard` run in an unrelated repository. Four of the findings were layout, one reversed a shipped rule, and one proposed removing the load manifest. FD-D31, FD-D32, and FD-D33 carry the reasoning; the reinstall is the next action FD-P3 left standing, and it is in this phase because a rule that does not reach a machine changes nothing on it.
+Opened 2026-08-29 by a user review of a real `onboard` run in an unrelated repository. Four of the findings were layout, one reversed a shipped rule, and one proposed removing the load manifest. BLD-D31, BLD-D32, and BLD-D33 carry the reasoning; the reinstall is the next action BLD-P3 left standing, and it is in this phase because a rule that does not reach a machine changes nothing on it.
 
 Acceptance criteria:
 
@@ -277,7 +277,7 @@ Acceptance criteria:
 | Contract copies | 11, untouched. No contract edit in this phase |
 | Host directories updated | 4: `.claude`, `.agents`, `.kilocode`, `.kiro`. Each holds 15 skills, 11 contract copies, 14 report-style copies |
 | Installed state verified | every skill folder diffed against this repository. The only difference is a gitignored `scripts/__pycache__` in `setup-hooks` that the installer does not copy |
-| Entries written | 3: FD-D31, FD-D32, FD-D33 |
+| Entries written | 3: BLD-D31, BLD-D32, BLD-D33 |
 
 Changes:
 
@@ -287,9 +287,9 @@ Changes:
 | `<skill>/references/report-style.md` | all 14 copies re-synced |
 | `baselinedocs-onboard/SKILL.md` | `Output` rewritten into two named parts with a section per document role and a compressed manifest; step 11 rewired to point at `Output` instead of restating it; step 9 now requires a reference be said in the agent's own words before it is quoted |
 | `AGENTS.md` | `Report style` now states that the asset governs report shape as well as element naming |
-| `family-design.hallucination.md` | FD-D31, FD-D32, FD-D33 added; 3 index rows; entry count 32 to 35 |
-| `family-design.roadmap.md` | this phase, the design area row, the installed-skills risk row, and the next action |
-| `baselinedocs.index.md` | cross-pack checkpoint updated now that the reinstall is done |
+| `baselinedocs.hallucination.md` | BLD-D31, BLD-D32, BLD-D33 added; 3 index rows; entry count 32 to 35 |
+| `baselinedocs.roadmap.md` | this phase, the design area row, the installed-skills risk row, and the next action |
+| `baseline-gateway.index.md` | cross-pack checkpoint updated now that the reinstall is done |
 
 ### Finding: the reviewed report was produced with no report-style rules at all
 
@@ -297,15 +297,15 @@ The run under review came from an installed `baselinedocs-onboard` whose folder 
 
 ### Finding: three of the six layout complaints were one defect
 
-The load manifest, the unresolved-reference list, and one of the two phase tables all degraded into vertical dumps of field names. All three were tables with more columns than the terminal could render; a two-column table in the same report rendered correctly. The reviewer described the symptom as a wall of text and proposed deleting the manifest. Diagnosing the mechanism is what turned one of those three into a column budget rather than a deletion, and FD-D33 records why the deletion would have cost a guarantee rather than a table.
+The load manifest, the unresolved-reference list, and one of the two phase tables all degraded into vertical dumps of field names. All three were tables with more columns than the terminal could render; a two-column table in the same report rendered correctly. The reviewer described the symptom as a wall of text and proposed deleting the manifest. Diagnosing the mechanism is what turned one of those three into a column budget rather than a deletion, and BLD-D33 records why the deletion would have cost a guarantee rather than a table.
 
 ### Finding: the installer splits neither `--skill` nor `--agent` on commas
 
 A comma-separated list is treated as one literal name. `-s a,b,c` reports `No matching skills found` and prints the available list, which reads like a discovery failure rather than a syntax error, and `-a` fails the same way with `Invalid agents`. Repeating the flag works: `-a claude-code -a universal -a kilo -a kiro-cli`. Recorded because the first attempt appeared to succeed at a glance, exited non-zero without anything obviously wrong in the visible output, and left all four hosts unchanged. Any later reinstall loops one skill per invocation with the agent flag repeated.
 
-## FD-P6: narrow `onboard`'s report to pack status only, and extend the table-width exception
+## BLD-P6: narrow `onboard`'s report to pack status only, and extend the table-width exception
 
-Opened 2026-09-04 when this session's own `baselinedocs-onboard` run against this repository's two packs, exactly the exercise FD-P5's next action called for, returned a report the user judged too wall-of-text and too heavy on bookkeeping. FD-D34 and FD-D35 carry the reasoning; FD-Q5 opens on the gap the change leaves behind.
+Opened 2026-09-04 when this session's own `baselinedocs-onboard` run against this repository's two packs, exactly the exercise BLD-P5's next action called for, returned a report the user judged too wall-of-text and too heavy on bookkeeping. BLD-D34 and BLD-D35 carry the reasoning; BLD-Q5 opens on the gap the change leaves behind.
 
 Acceptance criteria:
 
@@ -325,7 +325,7 @@ Acceptance criteria:
 | Workflow steps removed | 1: the placement check, since nothing reports its result now |
 | Contract copies | 11, untouched. No contract edit in this phase |
 | Host directories updated | 0. Reinstall not carried out in this phase |
-| Entries written | 3: FD-D34, FD-D35, FD-Q5 |
+| Entries written | 3: BLD-D34, BLD-D35, BLD-Q5 |
 | Commit | `0d30867`, present on disk with the 16-file change already staged and committed under that hash. No `git commit` was invoked in this session; the commit's origin was not investigated here and was flagged to the user instead |
 
 Changes:
@@ -335,16 +335,16 @@ Changes:
 | `contract/report-style.md` | `Keep a table inside the terminal's width` gains the four-column exception |
 | `<skill>/references/report-style.md` | all 14 copies re-synced |
 | `baselinedocs-onboard/SKILL.md` | opening paragraph, steps 7 and 8, and one Reading Rules bullet trimmed of promises `Read record` no longer keeps; step 10 (placement check) deleted and the rest renumbered; `Output` rewritten into 5 flat sections |
-| `family-design.hallucination.md` | FD-D34, FD-D35, FD-Q5 added; FD-D33's index status marked reversed by FD-D34; entry count 35 to 38 |
-| `family-design.roadmap.md` | this phase, the design area row, the installed-skills risk row, and the next action |
+| `baselinedocs.hallucination.md` | BLD-D34, BLD-D35, BLD-Q5 added; BLD-D33's index status marked reversed by BLD-D34; entry count 35 to 38 |
+| `baselinedocs.roadmap.md` | this phase, the design area row, the installed-skills risk row, and the next action |
 
-### Finding: the checkpoint FD-P5 left standing returned the opposite verdict from what it was written expecting
+### Finding: the checkpoint BLD-P5 left standing returned the opposite verdict from what it was written expecting
 
-FD-P5's next action asked for the report shape to be exercised on a real pack and reported on. It was, this session, against this repository's own two-pack initiative, and the report it produced was the one FD-P5 itself had just finished making readable: headed sections, budgeted tables, a restructured next action. The verdict was not that the shape held; it was that the shape it replaced, `I. Pack status` plus `II. Read record`, was still too much report for what the user wanted, independent of whether each part inside it was well formatted. A layout fix and a scope fix are different corrections, and FD-P5 only made the first one available to notice.
+BLD-P5's next action asked for the report shape to be exercised on a real pack and reported on. It was, this session, against this repository's own two-pack initiative, and the report it produced was the one BLD-P5 itself had just finished making readable: headed sections, budgeted tables, a restructured next action. The verdict was not that the shape held; it was that the shape it replaced, `I. Pack status` plus `II. Read record`, was still too much report for what the user wanted, independent of whether each part inside it was well formatted. A layout fix and a scope fix are different corrections, and BLD-P5 only made the first one available to notice.
 
-## FD-P7: state a compact register for `hallucination` entries in the contract
+## BLD-P7: state a compact register for `hallucination` entries in the contract
 
-Opened 2026-09-04, in the same onboard session as FD-P6, when the user named the pain point directly: this pack's own entries burn context on every `onboard` because they are written as narrative prose rather than for the agent that reads them. The user pointed at two candidates already present on this machine, the `deprose` skill and the `.agents/skills/caveman*` family, and asked which fit. FD-D36 carries the reasoning and the rejection.
+Opened 2026-09-04, in the same onboard session as BLD-P6, when the user named the pain point directly: this pack's own entries burn context on every `onboard` because they are written as narrative prose rather than for the agent that reads them. The user pointed at two candidates already present on this machine, the `deprose` skill and the `.agents/skills/caveman*` family, and asked which fit. BLD-D36 carries the reasoning and the rejection.
 
 Acceptance criteria:
 
@@ -362,7 +362,7 @@ Acceptance criteria:
 | Packaged contract copies | 11, re-synced, `cmp` clean against canonical |
 | Report-style copies | 14, untouched. No `report-style.md` edit in this phase |
 | Host directories updated | 0. Reinstall not carried out in this phase |
-| Entries written | 1: FD-D36 |
+| Entries written | 1: BLD-D36 |
 | Commit | `5bb5e7f`, present on disk with this phase's 14-file change already staged and committed under that hash. No `git commit` was invoked in this session; the commit's origin was not investigated here and is flagged to the user instead |
 
 Changes:
@@ -371,20 +371,20 @@ Changes:
 |---|---|
 | `contract/pack-contract.md` | new `Register` section, after `Required documents`: the compact four-part form, the cut-on-sight list, and the loss-verification sentence. `Before writing` and `Boundary with code` each lose one standalone narrative-incident paragraph, folded into the directive above it as a trailing clause |
 | `<skill>/references/pack-contract.md` | all 11 copies re-synced |
-| `family-design.hallucination.md` | FD-D36 added; 1 index row; entry count 38 to 39 |
-| `family-design.roadmap.md` | this phase, the design area row, the risk row, and the next action |
+| `baselinedocs.hallucination.md` | BLD-D36 added; 1 index row; entry count 38 to 39 |
+| `baselinedocs.roadmap.md` | this phase, the design area row, the risk row, and the next action |
 
-### Finding: compressing two narrative anecdotes does not reopen FD-D29
+### Finding: compressing two narrative anecdotes does not reopen BLD-D29
 
-FD-D29 rejected shipping only the two sentences an agent cannot derive and kept the contract's reasoning in full, on the ground that "derivable" is the writer's judgement, not the agent's. This phase's anecdote compression is a narrower operation: each incident's fact set survives, moved from a standalone paragraph into a trailing clause on the directive it justifies, and checked afterward by grep for every term the original named. Nothing was judged derivable and cut; the words describing it were shortened. FD-D29's own boundary, keep the reasoning, not necessarily its longest phrasing, was never in question.
+BLD-D29 rejected shipping only the two sentences an agent cannot derive and kept the contract's reasoning in full, on the ground that "derivable" is the writer's judgement, not the agent's. This phase's anecdote compression is a narrower operation: each incident's fact set survives, moved from a standalone paragraph into a trailing clause on the directive it justifies, and checked afterward by grep for every term the original named. Nothing was judged derivable and cut; the words describing it were shortened. BLD-D29's own boundary, keep the reasoning, not necessarily its longest phrasing, was never in question.
 
 ### Finding: two commits landed on this repository between this session's own `onboard` read and this phase, from the same user, under identifiers this phase could have collided with
 
-This session's `onboard` read `family-design.hallucination.md` at 35 decision entries, `FD-D33` newest. Before this phase started editing, commits `0d30867` and `0d1cc02` had already landed on `main`, adding `FD-D34`, `FD-D35`, `FD-Q5`, and this roadmap's own `FD-P6`, none of it visible to the session that read the pack minutes earlier. Re-reading both files immediately before writing was what caught it; writing from the onboard read alone would have produced a second `FD-D34` naming an unrelated decision, the exact silent-collision failure `FD-D30` names as the reason every identifier carries a pack prefix, reproduced one level down inside a single pack's own counter instead of across packs.
+This session's `onboard` read `baselinedocs.hallucination.md` at 35 decision entries, `BLD-D33` newest. Before this phase started editing, commits `0d30867` and `0d1cc02` had already landed on `main`, adding `BLD-D34`, `BLD-D35`, `BLD-Q5`, and this roadmap's own `BLD-P6`, none of it visible to the session that read the pack minutes earlier. Re-reading both files immediately before writing was what caught it; writing from the onboard read alone would have produced a second `BLD-D34` naming an unrelated decision, the exact silent-collision failure `BLD-D30` names as the reason every identifier carries a pack prefix, reproduced one level down inside a single pack's own counter instead of across packs.
 
-## FD-P8: remove hook mechanism and setup-hooks skill
+## BLD-P8: remove hook mechanism and setup-hooks skill
 
-Opened 2026-09-11 when the user requested complete removal of hooks from the family. FD-D37 carries the reasoning and rejected alternatives.
+Opened 2026-09-11 when the user requested complete removal of hooks from the family. BLD-D37 carries the reasoning and rejected alternatives.
 
 Acceptance criteria:
 
@@ -404,7 +404,7 @@ Acceptance criteria:
 | Test files removed | 2: `tests/test_checkpoint.py`, `tests/test_install_hooks.py` |
 | Contract copies | 11, re-synced, `cmp` clean against canonical |
 | Host directories cleaned | 3: `.gemini`, `.agents`, `.claude` |
-| Entries written | 1: FD-D37; FD-D6 retired; FD-Q2 closed |
+| Entries written | 1: BLD-D37; BLD-D6 retired; BLD-Q2 closed |
 | Commit | uncommitted |
 
 Changes:
@@ -416,14 +416,14 @@ Changes:
 | `tests/test_skill_metadata.py` | `baselinedocs-setup-hooks` removed from `ENTRYPOINTS` |
 | `tests/test_references.py` | `REPORT_STYLE_EXEMPT` set to empty |
 | `AGENTS.md` | `HOOKS.md` and `hooks/` removed from untracked list; report-style exemption note removed |
-| `family-design.introduction.md` | counts updated to 14 skills and 6 entrypoints; hooks removed from scope and truth |
-| `family-design.sourcecode.md` | `Checkpoint hook` replaced with `Checkpoint model` |
-| `family-design.hallucination.md` | FD-D37 added; FD-D6 marked retired; FD-Q2 closed |
-| `family-design.roadmap.md` | this phase, design area status, and risks updated |
+| `baselinedocs.introduction.md` | counts updated to 14 skills and 6 entrypoints; hooks removed from scope and truth |
+| `baselinedocs.sourcecode.md` | `Checkpoint hook` replaced with `Checkpoint model` |
+| `baselinedocs.hallucination.md` | BLD-D37 added; BLD-D6 marked retired; BLD-Q2 closed |
+| `baselinedocs.roadmap.md` | this phase, design area status, and risks updated |
 
-## FD-P9: implement baselinedocs-load silent pack loader
+## BLD-P9: implement baselinedocs-load silent pack loader
 
-Opened 2026-09-16 when the user requested a silent onboard variant that loads a pack into working context with zero conversational explanation, responding strictly with a single confirmation word. FD-D39 carries the reasoning and rejected alternatives.
+Opened 2026-09-16 when the user requested a silent onboard variant that loads a pack into working context with zero conversational explanation, responding strictly with a single confirmation word. BLD-D39 carries the reasoning and rejected alternatives.
 
 Acceptance criteria:
 
@@ -441,7 +441,7 @@ Acceptance criteria:
 | Files created | `baselinedocs-load/SKILL.md`, `baselinedocs-load/agents/openai.yaml`, `baselinedocs-load/references/pack-contract.md` |
 | Contract copies | 13, re-synced, `cmp` clean against canonical |
 | Exemptions | `baselinedocs-load` in `REPORT_STYLE_EXEMPT` |
-| Entries written | 1: FD-D39 |
+| Entries written | 1: BLD-D39 |
 | Commit | uncommitted |
 
 Changes:
@@ -453,13 +453,13 @@ Changes:
 | `baselinedocs-load/references/pack-contract.md` | byte-identical copy of canonical contract |
 | `tests/test_references.py` | `REPORT_STYLE_EXEMPT` gains `baselinedocs-load`; `LOAD_GATE` and `LOADER_SKILLS` defined |
 | `tests/test_skill_metadata.py` | `ENTRYPOINTS` gains `baselinedocs-load` |
-| `family-design.introduction.md` | counts updated to 16 skills and 8 entrypoints |
-| `family-design.hallucination.md` | FD-D39 added; 1 index row |
-| `family-design.roadmap.md` | this phase, design area status, and next action updated |
+| `baselinedocs.introduction.md` | counts updated to 16 skills and 8 entrypoints |
+| `baselinedocs.hallucination.md` | BLD-D39 added; 1 index row |
+| `baselinedocs.roadmap.md` | this phase, design area status, and next action updated |
 
-## FD-P10: add `baselinedocs-recall` to re-read the rules after a compaction
+## BLD-P10: add `baselinedocs-recall` to re-read the rules after a compaction
 
-Opened 2026-10-02 when the user reported that agents forget `pack-contract.md` and `report-style.md` after a context compaction. FD-D40 carries the reasoning and rejected alternatives.
+Opened 2026-10-02 when the user reported that agents forget `pack-contract.md` and `report-style.md` after a context compaction. BLD-D40 carries the reasoning and rejected alternatives.
 
 Acceptance criteria:
 
@@ -475,7 +475,7 @@ Acceptance criteria:
 | Verification gate | 12 passed, 49 subtests passed |
 | Files created | `baselinedocs-recall/SKILL.md`, `agents/openai.yaml`, `references/pack-contract.md`, `references/report-style.md` |
 | Copies | 14 contract, 16 report style, `cmp` clean |
-| Entries written | 1: FD-D40; `skill-consolidation` SC-D16 amended |
+| Entries written | 1: BLD-D40; `skill-consolidation` SC-D16 amended |
 | Live compaction behavior | not observed. Selection after a real `/compact` is untested |
 | Commit | uncommitted |
 
@@ -486,14 +486,14 @@ Changes:
 | `baselinedocs-recall/` | new skill folder |
 | `tests/test_references.py` | `RECALL_SKILLS`, `RECALL_CONTRACT_GATE`, `RECALL_REPORT_GATE`, per-skill report gate lookup |
 | `AGENTS.md` | recall criterion under `The pack contract`; display-name exception under `Conventions` |
-| `family-design.hallucination.md` | FD-D40 added; 1 index row |
+| `baselinedocs.hallucination.md` | BLD-D40 added; 1 index row |
 | `skill-consolidation.hallucination.md` | SC-D16 amendment line and index status |
-| `family-design.introduction.md`, `family-design.sourcecode.md` | counts; compaction note under `Instruction surfaces` |
-| `family-design.roadmap.md` | this phase, design area row, risk, next action |
+| `baselinedocs.introduction.md`, `baselinedocs.sourcecode.md` | counts; compaction note under `Instruction surfaces` |
+| `baselinedocs.roadmap.md` | this phase, design area row, risk, next action |
 
-## FD-P11: harden the test harness
+## BLD-P11: harden the test harness
 
-Opened 2026-10-02 when the user asked for best-practice improvements to `tests/`. FD-D41 carries the reasoning and rejected alternatives.
+Opened 2026-10-02 when the user asked for best-practice improvements to `tests/`. BLD-D41 carries the reasoning and rejected alternatives.
 
 Acceptance criteria:
 
@@ -522,14 +522,14 @@ Changes:
 | `tests/helpers.py`, `pytest.ini`, `.gitattributes`, `.github/workflows/tests.yml` | new |
 | `tests/test_conventions.py`, `tests/test_packs.py` | new. Dash scan moved here and widened to every text suffix Git lists |
 | `tests/test_references.py`, `tests/test_skill_metadata.py`, `tests/test_run_policy.py` | rewritten as parametrized pytest functions; metadata tests parse YAML |
-| `AGENTS.md`, `family-design.introduction.md` | test command, dash-test scope |
-| `skill-consolidation.introduction.md`, `skill-consolidation.sourcecode.md`, `skill-consolidation.roadmap.md` | synced to the code by `baselinedocs-sync-codebase`: counts replaced by names or dated baselines, the classification, copy tables, pointer graph, and test surface rewritten, stale install and commit claims corrected, the `onboard` placement claim pointed at FD-D34 |
-| `family-design.introduction.md`, `family-design.roadmap.md` | counts removed from current-truth tables and the next action |
-| `family-design.hallucination.md` | FD-D41 added; 1 index row; stated entry count removed |
+| `AGENTS.md`, `baselinedocs.introduction.md` | test command, dash-test scope |
+| `skill-consolidation.introduction.md`, `skill-consolidation.sourcecode.md`, `skill-consolidation.roadmap.md` | synced to the code by `baselinedocs-sync-codebase`: counts replaced by names or dated baselines, the classification, copy tables, pointer graph, and test surface rewritten, stale install and commit claims corrected, the `onboard` placement claim pointed at BLD-D34 |
+| `baselinedocs.introduction.md`, `baselinedocs.roadmap.md` | counts removed from current-truth tables and the next action |
+| `baselinedocs.hallucination.md` | BLD-D41 added; 1 index row; stated entry count removed |
 
-## FD-P12: make the entry index and entry headings mandatory
+## BLD-P12: make the entry index and entry headings mandatory
 
-Opened 2026-10-05 by the user. FD-D42 carries the reasoning.
+Opened 2026-10-05 by the user. BLD-D42 carries the reasoning.
 
 Acceptance criteria:
 
@@ -556,14 +556,14 @@ Changes:
 | `contract/pack-contract.md` | `Entry index` loses the threshold, gains the heading format paragraph and the retrofit rule |
 | `<skill>/references/pack-contract.md` | all 14 copies re-synced |
 | `tests/test_packs.py` | `INDEX_MAX_BYTES`, `INDEX_MAX_ENTRIES` and the early return removed |
-| `family-design.hallucination.md` | FD-D42 added; index row; header line |
+| `baselinedocs.hallucination.md` | BLD-D42 added; index row; header line |
 | `skill-consolidation.hallucination.md`, `skill-consolidation.introduction.md` | SC-D19 marked partly reversed, SC-Q6 row and entry note the heading format, threshold mention in the introduction corrected |
 
-The threshold figures in `skill-consolidation.roadmap.md` and in FD-P1 and FD-P2 above are history of earlier phases and were left as they are.
+The threshold figures in `skill-consolidation.roadmap.md` and in BLD-P1 and BLD-P2 above are history of earlier phases and were left as they are.
 
-## FD-P13: add `baselinedocs-help`
+## BLD-P13: add `baselinedocs-help`
 
-Opened 2026-10-05. FD-D43 carries the reasoning.
+Opened 2026-10-05. BLD-D43 carries the reasoning.
 
 Acceptance criteria:
 
@@ -589,13 +589,13 @@ Changes:
 | `tests/test_skill_metadata.py` | `ENTRYPOINTS` gains `baselinedocs-help` |
 | `tests/test_references.py` | `test_help_guide_names_every_skill` |
 | `README.md` | entrypoint table gains `help`, `adr`, and the missing `load`; heading and lead-in made count-free |
-| `family-design.introduction.md`, `family-design.hallucination.md` | entrypoint list; FD-D43 and its index row |
+| `baselinedocs.introduction.md`, `baselinedocs.hallucination.md` | entrypoint list; BLD-D43 and its index row |
 
 README still names `setup-hooks` and `HOOKS.md`, which no longer exist. It is outside this phase and left for the user to decide.
 
-## FD-P14: add `baselinedocs-adr`
+## BLD-P14: add `baselinedocs-adr`
 
-Opened 2026-10-05. FD-D44 carries the reasoning.
+Opened 2026-10-05. BLD-D44 carries the reasoning.
 
 Acceptance criteria:
 
@@ -608,7 +608,7 @@ Acceptance criteria:
 | Item | Result |
 |---|---|
 | Verification gate | green. The pass count is not recorded |
-| Template copies | `template.md` and `process.md`, `cmp` clean against `~/.agents/skills/aws-adr/references/`, checksums in FD-D44 |
+| Template copies | `template.md` and `process.md`, `cmp` clean against `~/.agents/skills/aws-adr/references/`, checksums in BLD-D44 |
 | Mutation check | renaming `## Compliance` in the copied template failed the heading test, then restored from the original |
 | Dash test | the verbatim copy contains no en or em dash and passes `test_no_typographic_dashes` |
 | Selection by a host | not observed. The skill has not been run against a real pack entry |
@@ -621,26 +621,26 @@ Changes:
 | `baselinedocs-adr/` | new skill folder |
 | `tests/test_skill_metadata.py` | `ENTRYPOINTS` gains `baselinedocs-adr` |
 | `tests/test_references.py` | `test_adr_template_carries_the_aws_headings_and_no_pack_pointer` |
-| `family-design.hallucination.md` | FD-D44 and its index row |
+| `baselinedocs.hallucination.md` | BLD-D44 and its index row |
 
 The plan named a second test, that `SKILL.md` carries no path into a pack. It was not written: `SKILL.md` has to name `docs/baseline` in order to forbid it, so the test would fail on the rule it checks. The template copy is tested instead.
 
-## FD-P15: research a skill version in the frontmatter
+## BLD-P15: research a skill version in the frontmatter
 
-Opened 2026-10-05. Research only. FD-Q6 carries the findings, the recommended mechanism, and the rejected options. No frontmatter key, script, or test was added.
+Opened 2026-10-05. Research only. BLD-Q6 carries the findings, the recommended mechanism, and the rejected options. No frontmatter key, script, or test was added.
 
 ### Checkpoint: complete
 
 | Item | Result |
 |---|---|
-| Deliverable | FD-Q6 and its index row |
+| Deliverable | BLD-Q6 and its index row |
 | Verified first-hand | repository state only: no hook, no `.pre-commit-config.yaml`, CI read-only |
 | Not verified first-hand | the Agent Skills specification and the installer's update mechanism, read through web search summaries |
-| Open | closed in FD-P16: the user chose a release-time stamp and the top-level `version:` key |
+| Open | closed in BLD-P16: the user chose a release-time stamp and the top-level `version:` key |
 
-## FD-P16: stamp one release version into every `SKILL.md`
+## BLD-P16: stamp one release version into every `SKILL.md`
 
-Opened and closed 2026-10-05. Settles FD-Q6 as FD-D45: a pushed `vMAJOR.MINOR.PATCH` tag makes a workflow stamp the version into every skill on `main`.
+Opened and closed 2026-10-05. Settles BLD-Q6 as BLD-D45: a pushed `vMAJOR.MINOR.PATCH` tag makes a workflow stamp the version into every skill on `main`.
 
 ### Checkpoint: complete, workflow unobserved
 
@@ -654,9 +654,9 @@ Opened and closed 2026-10-05. Settles FD-Q6 as FD-D45: a pushed `vMAJOR.MINOR.PA
 | Not observed | the workflow has never run: the push to `main` by the bot, the pytest step on a stamped tree, and the action tags are unverified |
 | Not verified first-hand | the Agent Skills specification and any installer's treatment of a top-level `version:` |
 
-## FD-P17: add `packtool.sh`, a mechanical structure check
+## BLD-P17: add `packtool.sh`, a mechanical structure check
 
-Opened and closed 2026-10-05. Records FD-D46 after five mistakes in an operate session elsewhere, each one scan away from being caught.
+Opened and closed 2026-10-05. Records BLD-D46 after five mistakes in an operate session elsewhere, each one scan away from being caught.
 
 ### Checkpoint: complete, CI matrix unobserved
 
@@ -667,13 +667,13 @@ Opened and closed 2026-10-05. Records FD-D46 after five mistakes in an operate s
 | Contract | `Editing a pack` added; packaged copies re-synced |
 | Gates | writer gate and report gate in each `SKILL.md`, pinned; `baselinedocs-save` workflow gains a check step |
 | Test | `tests/test_packtool.py`: clean pack, CRLF pack, one case per FAIL and WARN rule, the duplicate open-question identifier reproduced, `next-id` counting a closed question cited only in prose, dogfood `check docs/baseline` with no FAIL |
-| Dogfood | `next-id docs/baseline/family-design D` returned FD-D46 before this entry was written, and the next number after it |
+| Dogfood | `next-id docs/baseline/baselinedocs D` returned BLD-D46 before this entry was written, and the next number after it |
 | Suite | full suite green on Windows with Git for Windows sh and gawk |
 | Not observed | mawk on Ubuntu and BWK awk on macOS: `.github/workflows/tests.yml` now runs all three OS and has not run |
 
-## FD-P18: act on the Atlantic use report of `packtool.sh`
+## BLD-P18: act on the Atlantic use report of `packtool.sh`
 
-Opened and closed 2026-10-07. Records FD-D47 after a use report from another repository listed ten defects and frictions; the work ran in three steps, committed as `3766111` and `54522ef`.
+Opened and closed 2026-10-07. Records BLD-D47 after a use report from another repository listed ten defects and frictions; the work ran in three steps, committed as `3766111` and `54522ef`.
 
 ### Checkpoint: complete, CI matrix unobserved
 
@@ -684,12 +684,12 @@ Opened and closed 2026-10-07. Records FD-D47 after a use report from another rep
 | Gates | 14 `SKILL.md` files call `<skill-dir>/scripts/packtool.sh`; `sync-decisions` and `save` gain the `close-plan` instruction; pinned in `tests/test_references.py` |
 | Test | `tests/test_packtool.py` gains empty pack, folder title, `check .`, bold labels, `Closes` reservation, `identifier-gap` and `close-plan`; 360 passed on Windows with Git for Windows sh and gawk |
 | Dogfood | `check docs/baseline` printed 0 FAIL before this phase's pack edits |
-| Not done | `code_ref` naming the inspected repository, FD-Q7; heading and index examples in the contract were not added |
+| Not done | `code_ref` naming the inspected repository, BLD-Q7; heading and index examples in the contract were not added |
 | Not observed | mawk and BWK awk; any host other than Claude Code supplying the skill folder for `<skill-dir>`; a real `close-plan` run in the field |
 
-## FD-P19: add `commit-composer` and `commit-composer-max`
+## BLD-P19: add `commit-composer` and `commit-composer-max`
 
-Opened and closed 2026-10-07. FD-D48 carries the reasoning, the rejected options, and what the first runs changed.
+Opened and closed 2026-10-07. BLD-D48 carries the reasoning, the rejected options, and what the first runs changed.
 
 Acceptance criteria:
 
@@ -719,11 +719,11 @@ Changes:
 | `tests/test_commit_skills.py`, `tests/test_commitkit.py`, `tests/helpers.py` | new tests; `commit_skill_dirs()` |
 | `AGENTS.md` | new section `The commit skills` |
 | `README.md` | new section `Commit Skills` |
-| `family-design.hallucination.md`, `family-design.introduction.md` | FD-D48 and its index row; one current-truth row |
+| `baselinedocs.hallucination.md`, `baselinedocs.introduction.md` | BLD-D48 and its index row; one current-truth row |
 
-## FD-P20: add `baselinedocs-self-upgrade`
+## BLD-P20: add `baselinedocs-self-upgrade`
 
-Opened and closed 2026-10-09. FD-D49 carries the reasoning, the rejected options, and what was measured on this machine.
+Opened and closed 2026-10-09. BLD-D49 carries the reasoning, the rejected options, and what was measured on this machine.
 
 Acceptance criteria:
 
@@ -749,11 +749,11 @@ Changes:
 | `baselinedocs-self-upgrade/` | new skill: `SKILL.md`, `agents/openai.yaml`, `references/report-style.md`, `scripts/upgradekit.sh` |
 | `tests/test_upgradekit.py`, `tests/test_conventions.py`, `tests/test_skill_metadata.py` | new test file; `OWN_SCRIPTS` allow-list; `ENTRYPOINTS` entry |
 | `baselinedocs-help/references/guide.md`, `README.md`, `AGENTS.md` | a guide row and a trap; a table row, a note and the scripts line; new section `The self-upgrade skill` |
-| `family-design.hallucination.md`, `family-design.introduction.md`, `baselinedocs.index.md` | FD-D49 and its index row; one current-truth row; the checkpoint cell |
+| `baselinedocs.hallucination.md`, `baselinedocs.introduction.md`, `baseline-gateway.index.md` | BLD-D49 and its index row; one current-truth row; the checkpoint cell |
 
-## FD-P21: redesign the README around rendered illustrations
+## BLD-P21: redesign the README around rendered illustrations
 
-Opened and closed 2026-10-10 by the user's request to improve how a visitor reads `README.md`. FD-D50 carries the reasoning, the rejected options, and the accepted costs.
+Opened and closed 2026-10-10 by the user's request to improve how a visitor reads `README.md`. BLD-D50 carries the reasoning, the rejected options, and the accepted costs.
 
 Acceptance criteria:
 
@@ -784,12 +784,12 @@ Changes:
 | `assets/source/` | new: `shared.css`, `shared.js`, `finish.py`, `nav.html`, `problem.html`, `daily-guide-card.html`, `pack-anatomy.html`, `workflow.html`, `scenarios.html`, `family-map.html`, `multi-pack.html` |
 | `assets/*.webp` | new: 34 files |
 | `tests/test_readme_assets.py` | new |
-| `family-design.hallucination.md` | FD-D50 and its index row; FD-D9 row and an amendment line |
-| `family-design.introduction.md`, `family-design.roadmap.md` | one current-truth row; one design-area row; this phase and the next action |
+| `baselinedocs.hallucination.md` | BLD-D50 and its index row; BLD-D9 row and an amendment line |
+| `baselinedocs.introduction.md`, `baselinedocs.roadmap.md` | one current-truth row; one design-area row; this phase and the next action |
 
-## FD-P22: redraw the `onboard` report as visuals
+## BLD-P22: redraw the `onboard` report as visuals
 
-Opened and closed 2026-10-18 by the user's requirement for `baselinedocs-onboard`. FD-D51 carries the reasoning, the rejected options, and the accepted costs.
+Opened and closed 2026-10-18 by the user's requirement for `baselinedocs-onboard`. BLD-D51 carries the reasoning, the rejected options, and the accepted costs.
 
 Acceptance criteria:
 
@@ -814,12 +814,12 @@ Changes:
 | File | Change |
 |---|---|
 | `baselinedocs-onboard/SKILL.md` | `Output` rewritten to six sections; steps 4, 9 and 10 and four Reading Rules reworded; version line untouched |
-| `family-design.hallucination.md` | FD-D51 and its index row; amendment lines under FD-D15, FD-D17 and FD-D34; three index statuses |
-| `family-design.roadmap.md`, `family-design.introduction.md` | this phase; a design-area row; one current-truth row |
+| `baselinedocs.hallucination.md` | BLD-D51 and its index row; amendment lines under BLD-D15, BLD-D17 and BLD-D34; three index statuses |
+| `baselinedocs.roadmap.md`, `baselinedocs.introduction.md` | this phase; a design-area row; one current-truth row |
 
-## FD-P23: move the commit skills to their own repository
+## BLD-P23: move the commit skills to their own repository
 
-Opened and closed 2026-10-20 by the user's decision. FD-D53 carries the reasoning and the rejected options.
+Opened and closed 2026-10-20 by the user's decision. BLD-D53 carries the reasoning and the rejected options.
 
 Acceptance criteria:
 
@@ -841,40 +841,40 @@ Changes:
 |---|---|
 | `commit-composer/`, `commit-composer-max/`, `contract/commit-*`, `tests/test_commit*.py` | removed |
 | `tests/helpers.py`, `AGENTS.md`, `README.md`, `assets/source/family-map.html`, `docs/onboarding/baselinedocs-daily-workflow.html` | commit-skill content removed |
-| `family-design.hallucination.md`, `family-design.introduction.md`, `family-design.roadmap.md` | FD-D53 and its row; FD-D48 row and a moved line; one current-truth row; one design-area row; this phase |
+| `baselinedocs.hallucination.md`, `baselinedocs.introduction.md`, `baselinedocs.roadmap.md` | BLD-D53 and its row; BLD-D48 row and a moved line; one current-truth row; one design-area row; this phase |
 
 ## Risks
 
 | Risk | Detail |
 |---|---|
-| `AGENTS.md` points four times at a file that is being retired | FD-D27 made this pack canonical and scheduled `DESIGN.md` for deletion, so `AGENTS.md` is already wrong where it tells a contributor to record decisions in `DESIGN.md`. The file is still on disk, so nothing is broken yet, but a contributor reading `AGENTS.md` today would write a new decision into the file being deleted. The rewire is the next action below |
-| `skill-consolidation` records its own state as uncommitted | Closed in FD-P11. Its roadmap stated that SC-P9 through SC-P14 were uncommitted; they are committed at `959617b`, `b857216`, and `0cb913f`. `baselinedocs-sync-codebase` repaired that pack's roadmap, introduction, and sourcecode against the code, since it owns a pack that has fallen behind it |
-| Installed skills are behind this repository | Widened again 2026-09-11 by FD-P8, 2026-09-16 by FD-P9, 2026-10-02 by FD-P10, 2026-10-05 by FD-P12, FD-P13, and FD-P14, 2026-10-07 by FD-P18 and FD-P19, and 2026-10-09 by FD-P20, on top of the gap FD-P7 reopened. An installed skill reads its own packaged copy, so any given machine's global install drifts from this repository from its next edit onward, and whether a particular machine is current is machine-specific state this pack does not track. Reinstalling from this local clone is the standing remedy, not a one-time phase: `npx skills remove -g -s <every skill name>` then `npx skills add . -g -a '*' -s <every skill name>`, run again whenever a machine's copy needs to catch up |
-| A reference written before 2026-08-28 names an identifier that no longer exists | FD-D30 renamed every identifier in both packs to carry a pack prefix. Anything citing a bare `D16` or `P8`, in a commit message or an earlier thread, now resolves to nothing. That is the intended failure mode, chosen over a bare number that resolves silently to the wrong entry, but it is a real cost to anyone holding an old reference |
-| Nothing about the skill family itself is deferred | The rename sweep and the finished-pack marker were closed rather than postponed, in `skill-consolidation` SC-D13 and SC-D14. The only deferred item in this pack, FD-Q1, is blocked on a platform capability |
+| `AGENTS.md` points four times at a file that is being retired | BLD-D27 made this pack canonical and scheduled `DESIGN.md` for deletion, so `AGENTS.md` is already wrong where it tells a contributor to record decisions in `DESIGN.md`. The file is still on disk, so nothing is broken yet, but a contributor reading `AGENTS.md` today would write a new decision into the file being deleted. The rewire is the next action below |
+| `skill-consolidation` records its own state as uncommitted | Closed in BLD-P11. Its roadmap stated that SC-P9 through SC-P14 were uncommitted; they are committed at `959617b`, `b857216`, and `0cb913f`. `baselinedocs-sync-codebase` repaired that pack's roadmap, introduction, and sourcecode against the code, since it owns a pack that has fallen behind it |
+| Installed skills are behind this repository | Widened again 2026-09-11 by BLD-P8, 2026-09-16 by BLD-P9, 2026-10-02 by BLD-P10, 2026-10-05 by BLD-P12, BLD-P13, and BLD-P14, 2026-10-07 by BLD-P18 and BLD-P19, and 2026-10-09 by BLD-P20, on top of the gap BLD-P7 reopened. An installed skill reads its own packaged copy, so any given machine's global install drifts from this repository from its next edit onward, and whether a particular machine is current is machine-specific state this pack does not track. Reinstalling from this local clone is the standing remedy, not a one-time phase: `npx skills remove -g -s <every skill name>` then `npx skills add . -g -a '*' -s <every skill name>`, run again whenever a machine's copy needs to catch up |
+| A reference written before 2026-08-28 names an identifier that no longer exists | BLD-D30 renamed every identifier in both packs to carry a pack prefix. Anything citing a bare `D16` or `P8`, in a commit message or an earlier thread, now resolves to nothing. That is the intended failure mode, chosen over a bare number that resolves silently to the wrong entry, but it is a real cost to anyone holding an old reference |
+| Nothing about the skill family itself is deferred | The rename sweep and the finished-pack marker were closed rather than postponed, in `skill-consolidation` SC-D13 and SC-D14. The only deferred item in this pack, BLD-Q1, is blocked on a platform capability |
 
 ## Next action
 
-On any machine whose global install has not picked up FD-P6's through FD-P14's changes, reinstall the family from a local clone of this repository, the same mechanical step FD-P3 and FD-P5 both closed out with: the widened `contract/report-style.md` and its re-synced packaged copies, the rewritten `baselinedocs-onboard/SKILL.md`, the widened `contract/pack-contract.md` and its re-synced packaged copies, the removal of `baselinedocs-setup-hooks`, the addition of `baselinedocs-load`, `baselinedocs-recall`, `baselinedocs-help`, and `baselinedocs-adr`, and the contract's mandatory entry index (FD-P12). After that, check FD-P10's open item: run `/compact` mid pack work and confirm the agent selects `baselinedocs-recall` before its next pack write. This is per-machine state, not a repository-wide fact this pack tracks, so no phase records when a given machine last ran it.
+On any machine whose global install has not picked up BLD-P6's through BLD-P14's changes, reinstall the family from a local clone of this repository, the same mechanical step BLD-P3 and BLD-P5 both closed out with: the widened `contract/report-style.md` and its re-synced packaged copies, the rewritten `baselinedocs-onboard/SKILL.md`, the widened `contract/pack-contract.md` and its re-synced packaged copies, the removal of `baselinedocs-setup-hooks`, the addition of `baselinedocs-load`, `baselinedocs-recall`, `baselinedocs-help`, and `baselinedocs-adr`, and the contract's mandatory entry index (BLD-P12). After that, check BLD-P10's open item: run `/compact` mid pack work and confirm the agent selects `baselinedocs-recall` before its next pack write. This is per-machine state, not a repository-wide fact this pack tracks, so no phase records when a given machine last ran it.
 
-After FD-P11, push and confirm the first GitHub Actions run is green: the workflow has never run, and its two action tags are unverified and not pinned to a commit.
+After BLD-P11, push and confirm the first GitHub Actions run is green: the workflow has never run, and its two action tags are unverified and not pinned to a commit.
 
-Separately, and explicitly deferred by the user rather than scheduled: rewriting `family-design.hallucination.md`'s and `skill-consolidation.hallucination.md`'s existing entries under FD-D36's compact register is its own piece of work, not a follow-on to this phase.
+Separately, and explicitly deferred by the user rather than scheduled: rewriting `baselinedocs.hallucination.md`'s and `skill-consolidation.hallucination.md`'s existing entries under BLD-D36's compact register is its own piece of work, not a follow-on to this phase.
 
-One open question is new: FD-Q5 asks who, if anyone, now checks a pack for misfiled content, since `onboard`'s placement check was deleted along with the output section that reported it. Nothing else in the pack is waiting on a user decision.
+One open question is new: BLD-Q5 asks who, if anyone, now checks a pack for misfiled content, since `onboard`'s placement check was deleted along with the output section that reported it. Nothing else in the pack is waiting on a user decision.
 
-One older open question remains in this pack: FD-Q1 waits on a portable hidden-skill mechanism that no installer provides. `skill-consolidation` still carries SC-Q6, SC-Q7, and SC-Q8, and SC-Q6 is the one this pack touched: FD-D30 settled its uniqueness clause and left the rest of it open.
+One older open question remains in this pack: BLD-Q1 waits on a portable hidden-skill mechanism that no installer provides. `skill-consolidation` still carries SC-Q6, SC-Q7, and SC-Q8, and SC-Q6 is the one this pack touched: BLD-D30 settled its uniqueness clause and left the rest of it open.
 
-FD-Q6 is closed by FD-D45 and no longer waits on the user. To cut the first release, push the commit to `main`, then push the tag, for example `v1.0.0`, and `git pull` once the workflow's `release: vX.Y.Z` commit lands, since local `main` is then behind. Confirm the first `release.yml` run succeeded: it has never run, and its bot push to `main` is unobserved.
+BLD-Q6 is closed by BLD-D45 and no longer waits on the user. To cut the first release, push the commit to `main`, then push the tag, for example `v1.0.0`, and `git pull` once the workflow's `release: vX.Y.Z` commit lands, since local `main` is then behind. Confirm the first `release.yml` run succeeded: it has never run, and its bot push to `main` is unobserved.
 
-FD-P17 added `packtool.sh`: push and confirm the three-OS test matrix is green, since mawk and BWK awk have not run it. Reinstall the family on any machine that should pick up the tool and the new contract section.
+BLD-P17 added `packtool.sh`: push and confirm the three-OS test matrix is green, since mawk and BWK awk have not run it. Reinstall the family on any machine that should pick up the tool and the new contract section.
 
-FD-P18 changed the tool, the contract and 14 gate sentences: reinstall again, because an installed skill still calls `sh scripts/packtool.sh` and carries the old tool. FD-Q7 (`code_ref` naming the inspected repository) waits on the user and needs its own schema decision. Nothing else in FD-P18 waits on the user.
+BLD-P18 changed the tool, the contract and 14 gate sentences: reinstall again, because an installed skill still calls `sh scripts/packtool.sh` and carries the old tool. BLD-Q7 (`code_ref` naming the inspected repository) waits on the user and needs its own schema decision. Nothing else in BLD-P18 waits on the user.
 
-FD-P19 added the commit skills and FD-P23 moved them to the `commit-composer` repository, which now owns their open items. Nothing in FD-P23 waits on a user decision.
+BLD-P19 added the commit skills and BLD-P23 moved them to the `commit-composer` repository, which now owns their open items. Nothing in BLD-P23 waits on a user decision.
 
-FD-P21 rebuilt the README around images. After the user pushes, open the repository page on github.com in the light and the dark theme and confirm: `<picture>` picks the matching WebP, the navigation buttons jump to their sections, the Daily Guide card opens the guide, and the text in each image is readable at desktop and phone width. Whenever a skill is added or renamed, add its chip to `assets/source/family-map.html`, then re-shoot `family-map` in both themes by the procedure in that file's header. Nothing in FD-P21 waits on a user decision.
+BLD-P21 rebuilt the README around images. After the user pushes, open the repository page on github.com in the light and the dark theme and confirm: `<picture>` picks the matching WebP, the navigation buttons jump to their sections, the Daily Guide card opens the guide, and the text in each image is readable at desktop and phone width. Whenever a skill is added or renamed, add its chip to `assets/source/family-map.html`, then re-shoot `family-map` in both themes by the procedure in that file's header. Nothing in BLD-P21 waits on a user decision.
 
-FD-P22 redrew the `onboard` report. Run `baselinedocs-onboard` on a real pack in the terminal you use and confirm the chips, the bar and the card line up; if a character is cut or misaligned, the chip table is the thing to change. Reinstall the family on any machine that should pick it up. Nothing in FD-P22 waits on a user decision.
+BLD-P22 redrew the `onboard` report. Run `baselinedocs-onboard` on a real pack in the terminal you use and confirm the chips, the bar and the card line up; if a character is cut or misaligned, the chip table is the thing to change. Reinstall the family on any machine that should pick it up. Nothing in BLD-P22 waits on a user decision.
 
-FD-P20 added `baselinedocs-self-upgrade`. The first real use is its test: run it on a machine with a stale install, confirm `npx skills update -g -y` refreshes the linked folders, and confirm the clone fallback replaces a real copy such as `~/.gemini/config/skills` without touching a junction. Nothing in FD-P20 waits on a user decision.
+BLD-P20 added `baselinedocs-self-upgrade`. The first real use is its test: run it on a machine with a stale install, confirm `npx skills update -g -y` refreshes the linked folders, and confirm the clone fallback replaces a real copy such as `~/.gemini/config/skills` without touching a junction. Nothing in BLD-P20 waits on a user decision.

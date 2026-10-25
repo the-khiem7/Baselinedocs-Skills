@@ -29,15 +29,15 @@ BARE = re.compile(r"(?<![\w-])([DQP]\d+)(?![\w-])")
 # A question closed by a decision keeps its identifier in prose but loses its own
 # heading: the decision that closed it carries the analysis, and the pack states
 # that it is stated rather than deleted. Anything else cited must have a heading.
-CLOSED_WITHOUT_HEADING = {"FD-Q3", "FD-Q4", "SC-Q1", "SC-Q2", "SC-Q3", "SC-Q4", "SC-Q5"}
+CLOSED_WITHOUT_HEADING = {"BLD-Q3", "BLD-Q4", "SC-Q1", "SC-Q2", "SC-Q3", "SC-Q4", "SC-Q5"}
 
 # The documents recording the prefix rule quote the banned bare form as an
 # example. An exact (file, identifier) allowance, so the same bare form anywhere
 # else, or any other bare identifier in these files, still fails.
 BARE_EXAMPLES = {
-    "baselinedocs.index.md": {"D16"},
-    "family-design.hallucination.md": {"D16", "D22"},
-    "family-design.roadmap.md": {"D16", "P8"},
+    "baseline-gateway.index.md": {"D16"},
+    "baselinedocs.hallucination.md": {"D16", "D22"},
+    "baselinedocs.roadmap.md": {"D16", "P8"},
     "skill-consolidation.hallucination.md": {"D16"},
 }
 # README.md is checked for resolution only: its Mermaid node names (Q0, Q1, Q2)
@@ -140,7 +140,7 @@ def test_identifiers_carry_their_pack_prefix(path):
     bare = sorted({match.group(1) for match in BARE.finditer(text)} - allowed)
     assert bare == [], (
         f"{rel(path)} cites {bare} without a pack prefix; a bare number resolves "
-        "silently to whichever pack the reader has open (FD- or SC-)"
+        "silently to whichever pack the reader has open (BLD- or SC-)"
     )
 
 

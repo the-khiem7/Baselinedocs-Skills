@@ -1,6 +1,6 @@
 ---
 baseline_schema: "2.0"
-pack: "family-design"
+pack: "baselinedocs"
 document: "hallucination"
 status: "active"
 updated: "2026-10-20"
@@ -13,72 +13,72 @@ code_ref: "uncommitted"
 
 One row per entry. A row states what the entry is about and nothing more: never its reasoning, never the justification behind its outcome, never a summary that could be mistaken for the entry. An answer that turns on an entry whose full text was not read is unbacked, and must be reported that way rather than derived from a row.
 
-Required by `contract/pack-contract.md` from the first entry. FD-D42 records the decision.
+Required by `contract/pack-contract.md` from the first entry. BLD-D42 records the decision.
 
-Every identifier in this initiative carries its pack's prefix: `FD-` here, `SC-` in `skill-consolidation`. It is written that way everywhere, inside the pack as well as across packs, so a reference is unambiguous wherever it is read and greppable across the whole repository. FD-D30 records the decision.
+Every identifier in this initiative carries its pack's prefix: `BLD-` here, `SC-` in `skill-consolidation`. It is written that way everywhere, inside the pack as well as across packs, so a reference is unambiguous wherever it is read and greppable across the whole repository. BLD-D30 records the decision.
 
 | Entry | About | Status | Related |
 |---|---|---|---|
-| FD-D1 | which skills a host may fire on its own, and how the rest stay deliberate | current | FD-D9, FD-Q1 |
-| FD-D2 | the move from a fixed five-document pack to three core plus two conditional | current | FD-D22, FD-D25 |
-| FD-D3 | what `code_ref` records, and what it cannot record | current | FD-D18 |
-| FD-D4 | what a phase checkpoint contains and which document holds it | current | FD-D5, FD-D21 |
-| FD-D5 | the boundary between what `run` checkpoints and what `save` writes | current | FD-D4, FD-D8 |
-| FD-D6 | how much the checkpoint hook is allowed to work out for itself | retired, superseded by FD-D37 | FD-D4, FD-D26, FD-D37 |
-| FD-D7 | which instruction surface carries a rule's pointer and which carries its content | current | FD-D2, FD-D21 |
-| FD-D8 | writing the family's intended order down, and where `save` sits in it | current | FD-D5, FD-D9, FD-D19 |
-| FD-D9 | what the README leads with | current, Mermaid format of the flowchart replaced by FD-D50 | FD-D1, FD-D8, FD-D50 |
-| FD-D10 | how `onboard` avoids reading half a pack and believing it read all of it | current | FD-D11, FD-D17 |
-| FD-D11 | what `onboard` loads when the target is an initiative rather than one pack | current | FD-D10, FD-D12, FD-D24 |
-| FD-D12 | when `onboard` may skip asking which sub-pack to load | current | FD-D11 |
-| FD-D13 | what `onboard` does when an initiative has sub-packs and no index | current | FD-D11, FD-D24 |
-| FD-D14 | what a dependency edge tells a reader, and what it does not | current | FD-D11, FD-D24 |
-| FD-D15 | what `onboard` does about a loaded pack leaning on one that was not loaded | current, report form amended by FD-D51 | FD-D10, FD-D13, FD-D51 |
-| FD-D16 | what happens when the index and a pack disagree about status | current | FD-D24 |
-| FD-D17 | what `onboard` reports first | current, section order amended by FD-D51 | FD-D10, FD-D51 |
-| FD-D18 | whether the source document an adopted pack came from is loaded with the pack | current | FD-D3, FD-D10 |
-| FD-D19 | dissolving the `resume-*` family, and what replaced `resume-continue` | current | FD-D8, FD-D20 |
-| FD-D20 | deleting the last three `resume-*` skills with nothing in their place | current | FD-D19 |
-| FD-D21 | which evidence an active document keeps and which it drops | current | FD-D4, FD-D29 |
-| FD-D22 | what `useguide` means and when the file is omitted | current | FD-D2, FD-D25, FD-D29 |
-| FD-D23 | whether `run` may choose an approval or commit policy in silence | current | FD-D4 |
-| FD-D24 | what an initiative index holds and what it must not hold | current | FD-D11, FD-D13, FD-D16 |
-| FD-D25 | why this pack has no `useguide` | current | FD-D22, FD-D9 |
-| FD-D26 | writing a checkpoint from a transcript or from repository-wide candidates | current, rejected and still rejected | FD-D6 |
-| FD-D27 | what happens to `DESIGN.md` now that this pack exists | current, carried out. The file is deleted | FD-D7, FD-D28 |
-| FD-D28 | a coverage ledger routed seven sections to another pack without checking that pack carried them | current, repaired | FD-D27, FD-D7 |
-| FD-D29 | whether the contract carries the retention and `useguide` detail in full or in summary, closing FD-Q3 | current | FD-D21, FD-D22, FD-D7 |
-| FD-D30 | how an identifier is named once an initiative holds more than one pack, closing FD-Q4 | current | FD-D24, FD-D27 |
-| FD-D31 | what `report-style.md` governs beyond the naming of an element | current | FD-D7, FD-D17 |
-| FD-D32 | whether a next action is quoted verbatim or restructured for reading | current, reverses the rule as shipped | FD-D31, FD-D17 |
-| FD-D33 | whether `onboard`'s load manifest is removed or compressed | reversed by FD-D34 | FD-D10, FD-D17, FD-D31 |
-| FD-D34 | dropping `onboard`'s `Read record` half entirely, reversing FD-D33 | current, five sections replaced by FD-D51 | FD-D33, FD-D17, FD-D10, FD-D51 |
-| FD-D35 | a stated four-column exception in `report-style.md`, extending FD-D31 | current | FD-D31, FD-D34 |
-| FD-D36 | `hallucination` entries are written in a compact agent-directed register, not narrative prose | current | FD-D7, FD-D21 |
-| FD-D37 | removing the automated checkpoint hook mechanism and setup-hooks skill | current | FD-D6, FD-Q2, FD-D4 |
-| FD-D38 | `baselinedocs-callout` as a seventh user entrypoint owning temporary routing groups | current | FD-D1, FD-D16, FD-D31 |
-| FD-D39 | silent pack loading with single-word confirmation output | current | FD-D1, FD-D10, FD-D34 |
-| FD-D40 | `baselinedocs-recall` re-reading the rule files after a context compaction | current | FD-D1, FD-D7, FD-D37, FD-D39 |
-| FD-D41 | how the test suite is structured and which documented rules it enforces | current | FD-D1, FD-D7, FD-D30 |
-| FD-D42 | the entry index and entry headings are mandatory from the first entry, and the contract owns the heading format | current, reverses the conditional clause of SC-D19 | FD-D30, FD-D36, SC-D19, SC-Q6 |
-| FD-D43 | `baselinedocs-help` as a user entrypoint carrying its own guide to the skills and the workflow | current | FD-D1, FD-D8, FD-D9 |
-| FD-D44 | `baselinedocs-adr` drafting a standalone ADR from one closed entry, using an unmodified AWS template | current | FD-D1, FD-D7 |
-| FD-D45 | a release tag stamping one family-wide `version:` into every `SKILL.md` on `main` | current, stamping step amended by FD-D52 | FD-D37, FD-D41, FD-D52, FD-Q6 |
-| FD-D46 | `packtool.sh`, a mechanical structure check every writer runs before reporting a write | current, amended by FD-D47 | FD-D7, FD-D41, FD-D42, FD-D47, FD-Q5 |
-| FD-D47 | how a closed question keeps its number, and the packtool changes a field report drove | current, amends FD-D46 | FD-D46, FD-D42, FD-D30, FD-D7, FD-Q7 |
-| FD-D48 | `commit-composer` and `commit-composer-max` committing a working tree at hunk level through a shared convention and a read-only kit | moved out of this repository by FD-D53, which reverses its rejected separate-repository option | FD-D1, FD-D7, FD-D39, FD-D46, FD-D53 |
-| FD-D49 | `baselinedocs-self-upgrade` upgrading the installed skills in every agent through a read-only scan and a confirmed overwrite | current | FD-D1, FD-D45, FD-D46, FD-D48 |
-| FD-D50 | README illustrations rendered from HTML sources as light and dark WebP pairs, and Mermaid leaving the README | current, amends FD-D9 | FD-D9, FD-D41, FD-D43, FD-D45 |
-| FD-D51 | `onboard` reporting progress and what waits on the user as visuals, and dropping the file record and the unresolved-reference section | current, amends FD-D34, FD-D17 and FD-D15 | FD-D15, FD-D17, FD-D31, FD-D34, FD-D35 |
-| FD-D52 | a release script run on the maintainer's machine stamping and tagging in one commit, and the release workflow only verifying | current, amends FD-D45 | FD-D45, FD-D49 |
-| FD-D53 | the commit skills leaving this repository for their own, with the history of their paths | current, reverses the rejected separate-repository option of FD-D48 | FD-D48, FD-D45, FD-D49 |
-| FD-Q1 | hiding internal helpers at package level rather than by naming convention | open, deferred on a missing platform feature | FD-D1 |
-| FD-Q2 | installing checkpoint hooks across more than one repository | closed, hook mechanism removed | FD-D6, FD-D37 |
-| FD-Q5 | who, if anyone, owns misfiled-content detection now that `onboard` no longer checks it | open, structural half covered by FD-D46 | FD-D34, FD-D46 |
-| FD-Q6 | a skill version in the frontmatter, bumped automatically, to recognize an outdated install | closed by FD-D45 | FD-D37, FD-D41, FD-D45 |
-| FD-Q7 | how `code_ref` names the repository inspected when the code lives in a submodule | open, deferred as its own schema decision | FD-D3, FD-D45, FD-D47 |
+| BLD-D1 | which skills a host may fire on its own, and how the rest stay deliberate | current | BLD-D9, BLD-Q1 |
+| BLD-D2 | the move from a fixed five-document pack to three core plus two conditional | current | BLD-D22, BLD-D25 |
+| BLD-D3 | what `code_ref` records, and what it cannot record | current | BLD-D18 |
+| BLD-D4 | what a phase checkpoint contains and which document holds it | current | BLD-D5, BLD-D21 |
+| BLD-D5 | the boundary between what `run` checkpoints and what `save` writes | current | BLD-D4, BLD-D8 |
+| BLD-D6 | how much the checkpoint hook is allowed to work out for itself | retired, superseded by BLD-D37 | BLD-D4, BLD-D26, BLD-D37 |
+| BLD-D7 | which instruction surface carries a rule's pointer and which carries its content | current | BLD-D2, BLD-D21 |
+| BLD-D8 | writing the family's intended order down, and where `save` sits in it | current | BLD-D5, BLD-D9, BLD-D19 |
+| BLD-D9 | what the README leads with | current, Mermaid format of the flowchart replaced by BLD-D50 | BLD-D1, BLD-D8, BLD-D50 |
+| BLD-D10 | how `onboard` avoids reading half a pack and believing it read all of it | current | BLD-D11, BLD-D17 |
+| BLD-D11 | what `onboard` loads when the target is an initiative rather than one pack | current | BLD-D10, BLD-D12, BLD-D24 |
+| BLD-D12 | when `onboard` may skip asking which sub-pack to load | current | BLD-D11 |
+| BLD-D13 | what `onboard` does when an initiative has sub-packs and no index | current | BLD-D11, BLD-D24 |
+| BLD-D14 | what a dependency edge tells a reader, and what it does not | current | BLD-D11, BLD-D24 |
+| BLD-D15 | what `onboard` does about a loaded pack leaning on one that was not loaded | current, report form amended by BLD-D51 | BLD-D10, BLD-D13, BLD-D51 |
+| BLD-D16 | what happens when the index and a pack disagree about status | current | BLD-D24 |
+| BLD-D17 | what `onboard` reports first | current, section order amended by BLD-D51 | BLD-D10, BLD-D51 |
+| BLD-D18 | whether the source document an adopted pack came from is loaded with the pack | current | BLD-D3, BLD-D10 |
+| BLD-D19 | dissolving the `resume-*` family, and what replaced `resume-continue` | current | BLD-D8, BLD-D20 |
+| BLD-D20 | deleting the last three `resume-*` skills with nothing in their place | current | BLD-D19 |
+| BLD-D21 | which evidence an active document keeps and which it drops | current | BLD-D4, BLD-D29 |
+| BLD-D22 | what `useguide` means and when the file is omitted | current | BLD-D2, BLD-D25, BLD-D29 |
+| BLD-D23 | whether `run` may choose an approval or commit policy in silence | current | BLD-D4 |
+| BLD-D24 | what an initiative index holds and what it must not hold | current | BLD-D11, BLD-D13, BLD-D16 |
+| BLD-D25 | why this pack has no `useguide` | current | BLD-D22, BLD-D9 |
+| BLD-D26 | writing a checkpoint from a transcript or from repository-wide candidates | current, rejected and still rejected | BLD-D6 |
+| BLD-D27 | what happens to `DESIGN.md` now that this pack exists | current, carried out. The file is deleted | BLD-D7, BLD-D28 |
+| BLD-D28 | a coverage ledger routed seven sections to another pack without checking that pack carried them | current, repaired | BLD-D27, BLD-D7 |
+| BLD-D29 | whether the contract carries the retention and `useguide` detail in full or in summary, closing BLD-Q3 | current | BLD-D21, BLD-D22, BLD-D7 |
+| BLD-D30 | how an identifier is named once an initiative holds more than one pack, closing BLD-Q4 | current | BLD-D24, BLD-D27 |
+| BLD-D31 | what `report-style.md` governs beyond the naming of an element | current | BLD-D7, BLD-D17 |
+| BLD-D32 | whether a next action is quoted verbatim or restructured for reading | current, reverses the rule as shipped | BLD-D31, BLD-D17 |
+| BLD-D33 | whether `onboard`'s load manifest is removed or compressed | reversed by BLD-D34 | BLD-D10, BLD-D17, BLD-D31 |
+| BLD-D34 | dropping `onboard`'s `Read record` half entirely, reversing BLD-D33 | current, five sections replaced by BLD-D51 | BLD-D33, BLD-D17, BLD-D10, BLD-D51 |
+| BLD-D35 | a stated four-column exception in `report-style.md`, extending BLD-D31 | current | BLD-D31, BLD-D34 |
+| BLD-D36 | `hallucination` entries are written in a compact agent-directed register, not narrative prose | current | BLD-D7, BLD-D21 |
+| BLD-D37 | removing the automated checkpoint hook mechanism and setup-hooks skill | current | BLD-D6, BLD-Q2, BLD-D4 |
+| BLD-D38 | `baselinedocs-callout` as a seventh user entrypoint owning temporary routing groups | current | BLD-D1, BLD-D16, BLD-D31 |
+| BLD-D39 | silent pack loading with single-word confirmation output | current | BLD-D1, BLD-D10, BLD-D34 |
+| BLD-D40 | `baselinedocs-recall` re-reading the rule files after a context compaction | current | BLD-D1, BLD-D7, BLD-D37, BLD-D39 |
+| BLD-D41 | how the test suite is structured and which documented rules it enforces | current | BLD-D1, BLD-D7, BLD-D30 |
+| BLD-D42 | the entry index and entry headings are mandatory from the first entry, and the contract owns the heading format | current, reverses the conditional clause of SC-D19 | BLD-D30, BLD-D36, SC-D19, SC-Q6 |
+| BLD-D43 | `baselinedocs-help` as a user entrypoint carrying its own guide to the skills and the workflow | current | BLD-D1, BLD-D8, BLD-D9 |
+| BLD-D44 | `baselinedocs-adr` drafting a standalone ADR from one closed entry, using an unmodified AWS template | current | BLD-D1, BLD-D7 |
+| BLD-D45 | a release tag stamping one family-wide `version:` into every `SKILL.md` on `main` | current, stamping step amended by BLD-D52 | BLD-D37, BLD-D41, BLD-D52, BLD-Q6 |
+| BLD-D46 | `packtool.sh`, a mechanical structure check every writer runs before reporting a write | current, amended by BLD-D47 | BLD-D7, BLD-D41, BLD-D42, BLD-D47, BLD-Q5 |
+| BLD-D47 | how a closed question keeps its number, and the packtool changes a field report drove | current, amends BLD-D46 | BLD-D46, BLD-D42, BLD-D30, BLD-D7, BLD-Q7 |
+| BLD-D48 | `commit-composer` and `commit-composer-max` committing a working tree at hunk level through a shared convention and a read-only kit | moved out of this repository by BLD-D53, which reverses its rejected separate-repository option | BLD-D1, BLD-D7, BLD-D39, BLD-D46, BLD-D53 |
+| BLD-D49 | `baselinedocs-self-upgrade` upgrading the installed skills in every agent through a read-only scan and a confirmed overwrite | current | BLD-D1, BLD-D45, BLD-D46, BLD-D48 |
+| BLD-D50 | README illustrations rendered from HTML sources as light and dark WebP pairs, and Mermaid leaving the README | current, amends BLD-D9 | BLD-D9, BLD-D41, BLD-D43, BLD-D45 |
+| BLD-D51 | `onboard` reporting progress and what waits on the user as visuals, and dropping the file record and the unresolved-reference section | current, amends BLD-D34, BLD-D17 and BLD-D15 | BLD-D15, BLD-D17, BLD-D31, BLD-D34, BLD-D35 |
+| BLD-D52 | a release script run on the maintainer's machine stamping and tagging in one commit, and the release workflow only verifying | current, amends BLD-D45 | BLD-D45, BLD-D49 |
+| BLD-D53 | the commit skills leaving this repository for their own, with the history of their paths | current, reverses the rejected separate-repository option of BLD-D48 | BLD-D48, BLD-D45, BLD-D49 |
+| BLD-Q1 | hiding internal helpers at package level rather than by naming convention | open, deferred on a missing platform feature | BLD-D1 |
+| BLD-Q2 | installing checkpoint hooks across more than one repository | closed, hook mechanism removed | BLD-D6, BLD-D37 |
+| BLD-Q5 | who, if anyone, owns misfiled-content detection now that `onboard` no longer checks it | open, structural half covered by BLD-D46 | BLD-D34, BLD-D46 |
+| BLD-Q6 | a skill version in the frontmatter, bumped automatically, to recognize an outdated install | closed by BLD-D45 | BLD-D37, BLD-D41, BLD-D45 |
+| BLD-Q7 | how `code_ref` names the repository inspected when the code lives in a submodule | open, deferred as its own schema decision | BLD-D3, BLD-D45, BLD-D47 |
 
-## FD-D1: six entrypoints stay deliberate, and the rest stay agent-selectable
+## BLD-D1: six entrypoints stay deliberate, and the rest stay agent-selectable
 
 **Decided.** Six user entrypoints, `init`, `adopt`, `save`, `run`, `onboard`, and `brief`, plus the one-time `setup-hooks` utility, set `allow_implicit_invocation: false` in `agents/openai.yaml`. The eight lifecycle skills keep it enabled. Alongside that, lifecycle skills prefix their UI name with `Baseline Docs Internal:`, their descriptions state the automatic trigger context, and the README teaches the entrypoints and never the lifecycle skills.
 
@@ -90,7 +90,7 @@ Every identifier in this initiative carries its pack's prefix: `FD-` here, `SC-`
 
 **Rejected: rely on the policy field alone.** It would have been one field and no convention. Rejected because on a non-Codex host the field is inert, and an entrypoint would then be indistinguishable from a helper at exactly the surface that selects it.
 
-## FD-D2: the pack is three core documents plus two conditional
+## BLD-D2: the pack is three core documents plus two conditional
 
 **Decided.** Schema `2.0` replaces the fixed five-file contract with `introduction`, `roadmap`, and `hallucination` as core, and `sourcecode` and `useguide` as conditional. The transition is additive: existing five-file packs stay valid, and no skill deletes an existing conditional document merely because a new pack would not create one.
 
@@ -100,7 +100,7 @@ Every identifier in this initiative carries its pack's prefix: `FD-` here, `SC-`
 
 **Rejected: keep the fixed five.** Simpler to describe and impossible to get wrong. Rejected because the filler cost is paid by every reader of every pack, forever, while the ambiguity cost of a conditional file is paid once by the author.
 
-## FD-D3: `code_ref` is code provenance, not the document's commit
+## BLD-D3: `code_ref` is code provenance, not the document's commit
 
 **Decided.** `updated` records the date the document was last edited. `code_ref` records the state of the code that was actually inspected while writing it, expressed as a commit, `uncommitted`, or `unknown`.
 
@@ -110,7 +110,7 @@ Every identifier in this initiative carries its pack's prefix: `FD-` here, `SC-`
 
 **Rejected: record nothing and compare dates.** An `updated` date tells a reader when someone typed, which correlates with code state only by accident.
 
-## FD-D4: a phase checkpoint holds outcome, not reasoning
+## BLD-D4: a phase checkpoint holds outcome, not reasoning
 
 **Decided.** A semantic checkpoint lives in `roadmap` and contains the phase outcome and status, the final evidence, the affected files, the open risk, and the exact next action. It does not contain a defect's cause or a rejected alternative; those live in `hallucination`, and the checkpoint links to them rather than repeating them.
 
@@ -118,7 +118,7 @@ Every identifier in this initiative carries its pack's prefix: `FD-` here, `SC-`
 
 **What breaks if ignored.** The roadmap grows into a narrative, and the same reasoning drifts between two documents until they disagree about why something was done.
 
-## FD-D5: `run` writes its own checkpoint, so `save` is not the step after `run`
+## BLD-D5: `run` writes its own checkpoint, so `save` is not the step after `run`
 
 **Decided.** `baselinedocs-run` writes the phase checkpoint itself after every phase. `baselinedocs-save` owns what a checkpoint does not: a decision that closed, a question that opened, a scope that moved.
 
@@ -126,7 +126,7 @@ Every identifier in this initiative carries its pack's prefix: `FD-` here, `SC-`
 
 **What breaks if ignored.** Calling `save` the step after `run` teaches the user that a run leaves the pack incomplete, so they either run a redundant save that finds nothing to write, or they skip save entirely on the phases where a decision actually closed.
 
-## FD-D6: the checkpoint hook infers nothing about the repository
+## BLD-D6: the checkpoint hook infers nothing about the repository
 
 **Decided.** The command adapter performs no roadmap discovery, no Git inspection, no timestamp comparison, and no semantic completion check. On the first Stop event of a turn it returns a fixed prompt to the same thread. The agent identifies a pack only from that thread and makes no change when the pack is absent, ambiguous, or already current. Each host's stop-loop field prevents a second continuation.
 
@@ -138,11 +138,11 @@ Every identifier in this initiative carries its pack's prefix: `FD-` here, `SC-`
 
 **Rejected: detect the active roadmap in the hook and check whether it is current.** The obvious design, and the one the adapter is written to make impossible. Rejected because ownership is not derivable from repository state, and a wrong automatic write is more expensive than a prompt that turns out to be unnecessary.
 
-## FD-D7: the pointer lives in `SKILL.md`, the content lives in one file
+## BLD-D7: the pointer lives in `SKILL.md`, the content lives in one file
 
 **Decided.** A rule a running agent must obey is stated in exactly one file. The sentence sending the agent to read that file is restated in every `SKILL.md` that needs it, and is the only thing restated.
 
-**Why.** The surfaces do not offer the same guarantee, as `family-design.sourcecode.md` sets out: `description` is always in context, a `SKILL.md` body loads whenever the skill runs, and a `references/*.md` file loads only if the body says to read it and the agent complies. So the gate requiring the contract to be read cannot itself live in the contract, because an agent that skipped the file never reaches the sentence telling it not to skip the file.
+**Why.** The surfaces do not offer the same guarantee, as `baselinedocs.sourcecode.md` sets out: `description` is always in context, a `SKILL.md` body loads whenever the skill runs, and a `references/*.md` file loads only if the body says to read it and the agent complies. So the gate requiring the contract to be read cannot itself live in the contract, because an agent that skipped the file never reaches the sentence telling it not to skip the file.
 
 **What breaks if ignored.** Two copies of a rule disagree from the day they are written, and a test comparing copies of the same block cannot see it. That is not hypothetical: an earlier revision embedded the document role list into every pack-writing `SKILL.md` as well as into the contract, and the two descriptions of `hallucination` disagreed immediately.
 
@@ -152,7 +152,7 @@ Every identifier in this initiative carries its pack's prefix: `FD-` here, `SC-`
 
 **Who ships which asset is a different question.** It is decided in `skill-consolidation` SC-D16 for the contract and SC-D17 for report style, on a criterion this entry does not restate.
 
-## FD-D8: the intended sequence is written down, and `save` comes before any branch
+## BLD-D8: the intended sequence is written down, and `save` comes before any branch
 
 **Decided.** The family has one intended order, and it is recorded rather than left implicit. Its load-bearing step is `baselinedocs-save` before any context branch.
 
@@ -169,11 +169,11 @@ Every identifier in this initiative carries its pack's prefix: `FD-` here, `SC-`
 
 A new thread is the default once the pack is current, which after a save it is. Staying is for the case where the thread still holds something that could not be written down, a half-formed approach or a debugging session in flight.
 
-**Where `brief` sits.** Before the expensive choice, not in place of it. It is a diagnostic: it reports whether the pack has fallen behind the thread, which is what tells the user to carry on, to run `save`, or to pay for a full `onboard`. Using it as the recovery step itself is the error FD-D9 records, and it is the error the skill's own first rule refuses.
+**Where `brief` sits.** Before the expensive choice, not in place of it. It is a diagnostic: it reports whether the pack has fallen behind the thread, which is what tells the user to carry on, to run `save`, or to pay for a full `onboard`. Using it as the recovery step itself is the error BLD-D9 records, and it is the error the skill's own first rule refuses.
 
 **What breaks if ignored.** Branching before saving loses whatever the thread held and the pack did not, and no later skill can recover it, because the only copy was the conversation.
 
-## FD-D9: the README leads with the ordered workflow
+## BLD-D9: the README leads with the ordered workflow
 
 **Decided.** `README.md` opens with the workflow as a Mermaid flowchart, followed by a branch comparison table and a trap table. The entrypoint table comes after it. Per-skill install commands were removed.
 
@@ -183,9 +183,9 @@ A new thread is the default once the pack is current, which after a save it is. 
 
 **Why the install commands went.** The skills route to each other by name, so a partial install turns a pointer into a dead end that surfaces only after the user has already asked for something. This is a teaching decision, not an enforcement one: `npx skills add --skill <name>` still works and is merely no longer advertised.
 
-**Amended by FD-D50.** The workflow is a rendered image, not a Mermaid flowchart. The order, the branch table, and the trap table are unchanged.
+**Amended by BLD-D50.** The workflow is a rendered image, not a Mermaid flowchart. The order, the branch table, and the trap table are unchanged.
 
-## FD-D10: `onboard` enumerates before it reads, and narrows in the open
+## BLD-D10: `onboard` enumerates before it reads, and narrows in the open
 
 **Decided.** `onboard` promises a complete read of the selected scope. It enumerates the files and reports line counts before reading, states what the scope excludes, and when it cannot say with confidence that the scope fits, it stops, presents the total, proposes a narrower scope, and waits.
 
@@ -195,7 +195,7 @@ A new thread is the default once the pack is current, which after a save it is. 
 
 **Rejected: a percentage-of-context threshold.** Precise-sounding and unmeasurable from inside the agent, so in practice it becomes a guess wearing a number.
 
-## FD-D11: an initiative routes before it loads, and one pack is the default scope
+## BLD-D11: an initiative routes before it loads, and one pack is the default scope
 
 **Decided.** An index is routing metadata. `onboard` reads the index, stops, and selects one sub-pack. It does not treat the index as a manifest of everything to pull in, and one domain pack is the default scope.
 
@@ -203,7 +203,7 @@ A new thread is the default once the pack is current, which after a save it is. 
 
 **What breaks if ignored.** The index becomes a table of contents for a load nobody asked for, and the size gate stops meaning anything because it fires every time.
 
-## FD-D12: the routing question is skipped only on evidence
+## BLD-D12: the routing question is skipped only on evidence
 
 **Decided.** When the index marks exactly one sub-pack in progress, `onboard` loads that pack and names the evidence that selected it. Two candidates, or none, means asking.
 
@@ -211,7 +211,7 @@ A new thread is the default once the pack is current, which after a save it is. 
 
 **What breaks if ignored.** An agent that selects on judgement loads the wrong pack and reports it as routed, so the user finds out only when an answer comes back about the wrong domain.
 
-## FD-D13: `onboard` reconstructs a missing index but never writes one
+## BLD-D13: `onboard` reconstructs a missing index but never writes one
 
 **Decided.** When an initiative has several sub-packs and no index, `onboard` builds the routing view in memory from each sub-pack's frontmatter and next action, reports the missing index, and names `baselinedocs-maintain-split` as the skill that creates one. It does not create it.
 
@@ -221,17 +221,17 @@ A new thread is the default once the pack is current, which after a save it is. 
 
 **A consequence worth stating.** The index is itself a document with its own frontmatter, so it takes its own manifest row, and an initiative has several next actions, one per pack in scope plus the index's cross-pack checkpoint. That is why the output is plural.
 
-## FD-D14: a dependency edge is status, not reading order
+## BLD-D14: a dependency edge is status, not reading order
 
 **Decided.** A dependency edge records why a pack is blocked. It does not assert that one pack's documents cannot be understood before another's. `onboard` reports the edges and reads in no particular order.
 
 **Why.** Ordering reads by dependency gains nothing once one domain pack is the default scope, and it implies a comprehension dependency between packs that the contract never claims.
 
-**What breaks if ignored.** A reader who treats edges as reading order pulls in an upstream pack it was never asked to load, which is the scope expansion FD-D11 exists to prevent, arriving through a different door.
+**What breaks if ignored.** A reader who treats edges as reading order pulls in an upstream pack it was never asked to load, which is the scope expansion BLD-D11 exists to prevent, arriving through a different door.
 
 **Rejected: order the reads by dependency.** Considered and dropped for the two reasons above.
 
-## FD-D15: cross-pack coupling is resolved by evidence, not by policy
+## BLD-D15: cross-pack coupling is resolved by evidence, not by policy
 
 **Decided.** `onboard` collects the references the text actually makes, quotes each with its source, and offers to load what they name. It does not auto-load, and it does not refuse to look.
 
@@ -243,9 +243,9 @@ A new thread is the default once the pack is current, which after a save it is. 
 
 **Rejected: auto-load on a non-empty reference list.** It reinstates the scope expansion the routing default exists to prevent, and the offer costs one turn.
 
-**Amended by FD-D51.** The references are still noted, but the report shows them as one `Not read:` line in `Caveats`, without a quotation and a location per reference.
+**Amended by BLD-D51.** The references are still noted, but the report shows them as one `Not read:` line in `Caveats`, without a quotation and a location per reference.
 
-## FD-D16: an index-versus-pack status disagreement is reported, never resolved
+## BLD-D16: an index-versus-pack status disagreement is reported, never resolved
 
 **Decided.** Index status is routing metadata that restates a status each pack also owns. When the two disagree, `onboard` reports a contradiction. It does not prefer the index, and it does not prefer the newer `updated` date. `baselinedocs-sync-reconcile` owns the repair.
 
@@ -253,7 +253,7 @@ A new thread is the default once the pack is current, which after a save it is. 
 
 **What breaks if ignored.** The drift is resolved invisibly on every read and never repaired at source, so it recurs indefinitely and nobody sees it.
 
-## FD-D17: the output leads with pack state, not with the manifest
+## BLD-D17: the output leads with pack state, not with the manifest
 
 **Decided.** `onboard` reports what the documents record first: what the project is, its target, phase status, the recorded next action quoted verbatim, open questions, and unresolved references. The load manifest follows as the check on the read.
 
@@ -263,9 +263,9 @@ A new thread is the default once the pack is current, which after a save it is. 
 
 **What breaks if ignored.** The reader gets bookkeeping and has to ask a second question to get the answer they came for, which spends the turn the manifest was supposed to save.
 
-**Amended by FD-D51.** Pack state still leads, but the first thing shown is what waits on the user, then progress, then the project introduction.
+**Amended by BLD-D51.** Pack state still leads, but the first thing shown is what waits on the user, then progress, then the project introduction.
 
-## FD-D18: retained source material is out of scope by default
+## BLD-D18: retained source material is out of scope by default
 
 **Decided.** Material retained from an adoption is excluded from `onboard`'s default scope and the exclusion is reported. Files without baseline frontmatter identify this material, so no naming convention is needed.
 
@@ -277,7 +277,7 @@ A new thread is the default once the pack is current, which after a save it is. 
 
 **Related provenance rule.** Provenance is recorded, not adjudicated. `code_ref` may be a commit, `uncommitted`, or `unknown`, and only the first is comparable; even then a moved repository is reported as a signal. An onboard that starts investigating drift stops being a bounded read and turns into `baselinedocs-audit-drift` without its scope limit.
 
-## FD-D19: the `resume-*` family is dissolved, and `brief` replaced `resume-continue`
+## BLD-D19: the `resume-*` family is dissolved, and `brief` replaced `resume-continue`
 
 **Decided.** `baselinedocs-resume-continue` is deleted and `baselinedocs-brief` takes its place. The audit method was to take each situation the old skill claimed and ask which skill already owned it.
 
@@ -300,7 +300,7 @@ A new thread is the default once the pack is current, which after a save it is. 
 
 **Accepted cost.** `brief` is a user entrypoint, so it sets `allow_implicit_invocation: false` like the others. On Codex that costs the automatic firing the compaction case wants. The field is Codex-only and on other hosts `description` still reaches the skill without it being typed, so the cost is bounded to one host and is the price of keeping the entrypoint classification meaningful.
 
-## FD-D20: the last three `resume-*` skills are deleted with no replacement
+## BLD-D20: the last three `resume-*` skills are deleted with no replacement
 
 **Decided.** `resume-snapshot`, `resume-next-step`, and `resume-handoff` are deleted. Nothing takes their place.
 
@@ -316,9 +316,9 @@ A new thread is the default once the pack is current, which after a save it is. 
 
 **What remains is one owner per question.** `brief` answers where the work stands, `onboard` loads the pack, `save` writes the delta down, and `maintain-compact` cleans the pack up.
 
-## FD-D21: what an active document keeps as evidence, and what it drops
+## BLD-D21: what an active document keeps as evidence, and what it drops
 
-**Decided.** The standard itself lives in `contract/pack-contract.md` under `Evidence density`: a keep list, a discard list, the distinction between a resolved mistake and a routine failed attempt, and the permission to link an external log rather than paste it. FD-D29 put it there. This entry holds the reasoning and deliberately carries no second copy of the rule.
+**Decided.** The standard itself lives in `contract/pack-contract.md` under `Evidence density`: a keep list, a discard list, the distinction between a resolved mistake and a routine failed attempt, and the permission to link an external log rather than paste it. BLD-D29 put it there. This entry holds the reasoning and deliberately carries no second copy of the rule.
 
 **Why two lists rather than one instruction.** "Record what matters" is not a test an agent can fail, so it authorizes whatever the agent already wanted to do. Two lists make the boundary something a reader can point at, and the cases on each side were drawn from real packs rather than invented.
 
@@ -328,17 +328,17 @@ A new thread is the default once the pack is current, which after a save it is. 
 
 **What breaks if ignored.** Read one way the pack becomes a command transcript nobody can resume from. Read the other way it loses the record of why a design changed, and the change gets undone by someone who cannot see what it cost to arrive at.
 
-## FD-D22: `useguide` means a consumer contract
+## BLD-D22: `useguide` means a consumer contract
 
-**Decided.** The definition, its five valid forms, and the rule sending a cross-task procedure to the wiki live in `contract/pack-contract.md` under `Conditional documents`. FD-D29 put them there. This entry holds the reasoning and carries no second copy of the rule.
+**Decided.** The definition, its five valid forms, and the rule sending a cross-task procedure to the wiki live in `contract/pack-contract.md` under `Conditional documents`. BLD-D29 put them there. This entry holds the reasoning and carries no second copy of the rule.
 
 **Why the file needs a definition rather than a name.** `useguide` reads like "documentation about using this", which is true of half a pack. Without a stated meaning it becomes a second `sourcecode` written for nobody, or the place content lands when the author is unsure where else it goes. Naming a consumer is what makes the inclusion test answerable: either something outside the pack depends on the behavior or nothing does.
 
 **Why the wiki rule sits beside it rather than somewhere else.** The two are the same question asked twice. A procedure that applies across tasks passes the "someone outside depends on this" test, so a reader applying the inclusion criterion alone would put it in `useguide` and be wrong. The wiki rule is what stops that, and it only works if it is read at the same moment as the criterion it corrects.
 
-**What breaks if ignored.** A `useguide` with no consumer is filler by another name, which is exactly the cost FD-D2 removed by making the file conditional. A reusable procedure buried in a task-specific pack is worse than filler: it is written, correct, and unreachable from the next task that needs it.
+**What breaks if ignored.** A `useguide` with no consumer is filler by another name, which is exactly the cost BLD-D2 removed by making the file conditional. A reusable procedure buried in a task-specific pack is worse than filler: it is written, correct, and unreachable from the next task that needs it.
 
-## FD-D23: `run` has no silent execution-policy defaults
+## BLD-D23: `run` has no silent execution-policy defaults
 
 **Decided.** Before implementation, `baselinedocs-run` asks for any missing `approval_policy` and `commit_policy`. Selecting `per-phase` in the user's reply is explicit commit authorization for that run, and for that run only. Policy is never inferred from an earlier turn.
 
@@ -348,7 +348,7 @@ A new thread is the default once the pack is current, which after a save it is. 
 
 **Related rule on post-initial feedback.** Feedback after initial completion is assigned to the phase whose acceptance criteria it refines, reopening that phase if needed. A new phase requires a new outcome, dependency, release gate, deployable unit, or independently reviewable body of work. Without that test every correction becomes a phase, and the roadmap turns into a change log.
 
-## FD-D24: an initiative index is routing metadata and nothing else
+## BLD-D24: an initiative index is routing metadata and nothing else
 
 **Decided.** For work spanning dependent domains, every domain pack stays first-class and the initiative gains an index holding direct child links, domain scope, dependency edges, and the current cross-pack checkpoint. It is not a general introduction or roadmap that duplicates child content.
 
@@ -356,37 +356,37 @@ A new thread is the default once the pack is current, which after a save it is. 
 
 **What breaks if ignored.** A general parent pack hides its children, so a reader loads the parent, gets a summary, and never reaches the pack that holds the detail. That is the failure this shape exists to prevent.
 
-## FD-D25: this pack carries no `useguide`
+## BLD-D25: this pack carries no `useguide`
 
-**Decided.** `family-design` ships `introduction`, `roadmap`, `hallucination`, and `sourcecode`. No `useguide`.
+**Decided.** `baselinedocs` ships `introduction`, `roadmap`, `hallucination`, and `sourcecode`. No `useguide`.
 
 **Why.** The consumer of this family is a user of the skills, and `README.md` is already the surface written for them, with the workflow, the entrypoint table, the pack contract summary, and the hook instructions. A `useguide` here would restate the README in a file that ships nowhere and that no installed agent can open.
 
 **What breaks if ignored.** Two descriptions of the same workflow, one of which is never read, so the unread one drifts and the next author corrects the wrong copy.
 
-## FD-D26: no blind semantic writing from a transcript or repository-wide candidates
+## BLD-D26: no blind semantic writing from a transcript or repository-wide candidates
 
 **Decided.** An agent may checkpoint only a pack unambiguously established in its current thread. Writing a checkpoint by scanning the repository for roadmap candidates, or by reconstructing state from a transcript, stays rejected.
 
-**Why.** It is the same argument as FD-D6 applied to the agent rather than to the hook. Repository state does not identify ownership, and a shared working tree may hold another thread's changes.
+**Why.** It is the same argument as BLD-D6 applied to the agent rather than to the hook. Repository state does not identify ownership, and a shared working tree may hold another thread's changes.
 
 **What breaks if ignored.** The write lands in a pack that did not ask for it, attributing work to the wrong initiative, and the error is invisible until someone reads that pack expecting their own state.
 
-## FD-D27: this pack replaces `DESIGN.md`, which is deleted once the handover is complete
+## BLD-D27: this pack replaces `DESIGN.md`, which is deleted once the handover is complete
 
-**Decided, and carried out.** `family-design` and `skill-consolidation` together are the canonical record of the family design. `DESIGN.md` was superseded and then deleted, in FD-P4 on 2026-08-28, rather than kept as a second view. A design decision is written into a pack. The file remains recoverable at `git show 0cb913f:DESIGN.md`, which is the safety net that made an irreversible-looking act reversible in practice, and it is not a reason to relax the coverage check that preceded it: a file recoverable only by someone who knows it existed is not a source anyone will find.
+**Decided, and carried out.** `baselinedocs` and `skill-consolidation` together are the canonical record of the family design. `DESIGN.md` was superseded and then deleted, in BLD-P4 on 2026-08-28, rather than kept as a second view. A design decision is written into a pack. The file remains recoverable at `git show 0cb913f:DESIGN.md`, which is the safety net that made an irreversible-looking act reversible in practice, and it is not a reason to relax the coverage check that preceded it: a file recoverable only by someone who knows it existed is not a source anyone will find.
 
-**Why.** Keeping both would create two decision logs for one design, and nothing could pin them to each other: they are different texts by design, so no byte-comparison applies, which is the same unverifiable duplication the entry-index rule accepts only because a row is a locator rather than a source. This repository's own standard, that a rule is stated in exactly one place, is FD-D7 applied to instructions; applying it to design rationale is the same argument one level up.
+**Why.** Keeping both would create two decision logs for one design, and nothing could pin them to each other: they are different texts by design, so no byte-comparison applies, which is the same unverifiable duplication the entry-index rule accepts only because a row is a locator rather than a source. This repository's own standard, that a rule is stated in exactly one place, is BLD-D7 applied to instructions; applying it to design rationale is the same argument one level up.
 
 **What breaks if ignored.** The next design change is written into one of the two and not the other, and there is no test, no gate, and no reader who sees both in the same pass. The copies then disagree about why a rule exists, which is worse than either copy alone, because a reader who finds the disagreement cannot tell which side is current.
 
-**What had to be true before the file was deleted.** All four, and none was optional. All four are met, and the deletion landed in FD-P4 on 2026-08-28.
+**What had to be true before the file was deleted.** All four, and none was optional. All four are met, and the deletion landed in BLD-P4 on 2026-08-28.
 
 | Prerequisite | State |
 |---|---|
-| every fact in `DESIGN.md` is reachable in a pack | done in FD-P2. Verified fact by fact, not assumed from the ledger. FD-D28 records what that check found |
-| `AGENTS.md` stops naming `DESIGN.md` as the place to record a decision | done in FD-P3. The ships table, the rule against citing a non-shipping file to justify cutting a `SKILL.md`, and `Where reasoning goes` now name `docs/baseline/` and say which pack owns what |
-| the `Skill Consolidation` pointer resolves to the pack instead | done in FD-P3. `AGENTS.md` sends a contributor to `skill-consolidation.hallucination.md` SC-D1, which holds the merge test and both rejected alternatives in fuller form than the section it replaced |
+| every fact in `DESIGN.md` is reachable in a pack | done in BLD-P2. Verified fact by fact, not assumed from the ledger. BLD-D28 records what that check found |
+| `AGENTS.md` stops naming `DESIGN.md` as the place to record a decision | done in BLD-P3. The ships table, the rule against citing a non-shipping file to justify cutting a `SKILL.md`, and `Where reasoning goes` now name `docs/baseline/` and say which pack owns what |
+| the `Skill Consolidation` pointer resolves to the pack instead | done in BLD-P3. `AGENTS.md` sends a contributor to `skill-consolidation.hallucination.md` SC-D1, which holds the merge test and both rejected alternatives in fuller form than the section it replaced |
 | no other file in the repository depends on it | done. No file outside `docs/baseline/` names `DESIGN.md`, and the references inside `docs/baseline/` are adoption provenance, which stays correct after the file is gone |
 
 **Why the file is not deleted in the same breath as the decision.** Deleting it now would leave `AGENTS.md` pointing four times at a file that does not exist, which is a worse state than the duplication being removed. The order is: close the coverage gaps, rewire `AGENTS.md`, then delete.
@@ -395,7 +395,7 @@ A new thread is the default once the pack is current, which after a save it is. 
 
 **Rejected: keep both and record which one wins on a disagreement.** Honest, and it removes the ambiguity without removing the duplication. Rejected because a tie-break rule is only consulted by a reader who already noticed the disagreement, and the expensive case is the reader who does not.
 
-## FD-D28: a coverage ledger routed seven sections to another pack without checking that pack carried them
+## BLD-D28: a coverage ledger routed seven sections to another pack without checking that pack carried them
 
 **What was believed.** The adoption's coverage ledger routed seven of `DESIGN.md`'s twenty-two sections to `skill-consolidation` rather than restating them here, on the grounds that the other pack already recorded those decisions in fuller form. The ledger was written from a full read of both documents, and the routing was correct at section granularity.
 
@@ -403,15 +403,15 @@ A new thread is the default once the pack is current, which after a save it is. 
 
 **Why it looked reasonable.** Both packs discuss the same decisions, and `skill-consolidation`'s versions are longer, carry measured numbers, and record rejected alternatives that `DESIGN.md` only summarizes. A longer treatment of the same subject reads as a superset, and for five of the seven sections it was one. It is not one by construction: a summary written later can carry a supporting argument the earlier full version never had.
 
-**The fix.** Both facts were added to the entries that own them, `skill-consolidation` SC-D12 for the Terraform comparison and SC-D19 for the break-even arithmetic. The check itself is now the first prerequisite in FD-D27, because a ledger row is a routing claim and a routing claim is not evidence of coverage.
+**The fix.** Both facts were added to the entries that own them, `skill-consolidation` SC-D12 for the Terraform comparison and SC-D19 for the break-even arithmetic. The check itself is now the first prerequisite in BLD-D27, because a ledger row is a routing claim and a routing claim is not evidence of coverage.
 
 **The class, which outlives this incident.** It is the same shape as the failure SC-D21 in `skill-consolidation` records about the contract heading: every available signal agreed, and none of them measured the thing that mattered. There the signals compared copies and could not see a defect in what they agreed about. Here the ledger compared subjects and could not see a fact missing inside a subject both packs discuss. A mapping is not a comparison, and a coverage claim that has not been checked at the granularity of the thing being lost is an assertion, not a result.
 
 **What breaks if this entry is dropped.** The next adoption that routes a section to an existing pack writes the ledger row and stops there, and the deletion that follows it takes the unchecked facts with it. That deletion is unrecoverable in a way a wrong ledger row is not.
 
-## FD-D29: the contract absorbs the retention and `useguide` detail in full, closing FD-Q3
+## BLD-D29: the contract absorbs the retention and `useguide` detail in full, closing BLD-Q3
 
-**Decided.** `contract/pack-contract.md` carries the whole retention standard and the whole `useguide` definition, not a summary of either. Added: the keep list of five items and the discard list of four, the sentence separating a resolved mistake from a routine failed attempt, the permission to link an external raw log rather than paste it, the five valid `useguide` forms, and the rule sending a cross-task procedure to `docs/wiki/<topic>.md`. All 11 packaged copies were re-synced. FD-D21 and FD-D22 were then reduced to reasoning, so each rule is stated once.
+**Decided.** `contract/pack-contract.md` carries the whole retention standard and the whole `useguide` definition, not a summary of either. Added: the keep list of five items and the discard list of four, the sentence separating a resolved mistake from a routine failed attempt, the permission to link an external raw log rather than paste it, the five valid `useguide` forms, and the rule sending a cross-task procedure to `docs/wiki/<topic>.md`. All 11 packaged copies were re-synced. BLD-D21 and BLD-D22 were then reduced to reasoning, so each rule is stated once.
 
 **Why.** The detail existed only in files that do not ship. An agent writing a pack reads its own `references/pack-contract.md` and cannot open `DESIGN.md`, this pack, or `README.md`, so every sentence living outside the contract guided a human and nobody else. Two of those sentences are not derivable from what the contract did say: that an external log may be linked rather than pasted, and that a cross-task procedure goes to the wiki instead of into `useguide`. Both are permissions or routing, and no agent infers a permission from a list of prohibitions.
 
@@ -423,11 +423,11 @@ A new thread is the default once the pack is current, which after a save it is. 
 
 **Rejected: leave the contract terse and keep the detail as design rationale.** It holds the per-run cost exactly where it was. Rejected because it holds the failure there too: rationale no agent can open does not change what any agent does.
 
-**The order this had to follow.** Widen the canonical file, re-copy it to all 11 packaged copies, verify byte-identity, and only then remove the duplicate text from FD-D21 and FD-D22. Deleting first drops the rule for as long as it takes to notice, which is the sequencing `skill-consolidation` SC-D10 recorded when the same problem arose there.
+**The order this had to follow.** Widen the canonical file, re-copy it to all 11 packaged copies, verify byte-identity, and only then remove the duplicate text from BLD-D21 and BLD-D22. Deleting first drops the rule for as long as it takes to notice, which is the sequencing `skill-consolidation` SC-D10 recorded when the same problem arose there.
 
-## FD-D30: every identifier carries its pack prefix, closing FD-Q4
+## BLD-D30: every identifier carries its pack prefix, closing BLD-Q4
 
-**Decided.** Every entry, question, and phase identifier in this initiative is written with its pack's prefix, everywhere: `FD-` for `family-design`, `SC-` for `skill-consolidation`. The prefix is part of the identifier, not a qualifier added when citing across packs. `FD-D16` and `SC-D16` are the names themselves, in headings, in entry index rows, in roadmap Basis columns, and in every reference inside or outside the pack.
+**Decided.** Every entry, question, and phase identifier in this initiative is written with its pack's prefix, everywhere: `BLD-` for `baselinedocs`, `SC-` for `skill-consolidation`. The prefix is part of the identifier, not a qualifier added when citing across packs. `BLD-D16` and `SC-D16` are the names themselves, in headings, in entry index rows, in roadmap Basis columns, and in every reference inside or outside the pack.
 
 **Why.** Two packs numbering independently made `D16` name two different entries, and a reader could not see the ambiguity, because `D16` resolves in whichever pack they happen to be reading. That is the expensive kind of ambiguity: not a reference that fails, but one that succeeds and returns the wrong entry.
 
@@ -441,7 +441,7 @@ A new thread is the default once the pack is current, which after a save it is. 
 
 **What this settles in `skill-consolidation` SC-Q6, and what it does not.** SC-Q6 asks what the identifier scheme is and whether the contract should own it, and it proposes flat, append-only, per-kind counters unique across the pack. This decision amends one clause of that proposal, replacing "unique across the pack" with "unique across the initiative, by carrying the pack prefix". Everything else in SC-Q6 stays open: the per-kind letters, the ban on encoding hierarchy in a name, the ban on sub-identifiers, and whether the contract should state any of it. `contract/pack-contract.md` is deliberately unchanged by this decision, because the contract owning the scheme is the half SC-Q6 still owns.
 
-## FD-D31: `report-style.md` gains the shape of a report, not only the naming of its parts
+## BLD-D31: `report-style.md` gains the shape of a report, not only the naming of its parts
 
 **Decided.** `contract/report-style.md` gains four rules covering how a report is laid out: structure it as headings and bullets rather than narrating it, keep a table inside three columns with long values moved to bullets beneath it, gloss a quotation the way an identifier is glossed, and state the full default answer set when asking so a one-word agreement accepts something stated. The file goes from 25 lines to 41 and is re-copied to all 14 packaged copies. Section names and section order for a particular report stay in that skill's own `SKILL.md`.
 
@@ -453,19 +453,19 @@ A new thread is the default once the pack is current, which after a save it is. 
 
 **The table rule came from a measured failure rather than from taste.** In that run three separate sections degraded into vertical dumps of field names, and all three had one cause: more columns than the terminal could render. The six-column load manifest emitted about 90 lines, two of them rows carrying a pack name and five empty fields. A two-column table in the same report rendered correctly. So the rule is a column budget, because the defect is column count and not table use.
 
-**Rejected: put the section names and their order into `report-style.md` as well.** Where the user first proposed them, and it would put every layout rule in one file. Rejected because those names describe one skill's report and the file ships to 14, so thirteen skills would load a template for output they never produce, on every run. FD-D7 puts a rule's content in exactly one file; it does not say every rule belongs in the same file.
+**Rejected: put the section names and their order into `report-style.md` as well.** Where the user first proposed them, and it would put every layout rule in one file. Rejected because those names describe one skill's report and the file ships to 14, so thirteen skills would load a template for output they never produce, on every run. BLD-D7 puts a rule's content in exactly one file; it does not say every rule belongs in the same file.
 
 **Rejected: write nothing and correct the output when it comes out wrong.** Cheapest today, and it changes no shipped file. Rejected because a correction does not survive the thread, and the next run on the next host starts from the same blank.
 
-**Accepted cost.** 16 lines added to a file loaded on every invocation of 14 skills. SC-D17 recorded that the file is deliberately short to keep that per-run cost small, so this is a deliberate exception to its own sizing argument, taken on the grounds FD-D29 used for the contract: a rule no agent can read changes no agent's behavior.
+**Accepted cost.** 16 lines added to a file loaded on every invocation of 14 skills. SC-D17 recorded that the file is deliberately short to keep that per-run cost small, so this is a deliberate exception to its own sizing argument, taken on the grounds BLD-D29 used for the contract: a rule no agent can read changes no agent's behavior.
 
-## FD-D32: a next action is restructured for reading, not quoted verbatim
+## BLD-D32: a next action is restructured for reading, not quoted verbatim
 
 **Decided, reversing the rule as shipped.** `report-style.md` required that a next action be quoted and never paraphrased. It now requires that what the next action instructs survive intact, with every instruction, condition, prohibition, name, number, and ordering kept, none added and none softened, while the rendering is free: a heading per pack or phase, one bullet per instruction, the source's own numbering preserved, and no blockquote. The document and phase it came from are named, so the user can check the rendering against the source.
 
 **Why the old rule existed, kept because it is the half that must not be lost.** Paraphrasing a next action silently changes what the user will do, and it is the one field a reader acts on directly rather than reasons about. That risk is real and this decision does not deny it. It moves the protection from the form of the words to the content of the instruction.
 
-**Why it changed.** Verbatim quotation was protecting meaning by freezing layout, and the two are separable. A recorded next action is frequently already a numbered list, and one in the reviewed run was literally three numbered instructions, which the blockquote flattened into a single paragraph. The rule as written therefore produced the exact unreadable output the rest of FD-D31's rules exist to prevent, and produced it in the field the user most needs to act on.
+**Why it changed.** Verbatim quotation was protecting meaning by freezing layout, and the two are separable. A recorded next action is frequently already a numbered list, and one in the reviewed run was literally three numbered instructions, which the blockquote flattened into a single paragraph. The rule as written therefore produced the exact unreadable output the rest of BLD-D31's rules exist to prevent, and produced it in the field the user most needs to act on.
 
 **What breaks if ignored.** In one direction an instruction is dropped or softened in the retelling, and the user acts on something the pack never said. In the other, the most actionable field in the report is the least readable thing in it. The rule has to bind content and free layout, or it fails on one side or the other.
 
@@ -473,51 +473,51 @@ A new thread is the default once the pack is current, which after a save it is. 
 
 **Rejected: allow free paraphrase.** The reading of the user's instruction that would have been easiest to implement. Not taken, because it drops the protection above with nothing in its place. The instruction was that the meaning must not change, and that clause is the binding half of this decision.
 
-## FD-D33: the load manifest is compressed, not removed
+## BLD-D33: the load manifest is compressed, not removed
 
 **Decided.** `onboard`'s load manifest stays, in a compressed form: one line per pack giving its file count, lines read, and the `status`, `updated`, and `code_ref` its documents share, with the index as its own line and a total. A document is broken out separately only where its provenance differs from the rest of its pack.
 
-**Why.** Removal was proposed because the manifest rendered as about 90 lines of vertical field dump. That is the table-width defect FD-D31 fixes, not a defect in the manifest. What the manifest carries is FD-D10's guarantee made checkable: the promise is that the reader either knows what the agent holds or knows it holds nothing, and the line counts are the only evidence the user has for a claim of a complete read. FD-D17 already ranked the manifest second, behind pack state, precisely because it proves the read rather than reporting it. Removing it deletes the proof and keeps the claim.
+**Why.** Removal was proposed because the manifest rendered as about 90 lines of vertical field dump. That is the table-width defect BLD-D31 fixes, not a defect in the manifest. What the manifest carries is BLD-D10's guarantee made checkable: the promise is that the reader either knows what the agent holds or knows it holds nothing, and the line counts are the only evidence the user has for a claim of a complete read. BLD-D17 already ranked the manifest second, behind pack state, precisely because it proves the read rather than reporting it. Removing it deletes the proof and keeps the claim.
 
 **Why compression is the right amount.** The information sits in the variance, not in the rows. In the reviewed run all seven baseline documents shared one `code_ref`, all documents within a pack shared a status and a date, and six fields repeated across eight rows to say three things. Stating the shared values once per pack and breaking out only what differs takes that from about 90 lines to about 5 with nothing lost. It is the same trade `skill-consolidation` SC-D19 made for the entry index: defer what is uniform, surface the exception.
 
-**What breaks if ignored.** `onboard` asserts a complete read and offers nothing to check it against, which is the silent-partial-read failure FD-D10 was written to design out, reintroduced deliberately in order to fix a rendering problem.
+**What breaks if ignored.** `onboard` asserts a complete read and offers nothing to check it against, which is the silent-partial-read failure BLD-D10 was written to design out, reintroduced deliberately in order to fix a rendering problem.
 
 **Rejected: remove the manifest entirely.** The user's first proposal, and its reason was sound, because as rendered it was unreadable bookkeeping. Rejected on the argument above and withdrawn by the user once compression was on the table. Recorded because a later reader looking at a five-line manifest will not see why it cannot become a zero-line one.
 
 **Rejected: one summary line only, with the detail available on request.** Shorter still, and it keeps a total. Rejected because per-pack provenance is what a reader uses to decide how far to trust a document, and folding several packs into one line hides the pack whose `code_ref` differs from the rest, which is the one line worth seeing.
 
-## FD-D34: the onboard report drops `Read record` entirely, reversing FD-D33
+## BLD-D34: the onboard report drops `Read record` entirely, reversing BLD-D33
 
-**Decided, reversing FD-D33.** `baselinedocs-onboard`'s `Output` section no longer has a `Read record` half. The load manifest, the routing view, dependency edges as a standalone list, placement findings, and the excluded-and-unreadable list are gone from the report, and nothing replaces them, compressed or otherwise. `Output` is now five flat sections, `Doc pack introduction`, `Roadmap and Opens`, `Next actions`, `Cross-pack checkpoint`, `Unresolved references`, with no `I.`/`II.` split above them. `Workflow` step 10, the placement check against the contract, is deleted along with it, since nothing consumed its result once `Placement findings` no longer exists; steps 7 and 8 and one Reading Rules bullet were also trimmed of promises the deleted section no longer keeps. The file goes from 79 lines to 69.
+**Decided, reversing BLD-D33.** `baselinedocs-onboard`'s `Output` section no longer has a `Read record` half. The load manifest, the routing view, dependency edges as a standalone list, placement findings, and the excluded-and-unreadable list are gone from the report, and nothing replaces them, compressed or otherwise. `Output` is now five flat sections, `Doc pack introduction`, `Roadmap and Opens`, `Next actions`, `Cross-pack checkpoint`, `Unresolved references`, with no `I.`/`II.` split above them. `Workflow` step 10, the placement check against the contract, is deleted along with it, since nothing consumed its result once `Placement findings` no longer exists; steps 7 and 8 and one Reading Rules bullet were also trimmed of promises the deleted section no longer keeps. The file goes from 79 lines to 69.
 
-**Why.** A real report against this repository's own two-pack initiative, run this session, read as bookkeeping-heavy: the reader wanted pack state and had to read past routing evidence, a six-field manifest, and an empty placement-findings list to reach it. FD-D17 already ranked the manifest second for the same reason; this decision goes further and removes the whole half rather than reordering it, on the user's explicit choice after the trade-off was put to them directly.
+**Why.** A real report against this repository's own two-pack initiative, run this session, read as bookkeeping-heavy: the reader wanted pack state and had to read past routing evidence, a six-field manifest, and an empty placement-findings list to reach it. BLD-D17 already ranked the manifest second for the same reason; this decision goes further and removes the whole half rather than reordering it, on the user's explicit choice after the trade-off was put to them directly.
 
-**What breaks if ignored, stated plainly since none of it was individually re-confirmed.** Four things the family built on purpose stop being reported. The load manifest was FD-D33's answer to how a reader knows `onboard` did not silently truncate; that proof is gone, though the underlying gate it proved, the size gate in `Workflow` steps 4 through 6 and the first two Reading Rules, is untouched and still runs. The placement check `skill-consolidation` SC-D16 and SC-D20 built into `onboard` specifically because a full read is the qualifying criterion is no longer performed by anything in the family; FD-Q5 opens on exactly this gap. The exclusion-reporting Reading Rules bullet is gone, so retained source material or an oversized scope can be dropped from a load without the report saying so. Dependency edges no longer get a standalone line; they surface only inside `Cross-pack checkpoint`, and only when a real coupling exists to report.
+**What breaks if ignored, stated plainly since none of it was individually re-confirmed.** Four things the family built on purpose stop being reported. The load manifest was BLD-D33's answer to how a reader knows `onboard` did not silently truncate; that proof is gone, though the underlying gate it proved, the size gate in `Workflow` steps 4 through 6 and the first two Reading Rules, is untouched and still runs. The placement check `skill-consolidation` SC-D16 and SC-D20 built into `onboard` specifically because a full read is the qualifying criterion is no longer performed by anything in the family; BLD-Q5 opens on exactly this gap. The exclusion-reporting Reading Rules bullet is gone, so retained source material or an oversized scope can be dropped from a load without the report saying so. Dependency edges no longer get a standalone line; they surface only inside `Cross-pack checkpoint`, and only when a real coupling exists to report.
 
 **Rejected: compress every guarantee into short lines folded inside Pack Status.** The option recommended when this trade-off was put to the user: a one-line proof-of-read per pack, an excluded-material line per pack, placement findings folded into a short bullet list, dependency edges folded into `Cross-pack checkpoint`. Rejected in favor of the simpler report; the user judged the four guarantees above worth losing rather than worth the lines they cost on every run.
 
-**Rejected: keep proof-of-read only, drop the rest.** A narrower middle ground, keeping FD-D33's core guarantee while still dropping placement findings, dependency edges, and the excluded list. Also rejected, for the same reason: the user chose the fully flat report over any partial retention.
+**Rejected: keep proof-of-read only, drop the rest.** A narrower middle ground, keeping BLD-D33's core guarantee while still dropping placement findings, dependency edges, and the excluded list. Also rejected, for the same reason: the user chose the fully flat report over any partial retention.
 
-**Amended by FD-D51.** The five flat sections are replaced by six, drawn as visuals. The loss of the file record stands.
+**Amended by BLD-D51.** The five flat sections are replaced by six, drawn as visuals. The loss of the file record stands.
 
-## FD-D35: `report-style.md` gains a four-column exception for identifier-shaped tables, extending FD-D31
+## BLD-D35: `report-style.md` gains a four-column exception for identifier-shaped tables, extending BLD-D31
 
 **Decided.** The `Keep a table inside the terminal's width` rule in `contract/report-style.md` keeps its three-column default and gains one stated exception: four columns are allowed when every column holds a short phrase, a one- or two-word status, or a handful of identifiers, never a full sentence, a quotation, or a path. The file goes from 41 lines to 43 lines. All 14 packaged copies were re-synced.
 
-**Why.** `baselinedocs-onboard`'s new `Roadmap and Opens` table needs four fields in one row: a phase identifier, a short phrase of what the phase did, its status, and the identifiers of any open question tied to it, mirroring the contract's own entry-index shape, identifier and about and status and related, applied to a phase instead of a decision. Forcing that into three columns would either drop the phase identifier or merge two identifiers into one cell, which is the same failure FD-D31 diagnosed: a value split across a merged cell degrades exactly like a value too wide for its own cell, only the cause is narrower rather than the row being wider than the terminal.
+**Why.** `baselinedocs-onboard`'s new `Roadmap and Opens` table needs four fields in one row: a phase identifier, a short phrase of what the phase did, its status, and the identifiers of any open question tied to it, mirroring the contract's own entry-index shape, identifier and about and status and related, applied to a phase instead of a decision. Forcing that into three columns would either drop the phase identifier or merge two identifiers into one cell, which is the same failure BLD-D31 diagnosed: a value split across a merged cell degrades exactly like a value too wide for its own cell, only the cause is narrower rather than the row being wider than the terminal.
 
 **What breaks if ignored.** Either the phase table loses the identifier a reader needs to cite the phase elsewhere, or two unrelated things share one cell and the report-style rule against presenting an identifier without a gloss is satisfied technically while failing in spirit, since a merged cell reads as one value rather than two.
 
-**Rejected: merge the phase identifier into the content cell.** The option that keeps the existing three-column rule untouched, at the cost of a table cell reading as `` `FD-P1` adopt DESIGN.md into pack ``. Rejected because it buries the identifier inside a text blob rather than naming it, which is the opposite of `report-style.md`'s own rule to name an element before saying what it is.
+**Rejected: merge the phase identifier into the content cell.** The option that keeps the existing three-column rule untouched, at the cost of a table cell reading as `` `BLD-P1` adopt DESIGN.md into pack ``. Rejected because it buries the identifier inside a text blob rather than naming it, which is the opposite of `report-style.md`'s own rule to name an element before saying what it is.
 
 **Rejected: split into two three-column tables per pack.** Keeps every table within the existing budget by separating phase-and-status from opens-and-related-phase. Rejected because it separates a phase from the open question it is about, doubles the number of tables per pack, and a reader has to cross-reference two tables to answer one question a single row already answered.
 
-## FD-D36: `hallucination` entries are written in a compact agent-directed register, not narrative prose
+## BLD-D36: `hallucination` entries are written in a compact agent-directed register, not narrative prose
 
 **Decided.** `contract/pack-contract.md` gains a new `Register` section, placed immediately after `Required documents` rather than folded into `Evidence density`, so the rule sits near the top of the file an agent reads top to bottom instead of at the tail of a section already carrying a different rule set. It states the compact form for a decision entry's four required parts: decision as one imperative or declarative sentence; why as a trailing clause after a dash, expanded to a full sentence only when it carries a measurement or mechanism a clause cannot hold, dropped once the harm is self-evident; what breaks if ignored as the concrete failure, not a description of how it would feel; rejected alternative as what it was plus the one reason it lost, not the deliberation that led to trying it. A verification step closes the rule: before shortening an existing entry, every identifier, filename, number, and rejected alternative it named must still be present somewhere in the result. 11 packaged copies re-synced.
 
-**Why.** `hallucination` is read by an agent on every `onboard`, not by a person once, and this pack's own entries are written the other way: rhetorical-question headers, first-person narration of how a passage's wording was arrived at, dated anecdotes beyond the lesson-entry form `Evidence density` already permits. `family-design.hallucination.md` and `skill-consolidation.hallucination.md` together run 982 lines, most of it connective narrative around a four-part shape a compact form carries in far less space.
+**Why.** `hallucination` is read by an agent on every `onboard`, not by a person once, and this pack's own entries are written the other way: rhetorical-question headers, first-person narration of how a passage's wording was arrived at, dated anecdotes beyond the lesson-entry form `Evidence density` already permits. `baselinedocs.hallucination.md` and `skill-consolidation.hallucination.md` together run 982 lines, most of it connective narrative around a four-part shape a compact form carries in far less space.
 
 **What breaks if ignored.** Every future entry keeps paying the cost this decision exists to stop, on every load, forever, and the two-pack line count above is the measurement, not an estimate.
 
@@ -527,7 +527,7 @@ A new thread is the default once the pack is current, which after a save it is. 
 
 **Not retroactive.** This entry ships the register for entries written from here on. The existing entries in this pack and in `skill-consolidation.hallucination.md` are left as they are; rewriting them under the new register is separate, deliberately deferred work.
 
-## FD-D37: remove the automated checkpoint hook adapter and setup-hooks skill
+## BLD-D37: remove the automated checkpoint hook adapter and setup-hooks skill
 
 **Decided.** Remove the Stop hook adapter in `hooks/` and the one-time administration skill `baselinedocs-setup-hooks`, keeping phase checkpointing purely in-thread within `baselinedocs-run` and manual operator workflow.
 
@@ -539,7 +539,7 @@ A new thread is the default once the pack is current, which after a save it is. 
 
 **Rejected: keep passive hooks for Claude Code only.** Rejected because introducing host-specific asymmetry violates the family principle of portable agent instructions across supported hosts.
 
-## FD-D38: a seventh user entrypoint owning temporary callout groups
+## BLD-D38: a seventh user entrypoint owning temporary callout groups
 
 **Decided.** Add `baselinedocs-callout`, a user entrypoint that opens, updates, and retires a named routing table inside an existing pack. A callout group maps short labels onto pack elements that already exist, declares the condition that ends it, and carries no fact of its own.
 
@@ -557,7 +557,7 @@ A new thread is the default once the pack is current, which after a save it is. 
 
 **Rejected: letting the group carry phase status, so a reader gets the position without opening anything.** Rejected because status lives in `roadmap` and a copy here goes stale the first time a phase moves, with nothing to compare it against.
 
-## FD-D39: `baselinedocs-load` as an eighth user entrypoint owning silent context priming
+## BLD-D39: `baselinedocs-load` as an eighth user entrypoint owning silent context priming
 
 **Decided.** Add `baselinedocs-load`, a user entrypoint that reads a baseline documentation pack into working context silently and responds strictly with a single confirmation word ("Sẵn sàng." / "Ready."). It carries a packaged copy of `contract/pack-contract.md` to understand baseline document roles and schemas, but is exempt from `contract/report-style.md` because it produces no explanatory output.
 
@@ -573,15 +573,15 @@ A new thread is the default once the pack is current, which after a save it is. 
 
 **Rejected: ship `contract/report-style.md` to `baselinedocs-load`.** Rejected because the skill produces no conversational report, so shipping and gating on report-style rules wastes tokens on every invocation.
 
-## FD-D40: `baselinedocs-recall` re-reads the rule files after a context compaction
+## BLD-D40: `baselinedocs-recall` re-reads the rule files after a context compaction
 
 **Decided.** Add `baselinedocs-recall`, a lifecycle skill (`allow_implicit_invocation: true`) that reads its packaged `pack-contract.md` and `report-style.md` in full, reads no pack document, replies "Sẵn sàng." / "Ready.", and stops. When the interrupted work belonged to another baselinedocs skill, it names that skill to invoke again instead of continuing from the summary. Display name `Baseline Docs: Recall`, without `Internal`, because a user calls it by hand as often as an agent selects it. Ships both assets under a third criterion beside SC-D16's writer and full-reader cases: restoring the rules is its whole job, and it reports no conformance.
 
-**Why.** After a compaction the agent keeps working from a summary that kept that a rule existed, not its wording; the `SKILL.md` body holding the read-every-time gate was compacted with it, so nothing re-fires the gate. The `description` frontmatter is the only instruction surface still in context afterwards, so a skill selected by its description is the only in-family trigger left once FD-D37 removed hooks.
+**Why.** After a compaction the agent keeps working from a summary that kept that a rule existed, not its wording; the `SKILL.md` body holding the read-every-time gate was compacted with it, so nothing re-fires the gate. The `description` frontmatter is the only instruction surface still in context afterwards, so a skill selected by its description is the only in-family trigger left once BLD-D37 removed hooks.
 
 **What breaks if ignored.** Pack writes after a compaction drift from the contract - content in the wrong document, hard-wrapped paragraphs, narrative register - and reports drop identifier glosses, with no rule visibly broken because the rule is no longer in context.
 
-**Rejected: a PostCompact or SessionStart hook re-injecting the files.** FD-D37 removed the hook mechanism for host-specific drift and asymmetry.
+**Rejected: a PostCompact or SessionStart hook re-injecting the files.** BLD-D37 removed the hook mechanism for host-specific drift and asymmetry.
 
 **Rejected: a re-read line in every `SKILL.md`.** It is compacted with the body it sits in.
 
@@ -591,11 +591,11 @@ A new thread is the default once the pack is current, which after a save it is. 
 
 **Rejected: resume the interrupted work after recalling.** The user chose stop-and-wait, matching `baselinedocs-load`.
 
-## FD-D41: the test suite runs one case per skill, parses what it checks, and enforces the rules the docs state
+## BLD-D41: the test suite runs one case per skill, parses what it checks, and enforces the rules the docs state
 
 **Decided.** Pin pytest with `pytest.ini` and `uvx --from "pytest>=8,<10" --with pyyaml`. Share helpers in `tests/helpers.py`. Parametrize every per-skill check. Parse `SKILL.md` frontmatter, `agents/openai.yaml`, and pack frontmatter with PyYAML. Add tests for the sibling-dependency ban, the skill folder shape, entry-index agreement with entry headings, identifier prefixes and resolution, and a hard-wrap warning. Take the file set from Git, force LF in `.gitattributes`, run the pinned command in GitHub Actions.
 
-**Why.** A loop reported only its first bad skill, a substring match passed a commented-out `allow_implicit_invocation`, the sibling-prerequisite ban in `AGENTS.md` and the prefix rule in FD-D30 had no check, and the index prose "holds 42" had already drifted from 43 entries.
+**Why.** A loop reported only its first bad skill, a substring match passed a commented-out `allow_implicit_invocation`, the sibling-prerequisite ban in `AGENTS.md` and the prefix rule in BLD-D30 had no check, and the index prose "holds 42" had already drifted from 43 entries.
 
 **What breaks if ignored.** A misclassified skill ships with the wrong invocation policy under a green suite, and an identifier resolves silently to the wrong pack.
 
@@ -607,9 +607,9 @@ A new thread is the default once the pack is current, which after a save it is. 
 
 **Rejected: walk the disk for files.** A host skills directory or nested worktree in the checkout fails convention tests on text this repo does not author; Git's file set excludes them.
 
-**Accepted gaps.** Bare identifiers quoted as examples in the documents recording the prefix rule are allowed by exact file and identifier (`BARE_EXAMPLES`), and questions closed without a heading of their own are allowed by name (`CLOSED_WITHOUT_HEADING`: `FD-Q3`, `FD-Q4`, `SC-Q1` to `SC-Q5`). Both sit in `tests/test_packs.py`; a real bare identifier in one of those files, or a dangling citation of a listed question, passes unseen.
+**Accepted gaps.** Bare identifiers quoted as examples in the documents recording the prefix rule are allowed by exact file and identifier (`BARE_EXAMPLES`), and questions closed without a heading of their own are allowed by name (`CLOSED_WITHOUT_HEADING`: `BLD-Q3`, `BLD-Q4`, `SC-Q1` to `SC-Q5`). Both sit in `tests/test_packs.py`; a real bare identifier in one of those files, or a dangling citation of a listed question, passes unseen.
 
-## FD-D42: the entry index and entry headings are mandatory from the first entry, and the contract owns the heading format
+## BLD-D42: the entry index and entry headings are mandatory from the first entry, and the contract owns the heading format
 
 **Decided.** `contract/pack-contract.md` requires every `hallucination` to carry `## Entry index` and one heading per entry from the first entry, with no size threshold, in every pack including existing ones. It also states the heading format `## <PREFIX>-<KIND><N>: <subject>`: kinds `D` and `Q` in a `hallucination`, `P` reserved for roadmap phases, an append-only counter per pack and kind, open questions at level 3 under `## Open questions`. A pack-writing skill that edits a journal lacking either brings it into shape first, in the same pass, moving text verbatim. The 14 packaged copies were re-synced and `tests/test_packs.py` dropped its threshold and now fails a `hallucination` with no index.
 
@@ -617,7 +617,7 @@ A new thread is the default once the pack is current, which after a save it is. 
 
 **What breaks if ignored.** Journals stay undelimited until restructuring is expensive, so entries cannot be cited by identifier (SC-Q6) or read selectively (SC-Q7).
 
-**Accepted cost.** A pack with bold-text entries makes the first skill that edits it pay a one-time retrofit, and nothing detects the gap while nothing is editing (FD-Q5 stays open). The contract is loaded on every run of 14 skills and grew by a few lines.
+**Accepted cost.** A pack with bold-text entries makes the first skill that edits it pay a one-time retrofit, and nothing detects the gap while nothing is editing (BLD-Q5 stays open). The contract is loaded on every run of 14 skills and grew by a few lines.
 
 **Rejected: keep the 40 KB / 20 entry threshold.** Defers the cost to the moment it is largest.
 
@@ -627,7 +627,7 @@ A new thread is the default once the pack is current, which after a save it is. 
 
 **Settles part of SC-Q6.** The contract now owns the heading format and the identifier kinds. Still open there: the ban on encoding hierarchy in a name, the ban on sub-identifiers, and the rule that only pack-wide identifiers are cited between documents.
 
-## FD-D43: `baselinedocs-help` is a user entrypoint that carries its own guide
+## BLD-D43: `baselinedocs-help` is a user entrypoint that carries its own guide
 
 **Decided.** Add `baselinedocs-help`, a user entrypoint (`allow_implicit_invocation: false`, display name `Baseline Docs Help`) that reads its own `references/guide.md` and `report-style.md`, reads no pack, writes nothing, and says which skill fits a situation, what each skill does, and the workflow order. The guide holds the skill tables, the Mermaid workflow, the branch table, and the traps. It ships no `pack-contract.md`. `tests/test_references.py` fails when a skill has no row in the guide.
 
@@ -643,7 +643,7 @@ A new thread is the default once the pack is current, which after a save it is. 
 
 **Rejected: ship `pack-contract.md`.** The skill reads no pack, and AGENTS.md forbids a copy in a skill that does not read every document in full.
 
-## FD-D44: `baselinedocs-adr` turns one closed decision into a standalone ADR from an unmodified AWS template
+## BLD-D44: `baselinedocs-adr` turns one closed decision into a standalone ADR from an unmodified AWS template
 
 **Decided.** Add `baselinedocs-adr`, a user entrypoint (`allow_implicit_invocation: false`, display name `Baseline Docs ADR`) that reads one closed decision entry, its section and its index row only, and writes one ADR under `docs/adr/` plus its row in `docs/adr/README.md`. Status is always `Proposed`; the skill never writes `Accepted`. The ADR carries no pointer into the pack. `references/template.md` and `references/process.md` are byte-identical copies of the aws-adr skill's files at `~/.agents/skills/aws-adr/references/`, sha256 `05c23063cbd91c96b229b45ddcbc2821f96e3288cae2063e100a07e9a8533abe` and `28bcb8ba6693f105b082fc7dc664ece771bdd17a21048c34bae602a4f8bce9f0`. The entry-to-section mapping lives in `SKILL.md`. It ships `report-style.md` and no `pack-contract.md`.
 
@@ -661,9 +661,9 @@ A new thread is the default once the pack is current, which after a save it is. 
 
 **Rejected: a condensed or reworded template.** The user asked for the original.
 
-## FD-D45: a release tag stamps one family-wide `version:` into every `SKILL.md` on `main`
+## BLD-D45: a release tag stamps one family-wide `version:` into every `SKILL.md` on `main`
 
-**Decided.** Every `SKILL.md` carries a top-level `version: "MAJOR.MINOR.PATCH"`, one value for the whole family, `0.0.0` until the first release. Pushing a tag `vMAJOR.MINOR.PATCH` runs `.github/workflows/release.yml`: it checks out `main`, runs `scripts/stamp_version.py`, runs the suite, and pushes a commit `release: vX.Y.Z` to `main`. The tag stays on the commit it was cut on. `tests/test_version.py` fails when a skill lacks a semver string or two skills disagree. `baseline_schema` is not stamped: a schema change is a semantic decision (`family-design.introduction.md`, `Constraints`). Only `release.yml` holds `contents: write`; `tests.yml` stays read-only.
+**Decided.** Every `SKILL.md` carries a top-level `version: "MAJOR.MINOR.PATCH"`, one value for the whole family, `0.0.0` until the first release. Pushing a tag `vMAJOR.MINOR.PATCH` runs `.github/workflows/release.yml`: it checks out `main`, runs `scripts/stamp_version.py`, runs the suite, and pushes a commit `release: vX.Y.Z` to `main`. The tag stays on the commit it was cut on. `tests/test_version.py` fails when a skill lacks a semver string or two skills disagree. `baseline_schema` is not stamped: a schema change is a semantic decision (`baselinedocs.introduction.md`, `Constraints`). Only `release.yml` holds `contents: write`; `tests.yml` stays read-only.
 
 **Why.** The need is to know which release a skill belongs to, not to track each skill alone, and the family installs as a unit, so one number per release is enough. The tag is the one step the user already performs. A tag name reaches the workflow's shell only after the trigger pattern limits it to digits and dots, and the script validates it again.
 
@@ -675,7 +675,7 @@ A new thread is the default once the pack is current, which after a save it is. 
 
 **Rejected: `scripts/check_installed.py` with a `--verify` hash.** It checks machines, and the user wants control at release only.
 
-**Rejected: a git pre-commit hook.** Per-clone setup, rewrites staged files, and FD-D37 removed hooks for host-specific drift.
+**Rejected: a git pre-commit hook.** Per-clone setup, rewrites staged files, and BLD-D37 removed hooks for host-specific drift.
 
 **Rejected: a version derived from the tag or the commit count and never written into the frontmatter.** A machine holding only the installed folder cannot read it.
 
@@ -689,7 +689,7 @@ A new thread is the default once the pack is current, which after a save it is. 
 
 **Rejected: a rule in `AGENTS.md` to stamp by hand.** Not automatic; a skipped stamp is seen by nobody.
 
-## FD-D46: `packtool.sh` checks pack structure mechanically, and every writer runs it before reporting a write
+## BLD-D46: `packtool.sh` checks pack structure mechanically, and every writer runs it before reporting a write
 
 **Decided.** `contract/packtool.sh`, one POSIX sh file with an embedded POSIX awk program, ships byte-identical at `scripts/packtool.sh` in every pack-writing skill, `baselinedocs-onboard`, and both `audit` skills. Commands: `outline` (headings with `file:line`), `find` (every occurrence of one identifier, by kind), `next-id` (highest number among every occurrence, headings and prose citations alike, plus one), `check` (FAIL on structure, WARN on heuristics; exit 1 on any FAIL). Writers gate on running `check` after every write and allocating identifiers with `next-id`; readers and audits gate on running `check` before reporting. Both gate sentences are pinned in `tests/test_references.py`. `contract/pack-contract.md` gains `Editing a pack`, tool-agnostic because `load` and `recall` ship the contract without the script: no edit by line number, identifiers allocated from a scan, git re-run before `code_ref`.
 
@@ -697,9 +697,9 @@ A new thread is the default once the pack is current, which after a save it is. 
 
 **What breaks if ignored.** A duplicate identifier makes every citation of it ambiguous and nothing fails; an index row without its entry, or the reverse, survives until a reader trusts it. Reports from `onboard` and the audits rest on a read, not a check.
 
-**Rule split.** FAIL: frontmatter keys and values, filename and folder against `pack` and `document`, missing `## Entry index`, duplicate heading, duplicate index row, row without entry and entry without row, `-Q` heading outside `## Open questions`, `-D` heading outside `hallucination` or under `## Open questions`, `-P` heading outside `roadmap`, bold pseudo-heading, prefix shared by two packs, en or em dash. WARN, read and judged rather than fixed: a question whose index status is not `open` still under `## Open questions` (this pack keeps closed stubs FD-Q2 and FD-Q6 on purpose), a citation with no heading and no `clos` on any citing line, `code_ref` against HEAD and against the working tree outside the checked path, one date and quantity appearing in both `roadmap` and `hallucination`, `root cause` or `rejected` in `roadmap` with no `-D` link on the line, possible hard wrap.
+**Rule split.** FAIL: frontmatter keys and values, filename and folder against `pack` and `document`, missing `## Entry index`, duplicate heading, duplicate index row, row without entry and entry without row, `-Q` heading outside `## Open questions`, `-D` heading outside `hallucination` or under `## Open questions`, `-P` heading outside `roadmap`, bold pseudo-heading, prefix shared by two packs, en or em dash. WARN, read and judged rather than fixed: a question whose index status is not `open` still under `## Open questions` (this pack keeps closed stubs BLD-Q2 and BLD-Q6 on purpose), a citation with no heading and no `clos` on any citing line, `code_ref` against HEAD and against the working tree outside the checked path, one date and quantity appearing in both `roadmap` and `hallucination`, `root cause` or `rejected` in `roadmap` with no `-D` link on the line, possible hard wrap.
 
-**Accepted cost.** Needs `sh` and `awk`; on Windows that is Git for Windows, already required where `code_ref` is read. Without it the gate says the checks were not run. Placement by meaning (reasoning in the wrong document) stays a heuristic; FD-Q5 keeps that half open. Portability to mawk and BWK awk rests on `.github/workflows/tests.yml` running Ubuntu, macOS, and Windows, which has not run yet.
+**Accepted cost.** Needs `sh` and `awk`; on Windows that is Git for Windows, already required where `code_ref` is read. Without it the gate says the checks were not run. Placement by meaning (reasoning in the wrong document) stays a heuristic; BLD-Q5 keeps that half open. Portability to mawk and BWK awk rests on `.github/workflows/tests.yml` running Ubuntu, macOS, and Windows, which has not run yet.
 
 **Rejected: Python.** Not installed on every machine an installed skill runs on.
 
@@ -711,11 +711,11 @@ A new thread is the default once the pack is current, which after a save it is. 
 
 **Rejected: a harness that keeps line numbers current for editing.** A line number is stale after the first write, whoever reports it; anchoring edits on unique text is the fix, and `outline` serves reading only.
 
-## FD-D47: a closed question keeps its number through a `Closes` line, and packtool gains `close-plan` and `identifier-gap`
+## BLD-D47: a closed question keeps its number through a `Closes` line, and packtool gains `close-plan` and `identifier-gap`
 
 **Decided.** The deciding entry states `Closes <PREFIX>-Q<N>.` and lists the question in its Related column; the question's heading and index row are deleted and any reasoning it held moves into the deciding entry. `contract/pack-contract.md`, `Entry index`, states this, and states that a decision entry may sit at level 3 under a group heading such as `## Closed decisions`. `## Entry index` stays the only accepted index name. `packtool.sh` gains `close-plan <dir> <Q-ID> <D-ID>` (read-only, lists the edits) and WARN `identifier-gap` (a number below the highest that appears nowhere). `next-id` with a PREFIX on an empty pack returns `<PREFIX>-<KIND>1`. `check` resolves the folder name from the absolute path, so `check .` works inside a pack. `directory-mismatch` moves from FAIL to WARN. A line opening with a bold label no longer counts toward `possible-hard-wrap`. The gate sentences in 14 `SKILL.md` files call `sh <skill-dir>/scripts/packtool.sh`, `<skill-dir>` being the folder holding that `SKILL.md`; `sync-decisions` and `save` run `close-plan` when a decision closes a question. The tool and contract copies were re-synced.
 
-**Why.** A use report from the Atlantic repository (pack `atlantic-uat-dms`, 2026-10-07, 12 `check` and 8 `next-id` runs) found: a question closed by deleting its heading and row had its number handed out again; three existing packs in folders titled `Atlantic UAT ThingsBoard` and the like drew 21 to 80 FAIL each from a folder rule no document states; `check .` reported a false mismatch; `next-id` printed nothing for a new pack. The reuse is the paradox: an identifier is never reused, so its use needs a durable record, but nothing is deleted (`Disproven claims`) and nothing settled sits under `## Open questions` (`Misfiled content`). `next-id` takes the highest number over every heading, row and citation, so a number survives exactly while one of them does. The deciding entry is the one place that satisfies all three rules. Measured on a scratch pack: with the `Closes` line present `next-id Q` returned the number after the closed question, without it the closed number again. This repository already did it: FD-Q3, FD-Q4 and SC-Q1 to SC-Q5 survive only as citations.
+**Why.** A use report from the Atlantic repository (pack `atlantic-uat-dms`, 2026-10-07, 12 `check` and 8 `next-id` runs) found: a question closed by deleting its heading and row had its number handed out again; three existing packs in folders titled `Atlantic UAT ThingsBoard` and the like drew 21 to 80 FAIL each from a folder rule no document states; `check .` reported a false mismatch; `next-id` printed nothing for a new pack. The reuse is the paradox: an identifier is never reused, so its use needs a durable record, but nothing is deleted (`Disproven claims`) and nothing settled sits under `## Open questions` (`Misfiled content`). `next-id` takes the highest number over every heading, row and citation, so a number survives exactly while one of them does. The deciding entry is the one place that satisfies all three rules. Measured on a scratch pack: with the `Closes` line present `next-id Q` returned the number after the closed question, without it the closed number again. This repository already did it: BLD-Q3, BLD-Q4 and SC-Q1 to SC-Q5 survive only as citations.
 
 **What breaks if ignored.** A reused number makes every earlier chat, commit and report that cites it resolve to a different question, silently. A FAIL that fires on every file of a legacy pack teaches the agent to ignore FAIL, which voids the gate that no write is reported while one is printed.
 
@@ -737,7 +737,7 @@ A new thread is the default once the pack is current, which after a save it is. 
 
 **Rejected: accept `## Index` as a second index name.** The pack using it was not inspected, and a second name doubles what every consumer matches.
 
-## FD-D48: `commit-composer` and `commit-composer-max` commit a working tree at hunk level through a shared convention and a read-only kit
+## BLD-D48: `commit-composer` and `commit-composer-max` commit a working tree at hunk level through a shared convention and a read-only kit
 
 **Decided.** Add two user entrypoints (`allow_implicit_invocation: false`) in `commit-composer/` and `commit-composer-max/`, named outside `baselinedocs-*` so the family's metadata, version, reference tests and release stamp skip them; `tests/test_commit_skills.py` is their test surface. Each ships byte-identical copies of `contract/commit-convention.md` (message format, project naming, the rule keeping pack identifiers out of a message, grouping, the whole procedure) and `contract/commitkit.sh` (`hunks`, `patch`, `scan`, `lint`); each `SKILL.md` holds its message shape and two gate sentences. The title is `type(project): subject`, the project is the pack's name, else the nearest manifest. A unit is one `-U0` hunk or a whole unsplittable file, named by a content hash. The skill prints the grouping and commits only after approval. `commit-composer`: title aimed at 50, body optional, 2 to 5 bullets, `lint --concise`. `commit-composer-max`: body always, labelled `Why:`, `Changes:`, `Risk and verification:`, no length limit, `lint --max`. Both print the starting tree id and HEAD id and never push or amend.
 
@@ -751,7 +751,7 @@ A new thread is the default once the pack is current, which after a save it is. 
 
 **Rejected: scripted `git add -p` with canned input.** Its prompts are interactive and vary by git version.
 
-**Rejected: one skill with a flag for the long message.** Flag handling varies across hosts, the reason FD-D39 gave for a separate entrypoint.
+**Rejected: one skill with a flag for the long message.** Flag handling varies across hosts, the reason BLD-D39 gave for a separate entrypoint.
 
 **Rejected: folder `baselinedocs-commit-*`.** It would enter the family's tests, version stamp and help guide, and wear a name for a family whose pack it never reads.
 
@@ -763,19 +763,19 @@ A new thread is the default once the pack is current, which after a save it is. 
 
 **Rejected: committing without showing the grouping.** Grouping is a judgement and a commit is costly to undo.
 
-**Rejected: a Python or Go kit.** The reasons FD-D46 gave for `packtool.sh`.
+**Rejected: a Python or Go kit.** The reasons BLD-D46 gave for `packtool.sh`.
 
-**Moved by FD-D53.** The skills, their assets and their tests no longer live in this repository. The decision is carried in full in the `commit-composer` repository's own pack.
+**Moved by BLD-D53.** The skills, their assets and their tests no longer live in this repository. The decision is carried in full in the `commit-composer` repository's own pack.
 
-## FD-D49: `baselinedocs-self-upgrade` upgrades the installed skills in every agent through a read-only scan and a confirmed overwrite
+## BLD-D49: `baselinedocs-self-upgrade` upgrades the installed skills in every agent through a read-only scan and a confirmed overwrite
 
-**Decided.** Add `baselinedocs-self-upgrade`, a user entrypoint (`allow_implicit_invocation: false`, display name `Baseline Docs Self-Upgrade`) that upgrades the installed baselinedocs skills, never a pack. The agent takes the latest release from `git ls-remote --tags` (highest `vMAJOR.MINOR.PATCH`), falling back to the `version:` line of the skill's own `SKILL.md` on `main` when the tag listing fails, and stops when `main` reads lower than the tag. `scripts/upgradekit.sh` (`inventory`, `compare <latest>`) globs `$HOME/.<agent>/skills` and `$HOME/.<agent>/<sub>/skills` for `baselinedocs-*/SKILL.md` and prints one row per skill per agent folder: status, skill, version, kind, path. The agent reports by agent folder and asks for confirmation as its own question before any write. Upgrade runs `npx skills update -g -y`, re-runs `compare`, then replaces each real folder still behind or unparsable from a shallow clone of `main` whose `version:` is not below the release, this skill's own folders last. It never writes or deletes through a link or junction, never deletes a skill folder, never adds a skill that is not installed. The skill is `baselinedocs-*` so it carries the family `version:` (FD-D45) and can upgrade itself; its one script has no canonical copy in `contract/`, and `tests/test_conventions.py` names it in `OWN_SCRIPTS`.
+**Decided.** Add `baselinedocs-self-upgrade`, a user entrypoint (`allow_implicit_invocation: false`, display name `Baseline Docs Self-Upgrade`) that upgrades the installed baselinedocs skills, never a pack. The agent takes the latest release from `git ls-remote --tags` (highest `vMAJOR.MINOR.PATCH`), falling back to the `version:` line of the skill's own `SKILL.md` on `main` when the tag listing fails, and stops when `main` reads lower than the tag. `scripts/upgradekit.sh` (`inventory`, `compare <latest>`) globs `$HOME/.<agent>/skills` and `$HOME/.<agent>/<sub>/skills` for `baselinedocs-*/SKILL.md` and prints one row per skill per agent folder: status, skill, version, kind, path. The agent reports by agent folder and asks for confirmation as its own question before any write. Upgrade runs `npx skills update -g -y`, re-runs `compare`, then replaces each real folder still behind or unparsable from a shallow clone of `main` whose `version:` is not below the release, this skill's own folders last. It never writes or deletes through a link or junction, never deletes a skill folder, never adds a skill that is not installed. The skill is `baselinedocs-*` so it carries the family `version:` (BLD-D45) and can upgrade itself; its one script has no canonical copy in `contract/`, and `tests/test_conventions.py` names it in `OWN_SCRIPTS`.
 
-**Why.** Measured on this machine 2026-10-09: 190 installs of 19 skills across `.agents`, `.agent`, `.claude`, `.gemini/skills`, `.kilocode`, `.kiro`, `.config/crush`, `.config/devin`, `.config/goose`, `.snowflake/cortex`, all `3.1.0` except 17 real copies under `.gemini/config/skills` whose `SKILL.md` has no `version:` at all. Most agent folders are links into `~/.agents/skills`, which `npx` refreshes; the real copies are invisible to it and stay old. FD-D45 stamps the version and nothing reads it back, so a stale machine is invisible. Discovery is a glob because three of those folders were absent from every list written beforehand. The network commands belong to the agent because `AGENTS.md` fixes the scripts as no-network and read-only, so the helper stays safe to run in any repository. The stamp check exists because the tag precedes the stamp commit (FD-D45): an upgrade in that window installs the old version and the machine still reads as outdated.
+**Why.** Measured on this machine 2026-10-09: 190 installs of 19 skills across `.agents`, `.agent`, `.claude`, `.gemini/skills`, `.kilocode`, `.kiro`, `.config/crush`, `.config/devin`, `.config/goose`, `.snowflake/cortex`, all `3.1.0` except 17 real copies under `.gemini/config/skills` whose `SKILL.md` has no `version:` at all. Most agent folders are links into `~/.agents/skills`, which `npx` refreshes; the real copies are invisible to it and stay old. BLD-D45 stamps the version and nothing reads it back, so a stale machine is invisible. Discovery is a glob because three of those folders were absent from every list written beforehand. The network commands belong to the agent because `AGENTS.md` fixes the scripts as no-network and read-only, so the helper stays safe to run in any repository. The stamp check exists because the tag precedes the stamp commit (BLD-D45): an upgrade in that window installs the old version and the machine still reads as outdated.
 
 **What breaks if ignored.** A machine runs rules several releases old with nothing saying so. An upgrade that writes through a junction deletes the shared copy every other agent reads. An upgrade without confirmation overwrites edits a user made in an agent's skill folder.
 
-**Found by running it, 2026-10-19, release 3.2.0.** `npx skills update -g -y` ran against this machine: 205 installs, 188 current afterwards, 17 real copies in `.gemini/config/skills` left behind. It updated 26 skills, among them skills outside this family, so the primary command is not scoped to `baselinedocs-*` and the confirmation question now says so. The clone fallback cloned the tag and installed `3.1.0`, because the stamp commit follows the tag (FD-D45), so all 17 still read behind; cloning `main` after the stamp check replaced them and `compare 3.2.0` then reported all 205 at or above. The fallback therefore clones `main`, not the tag, and checks the clone's `version:`. Not tested: the path where `main` is behind the tag, which step 2 stops on before any write.
+**Found by running it, 2026-10-19, release 3.2.0.** `npx skills update -g -y` ran against this machine: 205 installs, 188 current afterwards, 17 real copies in `.gemini/config/skills` left behind. It updated 26 skills, among them skills outside this family, so the primary command is not scoped to `baselinedocs-*` and the confirmation question now says so. The clone fallback cloned the tag and installed `3.1.0`, because the stamp commit follows the tag (BLD-D45), so all 17 still read behind; cloning `main` after the stamp check replaced them and `compare 3.2.0` then reported all 205 at or above. The fallback therefore clones `main`, not the tag, and checks the clone's `version:`. Not tested: the path where `main` is behind the tag, which step 2 stops on before any write.
 
 **Accepted cost.** The primary command and the fallback have each run once on a real install since the paragraph above. The rest of this paragraph predates that run, when only `inventory` and `compare` (190 rows read; `compare 3.1.0` reported the 17 unparsable rows, `compare 9.9.9` reported all 190 behind and exited 1). Whether `npx skills update` honours the lock file's `sourceUrl` for an install made from an https URL is unverified; the re-run of `compare` is what catches a no-op. The `kind` column reads a junction as `dir`, so the link check is the agent's, not the script's. The version of a symbolic link and of its target are the same file, so a row set over-counts one physical copy per link. The scan reaches two levels below a dot-directory in `$HOME` only, so an install elsewhere, a project-scope install for example, is not seen. mawk and BWK awk wait on CI, as for the other kits. No host has selected the skill from a plain request.
 
@@ -797,7 +797,7 @@ A new thread is the default once the pack is current, which after a save it is. 
 
 **Rejected: deleting skills the repository dropped.** The installer adds and overwrites but never removes; a deletion is not an upgrade.
 
-## FD-D50: the README teaches through rendered images in light and dark pairs, built from HTML sources, and carries no Mermaid
+## BLD-D50: the README teaches through rendered images in light and dark pairs, built from HTML sources, and carries no Mermaid
 
 **Decided.** `README.md` is rebuilt around 17 illustrations: six navigation buttons, `problem`, `daily-guide-card`, `pack-anatomy`, `workflow`, five `scenario-*` strips, `family-map`, `multi-pack`. Each is an `.item` in an HTML page under `assets/source/` (`shared.css` tokens, `shared.js` reading `?theme=dark`, the element id is the output name), screenshotted at 2x CSS scale and finished by `assets/source/finish.py` (rounded corners, border, lossless WebP through Pillow, run as `uvx --from pillow python -I`). Each ships as `<name>.webp` and `<name>-dark.webp` under `assets/`, chosen in the README by `<picture>` with `prefers-color-scheme`; 34 files, 3.7 MB, each under 300 KB. `banner.png` and `assets/source/banner.html` are untouched and light only. The navigation row and the Daily Guide card are images inside `<a>`, one image per link, because GitHub has no image map. Mermaid is removed: the workflow exists as `workflow.webp`, whose `alt` text narrates every node and edge, beside the branch table and the trap table. Section order: banner and navigation, problem, install, Daily Guide, pack, workflow, scenarios, skills, multi-domain, reference. The agent-selected table, the commit table, and the directory layout sit in `<details>`. `tests/test_readme_assets.py` has one case per skill: `data-skill="<skill>"` appears in `assets/source/family-map.html`. A README identifier-shaped token must resolve to a heading (`tests/test_packs.py`), so the example identifiers of the fictional `avatar-rollout` pack appear inside images only.
 
@@ -805,7 +805,7 @@ A new thread is the default once the pack is current, which after a save it is. 
 
 **What breaks if ignored.** A skill added without a chip leaves the family map silently incomplete, caught by the test. A README that cites an example identifier fails `test_packs.py` because the token names no heading; this happened once, in the `alt` text of `pack-anatomy`.
 
-**Accepted cost.** The workflow now lives in the README image, the help guide Mermaid, and the Daily Guide, with no comparison between them (extends FD-D43). Images are shot by hand: an edit to an HTML source changes nothing shipped until both themes are re-shot, and only the HTML source is tested, never a WebP against it. A reader without image support gets `alt` text and two tables, no flowchart text. Each re-render adds up to 3.7 MB to history. The `<picture>` selection and WebP rendering were not observed on github.com; the files were decoded here only. Banner has no dark variant: `logo.png` has a white ground blended with multiply.
+**Accepted cost.** The workflow now lives in the README image, the help guide Mermaid, and the Daily Guide, with no comparison between them (extends BLD-D43). Images are shot by hand: an edit to an HTML source changes nothing shipped until both themes are re-shot, and only the HTML source is tested, never a WebP against it. A reader without image support gets `alt` text and two tables, no flowchart text. Each re-render adds up to 3.7 MB to history. The `<picture>` selection and WebP rendering were not observed on github.com; the files were decoded here only. Banner has no dark variant: `logo.png` has a white ground blended with multiply.
 
 **Rejected: SVG.** GitHub does not load web fonts for an SVG used through `<img>`, so the fonts fall back (platform behaviour, not tested here).
 
@@ -821,7 +821,7 @@ A new thread is the default once the pack is current, which after a save it is. 
 
 **Rejected: a test that every README image exists.** The user dropped it.
 
-## FD-D51: `onboard` shows progress and what waits on the user as visuals, and drops the file record and the unresolved-reference section
+## BLD-D51: `onboard` shows progress and what waits on the user as visuals, and drops the file record and the unresolved-reference section
 
 **Decided.** `baselinedocs-onboard` `Output` is six sections: `Needs you now`, `Progress`, `Doc pack introduction`, `Next actions`, `Pack map`, `Caveats`. `Needs you now` is a card of one to three items the pack records as waiting on the user. `Progress` per pack, ordered by `updated` newest first: a badge line, a bar and a strip of recorded phase statuses (fixed chips: complete, active, blocked, draft, planned, other), a four-column table of the phases not complete plus the last one recorded, a three-column board (`Needs your decision`, `In progress`, `Waiting`), and open risks. `Pack map` draws the index's recorded edges as boxes and arrows, only for a multi-pack scope with an edge or coupling note. `Caveats` holds at most one `Not read:` line and one line per `packtool.sh check` FAIL or WARN, and is omitted when empty. Step 4 enumerates the scope silently; no file list and no line counts are reported, and the size gate still presents the total when it stops. `Unresolved references` as a section is gone; step 9 still notes the references and the Reading Rule that an answer touching one is unbacked stays. Counting recorded statuses is describing; a percentage, a forecast, or "on track" is assessing and stays forbidden. Terminal visuals are Unicode and emoji text; Mermaid appears only in an HTML page rendered when the user asks, which writes a file and is published only on request. The visual rules live in `SKILL.md`, not in `report-style.md`.
 
@@ -829,9 +829,9 @@ A new thread is the default once the pack is current, which after a save it is. 
 
 **What breaks if ignored.** The report goes back to text a reader scans for the answer, and a long pack renders a table row per finished phase.
 
-**Accepted cost.** The user can no longer see which files were read, so a short read is visible only through the size gate. A reference left unread now shows as one line and no quotation, so an answer leaning on it is checked against a summary of the gap, not against the quoted passage. `Not read:` also names an exclusion such as retained source material, which FD-D34 had removed; it sits inside the one line the user kept. Emoji and box-drawing width differ across terminals and fonts and were not observed on a host other than this one. A chip is chosen from the status word the pack records, so a pack whose word matches none shows `❔` with its own word. The HTML page and Mermaid path were not run. No host has selected the changed skill.
+**Accepted cost.** The user can no longer see which files were read, so a short read is visible only through the size gate. A reference left unread now shows as one line and no quotation, so an answer leaning on it is checked against a summary of the gap, not against the quoted passage. `Not read:` also names an exclusion such as retained source material, which BLD-D34 had removed; it sits inside the one line the user kept. Emoji and box-drawing width differ across terminals and fonts and were not observed on a host other than this one. A chip is chosen from the status word the pack records, so a pack whose word matches none shows `❔` with its own word. The HTML page and Mermaid path were not run. No host has selected the changed skill.
 
-**Found by running it.** A subagent ran the skill on a 4-document pack of another repository (755 lines read, 0 FAIL, 2 WARN) and reported four defects, now fixed in `SKILL.md`: an item with no identifier forced an invented code (`DMS-Q-DNS`), which reads as the pack's own, so such an item is named by a short phrase; `Waiting` required a "blocked on" record the pack did not hold, so it shows a dash without one; an unlabelled continuation passage and a stale labelled `Next action` conflicted, so the passage counts and a conflict shows both and goes to `Caveats`; the card repeated `Next actions`, so it carries a label only. The same run found the gloss rule produced bullets under each table two to three times longer than the table, so a gloss now sits in the cell and no bullet block follows a table. Also added: ties keep recorded order, "recorded against" is defined, `updated` is the newest among the pack's documents, and a link or token in a pack is never reproduced. A second run on the same pack measured 89 lines (`Progress` 38, `Next actions` 17), no cell over 6 words, one text line under a table, and read the first two sections at a glance, with `Progress` still densest. It reported the phase table unbounded (8 rows), 6 question identifiers in one row because the rule counted citations, about 9 dated continuation passages with no rule for which counts, a stale `Next action` with no rule for it, and risks with no recorded state. Fixed: the phase table holds at most five rows (blocked and active, the nearest not started, the last recorded) and at most two question identifiers per row, counting only questions the phase waits on; only the newest continuation passage counts and a next action it contradicts is stale and goes to `Caveats`; risks are listed only when recorded as not mitigated; a contradiction between documents is a `Caveats` line. The user then removed the two caps only, five rows and two question identifiers per row: the table still holds the phases not complete plus the last recorded, and still counts only questions the phase waits on, with no cap on either. A pack with many incomplete phases returns a long table. The report was not run a third time: the pack contradicts itself in several places, so a third measurement would be skewed, and whether the fixes shorten it is unobserved. `Next actions` and `Caveats` were reported as still the densest parts, and the instruction-preservation rule of FD-D32 keeps `Next actions` long.
+**Found by running it.** A subagent ran the skill on a 4-document pack of another repository (755 lines read, 0 FAIL, 2 WARN) and reported four defects, now fixed in `SKILL.md`: an item with no identifier forced an invented code (`DMS-Q-DNS`), which reads as the pack's own, so such an item is named by a short phrase; `Waiting` required a "blocked on" record the pack did not hold, so it shows a dash without one; an unlabelled continuation passage and a stale labelled `Next action` conflicted, so the passage counts and a conflict shows both and goes to `Caveats`; the card repeated `Next actions`, so it carries a label only. The same run found the gloss rule produced bullets under each table two to three times longer than the table, so a gloss now sits in the cell and no bullet block follows a table. Also added: ties keep recorded order, "recorded against" is defined, `updated` is the newest among the pack's documents, and a link or token in a pack is never reproduced. A second run on the same pack measured 89 lines (`Progress` 38, `Next actions` 17), no cell over 6 words, one text line under a table, and read the first two sections at a glance, with `Progress` still densest. It reported the phase table unbounded (8 rows), 6 question identifiers in one row because the rule counted citations, about 9 dated continuation passages with no rule for which counts, a stale `Next action` with no rule for it, and risks with no recorded state. Fixed: the phase table holds at most five rows (blocked and active, the nearest not started, the last recorded) and at most two question identifiers per row, counting only questions the phase waits on; only the newest continuation passage counts and a next action it contradicts is stale and goes to `Caveats`; risks are listed only when recorded as not mitigated; a contradiction between documents is a `Caveats` line. The user then removed the two caps only, five rows and two question identifiers per row: the table still holds the phases not complete plus the last recorded, and still counts only questions the phase waits on, with no cap on either. A pack with many incomplete phases returns a long table. The report was not run a third time: the pack contradicts itself in several places, so a third measurement would be skewed, and whether the fixes shorten it is unobserved. `Next actions` and `Caveats` were reported as still the densest parts, and the instruction-preservation rule of BLD-D32 keeps `Next actions` long.
 
 **Rejected: remove `Unresolved references` and its rules with no trace.** An answer leaning on an unread document then reads as backed; the user kept one line.
 
@@ -847,17 +847,17 @@ A new thread is the default once the pack is current, which after a save it is. 
 
 **Rejected: a table row for every phase.** A pack with 21 phases returns to the wall the change removes.
 
-## FD-D52: `scripts/release.py` stamps, tests, commits and tags in one commit on the maintainer's machine, and `release.yml` only verifies
+## BLD-D52: `scripts/release.py` stamps, tests, commits and tags in one commit on the maintainer's machine, and `release.yml` only verifies
 
-**Decided.** `scripts/release.py vX.Y.Z` refuses unless the branch is `main`, the tree is clean, and the tag exists neither locally nor on origin; then it runs `stamp_version.py`, runs the suite, commits `release: vX.Y.Z`, tags that commit, and prints `git push origin main` and `git push origin vX.Y.Z` without running them. A failing suite or a missing `uvx` reverts the stamp and commits nothing. `stamp_version.py` gains `--check vX.Y.Z`, which writes nothing and exits 1 when any `SKILL.md` carries another version. `.github/workflows/release.yml` runs `--check` and the suite on a tag push, with `contents: read` and no push. Tags up to `v3.2.1` stay on the commit before their stamp. `AGENTS.md` `Releases` and the `README.md` version line describe the new order. This amends the stamping step of FD-D45 and leaves its single family-wide `version:`, the semver tag, and the test unchanged.
+**Decided.** `scripts/release.py vX.Y.Z` refuses unless the branch is `main`, the tree is clean, and the tag exists neither locally nor on origin; then it runs `stamp_version.py`, runs the suite, commits `release: vX.Y.Z`, tags that commit, and prints `git push origin main` and `git push origin vX.Y.Z` without running them. A failing suite or a missing `uvx` reverts the stamp and commits nothing. `stamp_version.py` gains `--check vX.Y.Z`, which writes nothing and exits 1 when any `SKILL.md` carries another version. `.github/workflows/release.yml` runs `--check` and the suite on a tag push, with `contents: read` and no push. Tags up to `v3.2.1` stay on the commit before their stamp. `AGENTS.md` `Releases` and the `README.md` version line describe the new order. This amends the stamping step of BLD-D45 and leaves its single family-wide `version:`, the semver tag, and the test unchanged.
 
-**Why.** Under FD-D45 the tag sits on the commit before the stamp, so a checkout of the tag shows the previous version. That produced a real failure: the `baselinedocs-self-upgrade` fallback cloned the tag and installed `3.1.0` on 17 folders (FD-D49). Stamping before tagging puts the tag on the tree it names, so a clone of the tag is correct, the bot commit and the `git pull` after it disappear, and the workflow no longer needs write access.
+**Why.** Under BLD-D45 the tag sits on the commit before the stamp, so a checkout of the tag shows the previous version. That produced a real failure: the `baselinedocs-self-upgrade` fallback cloned the tag and installed `3.1.0` on 17 folders (BLD-D49). Stamping before tagging puts the tag on the tree it names, so a clone of the tag is correct, the bot commit and the `git pull` after it disappear, and the workflow no longer needs write access.
 
 **What breaks if ignored.** Each consumer must remember to read `main` and not the tag, and each release leaves local `main` behind until a pull.
 
 **Accepted cost.** A maintainer who runs `git tag` by hand and pushes it skips the stamp; the workflow then fails after the tag is public, and the repair is to delete and re-push the tag, which rewrites a published tag. Nothing server-side prevents it. The push is three commands, not two. `release.py` reaches origin once, for `git ls-remote`, and skips that check when origin is unreachable. The commit and tag path of `release.py` was not run, only the refusal on a dirty tree; `--check` has tests. `release.yml` has not run in its new form. The stamp check in the self-upgrade skill stays, for tags cut the earlier way.
 
-**Rejected: keep the workflow stamping after the tag (FD-D45).** Produces the tag on the earlier commit and the failure above.
+**Rejected: keep the workflow stamping after the tag (BLD-D45).** Produces the tag on the earlier commit and the failure above.
 
 **Rejected: a `workflow_dispatch` that stamps, commits and tags.** Tag matches its tree, but keeps a bot commit and write access, and replaces the `git tag` step the maintainer chose to keep.
 
@@ -867,7 +867,7 @@ A new thread is the default once the pack is current, which after a save it is. 
 
 **Rejected: rewriting the existing tags onto their stamp commits.** Rewrites published tags that installs already reference.
 
-## FD-D53: the commit skills leave this repository for their own, with the history of their paths
+## BLD-D53: the commit skills leave this repository for their own, with the history of their paths
 
 **Decided.** `commit-composer`, `commit-composer-max`, `contract/commit-convention.md`, `contract/commitkit.sh`, `tests/test_commit_skills.py` and `tests/test_commitkit.py` are removed from this repository. They live in the `commit-composer` repository (`C:\.repos\Personal\commit-composer`, personal account), created with `git filter-repo` so the history of those paths carries over, with the same release script, stamp script, workflows and a pack of its own. Initial version there `1.0.0`. The `AGENTS.md` section `The commit skills`, the README `Commit Skills` block and its mentions, the `Beside the pack` card of `assets/source/family-map.html`, the commit entries of `docs/onboarding/baselinedocs-daily-workflow.html` and `commit_skill_dirs()` in `tests/helpers.py` are removed. This repository's history is unchanged.
 
@@ -875,46 +875,46 @@ A new thread is the default once the pack is current, which after a save it is. 
 
 **What breaks if ignored.** Two unrelated release cadences stay under one version, and only a `--skill` install separates them.
 
-**Accepted cost.** A machine that installed the skills from this repository keeps the folders: `baselinedocs-self-upgrade` upgrades only `baselinedocs-*` skills and never removes one (FD-D49). The user chose to ignore it. Both `family-map` images were re-shot without the commit card, so the right-hand column now ends higher than the left. The `commit-composer` repository's `.github/workflows` have not run.
+**Accepted cost.** A machine that installed the skills from this repository keeps the folders: `baselinedocs-self-upgrade` upgrades only `baselinedocs-*` skills and never removes one (BLD-D49). The user chose to ignore it. Both `family-map` images were re-shot without the commit card, so the right-hand column now ends higher than the left. The `commit-composer` repository's `.github/workflows` have not run.
 
 **Rejected: keep a copy here.** Two canonical sources for one convention drift, and no test compares across repositories.
 
-**Rejected: copy without history.** Drops the history of the convention and tests, which carry the measured findings of FD-D48.
+**Rejected: copy without history.** Drops the history of the convention and tests, which carry the measured findings of BLD-D48.
 
 **Rejected: leave a pointer to the new repository in the README.** The user chose complete removal.
 
 ## Open questions
 
-### FD-Q1: can internal helpers be hidden at package level?
+### BLD-Q1: can internal helpers be hidden at package level?
 
 Package-level installation profiles would hide the lifecycle skills more completely than the naming prefix and the Codex-only policy field manage today. Deferred because Skills.sh does not currently provide a portable hidden-skill category, so there is nothing to build against.
 
-The trigger to reopen: a portable hidden-skill or profile mechanism appearing in the installer or in the Agent Skills format. Until then FD-D1's progressive disclosure is the whole mechanism, and the design says so rather than implying the split is enforced everywhere.
+The trigger to reopen: a portable hidden-skill or profile mechanism appearing in the installer or in the Agent Skills format. Until then BLD-D1's progressive disclosure is the whole mechanism, and the design says so rather than implying the split is enforced everywhere.
 
-### FD-Q2: can hooks be rolled out across an organization?
+### BLD-Q2: can hooks be rolled out across an organization?
 
-Closed by FD-D37. The entire hook mechanism, including `baselinedocs-setup-hooks` and the `hooks/` adapter, has been removed from the repository, so organization-wide rollout is no longer applicable.
+Closed by BLD-D37. The entire hook mechanism, including `baselinedocs-setup-hooks` and the `hooks/` adapter, has been removed from the repository, so organization-wide rollout is no longer applicable.
 
-FD-Q2 closed in FD-D37, FD-Q3 closed in FD-D29, FD-Q4 closed in FD-D30. Stated here rather than deleted, so a reader can tell each was settled by a decision rather than dropped. Neither question's analysis was lost with its heading: both sit inside the decision that closed them.
+BLD-Q2 closed in BLD-D37, BLD-Q3 closed in BLD-D29, BLD-Q4 closed in BLD-D30. Stated here rather than deleted, so a reader can tell each was settled by a decision rather than dropped. Neither question's analysis was lost with its heading: both sit inside the decision that closed them.
 
-### FD-Q5: who, if anyone, owns misfiled-content detection now that `onboard` no longer checks it?
+### BLD-Q5: who, if anyone, owns misfiled-content detection now that `onboard` no longer checks it?
 
-FD-D34 deleted `onboard`'s placement check along with its output section, because nothing consumed its report once `Placement findings` no longer exists. `onboard` was the only skill in the family that read a pack in full and could compare content against `pack-contract.md`'s role lists; `skill-consolidation` SC-D16 and SC-D20 built that capability into `onboard` specifically because a full read is the qualifying criterion for carrying the contract at all.
+BLD-D34 deleted `onboard`'s placement check along with its output section, because nothing consumed its report once `Placement findings` no longer exists. `onboard` was the only skill in the family that read a pack in full and could compare content against `pack-contract.md`'s role lists; `skill-consolidation` SC-D16 and SC-D20 built that capability into `onboard` specifically because a full read is the qualifying criterion for carrying the contract at all.
 
 What is at stake: the failure `pack-contract.md`'s own `Misfiled content` section describes, settled material filed under an open-questions heading being the commonest form, has no detector anywhere in the family until this question is answered.
 
 The trigger to reopen: a decision on whether an existing skill absorbs the check under the same full-read criterion SC-D16 already established, whether a new skill is warranted, or whether the family accepts the gap as a deliberate cost of a lighter `onboard` report.
 
-FD-D46 covers the structural half: `packtool.sh check`, which `onboard` runs before reporting, fails a decision filed under `## Open questions` or a question outside it, and warns on a question whose index status is no longer `open`. Placement by meaning, such as reasoning written into `roadmap`, is only a heuristic warning there, so this question stays open on that half.
+BLD-D46 covers the structural half: `packtool.sh check`, which `onboard` runs before reporting, fails a decision filed under `## Open questions` or a question outside it, and warns on a question whose index status is no longer `open`. Placement by meaning, such as reasoning written into `roadmap`, is only a heuristic warning there, so this question stays open on that half.
 
-### FD-Q7: how does `code_ref` name the repository inspected when the code lives in a submodule?
+### BLD-Q7: how does `code_ref` name the repository inspected when the code lives in a submodule?
 
-`check` compares a commit-valued `code_ref` only with the HEAD of the repository holding the pack, so a `sourcecode` document describing a submodule warns `code-ref-behind-head` on every run while recording the submodule's real commit, which is what `Frontmatter` asks for. A field naming the inspected repository fixes it, but it changes the frontmatter and therefore `baseline_schema`, which FD-D45 treats as a semantic decision, and it reaches every packaged contract copy and the tool's key check. FD-D47 left the existing warning as a drift signal.
+`check` compares a commit-valued `code_ref` only with the HEAD of the repository holding the pack, so a `sourcecode` document describing a submodule warns `code-ref-behind-head` on every run while recording the submodule's real commit, which is what `Frontmatter` asks for. A field naming the inspected repository fixes it, but it changes the frontmatter and therefore `baseline_schema`, which BLD-D45 treats as a semantic decision, and it reaches every packaged contract copy and the tool's key check. BLD-D47 left the existing warning as a drift signal.
 
 What is at stake: a correct document is flagged after every commit of the submodule, so the signal is ignored.
 
 The trigger to reopen: a request to change the frontmatter. Options to weigh then: a repository path relative to the pack, or a repository and commit pair.
 
-### FD-Q6: how does a skill carry a version in its frontmatter, bumped automatically, so an outdated install on a machine can be recognized?
+### BLD-Q6: how does a skill carry a version in its frontmatter, bumped automatically, so an outdated install on a machine can be recognized?
 
-Closed by FD-D45, which narrowed it to a version controlled at release and stamped by a tag-triggered workflow. The findings and every option this question weighed sit inside FD-D45, including the per-skill bump, the installed-copy checker, and the key `metadata.version`, which was rejected rather than dropped.
+Closed by BLD-D45, which narrowed it to a version controlled at release and stamped by a tag-triggered workflow. The findings and every option this question weighed sit inside BLD-D45, including the per-skill bump, the installed-copy checker, and the key `metadata.version`, which was rejected rather than dropped.
