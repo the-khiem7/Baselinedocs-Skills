@@ -3,7 +3,7 @@ baseline_schema: "2.0"
 pack: "baselinedocs"
 document: "introduction"
 status: "active"
-updated: "2026-10-20"
+updated: "2026-10-25"
 code_ref: "uncommitted"
 ---
 
@@ -36,6 +36,7 @@ Verified against the working tree at `0cb913f`, not read off `DESIGN.md`.
 | lifecycle skills, agent-selected | every other skill, all `true`. Includes `recall`, BLD-D40 |
 | pack schema | `2.0`. Three core documents, two conditional |
 | `baseline-core` | the only copy of `pack-contract.md`, `report-style.md` and `packtool.sh`, read by every skill from `<skill-dir>/../baseline-core` and failing closed without it. BLD-D54 |
+| `baseline-academic-core` | the only copy of `academic-contract.md`, read from `<skill-dir>/../baseline-academic-core` by the `baselinedocs-academic-*` skills only, failing closed without it. BLD-D55 |
 | contract gate | `CONTRACT_SKILLS` (`tests/test_references.py`). Absent from `audit-claims`, `audit-drift`, `brief` |
 | report-style gate | every skill outside `REPORT_STYLE_EXEMPT`. Absent from `load` |
 | checkpoint hook | none. Automated Stop hook adapter retired and removed in BLD-P8 |
@@ -69,7 +70,7 @@ The family's design is shipped, not planned. This pack exists so the reasoning b
 
 ## Constraints
 
-- A skill may rely only on files inside its own folder. `npx skills add --skill <name>` installs one folder and nothing else travels with it, so a canonical asset reaches a skill from `baseline-core`, the one sibling every skill may read (BLD-D54), or it does not reach it at all.
+- A skill may rely only on files inside its own folder. `npx skills add --skill <name>` installs one folder and nothing else travels with it, so a canonical asset reaches a skill from `baseline-core`, the one sibling every skill may read (BLD-D54), or, for the `baselinedocs-academic-*` skills only, `baseline-academic-core` (BLD-D55), or it does not reach it at all.
 - `README.md`, `AGENTS.md`, `contract/`, `tests/`, and this pack do not ship. No installed agent can open any of them, so nothing may be cut from a `SKILL.md` on the grounds that it is written down here.
 - ASCII hyphen only. `test_no_typographic_dashes` covers every `.md`, `.yaml`, `.yml`, `.txt`, `.py`, and `.ini` file Git lists for this repository, this pack included.
 - The frontmatter schema is fixed at `2.0`. Extending it is a schema change, not a convention change.

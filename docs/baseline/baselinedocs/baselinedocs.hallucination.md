@@ -3,7 +3,7 @@ baseline_schema: "2.0"
 pack: "baselinedocs"
 document: "hallucination"
 status: "active"
-updated: "2026-10-20"
+updated: "2026-10-25"
 code_ref: "uncommitted"
 ---
 
@@ -73,6 +73,7 @@ Every identifier in this initiative carries its pack's prefix: `BLD-` here, `SC-
 | BLD-D52 | a release script run on the maintainer's machine stamping and tagging in one commit, and the release workflow only verifying | current, amends BLD-D45 | BLD-D45, BLD-D49 |
 | BLD-D53 | the commit skills leaving this repository for their own, with the history of their paths | current, reverses the rejected separate-repository option of BLD-D48 | BLD-D48, BLD-D45, BLD-D49 |
 | BLD-D54 | the contract, report style and `packtool.sh` moving into one `baseline-core` skill that every other skill requires, instead of byte-identical copies | current, amends BLD-D7 and `skill-consolidation` SC-D16 and SC-D17 | BLD-D7, BLD-D49, BLD-D52 |
+| BLD-D55 | `baseline-academic-core` as a second shared core, read only by the `baselinedocs-academic-*` skills | current, adds a second exception beside BLD-D54 | BLD-D54 |
 | BLD-Q1 | hiding internal helpers at package level rather than by naming convention | open, deferred on a missing platform feature | BLD-D1 |
 | BLD-Q2 | installing checkpoint hooks across more than one repository | closed, hook mechanism removed | BLD-D6, BLD-D37 |
 | BLD-Q5 | who, if anyone, owns misfiled-content detection now that `onboard` no longer checks it | open, structural half covered by BLD-D46 | BLD-D34, BLD-D46 |
@@ -897,6 +898,20 @@ A new thread is the default once the pack is current, which after a save it is. 
 **Rejected: keep the copies and rename the canonical folder to `baseline-core`.** Safest for a lone install, and the user chose to give up that guarantee for one place to edit.
 
 **Rejected: a `baseline-core` skill beside the copies.** Adds a place to keep in sync and removes no duplication.
+
+## BLD-D55: `baseline-academic-core` is a second shared core, read only by the `baselinedocs-academic-*` skills
+
+**Decided.** `baseline-academic-core` holds `references/academic-contract.md` (lesson format, citation rule, anonymization rules), the only copy. The `baselinedocs-academic-*` skills read it from beside their own folder, as they read `baseline-core`, and stop when either folder is missing. It is a second exception to the rule that a skill never requires a sibling's content, after `baseline-core`. It carries the shared `version:`, is stamped by the release, and is found and upgraded by `baselinedocs-self-upgrade` only in an agent folder that holds an academic skill. Pack documents are still read through `baseline-core`.
+
+**Why.** The lesson rules are used by one sub-family. In `baseline-core` they would load into every pack-writing skill that never uses them, and a copy in each academic skill drifts, which is the BLD-D54 problem.
+
+**What breaks if ignored.** An academic skill installed without `baseline-academic-core` has no citation or anonymization rule, and would build a page from memory. The gate turns that into a stop.
+
+**Accepted cost.** An academic skill needs two sibling folders, `baseline-core` and `baseline-academic-core`.
+
+**Rejected: put the lesson rules in `baseline-core`.** Every pack-writing skill would load rules only a lesson needs.
+
+**Rejected: a copy of the lesson rules in each academic skill.** The copies drift, as the pack contract's copies did.
 
 ## Open questions
 
