@@ -72,6 +72,7 @@ Every identifier in this initiative carries its pack's prefix: `BLD-` here, `SC-
 | BLD-D51 | `onboard` reporting progress and what waits on the user as visuals, and dropping the file record and the unresolved-reference section | current, amends BLD-D34, BLD-D17 and BLD-D15 | BLD-D15, BLD-D17, BLD-D31, BLD-D34, BLD-D35 |
 | BLD-D52 | a release script run on the maintainer's machine stamping and tagging in one commit, and the release workflow only verifying | current, amends BLD-D45 | BLD-D45, BLD-D49 |
 | BLD-D53 | the commit skills leaving this repository for their own, with the history of their paths | current, reverses the rejected separate-repository option of BLD-D48 | BLD-D48, BLD-D45, BLD-D49 |
+| BLD-D54 | the contract, report style and `packtool.sh` moving into one `baseline-core` skill that every other skill requires, instead of byte-identical copies | current, amends BLD-D7 and `skill-consolidation` SC-D16 and SC-D17 | BLD-D7, BLD-D49, BLD-D52 |
 | BLD-Q1 | hiding internal helpers at package level rather than by naming convention | open, deferred on a missing platform feature | BLD-D1 |
 | BLD-Q2 | installing checkpoint hooks across more than one repository | closed, hook mechanism removed | BLD-D6, BLD-D37 |
 | BLD-Q5 | who, if anyone, owns misfiled-content detection now that `onboard` no longer checks it | open, structural half covered by BLD-D46 | BLD-D34, BLD-D46 |
@@ -882,6 +883,20 @@ A new thread is the default once the pack is current, which after a save it is. 
 **Rejected: copy without history.** Drops the history of the convention and tests, which carry the measured findings of BLD-D48.
 
 **Rejected: leave a pointer to the new repository in the README.** The user chose complete removal.
+
+## BLD-D54: the contract, report style and `packtool.sh` live once, in a `baseline-core` skill every other skill requires
+
+**Decided.** `baseline-core` is a skill holding `references/pack-contract.md`, `references/report-style.md` and `scripts/packtool.sh`, the only copies. Every other skill reads them from there and ships none. The gate sentence in each `SKILL.md` stays, repointed at `baseline-core`, and fails closed: when `baseline-core` is not installed the skill stops, names it, and neither writes nor reports on a pack. The installer line in the README and `baselinedocs-self-upgrade` install and upgrade `baseline-core` together with any family skill. `baseline-core` carries the shared `version:` and is stamped by the release. `upgradekit.sh` stays in `baselinedocs-self-upgrade`.
+
+**Why.** One definition has one place to edit, so the byte-identical copies, the `TOOL_SKILLS`, `CONTRACT_SKILLS` and `REPORT_STYLE_EXEMPT` sets, and the resync step after every contract edit disappear.
+
+**What breaks if ignored.** Nothing breaks by leaving the copies, they cost a resync. The new arrangement breaks when a skill is installed without `baseline-core`: it loses the contract, which is the historical `adopt` to `init` bug that the gate now turns into a stop rather than a silent skip.
+
+**Accepted cost.** A single-skill install is no longer self-contained. The path to `baseline-core` depends on the host's install layout.
+
+**Rejected: keep the copies and rename the canonical folder to `baseline-core`.** Safest for a lone install, and the user chose to give up that guarantee for one place to edit.
+
+**Rejected: a `baseline-core` skill beside the copies.** Adds a place to keep in sync and removes no duplication.
 
 ## Open questions
 

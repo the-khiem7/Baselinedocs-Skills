@@ -32,8 +32,8 @@ Required by `contract/pack-contract.md` from the first entry. SC-D19 records why
 | SC-D13 | stopping the rename sweep at the audit pair | current | SC-D3 |
 | SC-D14 | declining a pack-level finished marker | current | - |
 | SC-D15 | the installed generation gap, and the constraint that asserted it | current | SC-D8 |
-| SC-D16 | shipping the contract on a full read rather than on writing | current, amended by `baselinedocs` BLD-D40 | SC-D12, SC-D17, SC-D20 |
-| SC-D17 | shipping report style as its own asset, separate from the contract | current | SC-D16 |
+| SC-D16 | shipping the contract on a full read rather than on writing | current, amended by `baselinedocs` BLD-D40, shipping replaced by BLD-D54 | SC-D12, SC-D17, SC-D20 |
+| SC-D17 | shipping report style as its own asset, separate from the contract | current, shipping replaced by `baselinedocs` BLD-D54 | SC-D16 |
 | SC-D18 | forbidding hard-wrapped paragraphs in pack documents | current | SC-Q7 |
 | SC-D19 | putting the entry index into the contract as a conditional section | current, conditional clause reversed by BLD-D42 | SC-D5, SC-D6, SC-D20, SC-Q7, BLD-D42 |
 | SC-D20 | who repairs content that is true but sits in the wrong document, closing SC-Q5 | current | SC-D5, SC-D12, SC-D16 |

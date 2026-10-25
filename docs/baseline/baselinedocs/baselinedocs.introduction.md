@@ -35,8 +35,9 @@ Verified against the working tree at `0cb913f`, not read off `DESIGN.md`.
 | one-time administration | none |
 | lifecycle skills, agent-selected | every other skill, all `true`. Includes `recall`, BLD-D40 |
 | pack schema | `2.0`. Three core documents, two conditional |
-| packaged `pack-contract.md` copies | one per skill in `CONTRACT_SKILLS` (`tests/test_references.py`). Absent from `audit-claims`, `audit-drift`, `brief` |
-| packaged `report-style.md` copies | every skill outside `REPORT_STYLE_EXEMPT`. Absent from `load` |
+| `baseline-core` | the only copy of `pack-contract.md`, `report-style.md` and `packtool.sh`, read by every skill from `<skill-dir>/../baseline-core` and failing closed without it. BLD-D54 |
+| contract gate | `CONTRACT_SKILLS` (`tests/test_references.py`). Absent from `audit-claims`, `audit-drift`, `brief` |
+| report-style gate | every skill outside `REPORT_STYLE_EXEMPT`. Absent from `load` |
 | checkpoint hook | none. Automated Stop hook adapter retired and removed in BLD-P8 |
 | skill version | top-level `version:` in every `SKILL.md`, one value for the family, `0.0.0` until the first tag. A pushed `vX.Y.Z` tag makes `.github/workflows/release.yml` stamp it onto `main`. BLD-D45 |
 | checkpoint model | in-thread phase checkpointing by `run` |
@@ -68,11 +69,11 @@ The family's design is shipped, not planned. This pack exists so the reasoning b
 
 ## Constraints
 
-- A skill may rely only on files inside its own folder. `npx skills add --skill <name>` installs one folder and nothing else travels with it, so a canonical asset reaches a skill as a byte-identical packaged copy or it does not reach it at all.
+- A skill may rely only on files inside its own folder. `npx skills add --skill <name>` installs one folder and nothing else travels with it, so a canonical asset reaches a skill from `baseline-core`, the one sibling every skill may read (BLD-D54), or it does not reach it at all.
 - `README.md`, `AGENTS.md`, `contract/`, `tests/`, and this pack do not ship. No installed agent can open any of them, so nothing may be cut from a `SKILL.md` on the grounds that it is written down here.
 - ASCII hyphen only. `test_no_typographic_dashes` covers every `.md`, `.yaml`, `.yml`, `.txt`, `.py`, and `.ini` file Git lists for this repository, this pack included.
 - The frontmatter schema is fixed at `2.0`. Extending it is a schema change, not a convention change.
-- An install is a snapshot. An installed skill reads its own packaged copy, so this repository and any machine drift apart from the next edit onward.
+- An install is a snapshot. An installed skill reads the `baseline-core` installed beside it, so this repository and any machine drift apart from the next edit onward.
 
 ### Platform basis
 
