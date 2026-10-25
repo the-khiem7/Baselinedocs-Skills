@@ -82,7 +82,7 @@ It is a second asset rather than a section of the contract on purpose. The contr
 
 - Edit the file in `baseline-academic-core/` and nothing else. No academic skill ships a copy, and `baseline-core` holds none of its rules.
 - It follows the `baseline-core` shape: `allow_implicit_invocation: false`, the `Baseline Docs Internal:` display prefix, and the family `version:`, stamped by the release.
-- `tests/test_references.py` pins that the asset exists and that no skill ships a copy. The sentence that defines the academic core's folder, and its gate, are pinned when the first academic skill is added.
+- `tests/test_references.py` pins that the asset exists and that no skill ships a copy. The sentence that defines the academic core's folder, and the two gates an academic skill carries, are pinned for `ACADEMIC_SKILLS`; `tests/test_conventions.py` lets only that sentence and the `baseline-core` one use a path through `../`. A skill outside that set that names the core fails, except `baselinedocs-self-upgrade`, which only installs and compares it.
 
 ## The self-upgrade skill
 
