@@ -51,6 +51,16 @@ def statuses(result):
     return {(r[1], r[4]): r[0] for r in rows(result)}
 
 
+def test_inventory_lists_baseline_core_beside_the_family(tmp_path):
+    install(tmp_path, ".claude/skills", "baselinedocs-help")
+    install(tmp_path, ".claude/skills", "baseline-core")
+    _, found = inventory(tmp_path)
+    assert set(found) == {
+        ("baselinedocs-help", ".claude"),
+        ("baseline-core", ".claude"),
+    }
+
+
 def test_inventory_finds_installs_at_both_depths(tmp_path):
     install(tmp_path, ".claude/skills", "baselinedocs-help")
     install(tmp_path, ".gemini/config/skills", "baselinedocs-help")

@@ -5,6 +5,8 @@ import pytest
 
 from helpers import ROOT, SKILL_NAMES, read_skill, split_frontmatter
 
+VERSIONED = [*SKILL_NAMES, "baseline-core"]
+
 spec = importlib.util.spec_from_file_location(
     "stamp_version", ROOT / "scripts" / "stamp_version.py"
 )
@@ -17,11 +19,11 @@ SAMPLE = '---\nname: x\ndescription: y\n---\n\n# Body\n'
 def versions():
     return {
         name: split_frontmatter(read_skill(name))[0].get("version")
-        for name in SKILL_NAMES
+        for name in VERSIONED
     }
 
 
-@pytest.mark.parametrize("name", SKILL_NAMES)
+@pytest.mark.parametrize("name", VERSIONED)
 def test_skill_declares_a_semver_string(name):
     version = versions()[name]
     assert isinstance(version, str) and re.fullmatch(r"\d+\.\d+\.\d+", version), (

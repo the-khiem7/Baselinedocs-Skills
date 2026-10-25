@@ -8,7 +8,9 @@ version: "3.3.0"
 
 Turn one closed decision in a pack into a standalone ADR. The pack is read and never written. The only files touched are the new ADR and the ADR directory's `README.md` index.
 
-Read `references/report-style.md` in full before reporting to the user, every time. It governs how a pack element is named in conversation; an identifier stated without its meaning is a question the user has to ask.
+`<core-dir>` is the folder `baseline-core`, a sibling of the folder this SKILL.md sits in (`<skill-dir>/../baseline-core`). When it is not there, stop and tell the user to install `baseline-core`; never write or report on a pack from memory instead.
+
+Read `<core-dir>/references/report-style.md` in full before reporting to the user, every time. It governs how a pack element is named in conversation; an identifier stated without its meaning is a question the user has to ask.
 
 ## Inputs
 

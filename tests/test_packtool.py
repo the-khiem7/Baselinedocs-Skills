@@ -6,10 +6,9 @@ import pytest
 
 from helpers import ROOT
 
-# `contract/packtool.sh` ships to skills as a byte-identical copy, so testing the
-# canonical file tests every copy. Each case builds a small pack in a temporary
+# `baseline-core/scripts/packtool.sh` is the only copy of the tool. Each case builds a small pack in a temporary
 # directory, breaks exactly one rule, and asserts the rule code that names it.
-TOOL = (ROOT / "contract" / "packtool.sh").as_posix()
+TOOL = (ROOT / "baseline-core" / "scripts" / "packtool.sh").as_posix()
 SH = shutil.which("sh")
 
 

@@ -60,7 +60,7 @@ The index is one table, one row per entry, four columns: the entry's identifier,
 
 A row states what an entry is about and nothing more. Never its reasoning, never the justification behind its outcome, never a summary that could be mistaken for the entry. A row that carries reasoning is a second copy of the entry, and the two drift.
 
-Nothing verifies a row against its entry. Every other duplicated file in this system is byte-identical and machine-compared; a row is a different text by design, so there is nothing to compare it to. This one is upheld by discipline: when an entry changes status or subject, its row changes in the same edit. A stale row asserting an entry is current when a later entry reversed it is worse than no index at all.
+Nothing verifies a row against its entry. A row is a different text from its entry by design, so there is nothing to compare it to. This one is upheld by discipline: when an entry changes status or subject, its row changes in the same edit. A stale row asserting an entry is current when a later entry reversed it is worse than no index at all.
 
 An answer that turns on an entry whose full text was not read is unbacked. Say so and offer to read the entry. A row is a locator, not a source.
 

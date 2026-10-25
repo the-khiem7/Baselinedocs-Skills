@@ -8,13 +8,15 @@ version: "3.3.0"
 
 Bring every installed `baselinedocs` skill on this machine up to the latest release. It touches skill folders only: no pack, no project file, no commit.
 
-Read `references/report-style.md` in full before reporting to the user, every time. It governs how an identifier or a quotation is named in conversation and how a report is shaped.
+`<core-dir>` is the folder `baseline-core`, a sibling of the folder this SKILL.md sits in (`<skill-dir>/../baseline-core`). When it is not there, stop and tell the user to install `baseline-core`; never write or report on a pack from memory instead.
+
+Read `<core-dir>/references/report-style.md` in full before reporting to the user, every time. It governs how an identifier or a quotation is named in conversation and how a report is shaped.
 
 ## Workflow
 
 1. Latest release: run `git ls-remote --tags --refs https://github.com/the-khiem7/Baselinedocs-Skills.git "v*"` and take the highest `vMAJOR.MINOR.PATCH`, compared number by number. When that fails or lists no such tag, read the `version:` line of `https://raw.githubusercontent.com/the-khiem7/Baselinedocs-Skills/main/baselinedocs-self-upgrade/SKILL.md` instead. When neither answers, stop and report the failure.
 2. Stamp check: when a tag gave the version, read the same file on `main`. A `version:` below the tag means the release workflow has not stamped `main` yet. Report it and stop. An upgrade now would install the old version, and the machine would still read as outdated afterwards. When `main` cannot be read, say the stamp is unchecked and continue.
-3. Compare: run `sh scripts/upgradekit.sh compare <latest>` from this skill's folder. It scans `$HOME` for `baselinedocs-*` skills under every agent's skills folder and prints one row per skill per agent folder: status, skill, version, kind, path.
+3. Compare: run `sh scripts/upgradekit.sh compare <latest>` from this skill's folder. It scans `$HOME` for `baselinedocs-*` skills and `baseline-core` under every agent's skills folder and prints one row per skill per agent folder: status, skill, version, kind, path.
 4. Report, then stop. Name the latest version and where it came from. Summarize by agent skills folder: how many skills are behind or unparsable and the lowest version there. An unparsable row has no readable version; treat it as behind. Do not list every row. Nothing behind: say so and stop.
 5. Ask for confirmation as its own question, never inside a default set. This overwrites skill folders for every agent on the machine, including any edit the user made in them, and the primary command also updates skills outside this family.
 6. After confirmation, upgrade:
@@ -27,7 +29,7 @@ Read `references/report-style.md` in full before reporting to the user, every ti
 
 - Never replace or delete through a link or junction. Check `[ -L <path> ]`, and on Windows `(Get-Item -Force <path>).LinkType`, before touching a path; the script's `kind` column is a hint and reads a junction as `dir`. Deleting through a junction removes the shared copy that every other agent reads.
 - Never delete a skill folder. One the repository no longer carries stays; the installer adds and overwrites but never removes.
-- Never add a skill that is not installed. This upgrades what exists.
+- Never add a skill that is not installed. This upgrades what exists, except `baseline-core`: every `baselinedocs-*` skill reads it from beside its own folder, so an agent folder that holds family skills without it gets it, from the clone, in the same pass.
 - The script reads the disk only. Every network command and every write is yours to run, after the confirmation.
 
 ## Output

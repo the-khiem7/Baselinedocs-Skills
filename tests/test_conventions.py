@@ -39,7 +39,12 @@ def test_no_typographic_dashes():
 # route a reader to it holds whether or not the sibling is installed; requiring a
 # sibling's content does not. So the test bans the ways a prerequisite can be
 # written - a path out of the folder, a path into another skill's folder, or an
-# instruction to read a sibling - and leaves bare names alone.
+# instruction to read a sibling - and leaves bare names alone. The one allowed
+# path is the sentence that locates `baseline-core`, the shared core every skill
+# reads and fails closed without.
+CORE_PATH = "`<skill-dir>/../baseline-core`"
+
+
 def skill_files(name):
     folder = ROOT / name
     return [
@@ -53,6 +58,8 @@ def sibling_dependencies(name):
     found = []
     for path in skill_files(name):
         for number, line in enumerate(read_text(path).splitlines(), start=1):
+            if CORE_PATH in line:
+                continue
             if "../" in line or "..\\" in line:
                 found.append((path, number, "a path out of the skill folder"))
             for other in re.findall(
@@ -75,7 +82,7 @@ def test_skill_depends_on_no_sibling(name):
 
 
 # Folder shape from AGENTS.md: SKILL.md, agents/openai.yaml, references/ only
-# when needed, and scripts/packtool.sh as the one script. A stray file here ships
+# when needed, and no script. A stray file here ships
 # to everyone who installs the skill. The one exception is a script a single skill
 # owns outright and no other skill ships, named here so a second one is a decision.
 OWN_SCRIPTS = {"baselinedocs-self-upgrade": "scripts/upgradekit.sh"}
@@ -99,7 +106,6 @@ def test_skill_folder_has_only_the_shipped_shape(name):
         not in (
             "SKILL.md",
             "agents/openai.yaml",
-            "scripts/packtool.sh",
             OWN_SCRIPTS.get(name),
         )
         and not (item.startswith("references/") and item.count("/") == 1)

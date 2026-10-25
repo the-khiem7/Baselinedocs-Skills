@@ -8,7 +8,9 @@ version: "3.3.0"
 
 Tell the user what each `baselinedocs` skill does and which one to call next. This reads no pack and writes nothing.
 
-Read `references/report-style.md` in full before reporting to the user, every time. It governs how a skill or a pack element is named in conversation; a name stated without its meaning is a question the user has to ask.
+`<core-dir>` is the folder `baseline-core`, a sibling of the folder this SKILL.md sits in (`<skill-dir>/../baseline-core`). When it is not there, stop and tell the user to install `baseline-core`; never write or report on a pack from memory instead.
+
+Read `<core-dir>/references/report-style.md` in full before reporting to the user, every time. It governs how a skill or a pack element is named in conversation; a name stated without its meaning is a question the user has to ask.
 
 Read `references/guide.md` in full before answering, every time. It is the only source for the skill list and the workflow; do not answer from memory of an earlier session or from the one-line descriptions of whatever skills happen to be installed.
 

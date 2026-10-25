@@ -8,11 +8,13 @@ version: "3.3.0"
 
 Load a pack into working context and show the user what is going on: what the project is, how far it has got, and what waits on them. The deliverable is a loaded agent and a report that can be read at a glance, not a new document. Nothing is written, except the page `Output` describes when the user asks for one.
 
-Read `references/pack-contract.md` in full before reporting the pack state, every time. It is the only definition of which document owns which content, the entry-index shape, and what a phase or an open question records; do not infer any of it from a filename, from an earlier session, or from memory.
+`<core-dir>` is the folder `baseline-core`, a sibling of the folder this SKILL.md sits in (`<skill-dir>/../baseline-core`). When it is not there, stop and tell the user to install `baseline-core`; never write or report on a pack from memory instead.
 
-Read `references/report-style.md` in full before reporting to the user, every time. It governs how a pack element is named in conversation; an identifier stated without its meaning is a question the user has to ask.
+Read `<core-dir>/references/pack-contract.md` in full before reporting the pack state, every time. It is the only definition of which document owns which content, the entry-index shape, and what a phase or an open question records; do not infer any of it from a filename, from an earlier session, or from memory.
 
-Run `sh <skill-dir>/scripts/packtool.sh check <pack-dir>` before reporting the pack state, and report its FAIL and WARN lines as findings; it reports, it never fixes. `<skill-dir>` is the folder this SKILL.md sits in. Without `sh`, say the checks were not run.
+Read `<core-dir>/references/report-style.md` in full before reporting to the user, every time. It governs how a pack element is named in conversation; an identifier stated without its meaning is a question the user has to ask.
+
+Run `sh <core-dir>/scripts/packtool.sh check <pack-dir>` before reporting the pack state, and report its FAIL and WARN lines as findings; it reports, it never fixes. Without `sh`, say the checks were not run.
 
 ## Inputs
 

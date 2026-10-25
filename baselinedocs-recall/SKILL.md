@@ -8,9 +8,11 @@ version: "3.3.0"
 
 Restore the family's rules into working context and stop. Nothing is read from the pack and nothing is written.
 
-Read `references/pack-contract.md` in full now, every time.
+`<core-dir>` is the folder `baseline-core`, a sibling of the folder this SKILL.md sits in (`<skill-dir>/../baseline-core`). When it is not there, stop and tell the user to install `baseline-core`; never write or report on a pack from memory instead.
 
-Read `references/report-style.md` in full now, every time.
+Read `<core-dir>/references/pack-contract.md` in full now, every time.
+
+Read `<core-dir>/references/report-style.md` in full now, every time.
 
 ## Workflow
 

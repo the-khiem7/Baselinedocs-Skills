@@ -8,7 +8,9 @@ version: "3.3.0"
 
 Load a pack into working context silently and confirm readiness. The deliverable is a loaded agent holding the pack state in context, without explanatory commentary or status reporting. Nothing is written.
 
-Read `references/pack-contract.md` in full before loading a pack, every time. It is the only definition of which document owns which content, the entry-index shape, and what a phase or an open question records; do not infer any of it from a filename, from an earlier session, or from memory.
+`<core-dir>` is the folder `baseline-core`, a sibling of the folder this SKILL.md sits in (`<skill-dir>/../baseline-core`). When it is not there, stop and tell the user to install `baseline-core`; never write or report on a pack from memory instead.
+
+Read `<core-dir>/references/pack-contract.md` in full before loading a pack, every time. It is the only definition of which document owns which content, the entry-index shape, and what a phase or an open question records; do not infer any of it from a filename, from an earlier session, or from memory.
 
 ## Inputs
 

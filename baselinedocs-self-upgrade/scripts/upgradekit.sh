@@ -12,7 +12,7 @@
 #
 # A root is a directory scanned for agent skill folders and defaults to $HOME.
 # Under a root it looks for <root>/.<agent>/skills/ and <root>/.<agent>/<sub>/skills/
-# holding baselinedocs-*/SKILL.md, which covers ~/.claude, ~/.agents, ~/.kiro,
+# holding baselinedocs-*/SKILL.md or baseline-core/SKILL.md, which covers ~/.claude, ~/.agents, ~/.kiro,
 # ~/.gemini/config, ~/.config/crush, ~/.snowflake/cortex and any later agent that
 # follows the same layout, without a list that goes stale.
 #
@@ -67,7 +67,7 @@ END { print out }
 # skips `.` and `..`; an unmatched glob stays literal and fails the -f test.
 rows() {
   for root in "$@"; do
-    for f in "$root"/.[!.]*/skills/baselinedocs-*/SKILL.md "$root"/.[!.]*/*/skills/baselinedocs-*/SKILL.md; do
+    for f in "$root"/.[!.]*/skills/baselinedocs-*/SKILL.md "$root"/.[!.]*/*/skills/baselinedocs-*/SKILL.md       "$root"/.[!.]*/skills/baseline-core/SKILL.md "$root"/.[!.]*/*/skills/baseline-core/SKILL.md; do
       [ -f "$f" ] || continue
       dir=${f%/SKILL.md}
       skill=${dir##*/}

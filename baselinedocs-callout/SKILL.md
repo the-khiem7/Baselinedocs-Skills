@@ -8,11 +8,13 @@ version: "3.3.0"
 
 Point at a slice of the pack by name, and store nothing while doing it.
 
-Read `references/pack-contract.md` in full before creating or editing any pack file, every time. It is the only definition of which document owns which content; do not infer that from a filename, from an earlier session, or from memory.
+`<core-dir>` is the folder `baseline-core`, a sibling of the folder this SKILL.md sits in (`<skill-dir>/../baseline-core`). When it is not there, stop and tell the user to install `baseline-core`; never write or report on a pack from memory instead.
 
-Read `references/report-style.md` in full before reporting to the user, every time. It governs how a pack element is named in conversation; an identifier stated without its meaning is a question the user has to ask.
+Read `<core-dir>/references/pack-contract.md` in full before creating or editing any pack file, every time. It is the only definition of which document owns which content; do not infer that from a filename, from an earlier session, or from memory.
 
-Run `sh <skill-dir>/scripts/packtool.sh check <pack-dir>` after every pack write and before reporting it, and allocate every new identifier with `sh <skill-dir>/scripts/packtool.sh next-id <pack-dir> <D|Q|P> [PREFIX]`, never from memory. `<skill-dir>` is the folder this SKILL.md sits in, and a new pack's first identifier needs its PREFIX. Never report a write as done while `check` prints a FAIL line: a duplicate identifier or a missing index row resolves citations to the wrong entry, and nothing else detects it. Without `sh`, say the checks were not run.
+Read `<core-dir>/references/report-style.md` in full before reporting to the user, every time. It governs how a pack element is named in conversation; an identifier stated without its meaning is a question the user has to ask.
+
+Run `sh <core-dir>/scripts/packtool.sh check <pack-dir>` after every pack write and before reporting it, and allocate every new identifier with `sh <core-dir>/scripts/packtool.sh next-id <pack-dir> <D|Q|P> [PREFIX]`, never from memory. A new pack's first identifier needs its PREFIX. Never report a write as done while `check` prints a FAIL line: a duplicate identifier or a missing index row resolves citations to the wrong entry, and nothing else detects it. Without `sh`, say the checks were not run.
 
 ## What a callout group is
 
@@ -86,7 +88,7 @@ Deleting a callout group is not deleting a pack claim. The distinction matters b
 ## Non-Goals
 
 - not a pack update; `baselinedocs-save` captures what the thread established, and this skill points at it afterwards
-- not an entry index; the `hallucination` index covers every entry permanently, and `references/pack-contract.md` defines it
+- not an entry index; the `hallucination` index covers every entry permanently, and `<core-dir>/references/pack-contract.md` defines it
 - not a multi-pack index; `baselinedocs-init` creates that, and `baselinedocs-maintain-split` creates one when a pack divides
 - not a brief; `baselinedocs-brief` reports where work stands, and a callout group reports nothing
 - not a summary of the pack, and not a place to read one

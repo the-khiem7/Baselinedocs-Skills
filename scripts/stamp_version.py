@@ -19,6 +19,11 @@ FRONTMATTER = re.compile(r"\A(---\r?\n)(.*?)(\r?\n---\r?\n)", re.DOTALL)
 VERSION_LINE = re.compile(r"^version:.*$", re.MULTILINE)
 
 
+def skill_files():
+    """Every family skill plus baseline-core, which shares the family version."""
+    return sorted([*ROOT.glob("baselinedocs-*/SKILL.md"), ROOT / "baseline-core" / "SKILL.md"])
+
+
 def parse_version(raw):
     version = raw[1:] if raw.startswith("v") else raw
     if not SEMVER.fullmatch(version):
@@ -49,7 +54,7 @@ def main(argv):
     if check:
         behind = [
             path.parent.name
-            for path in sorted(ROOT.glob("baselinedocs-*/SKILL.md"))
+            for path in skill_files()
             if stamp_text(path.read_bytes().decode("utf-8"), version)
             != path.read_bytes().decode("utf-8")
         ]
@@ -58,7 +63,7 @@ def main(argv):
         print(f"version {version}: {len(behind)} SKILL.md file(s) differ")
         return 1 if behind else 0
     changed = 0
-    for path in sorted(ROOT.glob("baselinedocs-*/SKILL.md")):
+    for path in skill_files():
         before = path.read_bytes().decode("utf-8")
         after = stamp_text(before, version)
         if after != before:

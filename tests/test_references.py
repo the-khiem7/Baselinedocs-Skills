@@ -4,10 +4,19 @@ import pytest
 
 from helpers import ROOT, SKILL_NAMES, read_skill, read_text, rel
 
-CANONICAL_CONTRACT = ROOT / "contract" / "pack-contract.md"
-CANONICAL_REPORT_STYLE = ROOT / "contract" / "report-style.md"
+CORE = ROOT / "baseline-core"
+CORE_ASSETS = [
+    "references/pack-contract.md",
+    "references/report-style.md",
+    "scripts/packtool.sh",
+]
+CORE_SENTENCE = (
+    "`<core-dir>` is the folder `baseline-core`, a sibling of the folder this SKILL.md "
+    "sits in (`<skill-dir>/../baseline-core`). When it is not there, stop and tell the "
+    "user to install `baseline-core`; never write or report on a pack from memory instead."
+)
 
-# Report style ships to every skill that names a pack element in its output.
+# Report style is gated in every skill that names a pack element in its output.
 # `baselinedocs-load` is exempt because it operates silently and outputs only a single
 # confirmation word ("Sẵn sàng." / "Ready.") with no pack elements cited.
 REPORT_STYLE_EXEMPT = {
@@ -15,15 +24,13 @@ REPORT_STYLE_EXEMPT = {
 }
 
 REPORT_GATE = (
-    "Read `references/report-style.md` in full before reporting to the user, "
+    "Read `<core-dir>/references/report-style.md` in full before reporting to the user, "
     "every time."
 )
 
-# Every skill that writes into a pack ships the contract, because skills install
-# one folder at a time and cannot reach a sibling skill's files. The copies are
-# packaged assets of one canonical file, and they are pinned for the same reason:
-# a drifted copy reaches whoever installed that one skill, and nothing in their
-# install says it is stale.
+# Every skill that writes into a pack gates on the contract, which lives once in
+# `baseline-core`. The gate fails closed when that folder is missing, so a skill
+# installed without it stops instead of writing from memory.
 WRITER_SKILLS = {
     "baselinedocs-init",
     "baselinedocs-adopt",
@@ -43,7 +50,7 @@ WRITER_SKILLS = {
 # the absence of writes: a skill that reads part of a pack and owns the role list
 # would report conformance it never checked, which is worse than not reporting it.
 # `baselinedocs-brief` reads no document in full, and neither `audit` skill
-# compares placement, so none of them carry a copy.
+# compares placement, so none of them gate on it.
 READER_SKILLS = {
     "baselinedocs-onboard",
 }
@@ -64,116 +71,95 @@ CONTRACT_SKILLS = WRITER_SKILLS | READER_SKILLS | LOADER_SKILLS | RECALL_SKILLS
 # pinned: an unpinned second wording is how the family ends up with two
 # definitions of when the file must be read.
 WRITE_GATE = (
-    "Read `references/pack-contract.md` in full before creating or editing any pack "
+    "Read `<core-dir>/references/pack-contract.md` in full before creating or editing any pack "
     "file, every time."
 )
 READ_GATE = (
-    "Read `references/pack-contract.md` in full before reporting the pack state, "
+    "Read `<core-dir>/references/pack-contract.md` in full before reporting the pack state, "
     "every time."
 )
 LOAD_GATE = (
-    "Read `references/pack-contract.md` in full before loading a pack, "
+    "Read `<core-dir>/references/pack-contract.md` in full before loading a pack, "
     "every time."
 )
-RECALL_CONTRACT_GATE = "Read `references/pack-contract.md` in full now, every time."
+RECALL_CONTRACT_GATE = "Read `<core-dir>/references/pack-contract.md` in full now, every time."
 GATES = {name: WRITE_GATE for name in WRITER_SKILLS}
 GATES.update({name: READ_GATE for name in READER_SKILLS})
 GATES.update({name: LOAD_GATE for name in LOADER_SKILLS})
 GATES.update({name: RECALL_CONTRACT_GATE for name in RECALL_SKILLS})
 
-# `contract/packtool.sh` checks pack structure mechanically: duplicate identifiers,
-# index rows against entry headings, entries filed under the wrong section. A
-# writer runs it after every write, because the failures it catches report
-# success when made; a full reader or an audit runs it before reporting, so the
-# report rests on a check rather than on a read. The copies are pinned like the
-# contract, for the same reason.
+# `baseline-core/scripts/packtool.sh` checks pack structure mechanically:
+# duplicate identifiers, index rows against entry headings, entries filed under
+# the wrong section. A writer runs it after every write, because the failures it
+# catches report success when made; a full reader or an audit runs it before
+# reporting, so the report rests on a check rather than on a read.
 TOOL_SKILLS = WRITER_SKILLS | READER_SKILLS | {
     "baselinedocs-audit-claims",
     "baselinedocs-audit-drift",
 }
-CANONICAL_TOOL = ROOT / "contract" / "packtool.sh"
 TOOL_WRITE_GATE = (
-    "Run `sh <skill-dir>/scripts/packtool.sh check <pack-dir>` after every pack write "
+    "Run `sh <core-dir>/scripts/packtool.sh check <pack-dir>` after every pack write "
     "and before reporting it, and allocate every new identifier with "
-    "`sh <skill-dir>/scripts/packtool.sh next-id <pack-dir> <D|Q|P> [PREFIX]`, never "
-    "from memory. `<skill-dir>` is the folder this SKILL.md sits in, and a new pack's "
-    "first identifier needs its PREFIX."
+    "`sh <core-dir>/scripts/packtool.sh next-id <pack-dir> <D|Q|P> [PREFIX]`, never "
+    "from memory. A new pack's first identifier needs its PREFIX."
 )
 TOOL_REPORT_GATE = (
-    "Run `sh <skill-dir>/scripts/packtool.sh check <pack-dir>` before reporting the "
+    "Run `sh <core-dir>/scripts/packtool.sh check <pack-dir>` before reporting the "
     "pack state, and report its FAIL and WARN lines as findings; it reports, it never "
-    "fixes. `<skill-dir>` is the folder this SKILL.md sits in."
+    "fixes."
 )
 CLOSE_PLAN_SKILLS = {"baselinedocs-sync-decisions", "baselinedocs-save"}
 TOOL_GATES = {name: TOOL_WRITE_GATE for name in WRITER_SKILLS}
 TOOL_GATES.update({name: TOOL_REPORT_GATE for name in TOOL_SKILLS - WRITER_SKILLS})
 
-RECALL_REPORT_GATE ="Read `references/report-style.md` in full now, every time."
+RECALL_REPORT_GATE = "Read `<core-dir>/references/report-style.md` in full now, every time."
 REPORT_GATES = {name: RECALL_REPORT_GATE for name in RECALL_SKILLS}
 
 REPORTERS = [name for name in SKILL_NAMES if name not in REPORT_STYLE_EXEMPT]
 READ_ONLY_SKILLS = sorted(READER_SKILLS | LOADER_SKILLS | RECALL_SKILLS)
 
-SET_HINT = (
-    "classify it in tests/test_references.py: WRITER_SKILLS, READER_SKILLS, "
-    "LOADER_SKILLS or RECALL_SKILLS if it ships the contract; "
-    "REPORT_STYLE_EXEMPT if it ships no report style; TOOL_SKILLS if it ships "
-    "scripts/packtool.sh"
-)
+@pytest.mark.parametrize("asset", CORE_ASSETS)
+def test_baseline_core_holds_the_shared_asset(asset):
+    assert (CORE / asset).is_file(), f"baseline-core/{asset} is missing"
 
 
-def holders(asset):
-    return {
-        path.parents[1].name
-        for path in ROOT.glob(f"baselinedocs-*/references/{asset}")
-    }
-
-
-def test_every_contract_holder_is_classified():
-    held = holders("pack-contract.md")
-    assert held == CONTRACT_SKILLS, (
-        f"skills holding a pack-contract.md copy differ from CONTRACT_SKILLS: "
-        f"unexpected copy in {sorted(held - CONTRACT_SKILLS)}, "
-        f"missing copy in {sorted(CONTRACT_SKILLS - held)}. {SET_HINT}"
+@pytest.mark.parametrize("name", SKILL_NAMES)
+def test_no_skill_ships_a_copy_of_a_core_asset(name):
+    copies = [asset for asset in CORE_ASSETS if (ROOT / name / asset).exists()]
+    assert copies == [], (
+        f"{name} ships {copies}; the only copy lives in baseline-core (BLD-D54)"
     )
 
 
-@pytest.mark.parametrize("name", sorted(CONTRACT_SKILLS))
-def test_packaged_contract_matches_canonical_contract(name):
-    path = ROOT / name / "references" / "pack-contract.md"
-    assert path.read_bytes() == CANONICAL_CONTRACT.read_bytes(), (
-        f"{rel(path)} drifted from contract/pack-contract.md"
+@pytest.mark.parametrize("name", SKILL_NAMES)
+def test_every_skill_defines_core_dir_and_fails_closed(name):
+    assert CORE_SENTENCE in read_skill(name), (
+        f"{name} reads baseline-core but never defines <core-dir> and stops without it"
     )
+
+
+@pytest.mark.parametrize("name", SKILL_NAMES)
+def test_no_skill_points_at_a_local_copy_of_a_core_asset(name):
+    text = read_skill(name)
+    for stale in (
+        "`references/pack-contract.md`",
+        "`references/report-style.md`",
+        "<skill-dir>/scripts/packtool.sh",
+    ):
+        assert stale not in text, f"{name} still points at {stale}, which no longer ships"
 
 
 @pytest.mark.parametrize("name", sorted(CONTRACT_SKILLS))
 def test_contract_skills_gate_on_reading_the_contract(name):
     assert GATES[name] in read_skill(name), (
-        f"{name} ships the contract but never requires reading it"
-    )
-
-
-def test_every_tool_holder_is_classified():
-    held = {path.parents[1].name for path in ROOT.glob("baselinedocs-*/scripts/packtool.sh")}
-    assert held == TOOL_SKILLS, (
-        f"skills holding a packtool.sh copy differ from TOOL_SKILLS: "
-        f"unexpected copy in {sorted(held - TOOL_SKILLS)}, "
-        f"missing copy in {sorted(TOOL_SKILLS - held)}. {SET_HINT}"
-    )
-
-
-@pytest.mark.parametrize("name", sorted(TOOL_SKILLS))
-def test_packaged_tool_matches_canonical_tool(name):
-    path = ROOT / name / "scripts" / "packtool.sh"
-    assert path.read_bytes() == CANONICAL_TOOL.read_bytes(), (
-        f"{rel(path)} drifted from contract/packtool.sh"
+        f"{name} is classified as reading the contract but never requires reading it"
     )
 
 
 @pytest.mark.parametrize("name", sorted(TOOL_SKILLS))
 def test_tool_skills_gate_on_running_the_check(name):
     assert TOOL_GATES[name] in read_skill(name), (
-        f"{name} ships packtool.sh but never requires running it"
+        f"{name} is classified as running packtool.sh but never requires running it"
     )
 
 
@@ -191,28 +177,10 @@ def test_no_skill_calls_the_tool_from_the_current_directory():
         )
 
 
-def test_every_report_style_holder_is_classified():
-    held = holders("report-style.md")
-    expected = set(REPORTERS)
-    assert held == expected, (
-        f"skills holding a report-style.md copy differ from every skill outside "
-        f"REPORT_STYLE_EXEMPT: unexpected copy in {sorted(held - expected)}, "
-        f"missing copy in {sorted(expected - held)}. {SET_HINT}"
-    )
-
-
-@pytest.mark.parametrize("name", REPORTERS)
-def test_packaged_report_style_matches_canonical(name):
-    path = ROOT / name / "references" / "report-style.md"
-    assert path.read_bytes() == CANONICAL_REPORT_STYLE.read_bytes(), (
-        f"{rel(path)} drifted from contract/report-style.md"
-    )
-
-
 @pytest.mark.parametrize("name", REPORTERS)
 def test_every_reporter_gates_on_report_style(name):
     assert REPORT_GATES.get(name, REPORT_GATE) in read_skill(name), (
-        f"{name} ships report style but never requires reading it"
+        f"{name} reports to the user but never requires reading the report style"
     )
 
 

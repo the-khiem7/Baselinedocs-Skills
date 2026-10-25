@@ -8,20 +8,22 @@ version: "3.3.0"
 
 Capture the current truth without pretending the work started with Baseline Docs.
 
-Read `references/pack-contract.md` in full before creating or editing any pack file, every time. It is the only definition of which document owns which content; do not infer that from a filename, from an earlier session, or from memory.
+`<core-dir>` is the folder `baseline-core`, a sibling of the folder this SKILL.md sits in (`<skill-dir>/../baseline-core`). When it is not there, stop and tell the user to install `baseline-core`; never write or report on a pack from memory instead.
 
-Read `references/report-style.md` in full before reporting to the user, every time. It governs how a pack element is named in conversation; an identifier stated without its meaning is a question the user has to ask.
+Read `<core-dir>/references/pack-contract.md` in full before creating or editing any pack file, every time. It is the only definition of which document owns which content; do not infer that from a filename, from an earlier session, or from memory.
 
-Run `sh <skill-dir>/scripts/packtool.sh check <pack-dir>` after every pack write and before reporting it, and allocate every new identifier with `sh <skill-dir>/scripts/packtool.sh next-id <pack-dir> <D|Q|P> [PREFIX]`, never from memory. `<skill-dir>` is the folder this SKILL.md sits in, and a new pack's first identifier needs its PREFIX. Never report a write as done while `check` prints a FAIL line: a duplicate identifier or a missing index row resolves citations to the wrong entry, and nothing else detects it. Without `sh`, say the checks were not run.
+Read `<core-dir>/references/report-style.md` in full before reporting to the user, every time. It governs how a pack element is named in conversation; an identifier stated without its meaning is a question the user has to ask.
 
-When a decision closes an open question, run `sh <skill-dir>/scripts/packtool.sh close-plan <pack-dir> <Q-ID> <D-ID>` and make the edits it lists. Deleting the question without the `Closes` line frees its number for reuse, and nothing else notices.
+Run `sh <core-dir>/scripts/packtool.sh check <pack-dir>` after every pack write and before reporting it, and allocate every new identifier with `sh <core-dir>/scripts/packtool.sh next-id <pack-dir> <D|Q|P> [PREFIX]`, never from memory. A new pack's first identifier needs its PREFIX. Never report a write as done while `check` prints a FAIL line: a duplicate identifier or a missing index row resolves citations to the wrong entry, and nothing else detects it. Without `sh`, say the checks were not run.
+
+When a decision closes an open question, run `sh <core-dir>/scripts/packtool.sh close-plan <pack-dir> <Q-ID> <D-ID>` and make the edits it lists. Deleting the question without the `Closes` line frees its number for reuse, and nothing else notices.
 
 ## Workflow
 
 1. Inspect the conversation, repository, current diff, existing docs, and relevant decisions.
 2. Locate a matching pack and the repository's established baseline root before creating anything. Update a pack when its scope matches.
 3. Use the established baseline root; when none exists, default to `docs/baseline`. Store a new pack at `<docs_dir>/<prefix>/`.
-4. Choose a single-pack or multi-pack layout from `references/pack-contract.md`.
+4. Choose a single-pack or multi-pack layout from `<core-dir>/references/pack-contract.md`.
 5. Separate confirmed implementation, explicit decisions, open questions, and unverified claims.
 6. Write the smallest useful pack:
    - always create or update `introduction`, `roadmap`, and `hallucination`
@@ -44,7 +46,7 @@ When a decision closes an open question, run `sh <skill-dir>/scripts/packtool.sh
 - Store outcomes, not a transcript of attempts.
 - Keep one final verification result per claim or phase.
 - Retain a failed attempt only when it explains a remaining risk, changes the chosen approach, or is needed to reproduce a defect.
-- A lesson entry is not a transcript of an attempt. `references/pack-contract.md` states what it is and how long it stays.
+- A lesson entry is not a transcript of an attempt. `<core-dir>/references/pack-contract.md` states what it is and how long it stays.
 - When an outcome needs its reasoning explained (a defect's cause, a rejected alternative), record that once in `hallucination` and link to it from `roadmap`. Do not restate the reasoning in both documents.
 - Link reusable guidance to the project wiki instead of duplicating it inside the pack.
 
