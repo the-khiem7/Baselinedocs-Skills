@@ -16,6 +16,7 @@ Infer when safe:
 - `docs_dir`, defaulting to `docs/baseline`
 - kebab-case `prefix`
 - single-domain or multi-domain scope
+- the work ticket each phase belongs to, only when the user names it or the thread establishes it; never ask for one the user has not mentioned
 
 `<core-dir>` is the folder `baseline-core`, a sibling of the folder this SKILL.md sits in (`<skill-dir>/../baseline-core`). When it is not there, stop and tell the user to install `baseline-core`; never write or report on a pack from memory instead.
 
@@ -34,7 +35,7 @@ Run `sh <core-dir>/scripts/packtool.sh check <pack-dir>` after every pack write 
    - an initiative index plus directly linked domain packs for dependent multi-domain work
 4. Create the three core documents.
 5. Add `sourcecode` and `useguide` only when their roles are applicable.
-6. Write roadmap phases with dependencies, acceptance criteria, verification gates, and one exact next action.
+6. Write roadmap phases with dependencies, acceptance criteria, verification gates, and one exact next action. Give a phase the contract's ticket line when its ticket is known.
 7. Record unresolved decisions only when evidence and business context do not support a safe choice.
 8. Mark every claim as implemented, planned, unverified, or decided as appropriate.
 

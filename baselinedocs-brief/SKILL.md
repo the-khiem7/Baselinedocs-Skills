@@ -39,7 +39,7 @@ Determine or confirm:
 
 ## Output
 
-- where the work stands: current phase, what is blocked and on what
+- where the work stands: current phase and its work ticket when the pack records one, what is blocked and on what
 - the recorded next action, quoted verbatim
 - the thread delta: what this thread holds that the pack does not, or `none observed`
 - what was read, and what was skipped

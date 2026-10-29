@@ -67,7 +67,7 @@ Four parts, in this order, and none is optional.
 
 1. The word `Temporary`, then one sentence stating the group is a routing aid and not a source.
 2. The deletion condition, stated as a condition a reader can evaluate.
-3. The date it was opened and one sentence on what the labels are scoped to.
+3. The date it was opened and one sentence on what the labels are scoped to. When the whole group serves one work ticket, the contract's ticket line goes directly under the section heading, not in this sentence.
 4. The table: label, what it covers, where it lives. Three columns. Values that need a path, a digest, a full sentence, or a quotation go in bullets under the table, never inside a cell.
 
 ## Behaviour rules

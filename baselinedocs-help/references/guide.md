@@ -1,6 +1,6 @@
 # Baseline Docs Guide
 
-A pack is a small set of documents that carries a piece of work between conversations: `introduction` (scope and current truth), `roadmap` (phases and status), `hallucination` (decisions, open questions, rejected alternatives), and optionally `sourcecode` and `useguide`. These skills create, read, repair, and run packs.
+A pack is a small set of documents that carries a piece of work between conversations: `introduction` (scope and current truth), `roadmap` (phases and status), `hallucination` (decisions, open questions, rejected alternatives), and optionally `sourcecode` and `useguide`. These skills create, read, repair, and run packs. Any phase, decision, or question may name the tracker ticket it belongs to (Jira, GitHub Issues, Redmine) with a `**Ticket:**` line under its heading.
 
 ## Skills the user calls
 

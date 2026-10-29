@@ -60,7 +60,7 @@ Selecting `per-phase` in the user's reply is explicit commit authorization for t
    - open risks and exact next action
    - document frontmatter
 7. If `approval_policy` is `phase`, stop for approval after the checkpoint.
-8. If `commit_policy` is `per-phase`, commit only phase-related code and docs after verification. Follow the repository's existing commit message convention.
+8. If `commit_policy` is `per-phase`, commit only phase-related code and docs after verification. Follow the repository's existing commit message convention. When the phase carries a ticket line, under the pack contract's inheritance rule, reference that ticket only in the form the convention or the user already uses; the pack is not a reason to add one.
 9. Continue until all authorized phases are complete or a real blocker requires the user.
 
 ## Revision Policy
