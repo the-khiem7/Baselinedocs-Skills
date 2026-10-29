@@ -3,7 +3,7 @@ baseline_schema: "2.0"
 pack: "baselinedocs"
 document: "hallucination"
 status: "active"
-updated: "2026-10-25"
+updated: "2026-10-28"
 code_ref: "uncommitted"
 ---
 
@@ -56,7 +56,7 @@ Every identifier in this initiative carries its pack's prefix: `BLD-` here, `SC-
 | BLD-D35 | a stated four-column exception in `report-style.md`, extending BLD-D31 | current | BLD-D31, BLD-D34 |
 | BLD-D36 | `hallucination` entries are written in a compact agent-directed register, not narrative prose | current | BLD-D7, BLD-D21 |
 | BLD-D37 | removing the automated checkpoint hook mechanism and setup-hooks skill | current | BLD-D6, BLD-Q2, BLD-D4 |
-| BLD-D38 | `baselinedocs-callout` as a seventh user entrypoint owning temporary routing groups | current | BLD-D1, BLD-D16, BLD-D31 |
+| BLD-D38 | `baselinedocs-callout` as a seventh user entrypoint owning temporary routing groups | current, amended by BLD-D57 | BLD-D1, BLD-D16, BLD-D31, BLD-D57 |
 | BLD-D39 | silent pack loading with single-word confirmation output | current | BLD-D1, BLD-D10, BLD-D34 |
 | BLD-D40 | `baselinedocs-recall` re-reading the rule files after a context compaction | current | BLD-D1, BLD-D7, BLD-D37, BLD-D39 |
 | BLD-D41 | how the test suite is structured and which documented rules it enforces | current | BLD-D1, BLD-D7, BLD-D30 |
@@ -64,7 +64,7 @@ Every identifier in this initiative carries its pack's prefix: `BLD-` here, `SC-
 | BLD-D43 | `baselinedocs-help` as a user entrypoint carrying its own guide to the skills and the workflow | current | BLD-D1, BLD-D8, BLD-D9 |
 | BLD-D44 | `baselinedocs-adr` drafting a standalone ADR from one closed entry, using an unmodified AWS template | current | BLD-D1, BLD-D7 |
 | BLD-D45 | a release tag stamping one family-wide `version:` into every `SKILL.md` on `main` | current, stamping step amended by BLD-D52 | BLD-D37, BLD-D41, BLD-D52, BLD-Q6 |
-| BLD-D46 | `packtool.sh`, a mechanical structure check every writer runs before reporting a write | current, amended by BLD-D47 | BLD-D7, BLD-D41, BLD-D42, BLD-D47, BLD-Q5 |
+| BLD-D46 | `packtool.sh`, a mechanical structure check every writer runs before reporting a write | current, amended by BLD-D47 and BLD-D56 | BLD-D7, BLD-D41, BLD-D42, BLD-D47, BLD-D56, BLD-Q5 |
 | BLD-D47 | how a closed question keeps its number, and the packtool changes a field report drove | current, amends BLD-D46 | BLD-D46, BLD-D42, BLD-D30, BLD-D7, BLD-Q7 |
 | BLD-D48 | `commit-composer` and `commit-composer-max` committing a working tree at hunk level through a shared convention and a read-only kit | moved out of this repository by BLD-D53, which reverses its rejected separate-repository option | BLD-D1, BLD-D7, BLD-D39, BLD-D46, BLD-D53 |
 | BLD-D49 | `baselinedocs-self-upgrade` upgrading the installed skills in every agent through a read-only scan and a confirmed overwrite | current | BLD-D1, BLD-D45, BLD-D46, BLD-D48 |
@@ -74,6 +74,8 @@ Every identifier in this initiative carries its pack's prefix: `BLD-` here, `SC-
 | BLD-D53 | the commit skills leaving this repository for their own, with the history of their paths | current, reverses the rejected separate-repository option of BLD-D48 | BLD-D48, BLD-D45, BLD-D49 |
 | BLD-D54 | the contract, report style and `packtool.sh` moving into one `baseline-core` skill that every other skill requires, instead of byte-identical copies | current, amends BLD-D7 and `skill-consolidation` SC-D16 and SC-D17 | BLD-D7, BLD-D49, BLD-D52 |
 | BLD-D55 | `baseline-academic-core` as a second shared core, read only by the `baselinedocs-academic-*` skills | current, adds a second exception beside BLD-D54 | BLD-D54 |
+| BLD-D56 | `packtool.sh` reading a pack document by its `document` field when the filename has no pack prefix, with a bare filename a WARN | current, amends BLD-D46 | BLD-D46, BLD-D47 |
+| BLD-D57 | a callout group whose labels point at a pack in another repository, and the back-pointer written there | current, amends BLD-D38 | BLD-D38 |
 | BLD-Q1 | hiding internal helpers at package level rather than by naming convention | open, deferred on a missing platform feature | BLD-D1 |
 | BLD-Q2 | installing checkpoint hooks across more than one repository | closed, hook mechanism removed | BLD-D6, BLD-D37 |
 | BLD-Q5 | who, if anyone, owns misfiled-content detection now that `onboard` no longer checks it | open, structural half covered by BLD-D46 | BLD-D34, BLD-D46 |
@@ -559,6 +561,8 @@ A new thread is the default once the pack is current, which after a save it is. 
 
 **Rejected: letting the group carry phase status, so a reader gets the position without opening anything.** Rejected because status lives in `roadmap` and a copy here goes stale the first time a phase moves, with nothing to compare it against.
 
+**Amended by BLD-D57.** A group may point at a pack in another repository; the section is still written in one repository, and the other holds a back-pointer.
+
 ## BLD-D39: `baselinedocs-load` as an eighth user entrypoint owning silent context priming
 
 **Decided.** Add `baselinedocs-load`, a user entrypoint that reads a baseline documentation pack into working context silently and responds strictly with a single confirmation word ("Sẵn sàng." / "Ready."). It carries a packaged copy of `contract/pack-contract.md` to understand baseline document roles and schemas, but is exempt from `contract/report-style.md` because it produces no explanatory output.
@@ -712,6 +716,8 @@ A new thread is the default once the pack is current, which after a save it is. 
 **Rejected: one sh and one ps1 implementation.** Two copies of one logic drift.
 
 **Rejected: a harness that keeps line numbers current for editing.** A line number is stale after the first write, whoever reports it; anchoring edits on unique text is the fix, and `outline` serves reading only.
+
+**Amended by BLD-D56.** `check`, `next-id`, `find` and `close-plan` also list a document named for its role alone, when its frontmatter declares `baseline_schema`.
 
 ## BLD-D47: a closed question keeps its number through a `Closes` line, and packtool gains `close-plan` and `identifier-gap`
 
@@ -912,6 +918,42 @@ A new thread is the default once the pack is current, which after a save it is. 
 **Rejected: put the lesson rules in `baseline-core`.** Every pack-writing skill would load rules only a lesson needs.
 
 **Rejected: a copy of the lesson rules in each academic skill.** The copies drift, as the pack contract's copies did.
+
+## BLD-D56: `packtool.sh` reads a pack document by its `document` field when the filename has no pack prefix, and a bare filename is a WARN
+
+**Decided.** `list_files` also accepts `introduction.md`, `roadmap.md`, `hallucination.md`, `sourcecode.md`, `useguide.md` and `index.md` when one of the first 12 lines starts with `baseline_schema:`. Such a file takes its document role from the filename and then from its `document` field. `filename-mismatch` is a WARN when the file is named `<document>.md` and a FAIL for any other name. `contract/pack-contract.md` is unchanged: it still names `<prefix>.<document>.md`.
+
+**Why.** A field report (2026-10-28, packs `atlantic-ingress` and `solace-broker-core` and the Solace index) found `check` and `next-id` answering `no baseline documents` on packs whose files are named `introduction.md`, so the writer gate (run `check` after every write, allocate with `next-id`) could not run and the index rows and headings went unconfirmed. The role is already in the frontmatter, which `check` reads anyway.
+
+**What breaks if ignored.** The gate is unrunnable on every pack written before the filename shape was fixed, so identifiers are allocated from memory and a save is reported unchecked, the failure BLD-D46 exists to stop.
+
+**Accepted cost.** A bare-named file with no `baseline_schema` line is not listed, so `check` cannot flag its missing frontmatter. Every file of a legacy pack carries one WARN. Nothing renames the files.
+
+**Rejected: rename the files to the contract shape.** `packtool.sh` never writes (`AGENTS.md`), and the packs belong to other repositories.
+
+**Rejected: accept any `.md` file that has baseline frontmatter.** Reads the head of every markdown file under the target, including site and wiki pages.
+
+**Rejected: accept the six bare names with no frontmatter test.** `index.md` and `roadmap.md` are common outside a pack, and `check` would FAIL them for `missing-frontmatter`.
+
+**Rejected: keep `filename-mismatch` a FAIL.** Fires on every file of a legacy pack, the cost BLD-D47 recorded for `directory-mismatch`.
+
+## BLD-D57: a callout group may point at a pack in another repository, and the other repository holds a back-pointer
+
+**Decided.** The table stays in the one repository the user works from. Before the first row that points elsewhere the skill asks the user, and the section states the permission. The other repository is named by its absolute path in a bullet under the table, never in a cell. Every element a row points at there is read in full first. That repository's initiative index, or its `introduction` when it has no index, gets a `## Callout Group: <Name>` section with the `Temporary` sentence, the deletion condition and one bullet naming the repository that holds the table, with no table. The back-pointer is a separate write, asked for separately and checked with `packtool.sh check` there. Retiring the group deletes both sections.
+
+**Why.** A field report (2026-10-28) built a group spanning two repositories and the skill had no case for it, so the path form and the permission note were improvised. A group found from one repository only leaves the other repository's reader with no sign that the labels exist.
+
+**What breaks if ignored.** Each cross-repository group is improvised differently, and a retired group leaves a dangling locator in the repository nobody was looking at.
+
+**Accepted cost.** An absolute path is valid on one machine only. The back-pointer repeats the deletion condition in a second repository with nothing to compare it against, and retirement must reach both. The back-pointer's shape is the skill's choice, not stated in the report.
+
+**Rejected: a path relative to the table's repository.** Assumes the two clones sit in a fixed layout.
+
+**Rejected: refuse a group that crosses repositories.** The shorthand then cannot cover work spanning two repositories, the case that arose.
+
+**Rejected: copy the other repository's rows into this table.** Stores content, which BLD-D38 forbids.
+
+**Rejected: a full table in each repository.** Two tables to keep and two to retire.
 
 ## Open questions
 

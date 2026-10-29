@@ -3,7 +3,7 @@ baseline_schema: "2.0"
 pack: "baselinedocs"
 document: "roadmap"
 status: "active"
-updated: "2026-10-20"
+updated: "2026-10-28"
 code_ref: "uncommitted"
 ---
 
@@ -55,6 +55,8 @@ Verified against the repository, not against `DESIGN.md`.
 | Installed-skill upgrade | BLD-D49 | implemented, upgrade path unobserved | `baselinedocs-self-upgrade/` with `scripts/upgradekit.sh`; `tests/test_upgradekit.py` holds one case per rule; `OWN_SCRIPTS` in `tests/test_conventions.py`; `compare` run against this machine's 190 installs |
 | Onboard report as visuals | BLD-D51 | implemented, host render unobserved | `baselinedocs-onboard/SKILL.md`: no file record, no `Unresolved references` section, one `Not read:` line in `Caveats`, fixed chip table, HTML page with Mermaid only on request |
 | README illustrations | BLD-D50 | implemented, GitHub render unobserved | 34 WebP under `assets/` (17 light, 17 dark) rendered from `assets/source/*.html` with `shared.css`, `shared.js`, `finish.py`; `README.md` selects them with `<picture>`; `tests/test_readme_assets.py` pins one `data-skill` chip per skill in `family-map.html` |
+| `packtool.sh` on role-named files | BLD-D56 | implemented, CI matrix unobserved | `baseline-core/scripts/packtool.sh` `bare_baseline` and the `filename-mismatch` WARN; three cases in `tests/test_packtool.py`, which fail against the previous tool |
+| Callout group across repositories | BLD-D57 | implemented, selection unobserved | `baselinedocs-callout/SKILL.md`, `A group across two repositories` and retiring step 3 |
 
 ## BLD-P1: adopt `DESIGN.md` into this pack
 
@@ -843,6 +845,35 @@ Changes:
 | `tests/helpers.py`, `AGENTS.md`, `README.md`, `assets/source/family-map.html`, `docs/onboarding/baselinedocs-daily-workflow.html` | commit-skill content removed |
 | `baselinedocs.hallucination.md`, `baselinedocs.introduction.md`, `baselinedocs.roadmap.md` | BLD-D53 and its row; BLD-D48 row and a moved line; one current-truth row; one design-area row; this phase |
 
+## BLD-P24: act on a use report of the callout skill and `packtool.sh`
+
+Opened and closed 2026-10-28. BLD-D56 and BLD-D57 carry the reasoning and the rejected options.
+
+Acceptance criteria:
+
+- `check`, `next-id`, `find` and `close-plan` list a pack whose files are named `introduction.md`, `roadmap.md` and so on, and report `filename-mismatch` as a WARN
+- a bare-named file without `baseline_schema` is not treated as a pack document
+- `baselinedocs-callout` states how a group reaches a pack in another repository, and retiring it removes the back-pointer
+- the suite stays green, `test_no_typographic_dashes` included
+
+### Checkpoint: complete, CI matrix unobserved
+
+| Item | Result |
+|---|---|
+| Verification gate | `uvx --from "pytest>=8,<10" --with pyyaml pytest tests/ -q` and `packtool.sh check docs/baseline`, run after the last edit |
+| Mutation check | the three new cases failed against the previous `packtool.sh`, then the new file was restored |
+| Not observed | mawk and BWK awk on `bare_baseline`; a host selecting the callout skill for a cross-repository group; the back-pointer written in a real second repository |
+| Commit | uncommitted |
+
+Changes:
+
+| File | Change |
+|---|---|
+| `baseline-core/scripts/packtool.sh` | `bare_baseline`, bare names in `list_files`, `fdoc` from a bare name, `filename-mismatch` WARN for a bare name |
+| `tests/test_packtool.py` | `write_bare_pack`, three cases, `edit` accepts an empty pack name |
+| `baselinedocs-callout/SKILL.md` | new section `A group across two repositories`; retiring step 3 |
+| `baselinedocs.hallucination.md`, `baselinedocs.roadmap.md` | BLD-D56, BLD-D57 and their rows; amendment lines under BLD-D38 and BLD-D46; this phase and two design-area rows |
+
 ## Risks
 
 | Risk | Detail |
@@ -876,5 +907,7 @@ BLD-P19 added the commit skills and BLD-P23 moved them to the `commit-composer` 
 BLD-P21 rebuilt the README around images. After the user pushes, open the repository page on github.com in the light and the dark theme and confirm: `<picture>` picks the matching WebP, the navigation buttons jump to their sections, the Daily Guide card opens the guide, and the text in each image is readable at desktop and phone width. Whenever a skill is added or renamed, add its chip to `assets/source/family-map.html`, then re-shoot `family-map` in both themes by the procedure in that file's header. Nothing in BLD-P21 waits on a user decision.
 
 BLD-P22 redrew the `onboard` report. Run `baselinedocs-onboard` on a real pack in the terminal you use and confirm the chips, the bar and the card line up; if a character is cut or misaligned, the chip table is the thing to change. Reinstall the family on any machine that should pick it up. Nothing in BLD-P22 waits on a user decision.
+
+BLD-P24 changed `baseline-core/scripts/packtool.sh` and `baselinedocs-callout`: reinstall on any machine that should pick them up, then run `check` on `atlantic-ingress` and `solace-broker-core` to confirm the WARN replaces `no baseline documents`. Nothing in BLD-P24 waits on a user decision.
 
 BLD-P20 added `baselinedocs-self-upgrade`. The first real use is its test: run it on a machine with a stale install, confirm `npx skills update -g -y` refreshes the linked folders, and confirm the clone fallback replaces a real copy such as `~/.gemini/config/skills` without touching a junction. Nothing in BLD-P20 waits on a user decision.
