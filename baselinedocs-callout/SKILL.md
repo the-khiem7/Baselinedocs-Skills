@@ -50,6 +50,17 @@ The section goes above `## Scope` because the group's only job is to be found be
 
 Never create a new file for a callout group, and never add a document type for one. The pack contract defines the document set, and a seventh file ships to nobody: it would be invisible to every skill that reads the pack by role.
 
+## A group across two repositories
+
+When a label points at a pack in another repository, the table stays in the one repository the user works from, and the other repository gets a locator back.
+
+- Ask the user before the first row that points outside the current repository, and state in the section that they allowed it. A row reaching into another repository is read by a thread that may not have it checked out.
+- Name that repository by its absolute path in a bullet under the table. The cell carries the label and what it covers, never the path.
+- Read every element the row points at in that repository in full, as in step 1 of `Workflow`.
+- Add a back-pointer in that repository's own initiative index, or its `introduction` when it has no index: a `## Callout Group: <Name>` section holding the `Temporary` sentence, the deletion condition, and one bullet naming the repository that holds the table. No table. It is a write to another repository's pack, so ask for it separately and run `check` there.
+
+A group with no back-pointer is found from one side only, and the other repository's reader never learns the labels exist.
+
 ## Section shape
 
 Four parts, in this order, and none is optional.
@@ -80,7 +91,7 @@ Four parts, in this order, and none is optional.
 
 1. Evaluate the stated deletion condition against the pack, not against the conversation.
 2. Confirm every element the group pointed at is still reachable by its own identifier without the table.
-3. Delete the section. It is routing metadata and carries no fact, so nothing is relocated and the disproven-claims rule does not reach it.
+3. Delete the section, and the back-pointer section in any other repository. It is routing metadata and carries no fact, so nothing is relocated and the disproven-claims rule does not reach it.
 4. Say which condition was met and which section was removed.
 
 Deleting a callout group is not deleting a pack claim. The distinction matters because this is the only delete in the family that is not a relocation, and an agent that generalizes from it will start pruning content that must be kept.
