@@ -3,7 +3,7 @@ baseline_schema: "2.0"
 pack: "baselinedocs"
 document: "hallucination"
 status: "active"
-updated: "2026-10-28"
+updated: "2026-10-29"
 code_ref: "uncommitted"
 ---
 
@@ -76,6 +76,7 @@ Every identifier in this initiative carries its pack's prefix: `BLD-` here, `SC-
 | BLD-D55 | `baseline-academic-core` as a second shared core, read only by the `baselinedocs-academic-*` skills | current, adds a second exception beside BLD-D54 | BLD-D54 |
 | BLD-D56 | `packtool.sh` reading a pack document by its `document` field when the filename has no pack prefix, with a bare filename a WARN | current, amends BLD-D46 | BLD-D46, BLD-D47 |
 | BLD-D57 | a callout group whose labels point at a pack in another repository, and the back-pointer written there | current, amends BLD-D38 | BLD-D38 |
+| BLD-D58 | a pack element naming its external work ticket with a `**Ticket:**` line, not a frontmatter field | current | BLD-D45, BLD-D46, BLD-Q7 |
 | BLD-Q1 | hiding internal helpers at package level rather than by naming convention | open, deferred on a missing platform feature | BLD-D1 |
 | BLD-Q2 | installing checkpoint hooks across more than one repository | closed, hook mechanism removed | BLD-D6, BLD-D37 |
 | BLD-Q5 | who, if anyone, owns misfiled-content detection now that `onboard` no longer checks it | open, structural half covered by BLD-D46 | BLD-D34, BLD-D46 |
@@ -954,6 +955,22 @@ A new thread is the default once the pack is current, which after a save it is. 
 **Rejected: copy the other repository's rows into this table.** Stores content, which BLD-D38 forbids.
 
 **Rejected: a full table in each repository.** Two tables to keep and two to retire.
+
+## BLD-D58: a pack element names its work ticket with a `**Ticket:**` line under its heading, never in frontmatter
+
+**Decided.** `contract/pack-contract.md` section `Work tickets`: an optional `**Ticket:** [<key>](<url>)` line directly under any heading, in any document; a task bullet or table row ends with `Ticket: [<key>](<url>)`; an element without its own line inherits the nearest enclosing heading's ticket. Tracker-neutral: `<key>` is the tracker's identifier verbatim. A ticket is recorded only when the user named it or the thread established it. `packtool.sh` skips identifier matching on a `**Ticket:**` line and WARNs `ticket-format` when an item is neither a bare key nor `[key](url)`. `init`, `save` and `run` write or carry the line, `brief` and `onboard` report it, `onboard` reproduces its URL, and the academic contract drops it from a shared lesson.
+
+**Why.** A user report (2026-10-29): work tracked in Redmine needed each commit to reference its ticket, and the packs had nowhere to say which phase belonged to which ticket, so the reference lived in prose and in the user's memory. A commit skill reading the pack needs one fixed form to find it.
+
+**What breaks if ignored.** Each pack invents its own ticket form, no tool can read it, and a commit is filed against the ticket an agent guessed from prose.
+
+**Accepted cost.** A ticket key shaped like a pack identifier in a task suffix is still counted as a pack identifier; only the label line is exempt. `ticket-format` checks the form, not that the ticket exists.
+
+**Rejected: a frontmatter field.** One pack covers many tickets, so a pack-wide field assigns every element to one; it is also a schema change under BLD-D45 and fails `frontmatter-key-unknown` in every existing check.
+
+**Rejected: the ticket key inside the heading text.** A heading is an anchor and a table-of-contents row; a key there changes the anchor whenever the ticket changes, and a key of that shape would be read as the heading's own.
+
+**Rejected: roadmap only.** A decision or an open question can belong to a ticket that no phase carries.
 
 ## Open questions
 

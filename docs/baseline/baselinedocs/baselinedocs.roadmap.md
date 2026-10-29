@@ -3,7 +3,7 @@ baseline_schema: "2.0"
 pack: "baselinedocs"
 document: "roadmap"
 status: "active"
-updated: "2026-10-28"
+updated: "2026-10-29"
 code_ref: "uncommitted"
 ---
 
@@ -57,6 +57,7 @@ Verified against the repository, not against `DESIGN.md`.
 | README illustrations | BLD-D50 | implemented, GitHub render unobserved | 34 WebP under `assets/` (17 light, 17 dark) rendered from `assets/source/*.html` with `shared.css`, `shared.js`, `finish.py`; `README.md` selects them with `<picture>`; `tests/test_readme_assets.py` pins one `data-skill` chip per skill in `family-map.html` |
 | `packtool.sh` on role-named files | BLD-D56 | implemented, CI matrix unobserved | `baseline-core/scripts/packtool.sh` `bare_baseline` and the `filename-mismatch` WARN; three cases in `tests/test_packtool.py`, which fail against the previous tool |
 | Callout group across repositories | BLD-D57 | implemented, selection unobserved | `baselinedocs-callout/SKILL.md`, `A group across two repositories` and retiring step 3 |
+| Work ticket line | BLD-D58 | implemented, no pack carries one yet | `baseline-core/references/pack-contract.md` `Work tickets`; `ticketok` and `ticketline` in `packtool.sh`; two cases in `tests/test_packtool.py` |
 
 ## BLD-P1: adopt `DESIGN.md` into this pack
 
@@ -874,6 +875,39 @@ Changes:
 | `baselinedocs-callout/SKILL.md` | new section `A group across two repositories`; retiring step 3 |
 | `baselinedocs.hallucination.md`, `baselinedocs.roadmap.md` | BLD-D56, BLD-D57 and their rows; amendment lines under BLD-D38 and BLD-D46; this phase and two design-area rows |
 
+## BLD-P25: let a pack element name its work ticket
+
+Opened and closed 2026-10-29. BLD-D58 carries the reasoning and the rejected options.
+
+Acceptance criteria:
+
+- the contract defines one tracker-neutral ticket line, its task suffix and its inheritance, and keeps tickets out of frontmatter
+- `check` accepts `[key](url)` and bare keys, WARNs on any other form, and a key shaped like a pack identifier on that line moves neither `next-id` nor `unresolved-citation`
+- the skills that write, report or anonymize a pack say what they do with the line
+- the suite stays green, `test_no_typographic_dashes` included
+
+### Checkpoint: complete, no real pack carries a ticket line yet
+
+| Item | Result |
+|---|---|
+| Verification gate | `uvx --from "pytest>=8,<10" --with pyyaml pytest tests/ -q` and `packtool.sh check docs/baseline`, run after the last edit |
+| Mutation check | with the `**Ticket:**` branch disabled both new cases failed, then the tool was restored and the suite passed: 513 passed, 2 skipped |
+| Field check | a ticket line added to a copy of a real role-named pack raised no new WARN |
+| Not observed | mawk and BWK awk on `ticketline`; a host writing or reporting the line |
+
+Changes:
+
+| File | Change |
+|---|---|
+| `baseline-core/references/pack-contract.md` | new section `Work tickets` |
+| `baseline-core/references/report-style.md` | a ticket key is glossed with its subject; its URL goes under the table |
+| `baseline-core/scripts/packtool.sh` | `ticketok`, `ticketline`, `ticket-format` WARN, identifier matching skipped on the line |
+| `tests/test_packtool.py` | `ticket-format` WARN case; a valid line with a key shaped like a pack identifier |
+| `baselinedocs-init`, `-save`, `-run`, `-brief`, `-onboard`, `-callout` `SKILL.md` | write, carry or report the line |
+| `baseline-academic-core/references/academic-contract.md` | ticket lines dropped from a shared lesson |
+| `baselinedocs-help/references/guide.md` | one sentence on the line |
+| `baselinedocs.hallucination.md`, `baselinedocs.roadmap.md` | BLD-D58 and its row; this phase and one design-area row |
+
 ## Risks
 
 | Risk | Detail |
@@ -909,5 +943,7 @@ BLD-P21 rebuilt the README around images. After the user pushes, open the reposi
 BLD-P22 redrew the `onboard` report. Run `baselinedocs-onboard` on a real pack in the terminal you use and confirm the chips, the bar and the card line up; if a character is cut or misaligned, the chip table is the thing to change. Reinstall the family on any machine that should pick it up. Nothing in BLD-P22 waits on a user decision.
 
 BLD-P24 changed `baseline-core/scripts/packtool.sh` and `baselinedocs-callout`: reinstall on any machine that should pick them up, then run `check` on `atlantic-ingress` and `solace-broker-core` to confirm the WARN replaces `no baseline documents`. Nothing in BLD-P24 waits on a user decision.
+
+BLD-P25 added the work ticket line. Reinstall on any machine that should pick it up, then add a `**Ticket:**` line to a real pack phase and run `check` on it. Nothing in BLD-P25 waits on a user decision.
 
 BLD-P20 added `baselinedocs-self-upgrade`. The first real use is its test: run it on a machine with a stale install, confirm `npx skills update -g -y` refreshes the linked folders, and confirm the clone fallback replaces a real copy such as `~/.gemini/config/skills` without touching a junction. Nothing in BLD-P20 waits on a user decision.
