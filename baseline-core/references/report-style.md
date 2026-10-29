@@ -12,6 +12,8 @@ Right: choose `D1a` (plain NLB, no ALB in front) over `D1c` (ALB terminating TLS
 
 The reader cannot scroll a terminal to recover a meaning the message never carried. An identifier they have to look up is a question they have to ask, and the cost lands on every sentence that cites one. This holds for every identifier a pack uses: closed decisions, open questions, phases, and anything a later scheme adds.
 
+A work ticket key is an identifier too, from outside the pack. Gloss it with the ticket's subject when the pack or the thread gives one, `#200354` (Support AMQP), and never invent a subject the source does not state. The key may sit in a table cell; its URL goes in a bullet under the table, like any other URL.
+
 ## Say where an element lives when the user may want to open it
 
 Name the document with the identifier the first time, not the identifier alone. `Q5` in `hallucination` is findable; `Q5` is not, in a pack with five documents.

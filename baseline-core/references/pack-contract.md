@@ -74,6 +74,18 @@ Allocate a new identifier from a scan of every document in the pack, counting id
 
 Re-run git before writing `code_ref`. A commit made during the session, or one known only from a summary, is invisible to a value carried over from earlier.
 
+## Work tickets
+
+A pack element may name the ticket it belongs to in an external task tracker: Jira, GitHub Issues, Redmine, or any other. It is optional; a pack with no ticket line is complete.
+
+- Form: `**Ticket:** [<key>](<url>)` on its own line directly under the element's heading, before its body. `<key>` is the tracker's own identifier, verbatim: `#200354`, `ABC-12`, `owner/repo#12`. The URL is optional (`**Ticket:** <key>`). Several tickets are separated by `, `.
+- Any element with a heading may carry one, in any document: a phase, a decision, an open question, a callout group, a section of an initiative index. A task written as a bullet or a table row carries `Ticket: [<key>](<url>)` at the end of its line instead.
+- Inheritance: an element without its own line belongs to the ticket of the nearest enclosing heading that has one. With none of its own and none above, it has no ticket.
+- Frontmatter never carries a ticket. One pack covers many tickets, so a pack-wide field would assign every element to one of them.
+- Record a ticket only when the user named it or the thread established it. Never infer one from prose, a commit, or a branch name, and never copy one to another element because the two look related: a wrong ticket files the work, its commits and its time under someone else's task.
+- A ticket key is not a pack identifier. Never allocate it with `next-id`, cite it as an entry, or use it as a callout label. `packtool.sh` skips identifier matching on a `**Ticket:**` line, so a key shaped like `AB-D3` there is not counted; in a task's `Ticket:` suffix it is, so give such a key its URL and keep it on a `**Ticket:**` line where possible.
+- A ticket line is metadata about the element, not a claim about the work. Changing it is an edit of that line, not a disproven claim to relocate.
+
 ## Reasoning ownership
 
 `roadmap` records the outcome: what happened, the final evidence, and the next action. `hallucination` records the why: a defect's cause, rejected alternatives, the reasoning behind a fix. When a roadmap entry needs to explain why something happened, link to the matching hallucination entry instead of restating its reasoning. Duplicating the same narrative in both documents means every later correction has to be made twice, and they drift when it isn't.

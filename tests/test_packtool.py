@@ -176,6 +176,7 @@ WARN_CASES = {
     "reasoning-in-roadmap": ("roadmap", "Done. TB-D1 holds the reasoning.", "Done. The root cause was a full volume."),
     "possible-hard-wrap": ("introduction", "Scope: the broker fleet.", "Scope: the broker\nfleet and its disks."),
     "repeated-fact": ("roadmap", "Done.", "Done. Disk grew to 200 GB on 2026-09-12."),
+    "ticket-format": ("roadmap", "Done. TB-D1", "**Ticket:** see the tracker\n\nDone. TB-D1"),
 }
 
 
@@ -190,6 +191,18 @@ def test_heuristic_rule_warns_without_failing(tmp_path, rule):
     assert result.returncode == 0, result.stdout
     assert rule in rules(result, "WARN"), result.stdout
 
+
+
+# A ticket key comes from an external tracker. One shaped like a pack identifier must not be counted as one.
+def test_ticket_line_is_accepted_and_not_counted_as_an_identifier(tmp_path):
+    folder = write_pack(tmp_path)
+    tickets = "**Ticket:** [#200354](https://tracker.example/issues/200354), ABC-12, [TB-D9](https://jira.example/browse/TB-D9)"
+    edit(folder, "roadmap", "Done. TB-D1", tickets + "\n\nDone. TB-D1")
+    result = run(tmp_path, "check", "tb")
+    assert result.returncode == 0, result.stdout
+    warns = rules(result, "WARN")
+    assert "ticket-format" not in warns and "unresolved-citation" not in warns, result.stdout
+    assert run(tmp_path, "next-id", "tb", "D").stdout.strip() == "TB-D3"
 
 # The unchecked `code_ref` mistake: code committed, pack still says uncommitted.
 def test_code_ref_uncommitted_with_clean_tree_warns(tmp_path):

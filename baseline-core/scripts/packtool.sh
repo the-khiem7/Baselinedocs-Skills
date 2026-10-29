@@ -267,6 +267,22 @@ function checkfm(where,   i, k, v) {
   }
 }
 
+# One ticket reference: a bare key with no space or bracket, or [key](url) with no space in the url.
+function ticketok(it,   p, u) {
+  if (it == "") return 0
+  if (!index(it, " ") && !index(it, "[") && !index(it, "]") && !index(it, "(") && !index(it, ")")) return 1
+  p = index(it, "](")
+  if (substr(it, 1, 1) != "[" || p < 3 || substr(it, length(it), 1) != ")") return 0
+  u = substr(it, p + 2, length(it) - p - 2)
+  return u != "" && !index(u, " ")
+}
+function ticketline(   rest, items, n, i) {
+  rest = trim(substr(line, 12))
+  n = split(rest, items, ",")
+  if (!n) report("WARN", loc, "ticket-format", "a ticket line names at least one ticket: **Ticket:** [<key>](<url>)")
+  for (i = 1; i <= n; i++) if (!ticketok(trim(items[i]))) { report("WARN", loc, "ticket-format", "write each ticket as [<key>](<url>) or a bare key, separated by \", \""); break }
+}
+
 function endrun() {
   if (run > 1 && mode == "check") report("WARN", runstart, "possible-hard-wrap", "consecutive plain lines read as one paragraph; one paragraph is one line")
   run = 0
@@ -366,6 +382,8 @@ FNR == 1 { if (nfiles) endfile(); startfile() }
   if (mode == "outline") next
 
   d = curdoc()
+  # A ticket key belongs to an external tracker; one shaped like AB-D3 must not count as a pack identifier.
+  if (line ~ /^\*\*Ticket:\*\*/) { endrun(); if (mode == "check") ticketline(); next }
   isrow = 0
   if (d == "hallucination" && section == "Entry index" && line ~ /^\|/) {
     split(line, cell, "|")
