@@ -1,7 +1,7 @@
 ---
 name: baseline-core
 description: Shared rules for the baselinedocs skills - the pack contract, the report style, and the pack check script. Installed beside every baselinedocs skill, which reads it. Not a workflow and not for direct use.
-version: "3.3.0"
+version: "3.4.0"
 ---
 
 # Baseline Core

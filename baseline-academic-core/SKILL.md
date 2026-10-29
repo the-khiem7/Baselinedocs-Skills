@@ -1,7 +1,7 @@
 ---
 name: baseline-academic-core
 description: Shared rules for the baselinedocs academic skills - how a lesson built from baseline pack documents is formatted, cited and anonymized. Installed beside every baselinedocs academic skill, which reads it. Not a workflow and not for direct use.
-version: "3.3.0"
+version: "3.4.0"
 ---
 
 # Baseline Academic Core

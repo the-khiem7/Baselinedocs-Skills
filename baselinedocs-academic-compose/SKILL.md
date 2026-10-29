@@ -1,7 +1,7 @@
 ---
 name: baselinedocs-academic-compose
 description: Compose an anonymized local HTML lesson series from the baseline packs of one or more internal projects, so what operating projects taught can be learned from or handed to another person. Use explicitly when the user wants a lesson, course, tutorial or knowledge base built from baseline pack decisions and lessons, for one project, for a named topic across projects, or from topics suggested out of many projects. Not for writing papers or articles from outside sources.
-version: "3.3.0"
+version: "3.4.0"
 ---
 
 # Baseline Docs Academic Compose
