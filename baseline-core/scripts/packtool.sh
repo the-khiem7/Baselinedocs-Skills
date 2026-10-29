@@ -32,6 +32,18 @@ EOF
   exit 2
 }
 
+# A pack written before the filename shape was fixed names its files for the
+# document alone (introduction.md). Such a name is also a common name outside a
+# pack, so it counts only when its frontmatter declares baseline_schema.
+bare_baseline() {
+  bl_n=0
+  while [ "$bl_n" -lt 12 ] && IFS= read -r bl_l; do
+    case $bl_l in baseline_schema:*) return 0 ;; esac
+    bl_n=$((bl_n + 1))
+  done < "$1"
+  return 1
+}
+
 # Baseline documents only, by the contract's filename shape, down to an
 # initiative's pack folders. Globs, not find(1): on Windows a bare `find` can
 # resolve to FIND.EXE.
@@ -41,6 +53,8 @@ list_files() {
     if [ "$2" = baseline ]; then
       case $f in
         *.introduction.md|*.roadmap.md|*.hallucination.md|*.sourcecode.md|*.useguide.md|*.index.md) ;;
+        */introduction.md|*/roadmap.md|*/hallucination.md|*/sourcecode.md|*/useguide.md|*/index.md)
+          bare_baseline "$f" || continue ;;
         *) continue ;;
       esac
     fi
@@ -247,7 +261,8 @@ function checkfm(where,   i, k, v) {
     else if (v ~ /^[0-9a-f]+$/ && git_head != "" && index(git_head, v) != 1) report("WARN", where, "code-ref-behind-head", "code_ref " v " is not HEAD " substr(git_head, 1, 12) "; a drift signal, not proof of drift")
   }
   if (pack != "" && doc != "") {
-    if (base(file) != pack "." doc ".md") report("FAIL", where, "filename-mismatch", "should be named " pack "." doc ".md")
+    if (base(file) == doc ".md") report("WARN", where, "filename-mismatch", "named " doc ".md; the contract names it " pack "." doc ".md, and the document field is what identifies it here")
+    else if (base(file) != pack "." doc ".md") report("FAIL", where, "filename-mismatch", "should be named " pack "." doc ".md")
     if (doc != "index" && parent(file) != pack) report("WARN", where, "directory-mismatch", "sits in " parent(file) "/ but its pack is " pack "; a readable folder title is fine, the pack id in the frontmatter is what citations use")
   }
 }
@@ -264,6 +279,7 @@ function startfile(   b) {
   split("", fmv); split("", fmn)
   b = base(file); fdoc = ""
   if (match(b, /\.[a-z]+\.md$/)) fdoc = substr(b, RSTART + 1, RLENGTH - 4)
+  else if (b ~ /^(introduction|roadmap|hallucination|sourcecode|useguide|index)\.md$/) fdoc = substr(b, 1, length(b) - 3)
 }
 
 function endfile() {

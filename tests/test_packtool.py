@@ -94,7 +94,7 @@ def rules(result, level):
 
 
 def edit(folder, document, old, new, name="tb"):
-    path = folder / f"{name}.{document}.md"
+    path = folder / (f"{name}.{document}.md" if name else f"{document}.md")
     text = path.read_text(encoding="utf-8")
     assert old in text, f"fixture edit did not apply: {old!r}"
     path.write_text(text.replace(old, new, 1), encoding="utf-8", newline="\n")
@@ -228,6 +228,41 @@ def test_folder_title_differs_from_pack_id_only_warns(tmp_path):
     result = run(tmp_path, "check", "TB Broker Fleet")
     assert result.returncode == 0, result.stdout
     assert "directory-mismatch" in rules(result, "WARN"), result.stdout
+
+
+# A pack written before the filename shape was fixed names its files introduction.md, roadmap.md and so on.
+def write_bare_pack(root, name="tb"):
+    folder = write_pack(root, name)
+    for path in list(folder.iterdir()):
+        path.rename(folder / path.name.removeprefix(f"{name}."))
+    return folder
+
+
+def test_bare_filenames_are_read_by_their_document_field_and_only_warn(tmp_path):
+    folder = write_bare_pack(tmp_path)
+    result = run(tmp_path, "check", "tb")
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert rules(result, "FAIL") == [] and "filename-mismatch" in rules(result, "WARN"), result.stdout
+    assert "0 FAIL, 3 WARN in 3 documents" in result.stdout, result.stdout
+    assert run(tmp_path, "next-id", "tb", "D").stdout.strip() == "TB-D3"
+    # The checks still bite on a bare-named pack.
+    edit(folder, "hallucination", "| TB-D2 | telemetry TTL | current | TB-D1 |\n", "", name="")
+    assert "entry-without-index-row" in rules(run(tmp_path, "check", "tb"), "FAIL")
+
+
+def test_bare_filename_with_the_wrong_document_field_still_fails(tmp_path):
+    folder = write_bare_pack(tmp_path)
+    edit(folder, "introduction", 'document: "introduction"', 'document: "sourcecode"', name="")
+    assert "filename-mismatch" in rules(run(tmp_path, "check", "tb"), "FAIL")
+
+
+def test_bare_filename_without_baseline_frontmatter_is_not_a_pack_document(tmp_path):
+    folder = write_bare_pack(tmp_path)
+    (tmp_path / "index.md").write_text("# Site index\n\nNot a pack.\n", encoding="utf-8", newline="\n")
+    (folder / "index.md").write_text("# Notes\n\nNot a pack either.\n", encoding="utf-8", newline="\n")
+    result = run(tmp_path, "check", ".")
+    assert result.returncode == 0, result.stdout
+    assert "0 FAIL, 3 WARN in 3 documents" in result.stdout, result.stdout
 
 
 def test_check_dot_from_inside_the_pack_folder_resolves_the_folder_name(tmp_path):
