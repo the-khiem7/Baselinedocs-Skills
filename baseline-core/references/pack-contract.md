@@ -14,9 +14,9 @@ Every baseline document starts with:
 
 ```yaml
 ---
-baseline_schema: "2.0"
+baseline_schema: "3.0"
 pack: "<kebab-case-pack>"
-document: "<introduction|roadmap|hallucination|sourcecode|useguide|index>"
+document: "<introduction|roadmap|hallucination|sourcecode|useguide|index|cowork>"
 status: "<draft|active|blocked|complete>"
 updated: "YYYY-MM-DD"
 code_ref: "<commit|uncommitted|unknown>"
@@ -24,6 +24,8 @@ code_ref: "<commit|uncommitted|unknown>"
 ```
 
 `updated` is the last document edit date. `code_ref` is the code state actually inspected, not the document's own commit. Use `uncommitted` for an inspected working tree and `unknown` when provenance cannot be established. A newer commit is a drift signal, not automatic proof of drift.
+
+Schema `3.0` adds the `cowork` document. A `2.0` document stays valid and readable, and `packtool.sh` warns that its format is older than the installed family. A skill that sees that warning tells the user the pack may need a format upgrade, and never upgrades it unasked: the upgrade changes `baseline_schema` and nothing else, and only the user decides when.
 
 ## Required documents
 
@@ -112,6 +114,8 @@ Left alone it costs twice. A reader cannot tell which questions are live, which 
 
 - `sourcecode` (`<prefix>.sourcecode.md`): architecture, code topology, execution flow. Include when that shape will help later work.
 - `useguide` (`<prefix>.useguide.md`): consumer contract, API or method usage, migration procedure, operator guidance. Include when a consumer outside this pack depends on the behavior.
+
+- `cowork` (`<prefix>.cowork.md` and `<prefix>.cowork.<handle>.md`): the configuration and journals of a pack that several people write at once. Include only when the pack owner enables co-work. When the pack holds `<prefix>.cowork.md`, read the file `cowork-contract.md` beside this one in full before writing or reporting that pack: it narrows who writes which region and never overrides what a document owns.
 
 Omit a conditional document when it would contain only `not applicable` filler. Preserve an existing conditional document until its useful content is migrated or pruning is explicitly safe.
 

@@ -58,7 +58,7 @@ Verified against the repository, not against `DESIGN.md`.
 | `packtool.sh` on role-named files | BLD-D56 | implemented, CI matrix unobserved | `baseline-core/scripts/packtool.sh` `bare_baseline` and the `filename-mismatch` WARN; three cases in `tests/test_packtool.py`, which fail against the previous tool |
 | Callout group across repositories | BLD-D57 | implemented, selection unobserved | `baselinedocs-callout/SKILL.md`, `A group across two repositories` and retiring step 3 |
 | Work ticket line | BLD-D58 | implemented, no pack carries one yet | `baseline-core/references/pack-contract.md` `Work tickets`; `ticketok` and `ticketline` in `packtool.sh`; two cases in `tests/test_packtool.py` |
-| Co-work mode and schema 3.0 | BLD-D59, BLD-D60, BLD-Q8 | planned | BLD-P26 to BLD-P30 below; nothing implemented |
+| Co-work mode and schema 3.0 | BLD-D59, BLD-D60, BLD-Q8 | in progress | BLD-P26 complete; BLD-P27 to BLD-P30 planned |
 
 ## BLD-P1: adopt `DESIGN.md` into this pack
 
@@ -911,13 +911,23 @@ Changes:
 
 ## BLD-P26: cowork contract and schema 3.0
 
-Status: planned. BLD-D59 and BLD-D60 carry the reasoning.
+Status: complete. BLD-D59 and BLD-D60 carry the reasoning.
 
 Acceptance criteria:
 
 - `baseline-core/references/cowork-contract.md` holds roles, write regions by document role, bounded identifier ranges, entry placement, the `**Ticket:**` then `**Owner:**` label block, the write gate, the journal form, the reader rule, and the git rules
 - `pack-contract.md` shows `baseline_schema: "3.0"`, the `cowork` document value, and one gate sentence naming `cowork-contract.md`
 - both files' heading lists are produced after the edit and none is lost
+
+### Checkpoint: complete
+
+| Item | Result |
+|---|---|
+| Verification gate | `uvx --from "pytest>=8,<10" --with pyyaml pytest tests/ -q`: 513 passed, 2 skipped |
+| Headings | 14 in `pack-contract.md`, none lost; 10 in `cowork-contract.md`, listed after the edit |
+| Changed files | `baseline-core/references/cowork-contract.md` (new, 114 lines); `baseline-core/references/pack-contract.md` (schema `3.0`, `cowork` document value, a `2.0` upgrade paragraph, one conditional-document bullet carrying the gate sentence) |
+| Design change | a phase's ranges are one per author for every kind, not separate decision and question ranges; the phase-owner table of the source skill is dropped because `**Owner:**` under the phase heading is the single record |
+| Unresolved risk | `packtool.sh` still FAILs `baseline_schema` other than `2.0` until BLD-P27, so a pack written from the new contract template fails `check` meanwhile |
 
 ## BLD-P27: `packtool.sh` understands co-work
 
@@ -1000,6 +1010,6 @@ BLD-P24 changed `baseline-core/scripts/packtool.sh` and `baselinedocs-callout`: 
 
 BLD-P25 added the work ticket line. Reinstall on any machine that should pick it up, then add a `**Ticket:**` line to a real pack phase and run `check` on it. Nothing in BLD-P25 waits on a user decision.
 
-Co-work mode, recorded 2026-10-31: BLD-P26 to BLD-P30 are planned, none started. Start with BLD-P26 through `baselinedocs-run` once the user chooses `approval_policy` and `commit_policy`. BLD-Q8, the release number, waits on the user before the release.
+Co-work mode, recorded 2026-10-31: BLD-P26 is complete; BLD-P27 to BLD-P30 are planned and run in order under continuous approval with a commit per phase, the user's choice for this run. BLD-Q8, the release number, waits on the user before the release.
 
 BLD-P20 added `baselinedocs-self-upgrade`. The first real use is its test: run it on a machine with a stale install, confirm `npx skills update -g -y` refreshes the linked folders, and confirm the clone fallback replaces a real copy such as `~/.gemini/config/skills` without touching a junction. Nothing in BLD-P20 waits on a user decision.
