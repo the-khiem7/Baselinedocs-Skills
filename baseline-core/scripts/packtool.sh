@@ -459,6 +459,7 @@ FNR == 1 { if (nfiles) endfile(); startfile() }
   sub(/\r$/, "", line)
   loc = FILENAME ":" FNR
   if (mode == "check" && (index(line, EN) || index(line, EM))) report("FAIL", loc, "typographic-dash", "use the ASCII hyphen, not an en dash or em dash")
+  if (mode == "check" && (line ~ /^<<<<<<< / || line ~ /^>>>>>>> /)) report("FAIL", loc, "merge-conflict-marker", "an unresolved git conflict; resolve it keeping the other author region exactly as pushed")
 
   if (FNR == 1) {
     if (line == "---") { fm = 1; next }

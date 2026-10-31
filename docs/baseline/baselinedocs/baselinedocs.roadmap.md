@@ -4,7 +4,7 @@ pack: "baselinedocs"
 document: "roadmap"
 status: "active"
 updated: "2026-10-31"
-code_ref: "955dfd1"
+code_ref: "7e613f6"
 ---
 
 # Family Design Roadmap
@@ -58,7 +58,7 @@ Verified against the repository, not against `DESIGN.md`.
 | `packtool.sh` on role-named files | BLD-D56 | implemented, CI matrix unobserved | `baseline-core/scripts/packtool.sh` `bare_baseline` and the `filename-mismatch` WARN; three cases in `tests/test_packtool.py`, which fail against the previous tool |
 | Callout group across repositories | BLD-D57 | implemented, selection unobserved | `baselinedocs-callout/SKILL.md`, `A group across two repositories` and retiring step 3 |
 | Work ticket line | BLD-D58 | implemented, no pack carries one yet | `baseline-core/references/pack-contract.md` `Work tickets`; `ticketok` and `ticketline` in `packtool.sh`; two cases in `tests/test_packtool.py` |
-| Co-work mode and schema 3.0 | BLD-D59, BLD-D60, BLD-Q8 | in progress | BLD-P26 to BLD-P29 complete; BLD-P30 planned |
+| Co-work mode and schema 3.0 | BLD-D59, BLD-D60, BLD-Q8 | in progress | BLD-P26 to BLD-P29 complete; BLD-P30 field test done, reinstall, Atlantic cleanup and a pack upgrade wait on the user |
 
 ## BLD-P1: adopt `DESIGN.md` into this pack
 
@@ -996,7 +996,7 @@ Acceptance criteria:
 
 ## BLD-P30: field test and cleanup
 
-Status: planned.
+Status: field test complete; three criteria wait on the user.
 
 Acceptance criteria:
 
@@ -1004,6 +1004,19 @@ Acceptance criteria:
 - one `2.0` pack upgraded to `3.0` after the user's consent
 - the family reinstalled, the Atlantic copy deleted, the Terraform slice rule written into the Atlantic pack
 - BLD-Q8 answered before the release
+
+### Checkpoint: field test complete, three criteria wait on the user
+
+| Item | Result |
+|---|---|
+| Verification gate | `uvx --from "pytest>=8,<10" --with pyyaml pytest tests/ -q` and `packtool.sh check docs/baseline`, run after the last edit |
+| Field test, plain | two clones, `alice@example.com` and `bob@example.com`, one local bare remote, one branch: each added a decision, a question, a phase line and a journal entry in their own regions; `git pull --rebase` merged with no conflict; `check` 0 FAIL, 0 WARN on both sides and after the merge; `next-id --author` gave decision number 4 to the owner and 201 to the co-author |
+| Field test, adjacent | owner and co-author appended index rows after the same last row: rebase stopped on a conflict at the index tail while `check` printed 0 FAIL on the conflicted file |
+| Fixes from the test | a co-author's index rows live in their own table under `### <Name>` inside `## Entry index` (`cowork-contract.md`, `baselinedocs-cowork` enable step 7); `check` FAILs `merge-conflict-marker`; two cases in `tests/test_packtool.py`; the adjacent scenario then merged clean |
+| Revision of BLD-P27 | the conflict-marker rule and the per-author table case belong to the tool phase and are recorded here because the field test found them |
+| Not observed | a hosted remote and two machines; mawk and BWK awk; a host running `baselinedocs-cowork` on a real pack |
+| Not done, needs the user | a `2.0` pack upgraded to `3.0` (the user decides which and when); the family reinstalled on this machine (it rewrites every agent's skills, this session's own among them); the Atlantic copy deleted and the Terraform slice rule written into an Atlantic pack (that repository's pack, ticket line and commit rules apply; the copy goes only after the reinstall) |
+| Open | BLD-Q8, the release number |
 
 ## Risks
 
@@ -1043,6 +1056,6 @@ BLD-P24 changed `baseline-core/scripts/packtool.sh` and `baselinedocs-callout`: 
 
 BLD-P25 added the work ticket line. Reinstall on any machine that should pick it up, then add a `**Ticket:**` line to a real pack phase and run `check` on it. Nothing in BLD-P25 waits on a user decision.
 
-Co-work mode, recorded 2026-10-31: BLD-P26 to BLD-P29 are complete; BLD-P30 is planned and runs in order under continuous approval with a commit per phase, the user's choice for this run. BLD-Q8, the release number, waits on the user before the release.
+Co-work mode, recorded 2026-10-31: BLD-P26 to BLD-P29 are complete and the BLD-P30 field test is done; what remains of BLD-P30 waits on the user: reinstall the family on this machine, upgrade a chosen `2.0` pack to `3.0`, delete the Atlantic copy of the skill after the reinstall and write its Terraform slice rule into an Atlantic pack in order under continuous approval with a commit per phase, the user's choice for this run. BLD-Q8, the release number, waits on the user before the release.
 
 BLD-P20 added `baselinedocs-self-upgrade`. The first real use is its test: run it on a machine with a stale install, confirm `npx skills update -g -y` refreshes the linked folders, and confirm the clone fallback replaces a real copy such as `~/.gemini/config/skills` without touching a junction. Nothing in BLD-P20 waits on a user decision.

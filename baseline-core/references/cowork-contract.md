@@ -52,10 +52,11 @@ Every author, the pack owner included, holds one bounded range, written `<low>-<
 
 Placement keeps the hunks apart:
 
-- owner entries go into the existing `## Closed decisions` and `## Open questions` groups, and owner index rows after the owner's last row of that kind
-- co-author entries go into `## Closed decisions - <Name>` and `## Open questions - <Name>` at the end of the file, and co-author index rows at the end of the index table
+- owner entries go into the existing `## Closed decisions` and `## Open questions` groups, and owner index rows at the end of the table that sits directly under `## Entry index`
+- co-author entries go into `## Closed decisions - <Name>` and `## Open questions - <Name>` at the end of the file
+- each co-author's index rows go into a table of their own, under a `### <Name>` heading inside `## Entry index`, with the same four columns; the pack owner creates it when enabling co-work
 
-At least one unchanged line separates the two insertion points, so git merges them without a conflict.
+At least one unchanged line separates any two insertion points, so git merges them without a conflict. Measured: two authors appending index rows to one table after the same last row conflicted, which is why a co-author's rows live in a table of their own. The index stays one list of entries; a table per author is a layout inside it, and the pack check tool reads every row under `## Entry index`.
 
 ## Configuration
 

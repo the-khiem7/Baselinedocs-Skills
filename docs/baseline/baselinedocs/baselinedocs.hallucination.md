@@ -983,6 +983,8 @@ A new thread is the default once the pack is current, which after a save it is. 
 
 **What breaks if ignored.** Every co-author save fails the `packtool` gate, an owner's `next-id` lands in a co-author's range, and after a compaction a writer edits another author's region with nothing stopping it.
 
+**Found by running it, 2026-10-31.** Two clones of a local bare repository with two git emails wrote one scratch pack and pushed to one branch. Owner and co-author each added a decision and a question in their own regions: `git pull --rebase` merged with no conflict, `check` printed 0 FAIL, and `next-id --author` returned decision number 4 for the owner and 201 for the co-author after the merge. When both authors appended an index row after the same last row (the owner's new question, the co-author's new rows), the rebase stopped on a conflict at the index tail, and `check` still printed 0 FAIL on the conflicted file. Two changes followed: a co-author's index rows live in a table of their own under a `### <Name>` heading inside `## Entry index`, and `check` FAILs `merge-conflict-marker`. With the per-author table the same adjacent scenario merged clean.
+
 **Rejected: port the skill as it is (H1).** Leaves the `packtool` FAIL and the range-blind `next-id`.
 
 **Rejected: leave it in Atlantic (H3).** Already broken against `baseline-core` and owned by nobody.

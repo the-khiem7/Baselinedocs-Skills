@@ -590,3 +590,19 @@ def test_a_cowork_document_needs_schema_3(tmp_path):
     folder = write_cowork(tmp_path)
     edit(folder, "cowork", 'baseline_schema: "3.0"', 'baseline_schema: "2.0"')
     assert "frontmatter-value" in rules(run(tmp_path, "check", "tb"), "FAIL")
+
+
+def test_an_unresolved_merge_conflict_fails(tmp_path):
+    folder = write_cowork(tmp_path)
+    edit(folder, "hallucination", "Decided: grow the volume.", "<<<<<<< HEAD\nDecided: grow the volume.\n=======\nDecided: leave it.\n>>>>>>> bob")
+    assert "merge-conflict-marker" in rules(run(tmp_path, "check", "tb"), "FAIL")
+
+
+def test_a_co_author_index_table_under_its_own_heading_is_read(tmp_path):
+    folder = write_cowork(tmp_path)
+    edit(folder, "hallucination", "| TB-D200 | bob closes the disk question | current | TB-Q1 |\n| TB-Q200 | broker-3 restarts | open | |\n", "")
+    edit(folder, "hallucination", "\n## TB-D1: broker disk size",
+         "\n### Bob\n\n| Entry | About | Status | Related |\n|---|---|---|---|\n| TB-D200 | bob closes the disk question | current | TB-Q1 |\n| TB-Q200 | broker-3 restarts | open | |\n\n## TB-D1: broker disk size")
+    result = run(tmp_path, "check", "tb")
+    assert result.returncode == 0, result.stdout
+    assert "entry-without-index-row" not in rules(result, "FAIL"), result.stdout

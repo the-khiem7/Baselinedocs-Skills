@@ -34,7 +34,7 @@ In a co-worked pack the tool refuses a bare `next-id`; add `--author <handle>` s
 4. Write `<prefix>.cowork.md` from `references/config-template.md`, and one `<prefix>.cowork.<handle>.md` per author from `references/journal-template.md`.
 5. In `roadmap`, add `**Owner:** <handle>` under every phase heading, after a `**Ticket:**` line when there is one.
 6. When one `introduction` section must serve two owners, split it into `###` sub-sections and move each existing bullet verbatim under the one that owns its topic: a relocation, not a rewrite. Name every assigned section in the configuration table.
-7. In `hallucination`, add at the end of the file one `## Closed decisions - <Name>` and one `## Open questions - <Name>` per co-author, each holding one line that names that author's range.
+7. In `hallucination`, add at the end of the file one `## Closed decisions - <Name>` and one `## Open questions - <Name>` per co-author, each holding one line that names that author's range, and inside `## Entry index` one `### <Name>` heading per co-author followed by an empty table with the index header, where that author's index rows go.
 8. Record the enablement as a closed decision in the owner's range: who owns what, why, and the rejected alternatives the thread produced. Add the continuation point to `roadmap`.
 9. Run `check`; resolve every FAIL.
 10. Commit only when the user authorized it, following the git rules of the co-work contract.
