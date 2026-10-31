@@ -3,8 +3,8 @@ baseline_schema: "2.0"
 pack: "baselinedocs"
 document: "introduction"
 status: "active"
-updated: "2026-10-25"
-code_ref: "uncommitted"
+updated: "2026-10-31"
+code_ref: "0bd8fac"
 ---
 
 # Baseline Docs Family Design
@@ -67,6 +67,7 @@ The family's design is shipped, not planned. This pack exists so the reasoning b
 | Resume family | Dissolved, with one owner per question it used to claim | yes |
 | Installation profiles | Internal helpers hidden at package level | no, deferred. BLD-Q1 |
 | Hook rollout | Retired in BLD-P8; hook mechanism removed | yes |
+| Co-work mode | Several authors write one pack and push to one branch without conflict, under schema 3.0. BLD-D59, BLD-D60 | no, planned |
 
 ## Constraints
 

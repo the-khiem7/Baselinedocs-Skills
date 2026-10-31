@@ -3,8 +3,8 @@ baseline_schema: "2.0"
 pack: "baselinedocs"
 document: "roadmap"
 status: "active"
-updated: "2026-10-29"
-code_ref: "uncommitted"
+updated: "2026-10-31"
+code_ref: "0bd8fac"
 ---
 
 # Family Design Roadmap
@@ -58,6 +58,7 @@ Verified against the repository, not against `DESIGN.md`.
 | `packtool.sh` on role-named files | BLD-D56 | implemented, CI matrix unobserved | `baseline-core/scripts/packtool.sh` `bare_baseline` and the `filename-mismatch` WARN; three cases in `tests/test_packtool.py`, which fail against the previous tool |
 | Callout group across repositories | BLD-D57 | implemented, selection unobserved | `baselinedocs-callout/SKILL.md`, `A group across two repositories` and retiring step 3 |
 | Work ticket line | BLD-D58 | implemented, no pack carries one yet | `baseline-core/references/pack-contract.md` `Work tickets`; `ticketok` and `ticketline` in `packtool.sh`; two cases in `tests/test_packtool.py` |
+| Co-work mode and schema 3.0 | BLD-D59, BLD-D60, BLD-Q8 | planned | BLD-P26 to BLD-P30 below; nothing implemented |
 
 ## BLD-P1: adopt `DESIGN.md` into this pack
 
@@ -908,6 +909,59 @@ Changes:
 | `baselinedocs-help/references/guide.md` | one sentence on the line |
 | `baselinedocs.hallucination.md`, `baselinedocs.roadmap.md` | BLD-D58 and its row; this phase and one design-area row |
 
+## BLD-P26: cowork contract and schema 3.0
+
+Status: planned. BLD-D59 and BLD-D60 carry the reasoning.
+
+Acceptance criteria:
+
+- `baseline-core/references/cowork-contract.md` holds roles, write regions by document role, bounded identifier ranges, entry placement, the `**Ticket:**` then `**Owner:**` label block, the write gate, the journal form, the reader rule, and the git rules
+- `pack-contract.md` shows `baseline_schema: "3.0"`, the `cowork` document value, and one gate sentence naming `cowork-contract.md`
+- both files' heading lists are produced after the edit and none is lost
+
+## BLD-P27: `packtool.sh` understands co-work
+
+Status: planned.
+
+Acceptance criteria:
+
+- `2.0` draws WARN `schema-outdated`, `3.0` passes, `document: cowork` and the config and journal filenames are accepted
+- `## Open questions - <Name>` and `## Closed decisions - <Name>` match by prefix; `next-id <dir> <KIND> --author <handle>` allocates inside the author's range; `identifier-gap` skips gaps between ranges
+- FAIL on overlapping ranges, an identifier outside every range, a handle equal to a document name; WARN on a phase without `**Owner:**`; a reminder line on a co-worked pack
+- one case per rule in `tests/test_packtool.py`, each failing against the previous tool
+
+## BLD-P28: the `baselinedocs-cowork` skill
+
+Status: planned.
+
+Acceptance criteria:
+
+- `SKILL.md` covers enable, assign, fold, disable, chosen from pack state and the request; `agents/openai.yaml` sets `allow_implicit_invocation: false`
+- `references/config-template.md` and `references/journal-template.md`; gates for `<core-dir>`, both contracts, report style and `packtool.sh`
+- the test sets name the skill and the suite is green
+
+## BLD-P29: wire co-work into the family
+
+Status: planned.
+
+Acceptance criteria:
+
+- `save` writes a co-author's journal, `run` checks the phase owner, `onboard` reports ownership, `load` reads the config, `recall` re-reads `cowork-contract.md`
+- `academic-contract.md` drops handles and emails from a shared lesson
+- `guide.md`, `README.md`, `AGENTS.md` and the `family-map` chip updated, `family-map` re-shot in both themes
+- the suite is green
+
+## BLD-P30: field test and cleanup
+
+Status: planned.
+
+Acceptance criteria:
+
+- two clones with two git emails write one scratch pack in parallel and push to one branch; merges without conflict and `check` FAIL and WARN counts recorded
+- one `2.0` pack upgraded to `3.0` after the user's consent
+- the family reinstalled, the Atlantic copy deleted, the Terraform slice rule written into the Atlantic pack
+- BLD-Q8 answered before the release
+
 ## Risks
 
 | Risk | Detail |
@@ -945,5 +999,7 @@ BLD-P22 redrew the `onboard` report. Run `baselinedocs-onboard` on a real pack i
 BLD-P24 changed `baseline-core/scripts/packtool.sh` and `baselinedocs-callout`: reinstall on any machine that should pick them up, then run `check` on `atlantic-ingress` and `solace-broker-core` to confirm the WARN replaces `no baseline documents`. Nothing in BLD-P24 waits on a user decision.
 
 BLD-P25 added the work ticket line. Reinstall on any machine that should pick it up, then add a `**Ticket:**` line to a real pack phase and run `check` on it. Nothing in BLD-P25 waits on a user decision.
+
+Co-work mode, recorded 2026-10-31: BLD-P26 to BLD-P30 are planned, none started. Start with BLD-P26 through `baselinedocs-run` once the user chooses `approval_policy` and `commit_policy`. BLD-Q8, the release number, waits on the user before the release.
 
 BLD-P20 added `baselinedocs-self-upgrade`. The first real use is its test: run it on a machine with a stale install, confirm `npx skills update -g -y` refreshes the linked folders, and confirm the clone fallback replaces a real copy such as `~/.gemini/config/skills` without touching a junction. Nothing in BLD-P20 waits on a user decision.

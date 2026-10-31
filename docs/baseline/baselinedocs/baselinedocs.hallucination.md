@@ -3,8 +3,8 @@ baseline_schema: "2.0"
 pack: "baselinedocs"
 document: "hallucination"
 status: "active"
-updated: "2026-10-29"
-code_ref: "uncommitted"
+updated: "2026-10-31"
+code_ref: "0bd8fac"
 ---
 
 # Family Design: Decisions and Open Questions
@@ -77,11 +77,14 @@ Every identifier in this initiative carries its pack's prefix: `BLD-` here, `SC-
 | BLD-D56 | `packtool.sh` reading a pack document by its `document` field when the filename has no pack prefix, with a bare filename a WARN | current, amends BLD-D46 | BLD-D46, BLD-D47 |
 | BLD-D57 | a callout group whose labels point at a pack in another repository, and the back-pointer written there | current, amends BLD-D38 | BLD-D38 |
 | BLD-D58 | a pack element naming its external work ticket with a `**Ticket:**` line, not a frontmatter field | current | BLD-D45, BLD-D46, BLD-Q7 |
+| BLD-D59 | adopting the Atlantic co-work skill as `baselinedocs-cowork`, its rules in a separate `cowork-contract.md` in `baseline-core` | current, planned in BLD-P26 to BLD-P30 | BLD-D38, BLD-D39, BLD-D40, BLD-D47, BLD-D53, BLD-D54, BLD-D58, BLD-D60, SC-D1 |
+| BLD-D60 | `baseline_schema` 3.0 adding the `cowork` document, a 2.0 pack warned and upgraded only on the user's consent | current, planned in BLD-P26 and BLD-P27 | BLD-D2, BLD-D42, BLD-D59, BLD-Q7, BLD-Q8 |
 | BLD-Q1 | hiding internal helpers at package level rather than by naming convention | open, deferred on a missing platform feature | BLD-D1 |
 | BLD-Q2 | installing checkpoint hooks across more than one repository | closed, hook mechanism removed | BLD-D6, BLD-D37 |
 | BLD-Q5 | who, if anyone, owns misfiled-content detection now that `onboard` no longer checks it | open, structural half covered by BLD-D46 | BLD-D34, BLD-D46 |
 | BLD-Q6 | a skill version in the frontmatter, bumped automatically, to recognize an outdated install | closed by BLD-D45 | BLD-D37, BLD-D41, BLD-D45 |
 | BLD-Q7 | how `code_ref` names the repository inspected when the code lives in a submodule | open, deferred as its own schema decision | BLD-D3, BLD-D45, BLD-D47 |
+| BLD-Q8 | which family release number ships co-work mode and schema 3.0 | open | BLD-D45, BLD-D52, BLD-D60 |
 
 ## BLD-D1: six entrypoints stay deliberate, and the rest stay agent-selectable
 
@@ -972,6 +975,42 @@ A new thread is the default once the pack is current, which after a save it is. 
 
 **Rejected: roadmap only.** A decision or an open question can belong to a ticket that no phase carries.
 
+## BLD-D59: co-work mode joins the family as `baselinedocs-cowork`, with its rules in `baseline-core/references/cowork-contract.md`
+
+**Decided.** Adopt the project skill `baselinedocs-cowork-mode` (Atlantic repository, commit `2733aba`, never enabled on a pack) as `baselinedocs-cowork`, a user entrypoint (`allow_implicit_invocation: false`) holding the owner's work only: enable, assign, fold, disable, chosen from pack state and the request as `callout` does (BLD-D38). `join` becomes a contract rule: a reader of a co-worked pack reads its config, `onboard` reports ownership, `load` holds it silently. `checkpoint` becomes `save` writing the co-author's journal. The rules live in `baseline-core/references/cowork-contract.md`; `pack-contract.md` carries one gate sentence: when the pack holds `<prefix>.cowork.md`, read the cowork contract in full before writing or reporting it. `packtool check` prints a reminder on such a pack, and `recall` re-reads the file. Files: config `<prefix>.cowork.md`, journal `<prefix>.cowork.<handle>.md`; a handle never equals a document name. Write regions are named by document role, not heading text. Every author, owner included, holds a bounded identifier range; `next-id <dir> <KIND> --author <handle>` allocates inside it. Under a heading the label block is `**Ticket:**` then `**Owner:**`. The Authors table holds handles and emails already present in `git log`. Git rules kept: small commits, `git pull --rebase` before push, the later pusher keeps the other author's region as pushed.
+
+**Why.** Two authors on one pack conflict on frontmatter, the next-action section and the index tail, and two authors allocating the same next identifier merge cleanly into an ambiguous citation. The source skill read the contract from `baselinedocs-save/references/`, gone since BLD-D54; `packtool` FAILs `## Open questions - <Name>` (section matched exactly) and its `next-id` and `identifier-gap` ignore ranges; its write gate sat in a skill body, which a compaction removes (BLD-D40); its files carried no frontmatter, so readers excluded them as source material.
+
+**What breaks if ignored.** Every co-author save fails the `packtool` gate, an owner's `next-id` lands in a co-author's range, and after a compaction a writer edits another author's region with nothing stopping it.
+
+**Rejected: port the skill as it is (H1).** Leaves the `packtool` FAIL and the range-blind `next-id`.
+
+**Rejected: leave it in Atlantic (H3).** Already broken against `baseline-core` and owned by nobody.
+
+**Rejected: five modes in one skill.** Merges a read-only report into a writer, which SC-D1 forbids, and selects by argument, which BLD-D39 rejected.
+
+**Rejected: the rules inside `pack-contract.md`.** Loaded on every run of every writer for a mode most packs never use.
+
+**Rejected: a third core skill for the rules.** Every writer needs them conditionally, so a separate core adds a folder to install and a way to be missing; BLD-D55's case was a sub-family only.
+
+**Rejected: commit scope `docs(<pack>/<handle>)`, or moving the git rules into `commit-composer`.** The author is already in git's author field and `commit-composer` already writes `docs(<pack>)`; moving rules there would make the family depend on a repository BLD-D53 separated. The Terraform slice rule is Atlantic's own and moves into its pack.
+
+**Rejected: journal named `<prefix>.checkpoint.<handle>.md`.** Collides with the phase checkpoint of BLD-D4.
+
+## BLD-D60: `baseline_schema` 3.0 adds the `cowork` document, and a 2.0 pack is warned, upgraded only with consent
+
+**Decided.** Schema `3.0` adds `cowork` to the `document` values. `packtool check` accepts `2.0` and `3.0`; a `2.0` document draws WARN `schema-outdated`, and an agent seeing it tells the user the pack format is older than the installed family and may need an upgrade. Nothing upgrades a pack without the user's consent.
+
+**Why.** The user ranks co-work mode as a major change beside the work ticket line (BLD-D58), so the schema gets a major number even though the change is additive.
+
+**What breaks if ignored.** A FAIL on `2.0` would block every writer on every existing pack in every repository at once; silence would leave an old pack's readers unaware of the format they lack.
+
+**Rejected: `2.1`.** Semver-correct for an additive change; declined by the user.
+
+**Rejected: the editing writer upgrades the pack automatically, as BLD-D42 retrofits an index.** The user wants the upgrade to be their decision.
+
+**Rejected: require `3.0` everywhere.** Breaks every pack in other repositories on install.
+
 ## Open questions
 
 ### BLD-Q1: can internal helpers be hidden at package level?
@@ -1003,6 +1042,10 @@ BLD-D46 covers the structural half: `packtool.sh check`, which `onboard` runs be
 What is at stake: a correct document is flagged after every commit of the submodule, so the signal is ignored.
 
 The trigger to reopen: a request to change the frontmatter. Options to weigh then: a repository path relative to the pack, or a repository and commit pair.
+
+### BLD-Q8: which family release number ships co-work mode and schema 3.0?
+
+The family is at `v3.4.0`. A schema the old `packtool` rejects is a breaking change, which semver numbers `v4.0.0`; `v3.5.0` treats it as a feature. Recommended: `v4.0.0`. At stake: an install reading `3.5.0` gives no sign that its packs need a format check. Reopen trigger: before `scripts/release.py` runs for this work.
 
 ### BLD-Q6: how does a skill carry a version in its frontmatter, bumped automatically, so an outdated install on a machine can be recognized?
 
