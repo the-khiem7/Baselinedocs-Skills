@@ -85,6 +85,7 @@ The full contract, including the frontmatter fields and the identifier rules, is
 | Load an existing pack before working   | `baselinedocs-onboard` | Read the selected pack in full into working context       |
 | Ask where the work stands mid-task     | `baselinedocs-brief`   | Report position cheaply, without loading the pack         |
 | Name a slice of the pack for later     | `baselinedocs-callout` | Open, update, or retire a temporary callout group         |
+| Let several people write one pack | `baselinedocs-cowork` | Enable, reassign, fold, or disable co-work mode, so authors never share a region or an identifier |
 | Prime the agent with a pack, silently  | `baselinedocs-load`    | Read the selected pack in full and confirm in one word    |
 | Turn a closed decision into an ADR     | `baselinedocs-adr`     | Draft one standalone ADR under `docs/adr/` from a decision entry |
 | Build lessons from the packs of one project or many | `baselinedocs-academic-compose` | Write anonymized local HTML lessons where it was called, from packs it only reads |

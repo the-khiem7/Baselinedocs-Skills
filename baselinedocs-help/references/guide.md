@@ -16,6 +16,7 @@ The user names these. Each one is explicit-only, so none fires on its own.
 | `baselinedocs-load` | same as onboard, with no report | every document read in full, then a one-word confirmation |
 | `baselinedocs-brief` | mid-task or after a compaction, wanting to know where work stands | position, blockers, and what the thread holds that the pack does not, without loading the pack |
 | `baselinedocs-callout` | wanting a two-word name for a slice of the pack | a temporary named routing table inside `introduction` |
+| `baselinedocs-cowork` | several people will write one pack at once, or an existing co-worked pack needs its owners, ranges or journals changed | the cowork configuration and journals written, owners and identifier ranges assigned, journals folded; a pack owner's skill, co-authors use load, onboard and save as usual |
 | `baselinedocs-adr` | a closed decision in `hallucination` deserves an Architectural Decision Record | one standalone ADR under `docs/adr/`, status Proposed |
 | `baselinedocs-academic-compose` | wanting lessons built from the packs of one project or many, to learn from or hand to another person | anonymized local HTML lesson pages written where the skill was called; no pack is touched |
 | `baselinedocs-help` | asking what the skills do or which to use | this guide |

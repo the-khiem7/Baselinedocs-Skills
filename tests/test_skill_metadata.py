@@ -14,6 +14,7 @@ ENTRYPOINTS = {
     "baselinedocs-save",
     "baselinedocs-run",
     "baselinedocs-callout",
+    "baselinedocs-cowork",
     "baselinedocs-help",
     "baselinedocs-adr",
     "baselinedocs-self-upgrade",

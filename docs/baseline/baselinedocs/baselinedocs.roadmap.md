@@ -58,7 +58,7 @@ Verified against the repository, not against `DESIGN.md`.
 | `packtool.sh` on role-named files | BLD-D56 | implemented, CI matrix unobserved | `baseline-core/scripts/packtool.sh` `bare_baseline` and the `filename-mismatch` WARN; three cases in `tests/test_packtool.py`, which fail against the previous tool |
 | Callout group across repositories | BLD-D57 | implemented, selection unobserved | `baselinedocs-callout/SKILL.md`, `A group across two repositories` and retiring step 3 |
 | Work ticket line | BLD-D58 | implemented, no pack carries one yet | `baseline-core/references/pack-contract.md` `Work tickets`; `ticketok` and `ticketline` in `packtool.sh`; two cases in `tests/test_packtool.py` |
-| Co-work mode and schema 3.0 | BLD-D59, BLD-D60, BLD-Q8 | in progress | BLD-P26 and BLD-P27 complete; BLD-P28 to BLD-P30 planned |
+| Co-work mode and schema 3.0 | BLD-D59, BLD-D60, BLD-Q8 | in progress | BLD-P26 to BLD-P28 complete; BLD-P29 and BLD-P30 planned |
 
 ## BLD-P1: adopt `DESIGN.md` into this pack
 
@@ -954,13 +954,23 @@ Acceptance criteria:
 
 ## BLD-P28: the `baselinedocs-cowork` skill
 
-Status: planned.
+Status: complete.
 
 Acceptance criteria:
 
 - `SKILL.md` covers enable, assign, fold, disable, chosen from pack state and the request; `agents/openai.yaml` sets `allow_implicit_invocation: false`
 - `references/config-template.md` and `references/journal-template.md`; gates for `<core-dir>`, both contracts, report style and `packtool.sh`
 - the test sets name the skill and the suite is green
+
+### Checkpoint: complete, no host has selected the skill
+
+| Item | Result |
+|---|---|
+| Verification gate | `uvx --from "pytest>=8,<10" --with pyyaml pytest tests/ -q`: 554 passed, 2 skipped |
+| Changed files | `baselinedocs-cowork/` (`SKILL.md`, `agents/openai.yaml`, `references/config-template.md`, `references/journal-template.md`); `tests/test_references.py` (`WRITER_SKILLS`, `CORE_ASSETS`, a co-work gate test); `tests/test_skill_metadata.py` (`ENTRYPOINTS`); `AGENTS.md` (writer count 11 to 12) |
+| Moved up from BLD-P29 | a row in `baselinedocs-help/references/guide.md`, a row in the `README.md` entrypoint table and a `data-skill` chip in `assets/source/family-map.html`, because `test_help_guide_names_every_skill` and `test_family_map_names_every_skill` fail without them |
+| Design | one entrypoint with four modes, `enable`, `assign`, `fold`, `disable`, chosen from pack state and the request; enabling a `2.0` pack asks whether its documents move to `3.0`, and declining leaves only the new cowork files on `3.0` |
+| Not observed | a host selecting the skill; a real enable on a pack |
 
 ## BLD-P29: wire co-work into the family
 
@@ -970,7 +980,7 @@ Acceptance criteria:
 
 - `save` writes a co-author's journal, `run` checks the phase owner, `onboard` reports ownership, `load` reads the config, `recall` re-reads `cowork-contract.md`
 - `academic-contract.md` drops handles and emails from a shared lesson
-- `guide.md`, `README.md`, `AGENTS.md` and the `family-map` chip updated, `family-map` re-shot in both themes
+- `AGENTS.md` shared-core section names `cowork-contract.md`; `README.md` prose and the `family-map` alt text name the skill; `family-map` re-shot in both themes (the guide row, the README table row and the chip landed in BLD-P28)
 - the suite is green
 
 ## BLD-P30: field test and cleanup
@@ -1022,6 +1032,6 @@ BLD-P24 changed `baseline-core/scripts/packtool.sh` and `baselinedocs-callout`: 
 
 BLD-P25 added the work ticket line. Reinstall on any machine that should pick it up, then add a `**Ticket:**` line to a real pack phase and run `check` on it. Nothing in BLD-P25 waits on a user decision.
 
-Co-work mode, recorded 2026-10-31: BLD-P26 and BLD-P27 are complete; BLD-P28 to BLD-P30 are planned and run in order under continuous approval with a commit per phase, the user's choice for this run. BLD-Q8, the release number, waits on the user before the release.
+Co-work mode, recorded 2026-10-31: BLD-P26 to BLD-P28 are complete; BLD-P29 and BLD-P30 are planned and run in order under continuous approval with a commit per phase, the user's choice for this run. BLD-Q8, the release number, waits on the user before the release.
 
 BLD-P20 added `baselinedocs-self-upgrade`. The first real use is its test: run it on a machine with a stale install, confirm `npx skills update -g -y` refreshes the linked folders, and confirm the clone fallback replaces a real copy such as `~/.gemini/config/skills` without touching a junction. Nothing in BLD-P20 waits on a user decision.

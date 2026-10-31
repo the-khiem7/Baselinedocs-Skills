@@ -8,6 +8,7 @@ CORE = ROOT / "baseline-core"
 CORE_ASSETS = [
     "references/pack-contract.md",
     "references/report-style.md",
+    "references/cowork-contract.md",
     "scripts/packtool.sh",
 ]
 CORE_SENTENCE = (
@@ -43,6 +44,7 @@ WRITER_SKILLS = {
     "baselinedocs-maintain-split",
     "baselinedocs-extract-wiki",
     "baselinedocs-callout",
+    "baselinedocs-cowork",
 }
 
 # A skill that writes nothing still needs the role list to report content sitting
@@ -313,3 +315,21 @@ def test_only_academic_skills_name_the_academic_core(name):
     assert "baseline-academic-core" not in read_skill(name), (
         f"{name} is not an academic skill and must not depend on baseline-academic-core"
     )
+
+
+# The co-work contract is read only when a pack holds a cowork configuration. The
+# sentence sending a writer there lives in `pack-contract.md`, which every writer
+# reads, so a skill that skipped the co-work file is still told it exists. The skill
+# that sets co-work up gates on it directly.
+COWORK_GATE = "Read `<core-dir>/references/cowork-contract.md` in full before enabling, reassigning, folding or disabling co-work, every time."
+
+
+def test_cowork_skill_gates_on_the_cowork_contract_and_the_author_flag():
+    text = read_skill("baselinedocs-cowork")
+    assert COWORK_GATE in text, "baselinedocs-cowork never requires reading the co-work contract"
+    assert "--author <handle>" in text, "baselinedocs-cowork never says a co-worked pack needs --author"
+
+
+def test_pack_contract_sends_a_writer_to_the_cowork_contract():
+    text = read_text(CORE / "references" / "pack-contract.md")
+    assert "`cowork-contract.md` beside this one in full before writing or reporting that pack" in text

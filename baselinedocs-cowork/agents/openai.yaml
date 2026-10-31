@@ -1,0 +1,6 @@
+interface:
+  display_name: "Baseline Docs Co-work"
+  short_description: "Let several people write one pack without conflicts"
+  default_prompt: "Use $baselinedocs-cowork to enable, reassign, fold, or disable co-work mode on an existing baseline pack."
+policy:
+  allow_implicit_invocation: false

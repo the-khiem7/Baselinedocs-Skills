@@ -52,7 +52,7 @@ A bare prohibition with an appealing counter-argument gets overridden mid-run. A
 
 ### The pack contract
 
-`pack-contract.md` is the only definition of which baseline document owns which content. The 11 pack-writing skills gate on it before a write, and `baselinedocs-onboard` before reporting pack state, because it reads every document in full and reports content sitting in the wrong one.
+`pack-contract.md` is the only definition of which baseline document owns which content. The 12 pack-writing skills gate on it before a write, and `baselinedocs-onboard` before reporting pack state, because it reads every document in full and reports content sitting in the wrong one.
 
 - A skill gates on the contract when it writes pack files, or when it reads every document in full and reports placement. The test is a full read, not the absence of writes: `baselinedocs-brief` reads nothing in full and neither `audit` skill compares placement, so a gate there would let a skill report conformance it never checked.
 - One exception reads no pack at all: `baselinedocs-recall` re-reads the contract and report style after a context compaction, because restoring them is its whole job. It reports nothing about a pack, so the conformance objection does not reach it.
