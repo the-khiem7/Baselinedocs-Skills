@@ -4,7 +4,7 @@ pack: "baselinedocs"
 document: "roadmap"
 status: "active"
 updated: "2026-10-31"
-code_ref: "0bd8fac"
+code_ref: "7f7610e"
 ---
 
 # Family Design Roadmap
@@ -58,7 +58,7 @@ Verified against the repository, not against `DESIGN.md`.
 | `packtool.sh` on role-named files | BLD-D56 | implemented, CI matrix unobserved | `baseline-core/scripts/packtool.sh` `bare_baseline` and the `filename-mismatch` WARN; three cases in `tests/test_packtool.py`, which fail against the previous tool |
 | Callout group across repositories | BLD-D57 | implemented, selection unobserved | `baselinedocs-callout/SKILL.md`, `A group across two repositories` and retiring step 3 |
 | Work ticket line | BLD-D58 | implemented, no pack carries one yet | `baseline-core/references/pack-contract.md` `Work tickets`; `ticketok` and `ticketline` in `packtool.sh`; two cases in `tests/test_packtool.py` |
-| Co-work mode and schema 3.0 | BLD-D59, BLD-D60, BLD-Q8 | in progress | BLD-P26 complete; BLD-P27 to BLD-P30 planned |
+| Co-work mode and schema 3.0 | BLD-D59, BLD-D60, BLD-Q8 | in progress | BLD-P26 and BLD-P27 complete; BLD-P28 to BLD-P30 planned |
 
 ## BLD-P1: adopt `DESIGN.md` into this pack
 
@@ -931,7 +931,7 @@ Acceptance criteria:
 
 ## BLD-P27: `packtool.sh` understands co-work
 
-Status: planned.
+Status: complete.
 
 Acceptance criteria:
 
@@ -939,6 +939,18 @@ Acceptance criteria:
 - `## Open questions - <Name>` and `## Closed decisions - <Name>` match by prefix; `next-id <dir> <KIND> --author <handle>` allocates inside the author's range; `identifier-gap` skips gaps between ranges
 - FAIL on overlapping ranges, an identifier outside every range, a handle equal to a document name; WARN on a phase without `**Owner:**`; a reminder line on a co-worked pack
 - one case per rule in `tests/test_packtool.py`, each failing against the previous tool
+
+### Checkpoint: complete, mawk and BWK awk unobserved
+
+| Item | Result |
+|---|---|
+| Verification gate | `uvx --from "pytest>=8,<10" --with pyyaml pytest tests/ -q`: 534 passed, 2 skipped |
+| Mutation check | with the previous `packtool.sh` restored, 17 of the 22 selected cases failed; the other 5 assert a refusal or FAIL the previous tool also gives |
+| Changed files | `baseline-core/scripts/packtool.sh`; `tests/test_packtool.py` (21 new cases, helper packs now schema `3.0`) |
+| New rules | FAIL `range-format`, `range-unknown-author`, `range-missing`, `range-overlap`, `owner-count`, `identifier-out-of-range`, `cowork-handle`, `duplicate-author`; WARN `schema-outdated` (once per pack), `phase-without-owner`, `owner-not-author`, `journal-unknown-author`; `NOTE` line per co-worked pack, not counted as a finding |
+| Behaviour | `next-id --author <handle>` allocates inside that author's range; a bare `next-id` on a co-worked pack exits 2; `identifier-gap` is computed per range; `## Open questions - <Name>` is the open-questions group |
+| Not observed | mawk and BWK awk; the awk program contains a single-quote rule (no apostrophe inside it), which broke the first run |
+| Unresolved risk | the repository's own packs are `2.0` and draw `schema-outdated`; upgrading them waits on the user's consent |
 
 ## BLD-P28: the `baselinedocs-cowork` skill
 
@@ -1010,6 +1022,6 @@ BLD-P24 changed `baseline-core/scripts/packtool.sh` and `baselinedocs-callout`: 
 
 BLD-P25 added the work ticket line. Reinstall on any machine that should pick it up, then add a `**Ticket:**` line to a real pack phase and run `check` on it. Nothing in BLD-P25 waits on a user decision.
 
-Co-work mode, recorded 2026-10-31: BLD-P26 is complete; BLD-P27 to BLD-P30 are planned and run in order under continuous approval with a commit per phase, the user's choice for this run. BLD-Q8, the release number, waits on the user before the release.
+Co-work mode, recorded 2026-10-31: BLD-P26 and BLD-P27 are complete; BLD-P28 to BLD-P30 are planned and run in order under continuous approval with a commit per phase, the user's choice for this run. BLD-Q8, the release number, waits on the user before the release.
 
 BLD-P20 added `baselinedocs-self-upgrade`. The first real use is its test: run it on a machine with a stale install, confirm `npx skills update -g -y` refreshes the linked folders, and confirm the clone fallback replaces a real copy such as `~/.gemini/config/skills` without touching a junction. Nothing in BLD-P20 waits on a user decision.

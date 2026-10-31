@@ -15,7 +15,7 @@ SH = shutil.which("sh")
 def frontmatter(pack, document, code_ref="uncommitted"):
     return (
         "---\n"
-        'baseline_schema: "2.0"\n'
+        'baseline_schema: "3.0"\n'
         f'pack: "{pack}"\n'
         f'document: "{document}"\n'
         'status: "active"\n'
@@ -382,3 +382,211 @@ def test_bad_usage_exits_2(tmp_path, args):
 def test_repository_packs_have_no_structural_failure():
     result = run(ROOT, "check", "docs/baseline")
     assert result.returncode == 0, result.stdout + result.stderr
+
+
+# Schema 3.0 and co-work. A 2.0 pack stays readable and draws one WARN per pack.
+def test_schema_2_pack_draws_one_warning_and_no_failure(tmp_path):
+    folder = write_pack(tmp_path)
+    for document in ("introduction", "roadmap", "hallucination"):
+        edit(folder, document, 'baseline_schema: "3.0"', 'baseline_schema: "2.0"')
+    result = run(tmp_path, "check", "tb")
+    assert result.returncode == 0, result.stdout
+    assert rules(result, "WARN").count("schema-outdated") == 1, result.stdout
+    assert rules(result, "FAIL") == [], result.stdout
+
+
+def test_unknown_schema_fails(tmp_path):
+    folder = write_pack(tmp_path)
+    edit(folder, "introduction", 'baseline_schema: "3.0"', 'baseline_schema: "4.0"')
+    assert "frontmatter-value" in rules(run(tmp_path, "check", "tb"), "FAIL")
+
+
+COWORK_CONFIG = """
+# TB - Co-work configuration
+
+## Authors
+
+| Handle | Name | Git email | Role |
+|---|---|---|---|
+| alice | Alice | alice@example.com | Pack owner |
+| bob | Bob | bob@example.com | Co-author |
+
+## Introduction section owners
+
+| Section | Owner |
+|---|---|
+| Every other section | pack owner |
+
+## Identifier ranges
+
+| Handle | Range | Entries go under |
+|---|---|---|
+| alice | 1-199 | `## Closed decisions`, `## Open questions` |
+| bob | 200-299 | `## Closed decisions - Bob`, `## Open questions - Bob` |
+"""
+
+COWORK_ROADMAP = """
+# TB: Roadmap
+
+## TB-P1: size the brokers
+
+**Owner:** alice
+
+Done. TB-D1 holds the reasoning.
+"""
+
+BOB_ENTRIES = """
+## Closed decisions - Bob
+
+## TB-D200: bob closes the disk question
+
+Closes TB-Q1.
+
+## Open questions - Bob
+
+### TB-Q200: why does broker-3 restart?
+
+Unanswered.
+"""
+
+
+def write_cowork(root, config=COWORK_CONFIG, bob=True):
+    hallucination = HALLUCINATION
+    if bob:
+        hallucination = hallucination.replace(
+            "| TB-Q1 | broker-2 disk growth | open | TB-D1 |\n",
+            "| TB-Q1 | broker-2 disk growth | open | TB-D1 |\n"
+            "| TB-D200 | bob closes the disk question | current | TB-Q1 |\n"
+            "| TB-Q200 | broker-3 restarts | open | |\n",
+        ) + BOB_ENTRIES
+    folder = write_pack(root, hallucination=hallucination, roadmap=COWORK_ROADMAP)
+    (folder / "tb.cowork.md").write_text(frontmatter("tb", "cowork") + config, encoding="utf-8", newline="\n")
+    return folder
+
+
+def test_cowork_pack_with_a_co_author_group_passes_without_a_gap_warning(tmp_path):
+    write_cowork(tmp_path)
+    result = run(tmp_path, "check", "tb")
+    assert result.returncode == 0, result.stdout
+    assert "identifier-gap" not in rules(result, "WARN"), result.stdout
+    assert "0 FAIL" in result.stdout
+
+
+def test_cowork_pack_prints_the_reminder_that_is_not_a_finding(tmp_path):
+    write_cowork(tmp_path)
+    result = run(tmp_path, "check", "tb")
+    assert re.search(r"^NOTE .* cowork-pack tb .*cowork-contract\.md", result.stdout, re.M), result.stdout
+    assert re.search(r"packtool check: \d+ FAIL, \d+ WARN in 4 documents", result.stdout), result.stdout
+
+
+def test_open_questions_group_of_a_co_author_is_the_open_questions_section(tmp_path):
+    write_cowork(tmp_path)
+    assert "question-outside-open-questions" not in rules(run(tmp_path, "check", "tb"), "FAIL")
+
+
+def test_next_id_in_a_cowork_pack_comes_from_the_authors_range(tmp_path):
+    write_cowork(tmp_path)
+    assert run(tmp_path, "next-id", "tb", "D", "--author", "alice").stdout.strip() == "TB-D3"
+    assert run(tmp_path, "next-id", "tb", "D", "--author", "bob").stdout.strip() == "TB-D201"
+    assert run(tmp_path, "next-id", "tb", "Q", "--author", "bob").stdout.strip() == "TB-Q201"
+    assert run(tmp_path, "next-id", "tb", "Q", "TB", "--author", "alice").stdout.strip() == "TB-Q2"
+
+
+def test_next_id_without_an_author_is_refused_in_a_cowork_pack(tmp_path):
+    write_cowork(tmp_path)
+    result = run(tmp_path, "next-id", "tb", "D")
+    assert result.returncode == 2 and "--author" in result.stderr, result.stderr
+
+
+def test_next_id_with_an_author_is_refused_when_the_pack_is_not_co_worked(tmp_path):
+    write_pack(tmp_path)
+    assert run(tmp_path, "next-id", "tb", "D", "--author", "alice").returncode == 2
+
+
+def test_next_id_refuses_an_unknown_author_and_a_used_up_range(tmp_path):
+    write_cowork(tmp_path)
+    assert run(tmp_path, "next-id", "tb", "D", "--author", "carol").returncode == 2
+    edit(tmp_path / "tb", "cowork", "| bob | 200-299 |", "| bob | 200-200 |")
+    result = run(tmp_path, "next-id", "tb", "D", "--author", "bob")
+    assert result.returncode == 2 and "used up" in result.stderr, result.stderr
+
+
+def test_identifier_outside_every_range_fails(tmp_path):
+    folder = write_cowork(tmp_path)
+    edit(folder, "hallucination", "## TB-D200: bob closes", "## TB-D350: bob closes")
+    edit(folder, "hallucination", "| TB-D200 |", "| TB-D350 |")
+    assert "identifier-out-of-range" in rules(run(tmp_path, "check", "tb"), "FAIL")
+
+
+def test_overlapping_ranges_fail(tmp_path):
+    folder = write_cowork(tmp_path)
+    edit(folder, "cowork", "| alice | 1-199 |", "| alice | 1-250 |")
+    assert "range-overlap" in rules(run(tmp_path, "check", "tb"), "FAIL")
+
+
+def test_malformed_range_fails(tmp_path):
+    folder = write_cowork(tmp_path)
+    edit(folder, "cowork", "| bob | 200-299 |", "| bob | 200 to 299 |")
+    assert "range-format" in rules(run(tmp_path, "check", "tb"), "FAIL")
+
+
+def test_a_cowork_pack_has_exactly_one_owner(tmp_path):
+    folder = write_cowork(tmp_path)
+    edit(folder, "cowork", "| Bob | bob@example.com | Co-author |", "| Bob | bob@example.com | Pack owner |")
+    assert "owner-count" in rules(run(tmp_path, "check", "tb"), "FAIL")
+
+
+def test_an_author_without_a_range_fails(tmp_path):
+    folder = write_cowork(tmp_path)
+    edit(folder, "cowork", "| bob | 200-299 | `## Closed decisions - Bob`, `## Open questions - Bob` |\n", "")
+    assert "range-missing" in rules(run(tmp_path, "check", "tb"), "FAIL")
+
+
+def test_a_handle_that_names_a_document_fails(tmp_path):
+    folder = write_cowork(tmp_path)
+    edit(folder, "cowork", "| bob | Bob |", "| roadmap | Bob |")
+    assert "cowork-handle" in rules(run(tmp_path, "check", "tb"), "FAIL")
+
+
+def test_a_journal_named_for_a_document_fails(tmp_path):
+    folder = write_cowork(tmp_path)
+    journal = frontmatter("tb", "cowork") + "\n# TB - Co-work journal - Roadmap\n"
+    (folder / "tb.cowork.roadmap.md").write_text(journal, encoding="utf-8", newline="\n")
+    assert "cowork-handle" in rules(run(tmp_path, "check", "tb"), "FAIL")
+
+
+def test_a_journal_of_a_listed_author_passes_and_an_unlisted_one_warns(tmp_path):
+    folder = write_cowork(tmp_path)
+    journal = frontmatter("tb", "cowork") + "\n# TB - Co-work journal - Bob\n\n## 2026-10-31 - first\n- Done: nothing\n- Fold: pending\n"
+    (folder / "tb.cowork.bob.md").write_text(journal, encoding="utf-8", newline="\n")
+    result = run(tmp_path, "check", "tb")
+    assert result.returncode == 0 and "journal-unknown-author" not in rules(result, "WARN"), result.stdout
+    (folder / "tb.cowork.carol.md").write_text(journal, encoding="utf-8", newline="\n")
+    assert "journal-unknown-author" in rules(run(tmp_path, "check", "tb"), "WARN")
+
+
+def test_a_phase_without_an_owner_warns_in_a_cowork_pack_only(tmp_path):
+    folder = write_cowork(tmp_path)
+    edit(folder, "roadmap", "**Owner:** alice\n", "")
+    assert "phase-without-owner" in rules(run(tmp_path, "check", "tb"), "WARN")
+    write_pack(tmp_path / "plain")
+    assert "phase-without-owner" not in rules(run(tmp_path / "plain", "check", "tb"), "WARN")
+
+
+def test_a_phase_owner_who_is_not_an_author_warns(tmp_path):
+    folder = write_cowork(tmp_path)
+    edit(folder, "roadmap", "**Owner:** alice", "**Owner:** carol")
+    assert "owner-not-author" in rules(run(tmp_path, "check", "tb"), "WARN")
+
+
+def test_a_gap_inside_an_author_range_still_warns(tmp_path):
+    folder = write_cowork(tmp_path)
+    edit(folder, "hallucination", "## TB-D200: bob closes", "## TB-D203: bob closes")
+    edit(folder, "hallucination", "| TB-D200 |", "| TB-D203 |")
+    assert "identifier-gap" in rules(run(tmp_path, "check", "tb"), "WARN")
+
+
+def test_a_cowork_document_needs_schema_3(tmp_path):
+    folder = write_cowork(tmp_path)
+    edit(folder, "cowork", 'baseline_schema: "3.0"', 'baseline_schema: "2.0"')
+    assert "frontmatter-value" in rules(run(tmp_path, "check", "tb"), "FAIL")

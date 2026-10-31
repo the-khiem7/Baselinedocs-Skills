@@ -8,7 +8,7 @@
 #
 #   sh packtool.sh outline <file|dir>              every heading with file:line
 #   sh packtool.sh find    <dir> <ID>              every occurrence of one identifier
-#   sh packtool.sh next-id <dir> <D|Q|P> [PREFIX]  the next free identifier
+#   sh packtool.sh next-id <dir> <D|Q|P> [PREFIX] [--author <handle>]  the next free identifier
 #   sh packtool.sh close-plan <dir> <Q-ID> <D-ID>  the edits that close a question into a decision
 #   sh packtool.sh check   <dir>                   FAIL and WARN findings
 #
@@ -25,7 +25,7 @@ usage() {
   cat >&2 <<'EOF'
 usage: sh packtool.sh outline <file|dir>
        sh packtool.sh find    <dir> <ID>
-       sh packtool.sh next-id <dir> <D|Q|P> [PREFIX]
+       sh packtool.sh next-id <dir> <D|Q|P> [PREFIX] [--author <handle>]
        sh packtool.sh close-plan <dir> <Q-ID> <D-ID>
        sh packtool.sh check   <dir>
 EOF
@@ -52,7 +52,7 @@ list_files() {
     [ -f "$f" ] || continue
     if [ "$2" = baseline ]; then
       case $f in
-        *.introduction.md|*.roadmap.md|*.hallucination.md|*.sourcecode.md|*.useguide.md|*.index.md) ;;
+        *.introduction.md|*.roadmap.md|*.hallucination.md|*.sourcecode.md|*.useguide.md|*.index.md|*.cowork.md|*.cowork.*.md) ;;
         */introduction.md|*/roadmap.md|*/hallucination.md|*/sourcecode.md|*/useguide.md|*/index.md)
           bare_baseline "$f" || continue ;;
         *) continue ;;
@@ -69,6 +69,7 @@ target=${2%/}
 arg=
 prefix=
 closer=
+author=
 case $cmd in
   outline|check) [ $# -eq 2 ] || usage ;;
   find)
@@ -92,11 +93,18 @@ case $cmd in
     esac
     [ "${arg%%-*}" = "${closer%%-*}" ] || { echo "packtool: $arg and $closer carry different prefixes" >&2; exit 2; } ;;
   next-id)
-    [ $# -ge 3 ] && [ $# -le 4 ] || usage
+    [ $# -ge 3 ] || usage
     arg=$3
-    prefix=${4:-}
+    shift 3
+    while [ $# -gt 0 ]; do
+      case $1 in
+        --author) [ $# -ge 2 ] || usage; author=$2; shift 2 ;;
+        *) [ -z "$prefix" ] || usage; prefix=$1; shift ;;
+      esac
+    done
     case $arg in D|Q|P) ;; *) usage ;; esac
-    case $prefix in ''|[A-Z][A-Z]|[A-Z][A-Z][A-Z]) ;; *) usage ;; esac ;;
+    case $prefix in ''|[A-Z][A-Z]|[A-Z][A-Z][A-Z]) ;; *) usage ;; esac
+    case $author in ''|*[!a-z0-9-]*) [ -z "$author" ] || usage ;; esac ;;
   *) usage ;;
 esac
 
@@ -182,6 +190,8 @@ function short(s) { s = trim(s); return length(s) > 160 ? substr(s, 1, 157) "...
 function curdoc() { return doc != "" ? doc : fdoc }
 function packname() { return pack != "" ? pack : parent(file) }
 function isid(s) { return s ~ /^[A-Z][A-Z][A-Z]?-[DQP][0-9]+$/ }
+# A co-author keeps questions in "## Open questions - <Name>"; both are the open-questions group.
+function inq(s) { return s == "Open questions" || index(s, "Open questions - ") == 1 }
 function idpfx(id) { return substr(id, 1, index(id, "-") - 1) }
 function idkind(id) { return substr(id, index(id, "-") + 1, 1) }
 
@@ -230,11 +240,11 @@ function heading(id, lv,   k, p, pk, d) {
   }
   if (mode != "check") return
   if (k == "Q") {
-    if (d == "hallucination" && section == "Open questions" && lv >= 3) { qk[++nqk] = file SUBSEP id; qloc[file, id] = loc }
+    if (d == "hallucination" && inq(section) && lv >= 3) { qk[++nqk] = file SUBSEP id; qloc[file, id] = loc }
     else report("FAIL", loc, "question-outside-open-questions", id " belongs under ## Open questions in hallucination as ### " id ": <question>")
   } else if (k == "D") {
     if (d != "hallucination") report("FAIL", loc, "decision-outside-hallucination", id " is a decision entry; decisions live in hallucination")
-    else if (section == "Open questions" && lv >= 3) report("FAIL", loc, "decision-under-open-questions", id " is a decision filed under ## Open questions")
+    else if (inq(section) && lv >= 3) report("FAIL", loc, "decision-under-open-questions", id " is a decision filed under ## Open questions")
   } else if (k == "P") {
     if (d != "roadmap") report("FAIL", loc, "phase-outside-roadmap", id " names a phase; phases live in roadmap")
   }
@@ -250,8 +260,14 @@ function checkfm(where,   i, k, v) {
     if (!(k in want)) report("FAIL", where, "frontmatter-key-unknown", k)
     else if (fmn[k] > 1) report("FAIL", where, "frontmatter-key-duplicate", k)
   }
-  if (("baseline_schema" in fmv) && fmv["baseline_schema"] != "2.0") report("FAIL", where, "frontmatter-value", "baseline_schema is not \"2.0\"")
-  if (("document" in fmv) && !(fmv["document"] in docs)) report("FAIL", where, "frontmatter-value", "document " fmv["document"] " is not one of introduction|roadmap|hallucination|sourcecode|useguide|index")
+  if ("baseline_schema" in fmv) {
+    if (fmv["baseline_schema"] == "2.0") {
+      # One warning per pack, not per document: the whole pack is the thing that is older.
+      if (!(packname() in oldwarn)) { oldwarn[packname()] = 1; report("WARN", where, "schema-outdated", "baseline_schema \"2.0\" is older than the installed family (\"3.0\"); tell the user this pack may need a format upgrade, and do not upgrade it unasked") }
+      if (doc == "cowork") report("FAIL", where, "frontmatter-value", "document cowork needs baseline_schema \"3.0\"")
+    } else if (fmv["baseline_schema"] != "3.0") report("FAIL", where, "frontmatter-value", "baseline_schema is not \"3.0\" (or the older \"2.0\")")
+  }
+  if (("document" in fmv) && !(fmv["document"] in docs)) report("FAIL", where, "frontmatter-value", "document " fmv["document"] " is not one of introduction|roadmap|hallucination|sourcecode|useguide|index|cowork")
   if (("status" in fmv) && !(fmv["status"] in stats)) report("FAIL", where, "frontmatter-value", "status " fmv["status"] " is not one of draft|active|blocked|complete")
   if (("updated" in fmv) && fmv["updated"] !~ /^[0-9][0-9][0-9][0-9]-[01][0-9]-[0-3][0-9]$/) report("FAIL", where, "frontmatter-value", "updated is not YYYY-MM-DD")
   v = fmv["code_ref"]
@@ -261,7 +277,10 @@ function checkfm(where,   i, k, v) {
     else if (v ~ /^[0-9a-f]+$/ && git_head != "" && index(git_head, v) != 1) report("WARN", where, "code-ref-behind-head", "code_ref " v " is not HEAD " substr(git_head, 1, 12) "; a drift signal, not proof of drift")
   }
   if (pack != "" && doc != "") {
-    if (base(file) == doc ".md") report("WARN", where, "filename-mismatch", "named " doc ".md; the contract names it " pack "." doc ".md, and the document field is what identifies it here")
+    if (doc == "cowork" && fhandle != "") {
+      if (base(file) != pack ".cowork." fhandle ".md") report("FAIL", where, "filename-mismatch", "should be named " pack ".cowork." fhandle ".md")
+      if (fhandle in docs) report("FAIL", where, "cowork-handle", "handle " fhandle " is a document name; a journal named for it reads as that document")
+    } else if (base(file) == doc ".md") report("WARN", where, "filename-mismatch", "named " doc ".md; the contract names it " pack "." doc ".md, and the document field is what identifies it here")
     else if (base(file) != pack "." doc ".md") report("FAIL", where, "filename-mismatch", "should be named " pack "." doc ".md")
     if (doc != "index" && parent(file) != pack) report("WARN", where, "directory-mismatch", "sits in " parent(file) "/ but its pack is " pack "; a readable folder title is fine, the pack id in the frontmatter is what citations use")
   }
@@ -291,15 +310,111 @@ function endrun() {
 function startfile(   b) {
   file = FILENAME
   nfiles++
-  fm = 0; fence = 0; section = ""; doc = ""; pack = ""; has_index = 0; run = 0
+  fm = 0; fence = 0; section = ""; doc = ""; pack = ""; has_index = 0; run = 0; phopen = 0
   split("", fmv); split("", fmn)
-  b = base(file); fdoc = ""
-  if (match(b, /\.[a-z]+\.md$/)) fdoc = substr(b, RSTART + 1, RLENGTH - 4)
+  b = base(file); fdoc = ""; fhandle = ""
+  if (match(b, /\.cowork\.[a-z0-9-]+\.md$/)) { fdoc = "cowork"; fhandle = substr(b, RSTART + 8, RLENGTH - 11) }
+  else if (match(b, /\.[a-z]+\.md$/)) fdoc = substr(b, RSTART + 1, RLENGTH - 4)
   else if (b ~ /^(introduction|roadmap|hallucination|sourcecode|useguide|index)\.md$/) fdoc = substr(b, 1, length(b) - 3)
+}
+
+function endphase() {
+  if (!phopen) return
+  ph[++nph] = 1; phpk[nph] = packname(); phlc[nph] = phloc; pho[nph] = phowner
+  phopen = 0
+}
+
+# Co-work: a pack is co-worked when it holds a <prefix>.cowork.md configuration.
+function cowmark(   pk) {
+  pk = packname()
+  if (fhandle == "") {
+    if (!(pk in cowpack)) { cowpack[pk] = 1; cowloc[pk] = file ":1"; cowpacks[++ncow] = pk }
+  } else jn[++nj] = pk SUBSEP fhandle SUBSEP file
+}
+
+function cowrow(   cell, h, pk, r, role) {
+  split(line, cell, "|")
+  h = trim(cell[2])
+  if (h == "" || h == "Handle" || h ~ /^[-: ]+$/) return
+  pk = packname()
+  if (section == "Authors") {
+    role = trim(cell[5])
+    if ((pk, h) in auth) { if (mode == "check") report("FAIL", loc, "duplicate-author", "handle " h " is listed twice") }
+    else { auth[pk, h] = role; ao[++nau] = pk SUBSEP h }
+    if (role == "Pack owner") nowner[pk]++
+    if (mode == "check" && (h !~ /^[a-z0-9-]+$/ || (h in docs))) report("FAIL", loc, "cowork-handle", "handle " h " is not lowercase letters, digits and hyphens, or is a document name")
+  } else if (section == "Identifier ranges") {
+    r = trim(cell[3]); gsub(/`/, "", r)
+    rng[pk, h] = r; rngloc[pk, h] = loc; ro[++nrg] = pk SUBSEP h
+  }
+}
+
+function inrange(pk, n,   i, kv) {
+  for (i = 1; i <= nrg; i++) {
+    split(ro[i], kv, SUBSEP)
+    if (kv[1] == pk && (ro[i] in rlo) && n >= rlo[ro[i]] && n <= rhi[ro[i]]) return 1
+  }
+  return 0
+}
+
+# Parses every range once, in every mode, so next-id can allocate inside one.
+function cowranges(   i, kv, r, ab) {
+  for (i = 1; i <= nrg; i++) {
+    split(ro[i], kv, SUBSEP); r = rng[ro[i]]
+    if (r !~ /^[0-9]+-[0-9]+$/) { if (mode == "check") report("FAIL", rngloc[ro[i]], "range-format", "range of " kv[2] " is not <low>-<high>"); continue }
+    split(r, ab, "-")
+    if (ab[1] + 0 > ab[2] + 0) { if (mode == "check") report("FAIL", rngloc[ro[i]], "range-format", "range of " kv[2] " has low above high"); continue }
+    rlo[ro[i]] = ab[1] + 0; rhi[ro[i]] = ab[2] + 0
+  }
+}
+
+function coworkchecks(   i, j, kv, kw, pk, id, n, p, lo, hi, m, nm, miss, k) {
+  for (i = 1; i <= nrg; i++) {
+    split(ro[i], kv, SUBSEP)
+    if (!(ro[i] in auth)) report("FAIL", rngloc[ro[i]], "range-unknown-author", kv[2] " holds a range but is not in the Authors table")
+  }
+  for (i = 1; i <= nau; i++) {
+    split(ao[i], kv, SUBSEP)
+    if (!(ao[i] in rng)) report("FAIL", cowloc[kv[1]], "range-missing", kv[2] " is an author with no identifier range")
+  }
+  for (i = 1; i <= nrg; i++) for (j = i + 1; j <= nrg; j++) {
+    split(ro[i], kv, SUBSEP); split(ro[j], kw, SUBSEP)
+    if (kv[1] == kw[1] && (ro[i] in rlo) && (ro[j] in rlo) && rlo[ro[i]] <= rhi[ro[j]] && rlo[ro[j]] <= rhi[ro[i]]) report("FAIL", rngloc[ro[j]], "range-overlap", "ranges of " kv[2] " and " kw[2] " overlap")
+  }
+  for (i = 1; i <= ncow; i++) if (nowner[cowpacks[i]] + 0 != 1) report("FAIL", cowloc[cowpacks[i]], "owner-count", "a co-worked pack has exactly one Pack owner, found " (nowner[cowpacks[i]] + 0))
+  for (i = 1; i <= nids; i++) {
+    id = horder[i]; p = idpfx(id)
+    if ((p in ppack) && (ppack[p] in cowpack) && !inrange(ppack[p], substr(id, index(id, "-") + 2) + 0)) report("FAIL", hlocs[id], "identifier-out-of-range", id " lies in no author range of pack " ppack[p])
+  }
+  for (i = 1; i <= nph; i++) if (phpk[i] in cowpack) {
+    if (pho[i] == "") report("WARN", phlc[i], "phase-without-owner", "a co-worked pack gives every phase an **Owner:** line")
+    else if (!((phpk[i], pho[i]) in auth)) report("WARN", phlc[i], "owner-not-author", "owner " pho[i] " is not in the Authors table")
+  }
+  for (i = 1; i <= nj; i++) {
+    split(jn[i], kv, SUBSEP)
+    if ((kv[1] in cowpack) && !((kv[1], kv[2]) in auth)) report("WARN", kv[3] ":1", "journal-unknown-author", "journal of " kv[2] " has no row in the Authors table")
+  }
+  # A gap is a number inside an author range, below its highest used number, that appears nowhere.
+  for (i = 1; i <= npk; i++) {
+    split(pkorder[i], kv, SUBSEP)
+    p = kv[1]; k = kv[2]
+    if (!(p in ppack) || !(ppack[p] in cowpack)) continue
+    for (j = 1; j <= nrg; j++) {
+      split(ro[j], kw, SUBSEP)
+      if (kw[1] != ppack[p] || !(ro[j] in rlo)) continue
+      lo = rlo[ro[j]]; hi = rhi[ro[j]]; m = 0
+      for (n = hi; n >= lo; n--) if ((p "-" k n) in seen) { m = n; break }
+      nm = 0; miss = ""
+      for (n = lo; n < m; n++) if (!((p "-" k n) in seen)) { nm++; if (nm <= 8) miss = miss (nm > 1 ? ", " : "") p "-" k n }
+      if (nm) report("WARN", cowloc[kw[1]], "identifier-gap", nm " number(s) below " p "-" k m " in the range of " kw[2] " appear nowhere: " miss (nm > 8 ? ", ..." : "") "; an identifier is never reused, and a closed question stays named by the entry that closed it as \"Closes <ID>.\"")
+    }
+  }
+  for (i = 1; i <= ncow; i++) print "NOTE " cowloc[cowpacks[i]] " cowork-pack " cowpacks[i] " is co-worked; read cowork-contract.md in full before writing or reporting it"
 }
 
 function endfile() {
   endrun()
+  endphase()
   if (mode != "check") return
   if (fm == 1) report("FAIL", file ":1", "unterminated-frontmatter", "the frontmatter block has no closing ---")
   if (curdoc() == "hallucination" && !has_index) report("FAIL", file ":1", "missing-entry-index", "hallucination carries ## Entry index from the first entry")
@@ -331,7 +446,7 @@ BEGIN {
   EN ="\342\200\223"; EM = "\342\200\224"
   split("baseline_schema pack document status updated code_ref", KEYS, " ")
   for (i = 1; i <= 6; i++) want[KEYS[i]] = 1
-  split("introduction roadmap hallucination sourcecode useguide index", t, " ")
+  split("introduction roadmap hallucination sourcecode useguide index cowork", t, " ")
   for (i in t) docs[t[i]] = 1
   split("draft active blocked complete", t, " ")
   for (i in t) stats[t[i]] = 1
@@ -351,7 +466,7 @@ FNR == 1 { if (nfiles) endfile(); startfile() }
     if (mode == "check") report("FAIL", loc, "missing-frontmatter", "a baseline document starts with a --- frontmatter block")
   }
   if (fm == 1) {
-    if (line == "---") { fm = 2; if (mode == "check") checkfm(file ":1"); next }
+    if (line == "---") { fm = 2; if (mode == "check") checkfm(file ":1"); if (doc == "cowork") cowmark(); next }
     if (match(line, /^[a-z_]+:/)) {
       k = substr(line, 1, RLENGTH - 1); v = unq(substr(line, RLENGTH + 1))
       fmv[k] = v; fmn[k]++
@@ -375,6 +490,8 @@ FNR == 1 { if (nfiles) endfile(); startfile() }
       own = substr(text, 1, RLENGTH)
       heading(own, lv)
     }
+    if (lv <= 2) endphase()
+    if (lv == 2 && curdoc() == "roadmap" && (text ~ /^Phase [0-9]+/ || (own != "" && idkind(own) == "P"))) { phopen = 1; phloc = loc; phowner = "" }
     n = ids_in(line, found_ids)
     for (i = 1; i <= n; i++) occ(found_ids[i], found_ids[i] == own ? "heading" : "citation")
     next
@@ -384,6 +501,8 @@ FNR == 1 { if (nfiles) endfile(); startfile() }
   d = curdoc()
   # A ticket key belongs to an external tracker; one shaped like AB-D3 must not count as a pack identifier.
   if (line ~ /^\*\*Ticket:\*\*/) { endrun(); if (mode == "check") ticketline(); next }
+  if (phopen && line ~ /^\*\*Owner:\*\*/) { phowner = trim(substr(line, 11)); gsub(/`/, "", phowner) }
+  if (d == "cowork" && fhandle == "" && line ~ /^\|/) { cowrow(); next }
   isrow = 0
   if (d == "hallucination" && section == "Entry index" && line ~ /^\|/) {
     split(line, cell, "|")
@@ -416,6 +535,7 @@ FNR == 1 { if (nfiles) endfile(); startfile() }
 
 END {
   if (nfiles) endfile()
+  cowranges()
 
   if (mode == "next-id") {
     p = prefix
@@ -427,6 +547,19 @@ END {
         exit 2
       }
     }
+    # In a co-worked pack the highest number overall may sit in the range of another author, so the
+    # next number comes from the range of that author, and a bare next-id is refused.
+    pk = (p in ppack) ? ppack[p] : (ncow == 1 ? cowpacks[1] : "")
+    if (author != "") {
+      if (pk == "" || !(pk in cowpack)) { print "packtool: this pack is not co-worked; omit --author" > "/dev/stderr"; exit 2 }
+      if (!((pk, author) in rlo)) { print "packtool: " author " has no valid range in the cowork configuration of " pk > "/dev/stderr"; exit 2 }
+      lo = rlo[pk, author]; hi = rhi[pk, author]; m = lo - 1
+      for (n = hi; n >= lo; n--) if ((p "-" target n) in seen) { m = n; break }
+      if (m + 1 > hi) { print "packtool: the range " lo "-" hi " of " author " is used up; ask the pack owner for a new range" > "/dev/stderr"; exit 2 }
+      print p "-" target (m + 1)
+      exit 0
+    }
+    if (pk != "" && (pk in cowpack)) { print "packtool: " pk " is co-worked; pass --author <handle> so the number comes from the range of that author" > "/dev/stderr"; exit 2 }
     print p "-" target (maxn[p, target] + 1)
     exit 0
   }
@@ -473,7 +606,7 @@ END {
   }
   for (i = 1; i <= npk; i++) {
     split(pkorder[i], kv, SUBSEP)
-    if (!(kv[1] in ppack)) continue
+    if (!(kv[1] in ppack) || (ppack[kv[1]] in cowpack)) continue
     nm = 0; miss = ""
     for (n = 1; n < maxn[pkorder[i]]; n++) {
       id = kv[1] "-" kv[2] n
@@ -487,9 +620,10 @@ END {
       report("WARN", dqr[dqorder[i]], "repeated-fact", kv[2] " " kv[3] " also appears at " dqh[dqorder[i]] "; roadmap keeps the outcome and links the entry")
     }
   }
+  coworkchecks()
   print "packtool check: " nfail + 0 " FAIL, " nwarn + 0 " WARN in " nfiles " documents"
   exit (nfail > 0)
 }
 '
 
-exec "$AWK" -v mode="$cmd" -v target="$arg" -v prefix="$prefix" -v closer="$closer" -v git_head="$git_head" -v git_state="$git_state" "$PROG" "$@"
+exec "$AWK" -v mode="$cmd" -v target="$arg" -v prefix="$prefix" -v closer="$closer" -v author="$author" -v git_head="$git_head" -v git_state="$git_state" "$PROG" "$@"
