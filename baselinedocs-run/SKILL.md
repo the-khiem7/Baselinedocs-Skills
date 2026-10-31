@@ -71,6 +71,7 @@ Aggregate small revisions under a `Revision summary` entry. Do not create one ph
 
 ## Safety
 
+- On a pack that holds a `<prefix>.cowork.md`, execute only a phase whose `**Owner:**` is the current author, resolved from `git config user.email`. Report a phase another author owns and leave it for them: running it writes a region the run does not own.
 - Selecting this skill is not permission to commit.
 - Do not commit unless the current user request explicitly authorizes it.
 - A phase commit must be indistinguishable in form from the repository's own commits. Do not add authorship, attribution, or tool-generated trailers that the repository's history does not already use. A pack is operational memory, not a byline.

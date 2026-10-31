@@ -36,6 +36,7 @@ Determine or confirm:
 - Complete means complete for the selected scope, not for everything reachable. Narrow openly before reading starts; never read part of what was then selected.
 - A dependency edge is status, not reading order. Do not reorder reads around edges, and do not pull in an excluded upstream pack.
 - Retained source material is out of scope unless the user includes it: a `sources/` directory, or any file in the pack without baseline frontmatter.
+- A pack that holds a `<prefix>.cowork.md` is co-worked: its configuration and every journal are baseline documents in scope. Resolve the current author from `git config user.email` against the `Authors` table and hold it silently; the confirmation word is still the whole reply.
 - Writes no files. Do not update frontmatter, dates, or status.
 
 ## Output

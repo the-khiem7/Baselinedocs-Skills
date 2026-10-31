@@ -4,7 +4,7 @@ pack: "baselinedocs"
 document: "roadmap"
 status: "active"
 updated: "2026-10-31"
-code_ref: "7f7610e"
+code_ref: "955dfd1"
 ---
 
 # Family Design Roadmap
@@ -58,7 +58,7 @@ Verified against the repository, not against `DESIGN.md`.
 | `packtool.sh` on role-named files | BLD-D56 | implemented, CI matrix unobserved | `baseline-core/scripts/packtool.sh` `bare_baseline` and the `filename-mismatch` WARN; three cases in `tests/test_packtool.py`, which fail against the previous tool |
 | Callout group across repositories | BLD-D57 | implemented, selection unobserved | `baselinedocs-callout/SKILL.md`, `A group across two repositories` and retiring step 3 |
 | Work ticket line | BLD-D58 | implemented, no pack carries one yet | `baseline-core/references/pack-contract.md` `Work tickets`; `ticketok` and `ticketline` in `packtool.sh`; two cases in `tests/test_packtool.py` |
-| Co-work mode and schema 3.0 | BLD-D59, BLD-D60, BLD-Q8 | in progress | BLD-P26 to BLD-P28 complete; BLD-P29 and BLD-P30 planned |
+| Co-work mode and schema 3.0 | BLD-D59, BLD-D60, BLD-Q8 | in progress | BLD-P26 to BLD-P29 complete; BLD-P30 planned |
 
 ## BLD-P1: adopt `DESIGN.md` into this pack
 
@@ -974,7 +974,7 @@ Acceptance criteria:
 
 ## BLD-P29: wire co-work into the family
 
-Status: planned.
+Status: complete.
 
 Acceptance criteria:
 
@@ -982,6 +982,17 @@ Acceptance criteria:
 - `academic-contract.md` drops handles and emails from a shared lesson
 - `AGENTS.md` shared-core section names `cowork-contract.md`; `README.md` prose and the `family-map` alt text name the skill; `family-map` re-shot in both themes (the guide row, the README table row and the chip landed in BLD-P28)
 - the suite is green
+
+### Checkpoint: complete, host render of the README unobserved
+
+| Item | Result |
+|---|---|
+| Verification gate | `uvx --from "pytest>=8,<10" --with pyyaml pytest tests/ -q`: 554 passed, 2 skipped |
+| Skills wired | `save` writes the co-author journal and allocates with `--author`; `run` executes only a phase the current author owns; `onboard` reports the author's phases, range and pending folds; `load` resolves the author silently; `recall` re-reads `cowork-contract.md` when the interrupted pack is co-worked. `brief` is not wired: it reads no journal and carries no contract gate, so the contract's reader rule now names `load` and `onboard` only |
+| Other writers | no per-skill edit: the conditional-document bullet in `pack-contract.md`, which every writer reads, sends them to the co-work contract |
+| Docs | `AGENTS.md` shared-core section names `cowork-contract.md` as a conditionally read asset; `academic-contract.md` drops handles, emails, owner lines and ranges from a lesson; `README.md` alt text and a `cowork` bullet |
+| Images | `family-map.webp` and `family-map-dark.webp` re-shot from `assets/source/family-map.html` with headless Chrome, finished with `finish.py`, viewed in both themes. The item height went from 650 to 700 CSS px (image 2400x1400) because the added row overflowed it; the files are 311 KB and 325 KB, a little above the 300 KB aim |
+| Not observed | the `<picture>` selection on github.com; a host running any wired skill on a co-worked pack |
 
 ## BLD-P30: field test and cleanup
 
@@ -1032,6 +1043,6 @@ BLD-P24 changed `baseline-core/scripts/packtool.sh` and `baselinedocs-callout`: 
 
 BLD-P25 added the work ticket line. Reinstall on any machine that should pick it up, then add a `**Ticket:**` line to a real pack phase and run `check` on it. Nothing in BLD-P25 waits on a user decision.
 
-Co-work mode, recorded 2026-10-31: BLD-P26 to BLD-P28 are complete; BLD-P29 and BLD-P30 are planned and run in order under continuous approval with a commit per phase, the user's choice for this run. BLD-Q8, the release number, waits on the user before the release.
+Co-work mode, recorded 2026-10-31: BLD-P26 to BLD-P29 are complete; BLD-P30 is planned and runs in order under continuous approval with a commit per phase, the user's choice for this run. BLD-Q8, the release number, waits on the user before the release.
 
 BLD-P20 added `baselinedocs-self-upgrade`. The first real use is its test: run it on a machine with a stale install, confirm `npx skills update -g -y` refreshes the linked folders, and confirm the clone fallback replaces a real copy such as `~/.gemini/config/skills` without touching a junction. Nothing in BLD-P20 waits on a user decision.

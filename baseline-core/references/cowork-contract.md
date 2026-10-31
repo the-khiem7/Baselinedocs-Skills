@@ -26,7 +26,7 @@ The pack owner decides who owns what. No skill and no co-author assigns a region
 
 ## Reading a co-worked pack
 
-Any skill that loads, onboards or briefs a co-worked pack reads the configuration and every journal in full, resolves the current author from `git config user.email` against the `Authors` table, and reports: who the author is, the phases and sections they own, their range and next free identifier, journal entries of other authors still marked `Fold: pending`, and requests addressed to them. An email absent from the table is not an author: stop and ask the pack owner to add it.
+Any skill that loads or onboards a co-worked pack reads the configuration and every journal in full, resolves the current author from `git config user.email` against the `Authors` table, and reports: who the author is, the phases and sections they own, their range and next free identifier, journal entries of other authors still marked `Fold: pending`, and requests addressed to them. An email absent from the table is not an author: stop and ask the pack owner to add it.
 
 ## Write regions
 

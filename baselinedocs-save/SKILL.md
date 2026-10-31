@@ -49,6 +49,7 @@ When a decision closes an open question, run `sh <core-dir>/scripts/packtool.sh 
 - A lesson entry is not a transcript of an attempt. `<core-dir>/references/pack-contract.md` states what it is and how long it stays.
 - When an outcome needs its reasoning explained (a defect's cause, a rejected alternative), record that once in `hallucination` and link to it from `roadmap`. Do not restate the reasoning in both documents.
 - Link reusable guidance to the project wiki instead of duplicating it inside the pack.
+- On a pack that holds a `<prefix>.cowork.md`, resolve the current author from `git config user.email` and write only the regions that author owns. Record the session in the author's own `<prefix>.cowork.<handle>.md` journal; content for a region the author does not own goes into that journal under `Requests to <handle>`. Allocate identifiers with `next-id <pack-dir> <D|Q|P> --author <handle>`.
 - When the thread establishes the work ticket of the phase, decision, or question being written, give that element the contract's ticket line. Never infer a ticket the thread does not state.
 
 ## Output

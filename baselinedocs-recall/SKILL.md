@@ -14,6 +14,8 @@ Read `<core-dir>/references/pack-contract.md` in full now, every time.
 
 Read `<core-dir>/references/report-style.md` in full now, every time.
 
+When the interrupted work was on a pack that holds a `<prefix>.cowork.md`, read `<core-dir>/references/cowork-contract.md` in full now as well.
+
 ## Workflow
 
 1. Read both files above in full. Do not skim headings, sample sections, or substitute a search for a read. Do not rely on the summary's paraphrase of either file: a summary keeps that a rule existed, not its wording, and the wording is what a pack write is checked against.

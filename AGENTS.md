@@ -43,11 +43,11 @@ A bare prohibition with an appealing counter-argument gets overridden mid-run. A
 
 ## The shared core
 
-`baseline-core` is a skill that holds the three assets every `baselinedocs-*` skill reads: `references/pack-contract.md`, `references/report-style.md` and `scripts/packtool.sh`. Nothing else holds a copy. `baselinedocs-brief`, `audit-claims`, `audit-drift` and the rest read it from the sibling folder, `<skill-dir>/../baseline-core`, written `<core-dir>` in every `SKILL.md`. `docs/baseline/baselinedocs/` BLD-D54 records why this replaced byte-identical copies, and what a lone install now loses.
+`baseline-core` is a skill that holds the assets every `baselinedocs-*` skill reads: `references/pack-contract.md`, `references/report-style.md` and `scripts/packtool.sh`, and `references/cowork-contract.md`, which only a skill working on a pack that holds a cowork configuration reads. Nothing else holds a copy. `baselinedocs-brief`, `audit-claims`, `audit-drift` and the rest read it from the sibling folder, `<skill-dir>/../baseline-core`, written `<core-dir>` in every `SKILL.md`. `docs/baseline/baselinedocs/` BLD-D54 records why this replaced byte-identical copies, and what a lone install now loses.
 
 - Edit the file in `baseline-core/` and nothing else. There is no copy to resync.
 - `baseline-core` is not a workflow: it carries `allow_implicit_invocation: false`, the `Baseline Docs Internal:` display prefix, and the family `version:`, stamped by the release with the rest.
-- Every `SKILL.md` that reads any of the three assets carries one sentence defining `<core-dir>` that fails closed: when the folder is missing the skill stops and names `baseline-core`. A skill that guessed instead would write or report a pack from memory, which is the failure the contract exists to prevent.
+- Every `SKILL.md` that reads any of these assets carries one sentence defining `<core-dir>` that fails closed: when the folder is missing the skill stops and names `baseline-core`. A skill that guessed instead would write or report a pack from memory, which is the failure the contract exists to prevent.
 - Never restate the document roles anywhere else.
 
 ### The pack contract
