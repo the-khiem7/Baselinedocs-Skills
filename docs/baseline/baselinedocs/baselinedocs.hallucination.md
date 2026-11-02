@@ -3,8 +3,8 @@ baseline_schema: "2.0"
 pack: "baselinedocs"
 document: "hallucination"
 status: "active"
-updated: "2026-10-31"
-code_ref: "0bd8fac"
+updated: "2026-11-02"
+code_ref: "60ac9c2"
 ---
 
 # Family Design: Decisions and Open Questions
@@ -58,7 +58,7 @@ Every identifier in this initiative carries its pack's prefix: `BLD-` here, `SC-
 | BLD-D37 | removing the automated checkpoint hook mechanism and setup-hooks skill | current | BLD-D6, BLD-Q2, BLD-D4 |
 | BLD-D38 | `baselinedocs-callout` as a seventh user entrypoint owning temporary routing groups | current, amended by BLD-D57 | BLD-D1, BLD-D16, BLD-D31, BLD-D57 |
 | BLD-D39 | silent pack loading with single-word confirmation output | current | BLD-D1, BLD-D10, BLD-D34 |
-| BLD-D40 | `baselinedocs-recall` re-reading the rule files after a context compaction | current | BLD-D1, BLD-D7, BLD-D37, BLD-D39 |
+| BLD-D40 | `baselinedocs-recall` re-reading the rule files after a context compaction | skill merged into `baseline-core` by BLD-D61, mechanism kept | BLD-D1, BLD-D7, BLD-D37, BLD-D39, BLD-D61 |
 | BLD-D41 | how the test suite is structured and which documented rules it enforces | current | BLD-D1, BLD-D7, BLD-D30 |
 | BLD-D42 | the entry index and entry headings are mandatory from the first entry, and the contract owns the heading format | current, reverses the conditional clause of SC-D19 | BLD-D30, BLD-D36, SC-D19, SC-Q6 |
 | BLD-D43 | `baselinedocs-help` as a user entrypoint carrying its own guide to the skills and the workflow | current | BLD-D1, BLD-D8, BLD-D9 |
@@ -72,13 +72,14 @@ Every identifier in this initiative carries its pack's prefix: `BLD-` here, `SC-
 | BLD-D51 | `onboard` reporting progress and what waits on the user as visuals, and dropping the file record and the unresolved-reference section | current, amends BLD-D34, BLD-D17 and BLD-D15 | BLD-D15, BLD-D17, BLD-D31, BLD-D34, BLD-D35 |
 | BLD-D52 | a release script run on the maintainer's machine stamping and tagging in one commit, and the release workflow only verifying | current, amends BLD-D45 | BLD-D45, BLD-D49 |
 | BLD-D53 | the commit skills leaving this repository for their own, with the history of their paths | current, reverses the rejected separate-repository option of BLD-D48 | BLD-D48, BLD-D45, BLD-D49 |
-| BLD-D54 | the contract, report style and `packtool.sh` moving into one `baseline-core` skill that every other skill requires, instead of byte-identical copies | current, amends BLD-D7 and `skill-consolidation` SC-D16 and SC-D17 | BLD-D7, BLD-D49, BLD-D52 |
-| BLD-D55 | `baseline-academic-core` as a second shared core, read only by the `baselinedocs-academic-*` skills | current, adds a second exception beside BLD-D54 | BLD-D54 |
+| BLD-D54 | the contract, report style and `packtool.sh` moving into one `baseline-core` skill that every other skill requires, instead of byte-identical copies | current, amends BLD-D7 and `skill-consolidation` SC-D16 and SC-D17; not-a-workflow clause amended by BLD-D61 | BLD-D7, BLD-D49, BLD-D52, BLD-D61 |
+| BLD-D55 | `baseline-academic-core` as a second shared core, read only by the `baselinedocs-academic-*` skills | current, adds a second exception beside BLD-D54; not-a-workflow clause amended by BLD-D61 | BLD-D54, BLD-D61 |
 | BLD-D56 | `packtool.sh` reading a pack document by its `document` field when the filename has no pack prefix, with a bare filename a WARN | current, amends BLD-D46 | BLD-D46, BLD-D47 |
 | BLD-D57 | a callout group whose labels point at a pack in another repository, and the back-pointer written there | current, amends BLD-D38 | BLD-D38 |
 | BLD-D58 | a pack element naming its external work ticket with a `**Ticket:**` line, not a frontmatter field | current | BLD-D45, BLD-D46, BLD-Q7 |
 | BLD-D59 | adopting the Atlantic co-work skill as `baselinedocs-cowork`, its rules in a separate `cowork-contract.md` in `baseline-core` | current, planned in BLD-P26 to BLD-P30 | BLD-D38, BLD-D39, BLD-D40, BLD-D47, BLD-D53, BLD-D54, BLD-D58, BLD-D60, SC-D1 |
 | BLD-D60 | `baseline_schema` 3.0 adding the `cowork` document, a 2.0 pack warned and upgraded only on the user's consent | current, planned in BLD-P26 and BLD-P27 | BLD-D2, BLD-D42, BLD-D59, BLD-Q7, BLD-Q8 |
+| BLD-D61 | `baselinedocs-recall` merging into `baseline-core`, and both core skills loading their rules when an agent or a user selects them | current, planned in BLD-P31 | BLD-D1, BLD-D40, BLD-D54, BLD-D55, BLD-D59, SC-D1, SC-D23 |
 | BLD-Q1 | hiding internal helpers at package level rather than by naming convention | open, deferred on a missing platform feature | BLD-D1 |
 | BLD-Q2 | installing checkpoint hooks across more than one repository | closed, hook mechanism removed | BLD-D6, BLD-D37 |
 | BLD-Q5 | who, if anyone, owns misfiled-content detection now that `onboard` no longer checks it | open, structural half covered by BLD-D46 | BLD-D34, BLD-D46 |
@@ -1012,6 +1013,20 @@ A new thread is the default once the pack is current, which after a save it is. 
 **Rejected: the editing writer upgrades the pack automatically, as BLD-D42 retrofits an index.** The user wants the upgrade to be their decision.
 
 **Rejected: require `3.0` everywhere.** Breaks every pack in other repositories on install.
+
+## BLD-D61: `baselinedocs-recall` merges into `baseline-core`, and both core skills load their rules when selected
+
+**Decided.** `baseline-core` and `baseline-academic-core` become rule loaders that an agent selects on its own (`allow_implicit_invocation: true`) and a user calls by name; display names `Baseline Docs: Core` and `Baseline Docs: Academic Core`, without `Internal`. Selected, `baseline-core` reads `references/pack-contract.md` and `references/report-style.md` beside its own `SKILL.md` in full, and `references/cowork-contract.md` when the work is on a pack holding `<prefix>.cowork.md`; gives the absolute path of `scripts/packtool.sh` and requires, for the rest of the session, `check` after every pack write and `next-id` for every new identifier; names the interrupted baselinedocs skill to invoke again after a compaction; replies "Sẵn sàng." / "Ready." and stops. Selected while a baselinedocs skill is running with its instructions still in context, it reads the files and that skill continues. `baseline-academic-core` reads `references/academic-contract.md` and the two `baseline-core` files the same way. `baselinedocs-recall` is deleted; its trigger vocabulary (recall, reload, re-read, after a compaction, the agent forgot the rules) moves into the `baseline-core` description. Neither core reads or writes a pack, and every other skill still reads their files from `<core-dir>` without selecting them. SC-D23 records the merge against SC-D1.
+
+**Why.** The user selects `baseline-core` to hold the contract during pack work that runs no workflow. Its description said "not for direct use" and its body "there is nothing to run", so the agent skipped the skill, guessed a path among three copies on this machine (two agent installs and this repository's source), and read the files without the read-in-full rule or the co-work condition. `recall` held exactly that read, but its description named only compaction, so neither the user nor the agent connected it to the request. The user wants the agent to select the loader on its own rather than wait to be named.
+
+**What breaks if ignored.** Free-form pack writes run on a contract read in part or from another version, and no `check` runs after them, because the only sentence requiring it sits in the writer skills' bodies.
+
+**Accepted cost.** A machine upgraded in place keeps its `baselinedocs-recall` folder, because the installer and `baselinedocs-self-upgrade` never delete one. It still works, since it reads the current `baseline-core` files, and competes for the same trigger until the user removes it.
+
+**Rejected: R1, `baseline-core` loads its rules only when the user names it, `recall` kept.** Two skills with one post-state, split only by who starts them; the agent still cannot select the loader for free-form work.
+
+**Rejected: R2, widen `recall` and route `baseline-core` to it.** A user who names `baseline-core` is told to name another skill, and an agent skipping the routing still guesses the path.
 
 ## Open questions
 

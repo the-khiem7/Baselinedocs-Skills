@@ -3,8 +3,8 @@ baseline_schema: "2.0"
 pack: "baselinedocs"
 document: "roadmap"
 status: "active"
-updated: "2026-10-31"
-code_ref: "7e613f6"
+updated: "2026-11-02"
+code_ref: "60ac9c2"
 ---
 
 # Family Design Roadmap
@@ -59,6 +59,7 @@ Verified against the repository, not against `DESIGN.md`.
 | Callout group across repositories | BLD-D57 | implemented, selection unobserved | `baselinedocs-callout/SKILL.md`, `A group across two repositories` and retiring step 3 |
 | Work ticket line | BLD-D58 | implemented, no pack carries one yet | `baseline-core/references/pack-contract.md` `Work tickets`; `ticketok` and `ticketline` in `packtool.sh`; two cases in `tests/test_packtool.py` |
 | Co-work mode and schema 3.0 | BLD-D59, BLD-D60, BLD-Q8 | in progress | BLD-P26 to BLD-P29 complete; BLD-P30 field test done, reinstall, Atlantic cleanup and a pack upgrade wait on the user |
+| Core skills load their rules, `recall` merged | BLD-D61, SC-D23 | planned | BLD-P31 |
 
 ## BLD-P1: adopt `DESIGN.md` into this pack
 
@@ -1018,6 +1019,21 @@ Acceptance criteria:
 | Not done, needs the user | a `2.0` pack upgraded to `3.0` (the user decides which and when); the family reinstalled on this machine (it rewrites every agent's skills, this session's own among them); the Atlantic copy deleted and the Terraform slice rule written into an Atlantic pack (that repository's pack, ticket line and commit rules apply; the copy goes only after the reinstall) |
 | Open | BLD-Q8, the release number |
 
+## BLD-P31: core skills load their rules, `recall` merged into `baseline-core`
+
+Status: planned. BLD-D61 and `skill-consolidation` SC-D23 carry the reasoning.
+
+Acceptance criteria:
+
+- `baseline-core/SKILL.md` reads `references/pack-contract.md` and `references/report-style.md` in full, `references/cowork-contract.md` on a co-worked pack, gives the absolute path of `scripts/packtool.sh` with the `check` and `next-id` rule for the session, names an interrupted skill after a compaction, replies "Sẵn sàng." / "Ready."; selected inside a running skill, that skill continues; its description carries the load and recall vocabulary
+- `baseline-academic-core/SKILL.md` does the same with `references/academic-contract.md` plus the two `baseline-core` files through `<core-dir>`
+- both `agents/openai.yaml` set `allow_implicit_invocation: true` and display names `Baseline Docs: Core` and `Baseline Docs: Academic Core`
+- `baselinedocs-recall/` deleted; no file outside the packs names it except as history
+- `tests/test_skill_metadata.py` and `tests/test_references.py` pin the loader sentences and the new policy; `RECALL_SKILLS` gone
+- `AGENTS.md`, `README.md`, `baselinedocs-help/references/guide.md`, `assets/source/family-map.html` with both images re-shot, `index.html` and `docs/onboarding/baselinedocs-daily-workflow.html` name `baseline-core` where they named `recall`
+- `introduction` and `sourcecode` of this pack and of `skill-consolidation` stop listing `recall` as a current skill
+- the suite is green and `packtool.sh check docs/baseline` prints no FAIL
+
 ## Risks
 
 | Risk | Detail |
@@ -1057,5 +1073,7 @@ BLD-P24 changed `baseline-core/scripts/packtool.sh` and `baselinedocs-callout`: 
 BLD-P25 added the work ticket line. Reinstall on any machine that should pick it up, then add a `**Ticket:**` line to a real pack phase and run `check` on it. Nothing in BLD-P25 waits on a user decision.
 
 Co-work mode, recorded 2026-10-31: BLD-P26 to BLD-P29 are complete and the BLD-P30 field test is done; what remains of BLD-P30 waits on the user: reinstall the family on this machine, upgrade a chosen `2.0` pack to `3.0`, delete the Atlantic copy of the skill after the reinstall and write its Terraform slice rule into an Atlantic pack in order under continuous approval with a commit per phase, the user's choice for this run. BLD-Q8, the release number, waits on the user before the release.
+
+Core loaders, recorded 2026-11-02: run BLD-P31 under continuous approval with a commit per phase, the user's choice. It ships in the same release as co-work, so BLD-Q8 covers it.
 
 BLD-P20 added `baselinedocs-self-upgrade`. The first real use is its test: run it on a machine with a stale install, confirm `npx skills update -g -y` refreshes the linked folders, and confirm the clone fallback replaces a real copy such as `~/.gemini/config/skills` without touching a junction. Nothing in BLD-P20 waits on a user decision.

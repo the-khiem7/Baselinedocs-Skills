@@ -3,8 +3,8 @@ baseline_schema: "2.0"
 pack: "skill-consolidation"
 document: "hallucination"
 status: "active"
-updated: "2026-10-05"
-code_ref: "uncommitted"
+updated: "2026-11-02"
+code_ref: "60ac9c2"
 ---
 
 # Skill Consolidation: Decisions and Open Questions
@@ -39,6 +39,7 @@ Required by `contract/pack-contract.md` from the first entry. SC-D19 records why
 | SC-D20 | who repairs content that is true but sits in the wrong document, closing SC-Q5 | current | SC-D5, SC-D12, SC-D16 |
 | SC-D21 | an edit to the contract destroyed a section heading, and every test stayed green | current, repaired | SC-D5, SC-D19 |
 | SC-D22 | deleting setup-hooks and removing the report-style exemption | current | SC-D1, SC-D8, SC-D17 |
+| SC-D23 | `baselinedocs-recall` merging into `baseline-core` | current, planned in `baselinedocs` BLD-P31 | SC-D1, SC-D16, BLD-D40, BLD-D61 |
 | SC-Q6 | what the element identifier scheme is, and whether the contract owns it | open, except the uniqueness clause settled by `baselinedocs` BLD-D30 and the heading format and kinds settled by BLD-D42 | SC-Q7, SC-Q8, SC-D19 |
 | SC-Q7 | what `onboard` does with the index, now that the index itself is decided | open, narrowed by SC-D19 | SC-D19, SC-D7, SC-D11 |
 | SC-Q8 | the label standard inside an entry, and how many entry kinds `hallucination` holds | open | SC-Q6, SC-D19 |
@@ -360,6 +361,16 @@ The cost is higher than SC-D8 recorded, measured in SC-P8. A machine carries sev
 **What breaks if ignored.** Leaving an administrative skill for a decommissioned subsystem creates dead user entrypoints, lingering host configuration dependencies, and preserves an arbitrary exemption in the report-style distribution test.
 
 **Rejected: keep setup-hooks as an optional utility.** Rejected because retaining a skill whose underlying functionality was removed leaves orphaned code and misleads operators into attempting unsupported hook configurations.
+
+## SC-D23: `baselinedocs-recall` merges into `baseline-core`
+
+**Decided.** Delete `baselinedocs-recall` without a stub; `baseline-core` takes its body and its trigger vocabulary. `baselinedocs` BLD-D61 records the loader design.
+
+**SC-D1 test.** Trigger: loading the rules now and reloading them after a compaction are one concept, getting the contract and report style into context, and no rewrite of the two descriptions separates them once `baseline-core` is selectable. Post-state: both read the same files in full, read no pack, write nothing, and reply with one word. Both conditions hold.
+
+**What breaks if ignored.** Two selectable skills compete for one trigger and each copy of the procedure drifts on its own.
+
+**Rejected: keep `recall` as a thin alias.** A second skill with the same post-state is the duplication SC-D1 removes, and an alias body that defers to a sibling makes a sibling's content a prerequisite.
 
 ## Open questions
 
