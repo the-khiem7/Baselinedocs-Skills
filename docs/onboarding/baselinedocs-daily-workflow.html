@@ -342,9 +342,9 @@ html { scroll-behavior: smooth; }
           <ul class="plain">
             <li><strong>Mở thread mới</strong> (mặc định khi pack đã mới): sau save, pack là nguồn sự thật duy nhất. Thread mới chạy <strong>onboard</strong> hoặc <strong>load</strong>.</li>
             <li><strong>Ở lại thread</strong> (khi thread còn giữ thứ chưa viết ra được, như hướng tiếp cận dang dở hay phiên debug): dùng <code>/compact</code> của host, rồi chạy <strong>brief</strong> để xem pack có tụt sau thread không.</li>
-            <li>Sau compact, agent có thể quên quy tắc ghi pack. <strong>recall</strong> đọc lại contract và report-style, rồi dừng.</li>
+            <li>Sau compact, hoặc trước khi tự sửa pack không qua workflow nào, agent có thể quên quy tắc ghi pack. <strong>baseline-core</strong> đọc lại contract và report-style, báo đường dẫn <code>packtool.sh</code>, rồi dừng.</li>
           </ul>
-          <div class="skills"><span class="skill">baselinedocs-brief</span><span class="skill agent">baselinedocs-recall</span></div>
+          <div class="skills"><span class="skill">baselinedocs-brief</span><span class="skill agent">baseline-core</span></div>
         </div>
       </li>
       <li class="step">
@@ -457,7 +457,7 @@ flowchart TD
             <tr><td><code>maintain-compact</code></td><td>Pack quá nhiễu để làm tiếp</td><td>Pack ngắn hơn, giữ nguyên thông tin</td></tr>
             <tr><td><code>maintain-split</code></td><td>Một pack trộn nhiều luồng việc</td><td>Các pack domain cùng một initiative index</td></tr>
             <tr><td><code>extract-wiki</code></td><td>Một quy trình dùng lại được đang bị chôn trong pack của một task</td><td>Một bài wiki</td></tr>
-            <tr><td><code>recall</code></td><td>Sau compact, trước lần ghi hay báo cáo pack kế tiếp</td><td>Đọc lại contract và report-style, rồi xác nhận một từ</td></tr>
+            <tr><td><code>baseline-core</code></td><td>Trước khi tự sửa pack không qua workflow, hoặc sau compact trước lần ghi hay báo cáo pack kế tiếp</td><td>Đọc lại contract và report-style, báo đường dẫn <code>packtool.sh</code>, rồi xác nhận một từ</td></tr>
           </tbody>
         </table>
       </div>
@@ -554,7 +554,7 @@ flowchart TD
       <li><label><input type="checkbox" id="c3"><span>Vừa chốt quyết định, mở câu hỏi hoặc dời phạm vi thì chạy <span class="skill">save</span></span></label></li>
       <li><label><input type="checkbox" id="c4"><span>Quyết định cần ra ngoài repo thì soạn ADR bằng <span class="skill">adr</span></span></label></li>
       <li><label><input type="checkbox" id="c5"><span>Ngữ cảnh sắp đầy thì <span class="skill">save</span> trước, rồi mới chọn ở lại hay mở thread mới</span></label></li>
-      <li><label><input type="checkbox" id="c6"><span>Sau <code>/compact</code>, chạy <span class="skill">brief</span> xem pack có tụt sau thread không, và <span class="skill">recall</span> nếu cần ghi pack tiếp</span></label></li>
+      <li><label><input type="checkbox" id="c6"><span>Sau <code>/compact</code>, chạy <span class="skill">brief</span> xem pack có tụt sau thread không, và <span class="skill">baseline-core</span> nếu cần ghi pack tiếp</span></label></li>
       <li><label><input type="checkbox" id="c7"><span>Trước khi đóng máy, <span class="skill">save</span> điều thread đã xác lập mà pack chưa có</span></label></li>
     </ul>
   </section>
@@ -587,8 +587,8 @@ if (window.mermaid) mermaid.initialize({ startOnLoad: true, theme: matchMedia("(
       steps: ["<strong>adr</strong> đọc đúng một entry đã chốt và ghi một file trong <code>docs/adr/</code>, trạng thái luôn là Proposed.", "Muốn pack ghi nhận ADR đó tồn tại thì chạy <strong>save</strong>."] },
     { q: "Ngữ cảnh sắp đầy", skill: "baselinedocs-save",
       steps: ["Luôn <strong>save</strong> trước, vì cả hai nhánh đều làm mất một phần thread.", "Pack đã mới: mở thread mới rồi <strong>onboard</strong> hoặc <strong>load</strong>.", "Thread còn giữ thứ chưa ghi được: <code>/compact</code> rồi <strong>brief</strong>."] },
-    { q: "Vừa compact xong và agent quên quy tắc ghi pack", skill: "baselinedocs-recall",
-      steps: ["<strong>recall</strong> đọc lại pack contract và report-style rồi xác nhận một từ. Nó không đọc pack nào.", "Nếu việc dở thuộc một skill khác, <strong>recall</strong> nói tên skill để gọi lại, không tự làm tiếp từ bản tóm tắt."] },
+    { q: "Vừa compact xong và agent quên quy tắc ghi pack", skill: "baseline-core",
+      steps: ["<strong>baseline-core</strong> đọc lại pack contract và report-style rồi xác nhận một từ. Nó không đọc pack nào.", "Nếu việc dở thuộc một skill khác, <strong>baseline-core</strong> nói tên skill để gọi lại, không tự làm tiếp từ bản tóm tắt."] },
     { q: "Hai tài liệu trong pack nói khác nhau", skill: "baselinedocs-sync-reconcile",
       steps: ["<strong>sync-reconcile</strong> sửa mâu thuẫn. <strong>onboard</strong> chỉ báo mà không sửa.", "Không chắc tài liệu có tụt sau code: <strong>audit-drift</strong>. Không chắc một câu có đúng: <strong>audit-claims</strong>."] },
     { q: "Pack quá nhiễu, hoặc trộn nhiều luồng việc", skill: "baselinedocs-maintain-compact  hoặc  baselinedocs-maintain-split",

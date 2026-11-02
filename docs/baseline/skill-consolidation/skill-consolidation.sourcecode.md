@@ -3,7 +3,7 @@ baseline_schema: "2.0"
 pack: "skill-consolidation"
 document: "sourcecode"
 status: "active"
-updated: "2026-10-02"
+updated: "2026-11-02"
 code_ref: "uncommitted"
 ---
 
@@ -29,7 +29,7 @@ A skill may rely only on files inside its own folder, because `npx skills add --
 |---|---|---|
 | User entrypoints | `init`, `adopt`, `save`, `run`, `onboard`, `load`, `brief`, `callout` | false |
 | One-time administration | none (`setup-hooks` deleted in SC-D22) | - |
-| Lifecycle, agent-selected | `sync-codebase`, `sync-decisions`, `sync-reconcile`, `audit-drift`, `audit-claims`, `maintain-compact`, `maintain-split`, `extract-wiki`, `recall`. 11 lifecycle skills at `cded242` | true |
+| Lifecycle, agent-selected | `sync-codebase`, `sync-decisions`, `sync-reconcile`, `audit-drift`, `audit-claims`, `maintain-compact`, `maintain-split`, `extract-wiki`. 11 lifecycle skills at `cded242`; `recall` merged into `baseline-core`, SC-D23 | true |
 
 `tests/test_skill_metadata.py` pins this: every name in `ENTRYPOINTS` must disable implicit invocation and every other skill must enable it.
 
@@ -39,11 +39,11 @@ A skill may rely only on files inside its own folder, because `npx skills add --
 
 | Carries a copy | Does not |
 |---|---|
-| `init`, `adopt`, `save`, `run`, `callout`, `sync-codebase`, `sync-decisions`, `sync-reconcile`, `maintain-compact`, `maintain-split`, `extract-wiki`, `onboard`, `load`, `recall` | `brief`, `audit-drift`, `audit-claims` |
+| `init`, `adopt`, `save`, `run`, `callout`, `sync-codebase`, `sync-decisions`, `sync-reconcile`, `maintain-compact`, `maintain-split`, `extract-wiki`, `onboard`, `load`, `baseline-core` as a loader | `brief`, `audit-drift`, `audit-claims` |
 
-The criterion is a full read of the pack, not the act of writing: every writer qualifies, and so do `onboard` and `load`, which write nothing but read every document. `recall` carries the copy under a third criterion, restoring the rules being its whole job (`baselinedocs` BLD-D40). `onboard` once also reported content sitting in a document whose role does not cover it; `baselinedocs` BLD-D34 deleted that check, and BLD-Q5 asks who owns it now. `brief` reads nothing in full and neither `audit` skill compares placement, so a copy there would let a skill report conformance it never checked.
+The criterion is a full read of the pack, not the act of writing: every writer qualifies, and so do `onboard` and `load`, which write nothing but read every document. `baseline-core` reads it under a third criterion when selected as a loader, loading the rules being its whole job there (`baselinedocs` BLD-D40, BLD-D61). `onboard` once also reported content sitting in a document whose role does not cover it; `baselinedocs` BLD-D34 deleted that check, and BLD-Q5 asks who owns it now. `brief` reads nothing in full and neither `audit` skill compares placement, so a copy there would let a skill report conformance it never checked.
 
-Each skill in `CONTRACT_SKILLS` carries one gate sentence sending the agent to read the contract, in one pinned wording per role: the writers trigger before creating or editing a pack file, `onboard` before reporting the pack state, `load` before loading a pack, `recall` now. `test_read_only_skills_are_not_gated_on_writing` asserts `onboard`, `load`, and `recall` do not carry the write wording, whose precondition they can never meet. That gate cannot live in the contract, because an agent that skipped the file never reaches the sentence telling it not to skip the file.
+Each skill in `CONTRACT_SKILLS` carries one gate sentence sending the agent to read the contract, in one pinned wording per role: the writers trigger before creating or editing a pack file, `onboard` before reporting the pack state, `load` before loading a pack; `baseline-core` reads its own files now, pinned by `test_core_skills_load_their_rules_in_full`. `test_read_only_skills_are_not_gated_on_writing` asserts `onboard` and `load` do not carry the write wording, whose precondition they can never meet. That gate cannot live in the contract, because an agent that skipped the file never reaches the sentence telling it not to skip the file.
 
 Editing the canonical file means re-copying it to all of them. SC-P2 added a section, SC-P4 rewrote a sentence, and SC-P5 removed an enum value, so any copy predating this pack is stale on three counts.
 
@@ -53,7 +53,7 @@ Editing the canonical file means re-copying it to all of them. SC-P2 added a sec
 
 Its audience is deliberately wider than the contract's, and the two sets are not nested the same way: `brief`, `audit-claims`, and `audit-drift` carry report style without carrying the contract, because each produces a user-facing report that cites identifiers while none of them writes a pack or reads one in full. SC-D17 records why merging the two files would force the wrong audience on one of them.
 
-Each of them carries a gate sentence triggering before it reports (`recall` has its own wording, `RECALL_REPORT_GATE`), pinned by `test_every_reporter_gates_on_report_style`. The copies are pinned by `test_packaged_report_style_matches_canonical`, and `test_every_report_style_holder_is_classified` asserts the audience set rather than only comparing whatever copies happen to exist.
+Each of them carries a gate sentence triggering before it reports pinned by `test_every_reporter_gates_on_report_style`. The copies are pinned by `test_packaged_report_style_matches_canonical`, and `test_every_report_style_holder_is_classified` asserts the audience set rather than only comparing whatever copies happen to exist.
 
 `baselinedocs-run` additionally ships `references/execution-contract.md`, which has no second copy anywhere.
 
@@ -89,19 +89,19 @@ Which skills are named inside another skill's shipped text. Recorded as topology
 | Skill | Named by |
 |---|---|
 | `save` | `brief`, `init`, `callout` |
-| `onboard` | `brief`, `sync-codebase`, `load`, `recall` |
-| `brief` | `onboard`, `callout`, `load`, `recall` |
+| `onboard` | `brief`, `sync-codebase`, `load`, `baseline-core` |
+| `brief` | `onboard`, `callout`, `load`, `baseline-core` |
 | `adopt` | `onboard`, `callout` |
 | `init` | `callout` |
-| `run` | `recall` |
-| `load` | `recall` |
+| `run` | `baseline-core` |
+| `load` | `baseline-core` |
 | `sync-reconcile` | `brief`, `onboard`, `audit-drift`, `sync-codebase` |
 | `sync-codebase` | `onboard`, `audit-drift`, `sync-decisions`, `sync-reconcile` |
 | `sync-decisions` | `audit-drift`, `sync-codebase` |
 | `audit-drift` | `brief`, `onboard`, `audit-claims` |
 | `audit-claims` | `audit-drift` |
 | `maintain-split` | `onboard`, `callout`, `load` |
-| `maintain-compact`, `extract-wiki`, `callout`, `recall` | nothing |
+| `maintain-compact`, `extract-wiki`, `callout` | nothing |
 
 `sync-codebase` and `sync-decisions` moved out of the last row in SC-P7. Both were named by nothing, which under SC-D1 is a signal that a pointer is missing rather than that a skill is unnecessary, and SC-P7 acted on it that way: `audit-drift` now names all three repair skills when it recommends follow-up actions, and the write trio names whichever sibling owns the case it refuses.
 

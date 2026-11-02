@@ -1,6 +1,6 @@
 interface:
-  display_name: "Baseline Docs Internal: Academic Core"
-  short_description: "Shared lesson format, citation rule and anonymization rules for the academic skills"
-  default_prompt: "Use $baseline-academic-core only as the shared rules the baselinedocs academic skills read."
+  display_name: "Baseline Docs: Academic Core"
+  short_description: "Load or re-read the lesson format, citation rule and anonymization rules"
+  default_prompt: "Use $baseline-academic-core to load the lesson rules, the pack contract and the report style into context."
 policy:
-  allow_implicit_invocation: false
+  allow_implicit_invocation: true

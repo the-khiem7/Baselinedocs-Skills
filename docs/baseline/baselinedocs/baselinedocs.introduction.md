@@ -3,8 +3,8 @@ baseline_schema: "2.0"
 pack: "baselinedocs"
 document: "introduction"
 status: "active"
-updated: "2026-10-31"
-code_ref: "0bd8fac"
+updated: "2026-11-02"
+code_ref: "uncommitted"
 ---
 
 # Baseline Docs Family Design
@@ -31,12 +31,12 @@ Verified against the working tree at `0cb913f`, not read off `DESIGN.md`.
 | Fact | State |
 |---|---|
 | skills on disk | every `baselinedocs-*` folder. No count is kept here: `tests/helpers.py` enumerates them and each test classifies every one |
-| user entrypoints | `init`, `adopt`, `save`, `run`, `onboard`, `load`, `brief`, `callout`, `help`, `adr`, `self-upgrade`. All set `allow_implicit_invocation: false`. Pinned by `ENTRYPOINTS` in `tests/test_skill_metadata.py` |
+| user entrypoints | `init`, `adopt`, `save`, `run`, `onboard`, `load`, `brief`, `callout`, `cowork`, `help`, `adr`, `self-upgrade`, `academic-compose`. All set `allow_implicit_invocation: false`. Pinned by `ENTRYPOINTS` in `tests/test_skill_metadata.py` |
 | one-time administration | none |
-| lifecycle skills, agent-selected | every other skill, all `true`. Includes `recall`, BLD-D40 |
-| pack schema | `2.0`. Three core documents, two conditional |
-| `baseline-core` | the only copy of `pack-contract.md`, `report-style.md` and `packtool.sh`, read by every skill from `<skill-dir>/../baseline-core` and failing closed without it. BLD-D54 |
-| `baseline-academic-core` | the only copy of `academic-contract.md`, read from `<skill-dir>/../baseline-academic-core` by the `baselinedocs-academic-*` skills only, failing closed without it. BLD-D55 |
+| lifecycle skills, agent-selected | every other skill, all `true`. `recall` merged into `baseline-core`, BLD-D61 |
+| pack schema | `3.0` in the contract: three core documents, three conditional, `cowork` the new one. This repository's packs are still `2.0`; their upgrade waits on the user, BLD-D60 |
+| `baseline-core` | the only copy of `pack-contract.md`, `report-style.md`, `cowork-contract.md` and `packtool.sh`, read by every skill from `<skill-dir>/../baseline-core` and failing closed without it. BLD-D54. Also a rule loader an agent or a user selects (`true`, `Baseline Docs: Core`) before free-form pack work or after a compaction. BLD-D61 |
+| `baseline-academic-core` | the only copy of `academic-contract.md`, read from `<skill-dir>/../baseline-academic-core` by the `baselinedocs-academic-*` skills only, failing closed without it. BLD-D55. Also a selectable loader of the lesson rules and the two `baseline-core` files. BLD-D61 |
 | contract gate | `CONTRACT_SKILLS` (`tests/test_references.py`). Absent from `audit-claims`, `audit-drift`, `brief` |
 | report-style gate | every skill outside `REPORT_STYLE_EXEMPT`. Absent from `load` |
 | checkpoint hook | none. Automated Stop hook adapter retired and removed in BLD-P8 |

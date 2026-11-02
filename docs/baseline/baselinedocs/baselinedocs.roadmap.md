@@ -4,7 +4,7 @@ pack: "baselinedocs"
 document: "roadmap"
 status: "active"
 updated: "2026-11-02"
-code_ref: "60ac9c2"
+code_ref: "uncommitted"
 ---
 
 # Family Design Roadmap
@@ -43,7 +43,7 @@ Verified against the repository, not against `DESIGN.md`.
 | Installation profiles | BLD-Q1 | deferred | no platform mechanism exists to build against |
 | Organization-wide hook rollout | BLD-Q2, BLD-D37 | closed | Hook mechanism removed from repository in BLD-P8; rollout no longer applicable |
 | Silent loader entrypoint | BLD-D39 | implemented | `baselinedocs-load` implemented as a silent pack loader with single-word confirmation output; exempt from `report-style.md` in `tests/test_references.py` |
-| Rule recall after compaction | BLD-D40 | implemented | `baselinedocs-recall` ships both assets, gates on `RECALL_CONTRACT_GATE` and `RECALL_REPORT_GATE`; `RECALL_SKILLS` in `tests/test_references.py` |
+| Rule recall after compaction | BLD-D40, BLD-D61 | implemented in `baseline-core` | `baselinedocs-recall` merged into `baseline-core` by BLD-P31; the loader sentences are pinned by `CORE_LOADER_SENTENCES` in `tests/test_references.py` |
 | Test harness | BLD-D41 | implemented, CI unobserved | `tests/helpers.py`, `pytest.ini`, `tests/test_conventions.py`, `tests/test_packs.py`; `.gitattributes`; `.github/workflows/tests.yml` has not run on GitHub |
 | Mandatory entry index and heading format | BLD-D42 | implemented | `contract/pack-contract.md`, `Entry index`; 14 packaged copies `cmp` clean; `tests/test_packs.py` has no threshold and fails a `hallucination` with no index |
 | Guide to the skills | BLD-D43 | implemented, selection unobserved | `baselinedocs-help/` with `references/guide.md`; `tests/test_references.py` `test_help_guide_names_every_skill` |
@@ -59,7 +59,7 @@ Verified against the repository, not against `DESIGN.md`.
 | Callout group across repositories | BLD-D57 | implemented, selection unobserved | `baselinedocs-callout/SKILL.md`, `A group across two repositories` and retiring step 3 |
 | Work ticket line | BLD-D58 | implemented, no pack carries one yet | `baseline-core/references/pack-contract.md` `Work tickets`; `ticketok` and `ticketline` in `packtool.sh`; two cases in `tests/test_packtool.py` |
 | Co-work mode and schema 3.0 | BLD-D59, BLD-D60, BLD-Q8 | in progress | BLD-P26 to BLD-P29 complete; BLD-P30 field test done, reinstall, Atlantic cleanup and a pack upgrade wait on the user |
-| Core skills load their rules, `recall` merged | BLD-D61, SC-D23 | planned | BLD-P31 |
+| Core skills load their rules, `recall` merged | BLD-D61, SC-D23 | implemented, selection unobserved | `baseline-core` and `baseline-academic-core` set `true`; `CORE_SKILLS` in `tests/test_skill_metadata.py`, `CORE_LOADER_SENTENCES` in `tests/test_references.py`; no `baselinedocs-recall` folder |
 
 ## BLD-P1: adopt `DESIGN.md` into this pack
 
@@ -1021,7 +1021,7 @@ Acceptance criteria:
 
 ## BLD-P31: core skills load their rules, `recall` merged into `baseline-core`
 
-Status: planned. BLD-D61 and `skill-consolidation` SC-D23 carry the reasoning.
+Status: complete. BLD-D61 and `skill-consolidation` SC-D23 carry the reasoning.
 
 Acceptance criteria:
 
@@ -1033,6 +1033,19 @@ Acceptance criteria:
 - `AGENTS.md`, `README.md`, `baselinedocs-help/references/guide.md`, `assets/source/family-map.html` with both images re-shot, `index.html` and `docs/onboarding/baselinedocs-daily-workflow.html` name `baseline-core` where they named `recall`
 - `introduction` and `sourcecode` of this pack and of `skill-consolidation` stop listing `recall` as a current skill
 - the suite is green and `packtool.sh check docs/baseline` prints no FAIL
+
+### Checkpoint: complete, no host has selected either loader
+
+| Item | Result |
+|---|---|
+| Verification gate | `uvx --from "pytest>=8,<10" --with pyyaml pytest tests/ -q`: 541 passed, 2 skipped; `packtool.sh check docs/baseline`: 0 FAIL |
+| Skills | `baseline-core/SKILL.md` and `baseline-academic-core/SKILL.md` rewritten as loaders; both `agents/openai.yaml` set `true` and drop `Internal`; `baselinedocs-recall/` deleted |
+| Tests | `test_core_skills_are_selectable_rule_loaders` replaces `test_core_skills_are_not_workflows`; `test_core_skills_load_their_rules_in_full` pins the loader sentences; `RECALL_SKILLS`, both recall gates and `DISPLAY_NAME_EXCEPTIONS` removed |
+| Docs | `AGENTS.md` shared-core, pack-contract, academic-core and conventions sections; `README.md` table row, prose and image alt text; `guide.md` two rows; `index.html` and the onboarding page name `baseline-core` where they named `recall` |
+| Images | `family-map` chip `recall` replaced by `baseline-core`, group renamed `Knowledge and rules`; both themes re-shot with headless Chrome through Playwright at CSS scale (2400x1400), finished with `finish.py`, viewed; 220 KB and 215 KB |
+| Packs | `introduction` of this pack: entrypoints row gains `cowork` and `academic-compose`, schema row says `3.0`, both core rows name the loader; `sourcecode` of both packs and `introduction` of `skill-consolidation` stop listing `recall` as current |
+| Not observed | a host selecting `baseline-core` or `baseline-academic-core` on its own; a machine upgraded in place, where the old `baselinedocs-recall` folder stays (BLD-D61 accepted cost) |
+| Unresolved risk | `skill-consolidation.sourcecode.md` still describes per-skill contract copies, removed by BLD-D54 before this phase; a `sync-codebase` run owns that drift |
 
 ## Risks
 
@@ -1046,7 +1059,7 @@ Acceptance criteria:
 
 ## Next action
 
-On any machine whose global install has not picked up BLD-P6's through BLD-P14's changes, reinstall the family from a local clone of this repository, the same mechanical step BLD-P3 and BLD-P5 both closed out with: the widened `contract/report-style.md` and its re-synced packaged copies, the rewritten `baselinedocs-onboard/SKILL.md`, the widened `contract/pack-contract.md` and its re-synced packaged copies, the removal of `baselinedocs-setup-hooks`, the addition of `baselinedocs-load`, `baselinedocs-recall`, `baselinedocs-help`, and `baselinedocs-adr`, and the contract's mandatory entry index (BLD-P12). After that, check BLD-P10's open item: run `/compact` mid pack work and confirm the agent selects `baselinedocs-recall` before its next pack write. This is per-machine state, not a repository-wide fact this pack tracks, so no phase records when a given machine last ran it.
+On any machine whose global install has not picked up BLD-P6's through BLD-P14's changes, reinstall the family from a local clone of this repository, the same mechanical step BLD-P3 and BLD-P5 both closed out with: the widened `contract/report-style.md` and its re-synced packaged copies, the rewritten `baselinedocs-onboard/SKILL.md`, the widened `contract/pack-contract.md` and its re-synced packaged copies, the removal of `baselinedocs-setup-hooks`, the addition of `baselinedocs-load`, `baselinedocs-recall`, `baselinedocs-help`, and `baselinedocs-adr`, and the contract's mandatory entry index (BLD-P12). After that, check BLD-P10's open item: run `/compact` mid pack work and confirm the agent selects `baseline-core`, which absorbed `baselinedocs-recall` in BLD-P31, before its next pack write. This is per-machine state, not a repository-wide fact this pack tracks, so no phase records when a given machine last ran it.
 
 After BLD-P11, push and confirm the first GitHub Actions run is green: the workflow has never run, and its two action tags are unverified and not pinned to a commit.
 
@@ -1074,6 +1087,6 @@ BLD-P25 added the work ticket line. Reinstall on any machine that should pick it
 
 Co-work mode, recorded 2026-10-31: BLD-P26 to BLD-P29 are complete and the BLD-P30 field test is done; what remains of BLD-P30 waits on the user: reinstall the family on this machine, upgrade a chosen `2.0` pack to `3.0`, delete the Atlantic copy of the skill after the reinstall and write its Terraform slice rule into an Atlantic pack in order under continuous approval with a commit per phase, the user's choice for this run. BLD-Q8, the release number, waits on the user before the release.
 
-Core loaders, recorded 2026-11-02: run BLD-P31 under continuous approval with a commit per phase, the user's choice. It ships in the same release as co-work, so BLD-Q8 covers it.
+Core loaders, recorded 2026-11-02: BLD-P31 is complete. After the reinstall, start a free-form pack session and confirm the agent selects `baseline-core` on its own, reads the files in full and gives the `packtool.sh` path; on a machine upgraded in place, remove the leftover `baselinedocs-recall` folder by hand. It ships in the same release as co-work, so BLD-Q8 covers it.
 
 BLD-P20 added `baselinedocs-self-upgrade`. The first real use is its test: run it on a machine with a stale install, confirm `npx skills update -g -y` refreshes the linked folders, and confirm the clone fallback replaces a real copy such as `~/.gemini/config/skills` without touching a junction. Nothing in BLD-P20 waits on a user decision.

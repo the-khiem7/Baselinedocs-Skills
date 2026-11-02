@@ -72,7 +72,7 @@ The full contract, including the frontmatter fields and the identifier rules, is
 
 ## Skills
 
-<picture><source media="(prefers-color-scheme: dark)" srcset="assets/family-map-dark.webp"><img src="assets/family-map.webp" alt="Map of the skill family. Skills you call: init, adopt and save to start; run, onboard, load, brief, callout and cowork to work; adr, help and self-upgrade to decide and look after the install. Skills the agent reaches for on its own: sync-codebase, sync-decisions and sync-reconcile keep the pack true; audit-drift and audit-claims find what fell behind; maintain-compact and maintain-split keep a pack usable; extract-wiki and recall cover knowledge and recall. Every name carries the baselinedocs- prefix." width="100%"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/family-map-dark.webp"><img src="assets/family-map.webp" alt="Map of the skill family. Skills you call: init, adopt and save to start; run, onboard, load, brief, callout and cowork to work; adr, help and self-upgrade to decide and look after the install. Skills the agent reaches for on its own: sync-codebase, sync-decisions and sync-reconcile keep the pack true; audit-drift and audit-claims find what fell behind; maintain-compact and maintain-split keep a pack usable; extract-wiki covers knowledge; baseline-core loads the rules. Every name but baseline-core carries the baselinedocs- prefix." width="100%"></picture>
 
 ### User Entrypoints
 
@@ -110,9 +110,9 @@ All of them set `policy.allow_implicit_invocation: false` for Codex, so they sta
 | Audit     | `audit-drift`, `audit-claims`                                                      |
 | Maintain  | `maintain-compact`, `maintain-split`                                               |
 | Knowledge | `extract-wiki`                                                                     |
-| Recall    | `recall`                                                                           |
+| Rules     | `baseline-core`, `baseline-academic-core`                                          |
 
-All skill IDs use lowercase kebab-case, for example `baselinedocs-sync-codebase`. These are agent-selected helpers: their UI names start with `Baseline Docs Internal:` and implicit invocation stays enabled. The exception is `recall`, which a user also calls by hand, so its UI name is `Baseline Docs: Recall`. After a context compaction it re-reads the pack contract and the report style, so the next pack write follows the rules. Some hosts do not enforce the Codex-specific policy, so each skill description states the classification too.
+All skill IDs use lowercase kebab-case, for example `baselinedocs-sync-codebase`. These are agent-selected helpers: their UI names start with `Baseline Docs Internal:` and implicit invocation stays enabled. The exceptions are the two cores, which a user also calls by hand, so their UI names are `Baseline Docs: Core` and `Baseline Docs: Academic Core`. Before free-form pack work, or after a context compaction, `baseline-core` reads the pack contract and the report style in full and gives the `packtool.sh` path, so the next pack write follows the rules; `baseline-academic-core` does the same for the lesson rules. They carry no `baselinedocs-` prefix. Some hosts do not enforce the Codex-specific policy, so each skill description states the classification too.
 
 </details>
 

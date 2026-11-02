@@ -63,11 +63,7 @@ LOADER_SKILLS = {
     "baselinedocs-load",
 }
 
-RECALL_SKILLS = {
-    "baselinedocs-recall",
-}
-
-CONTRACT_SKILLS = WRITER_SKILLS | READER_SKILLS | LOADER_SKILLS | RECALL_SKILLS
+CONTRACT_SKILLS = WRITER_SKILLS | READER_SKILLS | LOADER_SKILLS
 
 # One gate per skill, worded for what that skill does with the contract. Both are
 # pinned: an unpinned second wording is how the family ends up with two
@@ -84,11 +80,9 @@ LOAD_GATE = (
     "Read `<core-dir>/references/pack-contract.md` in full before loading a pack, "
     "every time."
 )
-RECALL_CONTRACT_GATE = "Read `<core-dir>/references/pack-contract.md` in full now, every time."
 GATES = {name: WRITE_GATE for name in WRITER_SKILLS}
 GATES.update({name: READ_GATE for name in READER_SKILLS})
 GATES.update({name: LOAD_GATE for name in LOADER_SKILLS})
-GATES.update({name: RECALL_CONTRACT_GATE for name in RECALL_SKILLS})
 
 # `baseline-core/scripts/packtool.sh` checks pack structure mechanically:
 # duplicate identifiers, index rows against entry headings, entries filed under
@@ -114,11 +108,36 @@ CLOSE_PLAN_SKILLS = {"baselinedocs-sync-decisions", "baselinedocs-save"}
 TOOL_GATES = {name: TOOL_WRITE_GATE for name in WRITER_SKILLS}
 TOOL_GATES.update({name: TOOL_REPORT_GATE for name in TOOL_SKILLS - WRITER_SKILLS})
 
-RECALL_REPORT_GATE = "Read `<core-dir>/references/report-style.md` in full now, every time."
-REPORT_GATES = {name: RECALL_REPORT_GATE for name in RECALL_SKILLS}
-
 REPORTERS = [name for name in SKILL_NAMES if name not in REPORT_STYLE_EXEMPT]
-READ_ONLY_SKILLS = sorted(READER_SKILLS | LOADER_SKILLS | RECALL_SKILLS)
+READ_ONLY_SKILLS = sorted(READER_SKILLS | LOADER_SKILLS)
+
+# Both core skills double as rule loaders: selected by an agent or a user, each
+# reads its rule files in full and stops. The read sentences are pinned because a
+# loader that skims is the failure it exists to prevent, and the `check` sentence
+# because free-form work runs no writer skill that would require it.
+CORE_LOADER_SENTENCES = {
+    "baseline-core": [
+        "Read `references/pack-contract.md` beside this SKILL.md in full now, every time.",
+        "Read `references/report-style.md` beside this SKILL.md in full now, every time.",
+        "read `references/cowork-contract.md` beside this SKILL.md in full now as well.",
+        "run `sh <that path> check <pack-dir>` after every pack write and before reporting it",
+        "return to it once the files are read",
+    ],
+    "baseline-academic-core": [
+        CORE_SENTENCE,
+        "Read `references/academic-contract.md` beside this SKILL.md in full now, every time.",
+        "Read `<core-dir>/references/pack-contract.md` in full now, every time.",
+        "Read `<core-dir>/references/report-style.md` in full now, every time.",
+        "return to it once the files are read",
+    ],
+}
+
+
+@pytest.mark.parametrize("name", sorted(CORE_LOADER_SENTENCES))
+def test_core_skills_load_their_rules_in_full(name):
+    text = read_text(ROOT / name / "SKILL.md")
+    missing = [s for s in CORE_LOADER_SENTENCES[name] if s not in text]
+    assert missing == [], f"{name} loses a loader sentence: {missing}"
 
 @pytest.mark.parametrize("asset", CORE_ASSETS)
 def test_baseline_core_holds_the_shared_asset(asset):
@@ -226,7 +245,7 @@ def test_no_skill_calls_the_tool_from_the_current_directory():
 
 @pytest.mark.parametrize("name", REPORTERS)
 def test_every_reporter_gates_on_report_style(name):
-    assert REPORT_GATES.get(name, REPORT_GATE) in read_skill(name), (
+    assert REPORT_GATE in read_skill(name), (
         f"{name} reports to the user but never requires reading the report style"
     )
 

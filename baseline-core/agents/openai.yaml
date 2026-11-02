@@ -1,6 +1,6 @@
 interface:
-  display_name: "Baseline Docs Internal: Core"
-  short_description: "Shared contract, report style and pack check for the baselinedocs skills"
-  default_prompt: "Use $baseline-core only as the shared rules the baselinedocs skills read."
+  display_name: "Baseline Docs: Core"
+  short_description: "Load or re-read the baselinedocs pack contract, report style and pack check"
+  default_prompt: "Use $baseline-core to load the pack contract and report style into context before working on a pack."
 policy:
-  allow_implicit_invocation: false
+  allow_implicit_invocation: true

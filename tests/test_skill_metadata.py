@@ -21,14 +21,9 @@ ENTRYPOINTS = {
     "baselinedocs-academic-compose",
 }
 
-# Lifecycle skills are agent-selected and say so in their display name. The one
-# exception is a lifecycle skill a user also calls by hand as often as an agent
-# selects it, which drops `Internal` so the name does not read as off-limits.
+# Lifecycle skills are agent-selected and say so in their display name.
 LIFECYCLE_PREFIX = "Baseline Docs Internal: "
 ENTRYPOINT_PREFIX = "Baseline Docs "
-DISPLAY_NAME_EXCEPTIONS = {
-    "baselinedocs-recall": "Baseline Docs: Recall",
-}
 
 # The Agent Skills format bounds these; a host may truncate or reject beyond them.
 MAX_NAME = 64
@@ -44,23 +39,31 @@ def load_openai(name):
     return yaml.safe_load(read_text(ROOT / name / "agents" / "openai.yaml"))
 
 
-CORE_SKILLS = ["baseline-core", "baseline-academic-core"]
+# The core skills double as rule loaders an agent selects on its own and a user
+# calls by name, so implicit invocation stays on and the name drops `Internal`,
+# which would read as off-limits to the user who calls it.
+CORE_SKILLS = {
+    "baseline-core": "Baseline Docs: Core",
+    "baseline-academic-core": "Baseline Docs: Academic Core",
+}
 
 
-@pytest.mark.parametrize("name", CORE_SKILLS)
-def test_core_skills_are_not_workflows(name):
+@pytest.mark.parametrize("name", sorted(CORE_SKILLS))
+def test_core_skills_are_selectable_rule_loaders(name):
     frontmatter, _ = split_frontmatter(read_text(ROOT / name / "SKILL.md"))
     assert frontmatter.get("name") == name
     assert re.fullmatch(r"\d+\.\d+\.\d+", frontmatter.get("version", "")), (
         f"{name}/SKILL.md carries no family version, so the release cannot stamp it"
     )
+    assert len(frontmatter.get("description", "")) <= MAX_DESCRIPTION
     data = yaml.safe_load(read_text(ROOT / name / "agents" / "openai.yaml"))
-    assert data["policy"].get("allow_implicit_invocation") is False, (
-        f"{name} is shared rules, not a workflow: allow_implicit_invocation stays false"
+    assert data["policy"].get("allow_implicit_invocation") is True, (
+        f"{name} loads the rules when an agent selects it: allow_implicit_invocation stays true"
     )
-    assert data["interface"]["display_name"].startswith(LIFECYCLE_PREFIX), (
-        f"{name}: display_name starts {LIFECYCLE_PREFIX!r}"
+    assert data["interface"]["display_name"] == CORE_SKILLS[name], (
+        f"{name}: display_name must be {CORE_SKILLS[name]!r}"
     )
+    assert f"${name}" in data["interface"]["default_prompt"]
 
 
 def test_entrypoints_are_real_skill_folders():
@@ -121,11 +124,7 @@ def test_only_user_entrypoints_disable_implicit_invocation(name):
 @pytest.mark.parametrize("name", SKILL_NAMES)
 def test_display_name_marks_entrypoints_and_lifecycle_skills(name):
     display = load_openai(name)["interface"]["display_name"]
-    if name in DISPLAY_NAME_EXCEPTIONS:
-        assert display == DISPLAY_NAME_EXCEPTIONS[name], (
-            f"{name}: display_name must stay {DISPLAY_NAME_EXCEPTIONS[name]!r}"
-        )
-    elif name in ENTRYPOINTS:
+    if name in ENTRYPOINTS:
         assert display.startswith(ENTRYPOINT_PREFIX) and not display.startswith(
             LIFECYCLE_PREFIX
         ), f"{name}: a user entrypoint is named {ENTRYPOINT_PREFIX!r}..., not Internal"

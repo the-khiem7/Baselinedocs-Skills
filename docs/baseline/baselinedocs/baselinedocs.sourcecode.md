@@ -3,7 +3,7 @@ baseline_schema: "2.0"
 pack: "baselinedocs"
 document: "sourcecode"
 status: "active"
-updated: "2026-10-02"
+updated: "2026-11-02"
 code_ref: "uncommitted"
 ---
 
@@ -24,7 +24,7 @@ Four surfaces reach a running agent, and they do not offer the same guarantee. T
 
 The consequence that drives the design: a rule requiring a reference file to be read cannot live in that reference file, because an agent that skipped the file never reaches the sentence telling it not to skip it. That one sentence is the only thing restated per skill.
 
-After a context compaction only `description` is still in context; the body and its references are summarized away, gate included. `baselinedocs-recall` is selected through that surface to re-read both assets, BLD-D40.
+After a context compaction only `description` is still in context; the body and its references are summarized away, gate included. `baseline-core` is selected through that surface to re-read both assets, BLD-D40 and BLD-D61, which merged `baselinedocs-recall` into it.
 
 ## Checkpoint model
 

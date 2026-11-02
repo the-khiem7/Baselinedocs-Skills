@@ -3,7 +3,7 @@ baseline_schema: "2.0"
 pack: "skill-consolidation"
 document: "introduction"
 status: "active"
-updated: "2026-10-05"
+updated: "2026-11-02"
 code_ref: "uncommitted"
 ---
 
@@ -21,9 +21,9 @@ Out of scope: the pack schema, which is unchanged apart from the one enum remova
 
 | Fact | State |
 |---|---|
-| skills on disk | every `baselinedocs-*` folder, none counted here. Entrypoints: `init`, `adopt`, `save`, `run`, `onboard`, `load`, `brief`, `callout`; every other skill is lifecycle. 18 skills at `cded242`, before SC-P1; `callout`, `load`, and `recall` were added after this pack closed (`baselinedocs` BLD-D38, BLD-D39, BLD-D40) |
-| skills shipping `references/pack-contract.md` | byte-identical, one per skill in `CONTRACT_SKILLS` (`tests/test_references.py`): every writer, `onboard`, `load`, `recall`. Absent from `brief`, `audit-drift`, `audit-claims`. 13 at `cded242`, 10 at `c6eb29a` |
-| criterion for shipping it | a full read of the pack, not the act of writing. SC-D16. `recall` ships it under a third criterion, `baselinedocs` BLD-D40 |
+| skills on disk | every `baselinedocs-*` folder, none counted here. Entrypoints: `init`, `adopt`, `save`, `run`, `onboard`, `load`, `brief`, `callout`; every other skill is lifecycle. 18 skills at `cded242`, before SC-P1; `callout`, `load`, and `recall` were added after this pack closed (`baselinedocs` BLD-D38, BLD-D39, BLD-D40); `recall` merged into `baseline-core`, SC-D23 |
+| skills shipping `references/pack-contract.md` | byte-identical, one per skill in `CONTRACT_SKILLS` (`tests/test_references.py`): every writer, `onboard`, `load`. Absent from `brief`, `audit-drift`, `audit-claims`. 13 at `cded242`, 10 at `c6eb29a` |
+| criterion for shipping it | a full read of the pack, not the act of writing. SC-D16. `baseline-core`, as a loader, reads it under a third criterion, `baselinedocs` BLD-D40 and BLD-D61 |
 | skills shipping `references/report-style.md` | byte-identical, every skill outside `REPORT_STYLE_EXEMPT`, which holds `load` (`baselinedocs` BLD-D39). SC-D17, SC-D22 |
 | `contract/pack-contract.md` | size not recorded here. 74 lines at `cded242` before the SC-P2 `Disproven claims` section, 84 before the SC-P12 entry-index and SC-P13 misfiled-content sections; later `baselinedocs` phases widened it further |
 | entry kinds in `hallucination` | at least 3, and never enumerated: a closed decision with four required parts, a disproven-claim relocation with a different shape, and an open question. SC-Q8 |
