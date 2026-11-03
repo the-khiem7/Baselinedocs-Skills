@@ -92,7 +92,7 @@ The full contract, including the frontmatter fields and the identifier rules, is
 | Ask which skill to use and in what order | `baselinedocs-help`  | Explain every skill and the workflow, without reading a pack |
 | Upgrade the installed skills to the latest release | `baselinedocs-self-upgrade` | Compare every installed copy in every agent with the latest tag, then upgrade after you confirm |
 
-All of them set `policy.allow_implicit_invocation: false` for Codex, so they stay deliberate user actions. A few behaviors are worth knowing before you meet them:
+Each description marks the skill as a deliberate user action. A few behaviors are worth knowing before you meet them:
 
 - `onboard` writes nothing, and on a multi-pack initiative it routes before it loads: it reads the index, takes one domain pack rather than the whole set, and reports every point where a loaded document leaned on something that was not loaded.
 - `run` invoked without both execution policies asks whether to pause after each phase and whether to commit each verified phase. It never chooses defaults silently.
@@ -112,7 +112,7 @@ All of them set `policy.allow_implicit_invocation: false` for Codex, so they sta
 | Knowledge | `extract-wiki`                                                                     |
 | Rules     | `baseline-core`, `baseline-academic-core`                                          |
 
-All skill IDs use lowercase kebab-case, for example `baselinedocs-sync-codebase`. These are agent-selected helpers: their UI names start with `Baseline Docs Internal:` and implicit invocation stays enabled. The exceptions are the two cores, which a user also calls by hand, so their UI names are `Baseline Docs: Core` and `Baseline Docs: Academic Core`. Before free-form pack work, or after a context compaction, `baseline-core` reads the pack contract and the report style in full and gives the `packtool.sh` path, so the next pack write follows the rules; `baseline-academic-core` does the same for the lesson rules. They carry no `baselinedocs-` prefix. Some hosts do not enforce the Codex-specific policy, so each skill description states the classification too.
+All skill IDs use lowercase kebab-case, for example `baselinedocs-sync-codebase`. These are agent-selected helpers: the description of each says so. The exceptions are the two cores, which a user also calls by hand. Before free-form pack work, or after a context compaction, `baseline-core` reads the pack contract and the report style in full and gives the `bldh.sh` path, so the next pack write follows the rules; `baseline-academic-core` does the same for the lesson rules. They carry no `baselinedocs-` prefix. A host selects a skill from its `description`, so each description states the classification.
 
 </details>
 
@@ -201,8 +201,6 @@ Each skill follows the Agent Skills folder shape:
 ```text
 <skill>/
   SKILL.md
-  agents/
-    openai.yaml
   references/     # only when needed
   scripts/        # only when the skill runs a bundled script
 ```
@@ -211,4 +209,4 @@ Each skill follows the Agent Skills folder shape:
 
 Every `SKILL.md` carries one top-level `version:` shared by the whole family. `scripts/release.py` stamps it and tags the stamped commit, so the value changes only at release.
 
-The repository is compatible with Skills.sh discovery. Codex-specific invocation policy lives in `agents/openai.yaml`; other hosts can still use the portable `name` and `description` frontmatter.
+The repository is compatible with Skills.sh discovery. A host selects a skill from the portable `name` and `description` frontmatter.

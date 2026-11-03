@@ -13,7 +13,7 @@ from helpers import (
 )
 
 # Covers every text file the repo authors, not only markdown. The suffix list is
-# the set of text formats present here; an en dash in a skill's openai.yaml or in
+# the set of text formats present here; an en dash in a skill's SKILL.md or in
 # this directory's own Python is as much a convention break as one in a document.
 # The set is Git's view of the repo (see helpers.repo_files), so a host skills
 # directory installed into this checkout never makes the suite fail on text this
@@ -83,7 +83,7 @@ def test_skill_depends_on_no_sibling(name):
     )
 
 
-# Folder shape from AGENTS.md: SKILL.md, agents/openai.yaml, references/ only
+# Folder shape from AGENTS.md: SKILL.md, references/ only
 # when needed, and no script. A stray file here ships
 # to everyone who installs the skill. The one exception is a script a single skill
 # owns outright and no other skill ships, named here so a second one is a decision.
@@ -98,8 +98,8 @@ def test_skill_folder_has_only_the_shipped_shape(name):
         for path in repo_files()
         if folder in path.parents
     }
-    assert "SKILL.md" in relative and "agents/openai.yaml" in relative, (
-        f"{name} needs SKILL.md and agents/openai.yaml"
+    assert "SKILL.md" in relative, (
+        f"{name} needs SKILL.md"
     )
     strays = sorted(
         item
@@ -107,7 +107,6 @@ def test_skill_folder_has_only_the_shipped_shape(name):
         if item
         not in (
             "SKILL.md",
-            "agents/openai.yaml",
             OWN_SCRIPTS.get(name),
         )
         and not (item.startswith("references/") and item.count("/") == 1)

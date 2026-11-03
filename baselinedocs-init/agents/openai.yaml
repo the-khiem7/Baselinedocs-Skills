@@ -1,6 +1,0 @@
-interface:
-  display_name: "Baseline Docs Init"
-  short_description: "Create the first resumable baseline docs pack"
-  default_prompt: "Use $baselinedocs-init to create the initial adaptive baseline pack for this task or initiative."
-policy:
-  allow_implicit_invocation: false

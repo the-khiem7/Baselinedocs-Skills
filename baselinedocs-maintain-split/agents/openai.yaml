@@ -1,6 +1,0 @@
-interface:
-  display_name: "Baseline Docs Internal: Split"
-  short_description: "Split an overloaded baseline pack"
-  default_prompt: "Use $baselinedocs-maintain-split to split an overloaded pack with direct routing."
-policy:
-  allow_implicit_invocation: true

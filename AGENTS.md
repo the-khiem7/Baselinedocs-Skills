@@ -8,7 +8,7 @@ This repo is the source of the `baselinedocs` skill family. Everything here is a
 
 | Path | Ships | Read by |
 |---|---|---|
-| `<skill>/SKILL.md`, `<skill>/agents/openai.yaml`, `<skill>/references/*` | yes | the running agent |
+| `<skill>/SKILL.md`, `<skill>/references/*` | yes | the running agent |
 | `AGENTS.md`, `README.md`, `tests/`, `scripts/`, `.github/`, `assets/`, `docs/baseline/` | no | whoever works in this repo |
 
 Consequences:
@@ -82,7 +82,7 @@ It is a second asset rather than a section of the contract on purpose. The contr
 `baseline-academic-core` is a second core skill. It holds `references/academic-contract.md`, the lesson format, the citation rule and the anonymization rules every `baselinedocs-academic-*` skill reads. Pack documents are still read through `baseline-core`; an academic skill needs both folders beside its own. `docs/baseline/baselinedocs/` BLD-D55 records why it is not part of `baseline-core`.
 
 - Edit the file in `baseline-academic-core/` and nothing else. No academic skill ships a copy, and `baseline-core` holds none of its rules.
-- It follows the `baseline-core` shape: a rule loader that reads `academic-contract.md` and the two `baseline-core` files in full when selected, `allow_implicit_invocation: true`, the display name `Baseline Docs: Academic Core`, and the family `version:`, stamped by the release. Its loader is the one reason it defines `<core-dir>`.
+- It follows the `baseline-core` shape: a rule loader that reads `academic-contract.md` and the two `baseline-core` files in full when selected and carries the family `version:`, stamped by the release. Its loader is the one reason it defines `<core-dir>`.
 - `tests/test_references.py` pins that the asset exists and that no skill ships a copy. The sentence that defines the academic core's folder, and the two gates an academic skill carries, are pinned for `ACADEMIC_SKILLS`; `tests/test_conventions.py` lets only that sentence and the `baseline-core` one use a path through `../`. A skill outside that set that names the core fails, except `baselinedocs-self-upgrade`, which only installs and compares it.
 
 ## The self-upgrade skill
@@ -98,10 +98,9 @@ It is a second asset rather than a section of the contract on purpose. The contr
 
 - ASCII hyphen only. No en dash, no em dash. Enforced by `test_no_typographic_dashes` across every `.md`, `.yaml`, `.yml`, `.txt`, `.py`, and `.ini` file Git lists for the repo.
 - State the pack-writing skill count in one sentence only, the one under `The pack contract`. Everywhere else say "every pack-writing skill". `test_references.py` pins that sentence against `WRITER_SKILLS` and fails on a second one, because a count repeated in prose goes stale the next time a skill is added or removed. It is pinned to `WRITER_SKILLS` rather than `CONTRACT_SKILLS` because a full reader ships the contract too, so the two counts differ and the prose is about writing.
-- Before merging or deleting a skill, read `docs/baseline/skill-consolidation/skill-consolidation.hallucination.md` SC-D1. The merge test is two conditions, not one, and two plausible-looking alternatives are recorded there as rejected so they are not proposed again.
-- Skill folder shape: `SKILL.md`, `agents/openai.yaml`, `references/` only when needed, and no copy of the shared assets. `baselinedocs-self-upgrade` also owns `scripts/upgradekit.sh`. `baseline-core` holds `references/` and `scripts/packtool.sh` only. `baseline-academic-core` holds `references/` only.
-- User entrypoints set `allow_implicit_invocation: false`. Lifecycle skills keep it enabled and prefix their display name with `Baseline Docs Internal:`. The two core skills are selectable too and are named `Baseline Docs: Core` and `Baseline Docs: Academic Core` without `Internal`, because a user calls them by hand as often as an agent selects them. `tests/test_skill_metadata.py` pins both (`CORE_SKILLS`) and `tests/test_references.py` pins their loader sentences.
-- That policy field is Codex-only. On other hosts the `description` frontmatter is the real selection surface, so it must carry the vocabulary a user would actually type.
+- Before merging or deleting a skill, read `docs/baseline/baselinedocs/baselinedocs.hallucination.md` BLD-D62. The merge test is two conditions, not one, and two plausible-looking alternatives are recorded there as rejected so they are not proposed again.
+- Skill folder shape: `SKILL.md`, `references/` only when needed, and no copy of the shared assets. `baselinedocs-self-upgrade` also owns `scripts/upgradekit.sh`. `baseline-core` holds `references/` and `scripts/bldh.sh` only. `baseline-academic-core` holds `references/` only.
+- Every skill is selected from its `description` frontmatter, so it must carry the vocabulary a user would actually type and state whether the skill is a user entrypoint or an agent-selected helper. `tests/test_skill_metadata.py` pins the frontmatter (`CORE_SKILLS` pins the two cores carry the family `version:`) and `tests/test_references.py` pins their loader sentences.
 
 ## Releases
 
@@ -113,8 +112,8 @@ Every `SKILL.md` carries one top-level `version:`, shared by the whole family. N
 uvx --from "pytest>=8,<10" --with pyyaml pytest tests/ -q
 ```
 
-pytest is pinned because bare `uvx pytest` takes whatever is newest. PyYAML is test-only: it parses `SKILL.md` frontmatter, `agents/openai.yaml`, and pack frontmatter. The repo has no `pyproject.toml`, so `uv run python -m pytest` does not work; `pytest.ini` holds the config.
+pytest is pinned because bare `uvx pytest` takes whatever is newest. PyYAML is test-only: it parses `SKILL.md` frontmatter and pack frontmatter. The repo has no `pyproject.toml`, so `uv run python -m pytest` does not work; `pytest.ini` holds the config.
 
-Adding a skill fails a test that names the set to update: `WRITER_SKILLS`, `READER_SKILLS`, `LOADER_SKILLS`, or `REPORT_STYLE_EXEMPT` in `tests/test_references.py`, and `ENTRYPOINTS` in `tests/test_skill_metadata.py`. Shared helpers live in `tests/helpers.py`.
+Adding a skill fails a test that names the set to update: `WRITER_SKILLS`, `READER_SKILLS`, `LOADER_SKILLS`, or `REPORT_STYLE_EXEMPT` in `tests/test_references.py`. Shared helpers live in `tests/helpers.py`.
 
 `.gitattributes` forces LF on text assets, because `sh` cannot run `baseline-core/scripts/packtool.sh` with CRLF endings.

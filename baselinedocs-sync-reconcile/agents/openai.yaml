@@ -1,6 +1,0 @@
-interface:
-  display_name: "Baseline Docs Internal: Reconcile"
-  short_description: "Reconcile contradictions inside the pack"
-  default_prompt: "Use $baselinedocs-sync-reconcile to restore one canonical truth in the pack."
-policy:
-  allow_implicit_invocation: true

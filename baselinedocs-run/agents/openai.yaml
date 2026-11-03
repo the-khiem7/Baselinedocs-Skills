@@ -1,6 +1,0 @@
-interface:
-  display_name: "Baseline Docs Run"
-  short_description: "Execute roadmap phases with checkpoints"
-  default_prompt: "Use $baselinedocs-run to execute the active roadmap, asking naturally whether to pause after each phase and whether to commit before starting."
-policy:
-  allow_implicit_invocation: false

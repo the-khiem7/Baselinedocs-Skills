@@ -1,6 +1,0 @@
-interface:
-  display_name: "Baseline Docs Internal: Sync Decisions"
-  short_description: "Propagate closed decisions across the pack"
-  default_prompt: "Use $baselinedocs-sync-decisions to propagate closed decisions across the pack."
-policy:
-  allow_implicit_invocation: true

@@ -1,6 +1,0 @@
-interface:
-  display_name: "Baseline Docs: Core"
-  short_description: "Load or re-read the baselinedocs pack contract, report style and pack check"
-  default_prompt: "Use $baseline-core to load the pack contract and report style into context before working on a pack."
-policy:
-  allow_implicit_invocation: true
