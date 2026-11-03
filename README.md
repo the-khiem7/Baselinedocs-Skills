@@ -27,7 +27,7 @@ npx skills add https://github.com/the-khiem7/Baselinedocs-Skills.git
 
 From a local clone, replace the repository URL with `.`. To see what the install contains first, add `--list`.
 
-Install the family, not individual skills. The skills hand off to each other by name: `baselinedocs-onboard` names `baselinedocs-sync-reconcile` for a contradiction it must not repair itself, and `baselinedocs-brief` names `baselinedocs-save` for a delta it must not write itself. A pointer to a skill that was never installed is a dead end the agent reaches only after the user has already asked for something. The same holds for `baseline-core`, which carries the pack contract, the report style and `packtool.sh`: every `baselinedocs-*` skill reads it from beside its own folder and stops when it is missing. `baseline-academic-core` carries the lesson format, citation rule and anonymization rules for the `baselinedocs-academic-*` skills, which read it the same way. Install both cores with `baselinedocs-academic-compose`.
+Install the family, not individual skills. The skills hand off to each other by name: `baselinedocs-onboard` names `baselinedocs-sync-reconcile` for a contradiction it must not repair itself, and `baselinedocs-brief` names `baselinedocs-save` for a delta it must not write itself. A pointer to a skill that was never installed is a dead end the agent reaches only after the user has already asked for something. The same holds for `baseline-core`, which carries the pack contract, the report style and `bldh.sh`: every `baselinedocs-*` skill reads it from beside its own folder and stops when it is missing. `baseline-academic-core` carries the lesson format, citation rule and anonymization rules for the `baselinedocs-academic-*` skills, which read it the same way. Install both cores with `baselinedocs-academic-compose`.
 
 ## Daily Guide
 
@@ -98,7 +98,7 @@ Each description marks the skill as a deliberate user action. A few behaviors ar
 - `run` invoked without both execution policies asks whether to pause after each phase and whether to commit each verified phase. It never chooses defaults silently.
 - `callout` writes no fact and creates no pack content. It points at elements that already exist, refuses when one does not, and requires a stated condition that ends the group before it will open one.
 - `cowork` is the pack owner's skill: it enables co-work on a pack, reassigns owners and identifier ranges, folds the co-authors' journals and turns co-work off. A co-author needs no skill: `load`, `onboard` and `save` read the cowork configuration themselves and write only the regions that author owns. A pack that holds a cowork configuration is on schema `3.0`; a `2.0` pack is warned about, never upgraded unasked.
-- `academic-compose` has three modes: inside one project repo, a named topic across projects (entries located with `packtool.sh`, no whole pack loaded), and topics suggested from many projects (explorer subagents run `baselinedocs-load` and return only a topic list). It writes `academic-*.html` pages and a git-ignored `academic-mapping.json` in the directory it was called from, never publishes, and never writes a pack. The anonymizer is a heuristic: review a page before it leaves your machine.
+- `academic-compose` has three modes: inside one project repo, a named topic across projects (entries located with `bldh.sh`, no whole pack loaded), and topics suggested from many projects (explorer subagents run `baselinedocs-load` and return only a topic list). It writes `academic-*.html` pages and a git-ignored `academic-mapping.json` in the directory it was called from, never publishes, and never writes a pack. The anonymizer is a heuristic: review a page before it leaves your machine.
 - `self-upgrade` upgrades the installed skills, never a pack. It finds the highest `vX.Y.Z` tag, scans your home directory for every agent folder holding a `baselinedocs-*` skill, `baseline-core` or `baseline-academic-core`, reports which are behind, and overwrites nothing until you confirm. It uses `npx skills update` first and a shallow clone of the tag for real copies `npx` leaves behind; it never writes through a link or junction.
 
 <details>
@@ -205,7 +205,7 @@ Each skill follows the Agent Skills folder shape:
   scripts/        # only when the skill runs a bundled script
 ```
 
-`scripts/packtool.sh` is a read-only structure check for packs (`outline`, `find`, `next-id`, `close-plan`, `check`). Writer and audit skills run it after every write and before every report, from `baseline-core`, the one folder that holds it. `baselinedocs-self-upgrade` ships `scripts/upgradekit.sh`, a read-only scan that compares installed versions with a release.
+The BaselineDocs Harness, `scripts/bldh.sh`, is a read-only structure check for packs (`outline`, `find`, `next-id`, `close-plan`, `check`). Writer and audit skills run it after every write and before every report, from `baseline-core`, the one folder that holds it. `baselinedocs-self-upgrade` ships `scripts/upgradekit.sh`, a read-only scan that compares installed versions with a release.
 
 Every `SKILL.md` carries one top-level `version:` shared by the whole family. `scripts/release.py` stamps it and tags the stamped commit, so the value changes only at release.
 

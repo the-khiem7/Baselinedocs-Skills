@@ -9,7 +9,7 @@ CORE_ASSETS = [
     "references/pack-contract.md",
     "references/report-style.md",
     "references/cowork-contract.md",
-    "scripts/packtool.sh",
+    "scripts/bldh.sh",
 ]
 CORE_SENTENCE = (
     "`<core-dir>` is the folder `baseline-core`, a sibling of the folder this SKILL.md "
@@ -84,7 +84,7 @@ GATES = {name: WRITE_GATE for name in WRITER_SKILLS}
 GATES.update({name: READ_GATE for name in READER_SKILLS})
 GATES.update({name: LOAD_GATE for name in LOADER_SKILLS})
 
-# `baseline-core/scripts/packtool.sh` checks pack structure mechanically:
+# `baseline-core/scripts/bldh.sh` checks pack structure mechanically:
 # duplicate identifiers, index rows against entry headings, entries filed under
 # the wrong section. A writer runs it after every write, because the failures it
 # catches report success when made; a full reader or an audit runs it before
@@ -94,13 +94,13 @@ TOOL_SKILLS = WRITER_SKILLS | READER_SKILLS | {
     "baselinedocs-audit-drift",
 }
 TOOL_WRITE_GATE = (
-    "Run `sh <core-dir>/scripts/packtool.sh check <pack-dir>` after every pack write "
+    "Run `sh <core-dir>/scripts/bldh.sh check <pack-dir>` after every pack write "
     "and before reporting it, and allocate every new identifier with "
-    "`sh <core-dir>/scripts/packtool.sh next-id <pack-dir> <D|Q|P> [PREFIX]`, never "
+    "`sh <core-dir>/scripts/bldh.sh next-id <pack-dir> <D|Q|P> [PREFIX]`, never "
     "from memory. A new pack's first identifier needs its PREFIX."
 )
 TOOL_REPORT_GATE = (
-    "Run `sh <core-dir>/scripts/packtool.sh check <pack-dir>` before reporting the "
+    "Run `sh <core-dir>/scripts/bldh.sh check <pack-dir>` before reporting the "
     "pack state, and report its FAIL and WARN lines as findings; it reports, it never "
     "fixes."
 )
@@ -210,7 +210,7 @@ def test_no_skill_points_at_a_local_copy_of_a_core_asset(name):
     for stale in (
         "`references/pack-contract.md`",
         "`references/report-style.md`",
-        "<skill-dir>/scripts/packtool.sh",
+        "<skill-dir>/scripts/bldh.sh",
     ):
         assert stale not in text, f"{name} still points at {stale}, which no longer ships"
 
@@ -225,20 +225,20 @@ def test_contract_skills_gate_on_reading_the_contract(name):
 @pytest.mark.parametrize("name", sorted(TOOL_SKILLS))
 def test_tool_skills_gate_on_running_the_check(name):
     assert TOOL_GATES[name] in read_skill(name), (
-        f"{name} is classified as running packtool.sh but never requires running it"
+        f"{name} is classified as running bldh.sh but never requires running it"
     )
 
 
 @pytest.mark.parametrize("name", sorted(CLOSE_PLAN_SKILLS))
 def test_skills_that_close_questions_run_close_plan(name):
-    assert "packtool.sh close-plan <pack-dir> <Q-ID> <D-ID>" in read_skill(name), (
+    assert "bldh.sh close-plan <pack-dir> <Q-ID> <D-ID>" in read_skill(name), (
         f"{name} closes questions but never routes the closing edits through close-plan"
     )
 
 
 def test_no_skill_calls_the_tool_from_the_current_directory():
     for name in sorted(TOOL_SKILLS):
-        assert "`sh scripts/packtool.sh" not in read_skill(name), (
+        assert "`sh scripts/bldh.sh" not in read_skill(name), (
             f"{name} writes a cwd-relative tool path; the host does not run from the skill folder"
         )
 

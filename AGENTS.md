@@ -43,10 +43,10 @@ A bare prohibition with an appealing counter-argument gets overridden mid-run. A
 
 ## The shared core
 
-`baseline-core` is a skill that holds the assets every `baselinedocs-*` skill reads: `references/pack-contract.md`, `references/report-style.md` and `scripts/packtool.sh`, and `references/cowork-contract.md`, which only a skill working on a pack that holds a cowork configuration reads. Nothing else holds a copy. `baselinedocs-brief`, `audit-claims`, `audit-drift` and the rest read it from the sibling folder, `<skill-dir>/../baseline-core`, written `<core-dir>` in every `SKILL.md`. `docs/baseline/baselinedocs/` BLD-D54 records why this replaced byte-identical copies, and what a lone install now loses.
+`baseline-core` is a skill that holds the assets every `baselinedocs-*` skill reads: `references/pack-contract.md`, `references/report-style.md` and `scripts/bldh.sh` (the BaselineDocs Harness), and `references/cowork-contract.md`, which only a skill working on a pack that holds a cowork configuration reads. Nothing else holds a copy. `baselinedocs-brief`, `audit-claims`, `audit-drift` and the rest read it from the sibling folder, `<skill-dir>/../baseline-core`, written `<core-dir>` in every `SKILL.md`. `docs/baseline/baselinedocs/` BLD-D54 records why this replaced byte-identical copies, and what a lone install now loses.
 
 - Edit the file in `baseline-core/` and nothing else. There is no copy to resync.
-- `baseline-core` is also a rule loader, not a workflow: selected by an agent or a user, it reads the contract and report style in full (the co-work contract on a co-worked pack), gives the `packtool.sh` path with the `check` rule for the session, and stops. It reads and writes no pack. It carries `allow_implicit_invocation: true`, the display name `Baseline Docs: Core`, and the family `version:`, stamped by the release with the rest. It absorbed `baselinedocs-recall`; `docs/baseline/baselinedocs/` BLD-D61 records why.
+- `baseline-core` is also a rule loader, not a workflow: selected by an agent or a user, it reads the contract and report style in full (the co-work contract on a co-worked pack), gives the `bldh.sh` path with the `check` rule for the session, and stops. It reads and writes no pack. It carries the family `version:`, stamped by the release with the rest. It absorbed `baselinedocs-recall`; `docs/baseline/baselinedocs/` BLD-D61 records why.
 - A skill that reads a core file reads it from `<core-dir>`; it never selects `baseline-core` to do so. When `baseline-core` is selected while another baselinedocs skill runs, it reads the files and that skill continues.
 - Every `SKILL.md` that reads any of these assets carries one sentence defining `<core-dir>` that fails closed: when the folder is missing the skill stops and names `baseline-core`. A skill that guessed instead would write or report a pack from memory, which is the failure the contract exists to prevent.
 - Never restate the document roles anywhere else.
@@ -70,12 +70,12 @@ It is a second asset rather than a section of the contract on purpose. The contr
 
 ### The pack tool
 
-`packtool.sh` is the only implementation of the mechanical pack check: `outline`, `find`, `next-id`, `close-plan`, `check`. Every pack-writing skill, `baselinedocs-onboard`, and both `audit` skills run it from `<core-dir>/scripts/packtool.sh`.
+The BaselineDocs Harness, `bldh.sh`, is the only implementation of the mechanical pack check: `outline`, `find`, `next-id`, `close-plan`, `check`. Every pack-writing skill, `baselinedocs-onboard`, and both `audit` skills run it from `<core-dir>/scripts/bldh.sh`.
 
 - `tests/test_references.py` pins the gate sentences (`TOOL_SKILLS`).
 - POSIX sh and POSIX awk only: no gawk extensions, no regex intervals, no `find(1)`. CI runs it under mawk, BWK awk, and Git for Windows gawk.
 - It never writes, never touches the network, and runs git read-only. Keep it that way: an installed skill executes it inside other teams' repositories.
-- `tests/test_packtool.py` holds one case per rule. A new rule needs a case.
+- `tests/test_bldh.py` holds one case per rule. A new rule needs a case.
 
 ## The academic core
 
@@ -90,7 +90,7 @@ It is a second asset rather than a section of the contract on purpose. The contr
 `baselinedocs-self-upgrade` upgrades the installed skills, not a pack. It is a family skill (`baselinedocs-*`, shared `version:`, stamped by the release) so it can compare and upgrade itself.
 
 - It ships `scripts/upgradekit.sh` (`inventory`, `compare`), the one script a family skill owns outright. It lives in `baselinedocs-self-upgrade` rather than `baseline-core`: it has a single consumer. `tests/test_conventions.py` names it in `OWN_SCRIPTS`, and `tests/test_upgradekit.py` is its test surface and builds a fake home in a temporary directory.
-- `upgradekit.sh` obeys the `packtool.sh` rules: POSIX sh and awk only, never writes, never touches the network, does not run git. The agent runs `git ls-remote`, `npx skills update`, the clone, and every write, so the script stays safe to run inside any machine.
+- `upgradekit.sh` obeys the BaselineDocs Harness rules: POSIX sh and awk only, never writes, never touches the network, does not run git. The agent runs `git ls-remote`, `npx skills update`, the clone, and every write, so the script stays safe to run inside any machine.
 - It finds installs by globbing `$HOME/.<agent>/skills` and `$HOME/.<agent>/<sub>/skills`, not from a list of agents. A list goes stale with every new agent; `.config/devin`, `.config/goose`, and `.gemini/skills` were found only because the scan is a glob.
 - The `kind` column is a hint. Git for Windows `[ -L ]` reads a junction as a plain directory, so the skill checks the link type itself before it replaces or deletes a path. Writing through a junction would damage the shared copy every agent reads.
 
@@ -116,4 +116,4 @@ pytest is pinned because bare `uvx pytest` takes whatever is newest. PyYAML is t
 
 Adding a skill fails a test that names the set to update: `WRITER_SKILLS`, `READER_SKILLS`, `LOADER_SKILLS`, or `REPORT_STYLE_EXEMPT` in `tests/test_references.py`. Shared helpers live in `tests/helpers.py`.
 
-`.gitattributes` forces LF on text assets, because `sh` cannot run `baseline-core/scripts/packtool.sh` with CRLF endings.
+`.gitattributes` forces LF on text assets, because `sh` cannot run `baseline-core/scripts/bldh.sh` with CRLF endings.

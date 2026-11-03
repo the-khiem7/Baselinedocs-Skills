@@ -25,7 +25,7 @@ code_ref: "<commit|uncommitted|unknown>"
 
 `updated` is the last document edit date. `code_ref` is the code state actually inspected, not the document's own commit. Use `uncommitted` for an inspected working tree and `unknown` when provenance cannot be established. A newer commit is a drift signal, not automatic proof of drift.
 
-Schema `3.0` adds the `cowork` document. A `2.0` document stays valid and readable, and `packtool.sh` warns that its format is older than the installed family. A skill that sees that warning tells the user the pack may need a format upgrade, and never upgrades it unasked: the upgrade changes `baseline_schema` and nothing else, and only the user decides when.
+Schema `3.0` adds the `cowork` document. A `2.0` document stays valid and readable, and `bldh.sh` warns that its format is older than the installed family. A skill that sees that warning tells the user the pack may need a format upgrade, and never upgrades it unasked: the upgrade changes `baseline_schema` and nothing else, and only the user decides when.
 
 ## Required documents
 
@@ -85,7 +85,7 @@ A pack element may name the ticket it belongs to in an external task tracker: Ji
 - Inheritance: an element without its own line belongs to the ticket of the nearest enclosing heading that has one. With none of its own and none above, it has no ticket.
 - Frontmatter never carries a ticket. One pack covers many tickets, so a pack-wide field would assign every element to one of them.
 - Record a ticket only when the user named it or the thread established it. Never infer one from prose, a commit, or a branch name, and never copy one to another element because the two look related: a wrong ticket files the work, its commits and its time under someone else's task.
-- A ticket key is not a pack identifier. Never allocate it with `next-id`, cite it as an entry, or use it as a callout label. `packtool.sh` skips identifier matching on a `**Ticket:**` line, so a key shaped like `AB-D3` there is not counted; in a task's `Ticket:` suffix it is, so give such a key its URL and keep it on a `**Ticket:**` line where possible.
+- A ticket key is not a pack identifier. Never allocate it with `next-id`, cite it as an entry, or use it as a callout label. `bldh.sh` skips identifier matching on a `**Ticket:**` line, so a key shaped like `AB-D3` there is not counted; in a task's `Ticket:` suffix it is, so give such a key its URL and keep it on a `**Ticket:**` line where possible.
 - A ticket line is metadata about the element, not a claim about the work. Changing it is an edit of that line, not a disproven claim to relocate.
 
 ## Reasoning ownership

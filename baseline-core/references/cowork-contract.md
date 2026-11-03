@@ -48,7 +48,7 @@ A co-author who needs a change in a region they do not own writes it as a reques
 
 ## Identifier ranges
 
-Every author, the pack owner included, holds one bounded range, written `<low>-<high>`, that applies to every identifier kind (`D`, `Q`, `P`). Ranges never overlap, are never renumbered, and an identifier outside every range is a defect. Recommended: the pack owner keeps the existing counter (`1-199`), each co-author takes the next block (`200-299`, `300-399`). An author allocates only inside their range, from a scan of every document of the pack, with `packtool.sh next-id <pack-dir> <KIND> --author <handle>`. A bounded owner range is what stops the owner's counter from running into a co-author's block.
+Every author, the pack owner included, holds one bounded range, written `<low>-<high>`, that applies to every identifier kind (`D`, `Q`, `P`). Ranges never overlap, are never renumbered, and an identifier outside every range is a defect. Recommended: the pack owner keeps the existing counter (`1-199`), each co-author takes the next block (`200-299`, `300-399`). An author allocates only inside their range, from a scan of every document of the pack, with `bldh.sh next-id <pack-dir> <KIND> --author <handle>`. A bounded owner range is what stops the owner's counter from running into a co-author's block.
 
 Placement keeps the hunks apart:
 

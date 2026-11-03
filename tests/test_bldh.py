@@ -6,9 +6,9 @@ import pytest
 
 from helpers import ROOT
 
-# `baseline-core/scripts/packtool.sh` is the only copy of the tool. Each case builds a small pack in a temporary
+# `baseline-core/scripts/bldh.sh` is the only copy of the tool. Each case builds a small pack in a temporary
 # directory, breaks exactly one rule, and asserts the rule code that names it.
-TOOL = (ROOT / "baseline-core" / "scripts" / "packtool.sh").as_posix()
+TOOL = (ROOT / "baseline-core" / "scripts" / "bldh.sh").as_posix()
 SH = shutil.which("sh")
 
 
@@ -79,7 +79,7 @@ def write_pack(root, name="tb", hallucination=HALLUCINATION, roadmap=ROADMAP, co
 
 def run(cwd, *args):
     assert SH, (
-        "no `sh` on PATH; packtool.sh needs a POSIX shell (Git for Windows provides one)"
+        "no `sh` on PATH; bldh.sh needs a POSIX shell (Git for Windows provides one)"
     )
     return subprocess.run(
         [SH, TOOL, *args], cwd=cwd, capture_output=True, text=True, encoding="utf-8"
@@ -476,7 +476,7 @@ def test_cowork_pack_prints_the_reminder_that_is_not_a_finding(tmp_path):
     write_cowork(tmp_path)
     result = run(tmp_path, "check", "tb")
     assert re.search(r"^NOTE .* cowork-pack tb .*cowork-contract\.md", result.stdout, re.M), result.stdout
-    assert re.search(r"packtool check: \d+ FAIL, \d+ WARN in 4 documents", result.stdout), result.stdout
+    assert re.search(r"BaselineDocs Harness check: \d+ FAIL, \d+ WARN in 4 documents", result.stdout), result.stdout
 
 
 def test_open_questions_group_of_a_co_author_is_the_open_questions_section(tmp_path):

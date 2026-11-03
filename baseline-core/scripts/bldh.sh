@@ -1,16 +1,16 @@
 #!/bin/sh
-# packtool - read-only structural checks and locators for a baseline pack.
+# BaselineDocs Harness (bldh.sh) - read-only structural checks and locators for a baseline pack.
 #
 # POSIX sh and POSIX awk only (no gawk extensions, no regex intervals), so the
 # same file runs under dash and mawk, macOS sh and BWK awk, and Git for
 # Windows sh and gawk. It never writes a file, never touches the network, and
 # runs git only to read HEAD and the working-tree status.
 #
-#   sh packtool.sh outline <file|dir>              every heading with file:line
-#   sh packtool.sh find    <dir> <ID>              every occurrence of one identifier
-#   sh packtool.sh next-id <dir> <D|Q|P> [PREFIX] [--author <handle>]  the next free identifier
-#   sh packtool.sh close-plan <dir> <Q-ID> <D-ID>  the edits that close a question into a decision
-#   sh packtool.sh check   <dir>                   FAIL and WARN findings
+#   sh bldh.sh outline <file|dir>              every heading with file:line
+#   sh bldh.sh find    <dir> <ID>              every occurrence of one identifier
+#   sh bldh.sh next-id <dir> <D|Q|P> [PREFIX] [--author <handle>]  the next free identifier
+#   sh bldh.sh close-plan <dir> <Q-ID> <D-ID>  the edits that close a question into a decision
+#   sh bldh.sh check   <dir>                   FAIL and WARN findings
 #
 # Line numbers describe the file as it is now and go stale on the next write.
 # Exit status: 0 clean (find, close-plan: found), 1 FAIL present (find, close-plan:
@@ -23,11 +23,11 @@ AWK=${AWK:-awk}
 
 usage() {
   cat >&2 <<'EOF'
-usage: sh packtool.sh outline <file|dir>
-       sh packtool.sh find    <dir> <ID>
-       sh packtool.sh next-id <dir> <D|Q|P> [PREFIX] [--author <handle>]
-       sh packtool.sh close-plan <dir> <Q-ID> <D-ID>
-       sh packtool.sh check   <dir>
+usage: sh bldh.sh outline <file|dir>
+       sh bldh.sh find    <dir> <ID>
+       sh bldh.sh next-id <dir> <D|Q|P> [PREFIX] [--author <handle>]
+       sh bldh.sh close-plan <dir> <Q-ID> <D-ID>
+       sh bldh.sh check   <dir>
 EOF
   exit 2
 }
@@ -65,7 +65,7 @@ list_files() {
 [ $# -ge 2 ] || usage
 cmd=$1
 target=${2%/}
-[ -e "$target" ] || { echo "packtool: no such path: $target" >&2; exit 2; }
+[ -e "$target" ] || { echo "BaselineDocs Harness: no such path: $target" >&2; exit 2; }
 arg=
 prefix=
 closer=
@@ -91,7 +91,7 @@ case $cmd in
       [A-Z][A-Z]-D[0-9]*|[A-Z][A-Z][A-Z]-D[0-9]*) ;;
       *) usage ;;
     esac
-    [ "${arg%%-*}" = "${closer%%-*}" ] || { echo "packtool: $arg and $closer carry different prefixes" >&2; exit 2; } ;;
+    [ "${arg%%-*}" = "${closer%%-*}" ] || { echo "BaselineDocs Harness: $arg and $closer carry different prefixes" >&2; exit 2; } ;;
   next-id)
     [ $# -ge 3 ] || usage
     arg=$3
@@ -121,8 +121,8 @@ if [ -z "$files" ] && [ "$cmd" = next-id ] && [ -n "$prefix" ]; then
   exit 0
 fi
 if [ -z "$files" ]; then
-  echo "packtool: no baseline documents under $target" >&2
-  [ "$cmd" = next-id ] && echo "packtool: for a new pack pass the prefix: next-id <dir> <D|Q|P> <PREFIX>" >&2
+  echo "BaselineDocs Harness: no baseline documents under $target" >&2
+  [ "$cmd" = next-id ] && echo "BaselineDocs Harness: for a new pack pass the prefix: next-id <dir> <D|Q|P> <PREFIX>" >&2
   exit 2
 fi
 
@@ -544,7 +544,7 @@ END {
       np = 0
       for (x in hpfx) { np++; p = x }
       if (np != 1) {
-        print "packtool: " (np ? "several prefixes here" : "no prefix established yet") "; pass one: next-id <dir> " target " <PREFIX>" > "/dev/stderr"
+        print "BaselineDocs Harness: " (np ? "several prefixes here" : "no prefix established yet") "; pass one: next-id <dir> " target " <PREFIX>" > "/dev/stderr"
         exit 2
       }
     }
@@ -552,24 +552,24 @@ END {
     # next number comes from the range of that author, and a bare next-id is refused.
     pk = (p in ppack) ? ppack[p] : (ncow == 1 ? cowpacks[1] : "")
     if (author != "") {
-      if (pk == "" || !(pk in cowpack)) { print "packtool: this pack is not co-worked; omit --author" > "/dev/stderr"; exit 2 }
-      if (!((pk, author) in rlo)) { print "packtool: " author " has no valid range in the cowork configuration of " pk > "/dev/stderr"; exit 2 }
+      if (pk == "" || !(pk in cowpack)) { print "BaselineDocs Harness: this pack is not co-worked; omit --author" > "/dev/stderr"; exit 2 }
+      if (!((pk, author) in rlo)) { print "BaselineDocs Harness: " author " has no valid range in the cowork configuration of " pk > "/dev/stderr"; exit 2 }
       lo = rlo[pk, author]; hi = rhi[pk, author]; m = lo - 1
       for (n = hi; n >= lo; n--) if ((p "-" target n) in seen) { m = n; break }
-      if (m + 1 > hi) { print "packtool: the range " lo "-" hi " of " author " is used up; ask the pack owner for a new range" > "/dev/stderr"; exit 2 }
+      if (m + 1 > hi) { print "BaselineDocs Harness: the range " lo "-" hi " of " author " is used up; ask the pack owner for a new range" > "/dev/stderr"; exit 2 }
       print p "-" target (m + 1)
       exit 0
     }
-    if (pk != "" && (pk in cowpack)) { print "packtool: " pk " is co-worked; pass --author <handle> so the number comes from the range of that author" > "/dev/stderr"; exit 2 }
+    if (pk != "" && (pk in cowpack)) { print "BaselineDocs Harness: " pk " is co-worked; pass --author <handle> so the number comes from the range of that author" > "/dev/stderr"; exit 2 }
     print p "-" target (maxn[p, target] + 1)
     exit 0
   }
   if (mode == "find") {
-    if (!found) print "packtool: " target " does not occur under the given path" > "/dev/stderr"
+    if (!found) print "BaselineDocs Harness: " target " does not occur under the given path" > "/dev/stderr"
     exit (found ? 0 : 1)
   }
   if (mode == "close-plan") {
-    if (!found) { print "packtool: " target " does not occur under the given path" > "/dev/stderr"; exit 1 }
+    if (!found) { print "BaselineDocs Harness: " target " does not occur under the given path" > "/dev/stderr"; exit 1 }
     print "steps to close " target " into " closer ":"
     n = 1
     print n++ ". in " closer ": add the line \"Closes " target ".\" and list " target " in its index Related column; that citation keeps the number reserved, so it must survive every later edit" (closer in hc ? "" : " (" closer " has no heading yet)")
@@ -622,7 +622,7 @@ END {
     }
   }
   coworkchecks()
-  print "packtool check: " nfail + 0 " FAIL, " nwarn + 0 " WARN in " nfiles " documents"
+  print "BaselineDocs Harness check: " nfail + 0 " FAIL, " nwarn + 0 " WARN in " nfiles " documents"
   exit (nfail > 0)
 }
 '

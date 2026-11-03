@@ -6,7 +6,7 @@ version: "3.4.0"
 
 # Baseline Core
 
-The single home of what every `baselinedocs-*` skill reads: `references/pack-contract.md` (which document owns which content), `references/report-style.md` (how a report names pack elements), `references/cowork-contract.md` (who writes where on a pack several people write), and `scripts/packtool.sh` (`outline`, `find`, `next-id`, `close-plan`, `check`). The other skills read them from this folder and ship no copy.
+The single home of what every `baselinedocs-*` skill reads: `references/pack-contract.md` (which document owns which content), `references/report-style.md` (how a report names pack elements), `references/cowork-contract.md` (who writes where on a pack several people write), and `scripts/bldh.sh` (`outline`, `find`, `next-id`, `close-plan`, `check`). The other skills read them from this folder and ship no copy.
 
 Selected by an agent or by the user, load the rules and stop. Nothing is read from a pack and nothing is written.
 
@@ -19,10 +19,10 @@ When the work is on a pack that holds a `<prefix>.cowork.md`, read `references/c
 ## Workflow
 
 1. Read the files above in full. Do not skim headings, sample sections, or substitute a search for a read. Do not rely on a summary's paraphrase of either file: a summary keeps that a rule existed, not its wording, and the wording is what a pack write is checked against.
-2. Resolve the absolute path of `scripts/packtool.sh` beside this SKILL.md. For the rest of the session, run `sh <that path> check <pack-dir>` after every pack write and before reporting it, allocate every new identifier with `sh <that path> next-id <pack-dir> <D|Q|P> [PREFIX]`, and never report a write as done while `check` prints a FAIL line. Free-form work runs no workflow skill that would hold this rule.
+2. Resolve the absolute path of `scripts/bldh.sh` beside this SKILL.md. For the rest of the session, run `sh <that path> check <pack-dir>` after every pack write and before reporting it, allocate every new identifier with `sh <that path> next-id <pack-dir> <D|Q|P> [PREFIX]`, and never report a write as done while `check` prints a FAIL line. Free-form work runs no workflow skill that would hold this rule.
 3. Do not read the pack, and do not reconstruct pack state from a summary. `baselinedocs-load` or `baselinedocs-onboard` load a pack; `baselinedocs-brief` reports whether the thread holds work the pack does not.
 4. When a baselinedocs skill is running and its instructions are still in context, return to it once the files are read; steps 5 and 6 do not apply. When its instructions were compacted, such as a `baselinedocs-run` phase, name it as the skill to invoke again; do not continue its work from the summary.
-5. Respond strictly with "Sẵn sàng." (or "Ready." in English environments), then the absolute `packtool.sh` path, plus the one line from step 4 when it applies.
+5. Respond strictly with "Sẵn sàng." (or "Ready." in English environments), then the absolute `bldh.sh` path, plus the one line from step 4 when it applies.
 6. Stop. Do not resume, propose, or plan work unless asked.
 
 ## Non-Goals

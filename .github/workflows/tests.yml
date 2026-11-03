@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   pytest:
-    # packtool.sh claims POSIX sh and awk only: Ubuntu runs it under dash and
+    # bldh.sh claims POSIX sh and awk only: Ubuntu runs it under dash and
     # mawk, macOS under BWK awk, Windows under Git for Windows sh and gawk.
     strategy:
       fail-fast: false

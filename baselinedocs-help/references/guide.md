@@ -36,7 +36,7 @@ An agent selects these when it notices the condition. The user may name one dire
 | `baselinedocs-maintain-compact` | the pack is too noisy to resume from | shorter pack, same information |
 | `baselinedocs-maintain-split` | one pack mixes workstreams | domain packs plus an initiative index |
 | `baselinedocs-extract-wiki` | a reusable procedure is buried in a task-specific pack | a wiki article |
-| `baseline-core` | before free-form pack work no other skill covers, or after a compaction before the next pack write or report | the contract and report style read in full, the `packtool.sh` path, then a one-word confirmation |
+| `baseline-core` | before free-form pack work no other skill covers, or after a compaction before the next pack write or report | the contract and report style read in full, the `bldh.sh` path, then a one-word confirmation |
 | `baseline-academic-core` | before free-form lesson work, or after a compaction during one | the lesson rules, the contract and the report style read in full, then a one-word confirmation |
 
 ## Workflow

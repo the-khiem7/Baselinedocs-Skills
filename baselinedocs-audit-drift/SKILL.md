@@ -10,7 +10,7 @@ version: "3.4.0"
 
 Read `<core-dir>/references/report-style.md` in full before reporting to the user, every time. It governs how a pack element is named in conversation; an identifier stated without its meaning is a question the user has to ask.
 
-Run `sh <core-dir>/scripts/packtool.sh check <pack-dir>` before reporting the pack state, and report its FAIL and WARN lines as findings; it reports, it never fixes. Without `sh`, say the checks were not run.
+Run `sh <core-dir>/scripts/bldh.sh check <pack-dir>` before reporting the pack state, and report its FAIL and WARN lines as findings; it reports, it never fixes. Without `sh`, say the checks were not run.
 
 ## Purpose
 

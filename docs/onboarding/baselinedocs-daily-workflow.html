@@ -342,7 +342,7 @@ html { scroll-behavior: smooth; }
           <ul class="plain">
             <li><strong>Mở thread mới</strong> (mặc định khi pack đã mới): sau save, pack là nguồn sự thật duy nhất. Thread mới chạy <strong>onboard</strong> hoặc <strong>load</strong>.</li>
             <li><strong>Ở lại thread</strong> (khi thread còn giữ thứ chưa viết ra được, như hướng tiếp cận dang dở hay phiên debug): dùng <code>/compact</code> của host, rồi chạy <strong>brief</strong> để xem pack có tụt sau thread không.</li>
-            <li>Sau compact, hoặc trước khi tự sửa pack không qua workflow nào, agent có thể quên quy tắc ghi pack. <strong>baseline-core</strong> đọc lại contract và report-style, báo đường dẫn <code>packtool.sh</code>, rồi dừng.</li>
+            <li>Sau compact, hoặc trước khi tự sửa pack không qua workflow nào, agent có thể quên quy tắc ghi pack. <strong>baseline-core</strong> đọc lại contract và report-style, báo đường dẫn <code>bldh.sh</code>, rồi dừng.</li>
           </ul>
           <div class="skills"><span class="skill">baselinedocs-brief</span><span class="skill agent">baseline-core</span></div>
         </div>
@@ -457,7 +457,7 @@ flowchart TD
             <tr><td><code>maintain-compact</code></td><td>Pack quá nhiễu để làm tiếp</td><td>Pack ngắn hơn, giữ nguyên thông tin</td></tr>
             <tr><td><code>maintain-split</code></td><td>Một pack trộn nhiều luồng việc</td><td>Các pack domain cùng một initiative index</td></tr>
             <tr><td><code>extract-wiki</code></td><td>Một quy trình dùng lại được đang bị chôn trong pack của một task</td><td>Một bài wiki</td></tr>
-            <tr><td><code>baseline-core</code></td><td>Trước khi tự sửa pack không qua workflow, hoặc sau compact trước lần ghi hay báo cáo pack kế tiếp</td><td>Đọc lại contract và report-style, báo đường dẫn <code>packtool.sh</code>, rồi xác nhận một từ</td></tr>
+            <tr><td><code>baseline-core</code></td><td>Trước khi tự sửa pack không qua workflow, hoặc sau compact trước lần ghi hay báo cáo pack kế tiếp</td><td>Đọc lại contract và report-style, báo đường dẫn <code>bldh.sh</code>, rồi xác nhận một từ</td></tr>
           </tbody>
         </table>
       </div>

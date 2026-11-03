@@ -16,7 +16,7 @@ Read `<core-dir>/references/cowork-contract.md` in full before enabling, reassig
 
 Read `<core-dir>/references/report-style.md` in full before reporting to the user, every time. It governs how a pack element is named in conversation; an identifier stated without its meaning is a question the user has to ask.
 
-Run `sh <core-dir>/scripts/packtool.sh check <pack-dir>` after every pack write and before reporting it, and allocate every new identifier with `sh <core-dir>/scripts/packtool.sh next-id <pack-dir> <D|Q|P> [PREFIX]`, never from memory. A new pack's first identifier needs its PREFIX. Never report a write as done while `check` prints a FAIL line: a duplicate identifier or a missing index row resolves citations to the wrong entry, and nothing else detects it. Without `sh`, say the checks were not run.
+Run `sh <core-dir>/scripts/bldh.sh check <pack-dir>` after every pack write and before reporting it, and allocate every new identifier with `sh <core-dir>/scripts/bldh.sh next-id <pack-dir> <D|Q|P> [PREFIX]`, never from memory. A new pack's first identifier needs its PREFIX. Never report a write as done while `check` prints a FAIL line: a duplicate identifier or a missing index row resolves citations to the wrong entry, and nothing else detects it. Without `sh`, say the checks were not run.
 
 In a co-worked pack the tool refuses a bare `next-id`; add `--author <handle>` so the number comes from that author's range.
 

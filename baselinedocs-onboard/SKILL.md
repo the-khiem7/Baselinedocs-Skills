@@ -14,7 +14,7 @@ Read `<core-dir>/references/pack-contract.md` in full before reporting the pack 
 
 Read `<core-dir>/references/report-style.md` in full before reporting to the user, every time. It governs how a pack element is named in conversation; an identifier stated without its meaning is a question the user has to ask.
 
-Run `sh <core-dir>/scripts/packtool.sh check <pack-dir>` before reporting the pack state, and report its FAIL and WARN lines as findings; it reports, it never fixes. Without `sh`, say the checks were not run.
+Run `sh <core-dir>/scripts/bldh.sh check <pack-dir>` before reporting the pack state, and report its FAIL and WARN lines as findings; it reports, it never fixes. Without `sh`, say the checks were not run.
 
 ## Inputs
 
@@ -51,7 +51,7 @@ Determine or confirm:
 - Do not resolve a contradiction found while reading; report it. `baselinedocs-sync-reconcile` owns the repair. Index status disagreeing with a pack's own `status` is one of these: do not treat the index as authoritative and do not prefer the newer `updated`.
 - Retained source material is out of scope unless the user includes it: a `sources/` directory, or any file in the pack without baseline frontmatter. `baselinedocs-adopt` already distributed its information into the documents, so reading both loads the same content twice, and the source is usually the largest file present.
 - A link, token, or credential in a pack is never reproduced: name what it is and write a placeholder. A work ticket line is the exception: its key and URL identify a task, not access, so report them as recorded.
-- A pack that holds a `<prefix>.cowork.md` is co-worked: its configuration and every journal are baseline documents, read in full with the rest. Resolve the current author from `git config user.email` against the `Authors` table and show, in `Needs you now` and `Progress`, the phases and sections that author owns, their identifier range with its next free number from `packtool.sh next-id <pack-dir> <D|Q|P> --author <handle>`, and the journal entries still marked `Fold: pending`. An email absent from the table is a `Caveats` line.
+- A pack that holds a `<prefix>.cowork.md` is co-worked: its configuration and every journal are baseline documents, read in full with the rest. Resolve the current author from `git config user.email` against the `Authors` table and show, in `Needs you now` and `Progress`, the phases and sections that author owns, their identifier range with its next free number from `bldh.sh next-id <pack-dir> <D|Q|P> --author <handle>`, and the journal entries still marked `Fold: pending`. An email absent from the table is a `Caveats` line.
 - Do not update frontmatter, dates, or status. Onboard writes no pack file, including the index it just reported missing.
 
 ## Output
@@ -93,7 +93,7 @@ Badge `updated` is the newest `updated` among the pack's documents. Chips follow
 `Caveats`: only the lines that apply, each one line, the heading omitted when none does.
 - `Not read:` one line, in your own words, naming what a loaded document leans on that is outside the scope, and any retained source material or other exclusion the user may assume was read. Offer to load it.
 - one line per contradiction found between documents, such as an index status against a pack's own, or a question closed in one place and open in another; name both places and choose neither
-- one line per FAIL or WARN from `packtool.sh check`, as findings
+- one line per FAIL or WARN from `bldh.sh check`, as findings
 
 When the user asks for a page, a diagram they can open, or a visual document, render the same sections and the same chips as one HTML file instead, and draw `Pack map` as Mermaid there. Write it where the user names, otherwise in the working repository. Publishing it sends the pack's content to claude.ai: say so and publish only when the user asks.
 

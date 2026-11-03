@@ -32,7 +32,7 @@ Determine or confirm before reading anything beyond frontmatter:
 | Mode | When | Reading |
 |---|---|---|
 | project scoped | called inside one project repo, lesson for that repo only | that repo's pack only |
-| named topic | the user names a topic across several projects | entries located with `<core-dir>/scripts/packtool.sh outline` and `find`, then read in full; no whole pack is loaded |
+| named topic | the user names a topic across several projects | entries located with `<core-dir>/scripts/bldh.sh outline` and `find`, then read in full; no whole pack is loaded |
 | suggested topics | the user wants candidate topics from many projects | one explorer subagent per project runs `baselinedocs-load` on that pack and returns only a topic list; the user picks one, then the named-topic reading applies |
 
 - In suggested mode, when `baselinedocs-load` is not installed, stop and name it. Never load whole packs yourself as a fallback: that spends the main context the mode exists to spare.
