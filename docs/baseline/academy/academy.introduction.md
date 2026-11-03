@@ -25,7 +25,7 @@ Out of scope: any change to the pack schema or to `baseline-core`; any write int
 | `baselinedocs-academic-compose` | exists, three modes, never run |
 | source projects | every folder under `C:\.repos\Work\` that holds `docs/baseline/`; not enumerated here, because the set changes |
 | external course-building skill | none installed; ACA-D7 records what was read and rejected |
-| `baseline-core` | holds `pack-contract.md`, `report-style.md` and `packtool.sh` once, reached as `<skill-dir>/../baseline-core` (`baselinedocs` BLD-D54) |
+| `baseline-core` | holds `pack-contract.md`, `report-style.md` and `bldh.sh` once, reached as `<skill-dir>/../baseline-core` (`baselinedocs` BLD-D54) |
 
 ## Target
 

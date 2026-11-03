@@ -39,7 +39,7 @@ Acceptance criteria:
 - `AGENTS.md` and `README.md` name the second exception and the install line
 - a decision in `baselinedocs` records the second exception to the sibling-prerequisite rule
 
-Evidence: `uvx --from "pytest>=8,<10" --with pyyaml pytest tests/ -q` gave 474 passed and 2 skipped (the two skips need a symbolic link or a preserved `HOME`, unchanged by this phase); `scripts/stamp_version.py --check v3.3.0` reported 0 files differing; `packtool.sh check docs/baseline` gave 0 FAIL and 5 WARN, all in the older packs. Files changed: `baseline-academic-core/` (new), `scripts/stamp_version.py`, `baselinedocs-self-upgrade/SKILL.md` and `scripts/upgradekit.sh`, `tests/test_references.py`, `test_skill_metadata.py`, `test_version.py`, `test_upgradekit.py`, `test_packs.py`, `AGENTS.md`, `README.md`, and the `baselinedocs` pack (a new decision and an introduction edit). The decision is in `baselinedocs` hallucination as BLD-D55 (the second shared core, read only by the academic skills). The sentence that defines the academic core's folder and its gate are not pinned yet: no academic skill exists, so they are pinned in ACA-P3.
+Evidence: `uvx --from "pytest>=8,<10" --with pyyaml pytest tests/ -q` gave 474 passed and 2 skipped (the two skips need a symbolic link or a preserved `HOME`, unchanged by this phase); `scripts/stamp_version.py --check v3.3.0` reported 0 files differing; `bldh.sh check docs/baseline` gave 0 FAIL and 5 WARN, all in the older packs. Files changed: `baseline-academic-core/` (new), `scripts/stamp_version.py`, `baselinedocs-self-upgrade/SKILL.md` and `scripts/upgradekit.sh`, `tests/test_references.py`, `test_skill_metadata.py`, `test_version.py`, `test_upgradekit.py`, `test_packs.py`, `AGENTS.md`, `README.md`, and the `baselinedocs` pack (a new decision and an introduction edit). The decision is in `baselinedocs` hallucination as BLD-D55 (the second shared core, read only by the academic skills). The sentence that defines the academic core's folder and its gate are not pinned yet: no academic skill exists, so they are pinned in ACA-P3.
 
 Revision summary: the anonymization rules in `academic-contract.md` were changed after the phase was committed, to move the mapping file into the calling directory and require it to be git-ignored (ACA-D18). The acceptance criteria and dependencies are unchanged.
 
@@ -60,7 +60,7 @@ Evidence: `uvx --from "pytest>=8,<10" --with pyyaml pytest tests/ -q` gave 508 p
 Acceptance criteria:
 
 - project scoped: one project repo, one topic from its pack, one HTML file written inside that repo
-- named topic: one topic, two or three projects, entries located with `packtool.sh` without loading whole packs
+- named topic: one topic, two or three projects, entries located with `bldh.sh` without loading whole packs
 - suggested topics: explorer subagents return a topic list only, the user picks one, one local HTML file results
 - every lesson point cites a source entry; single-source points and disagreements are visible
 - the anonymizer's replacement count per class is reported and the user reviews the page for leaked identifiers

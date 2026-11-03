@@ -51,7 +51,7 @@ code_ref: "02f17f4"
 
 ### ACA-D3: two cores
 
-- Decision: `baseline-core` stays the only home of the pack contract, report style and `packtool.sh`; `baseline-academic-core` holds the lesson format, the anonymization rules and the citation rule. Academic skills reach both as sibling folders and stop when either is missing.
+- Decision: `baseline-core` stays the only home of the pack contract, report style and `bldh.sh`; `baseline-academic-core` holds the lesson format, the anonymization rules and the citation rule. Academic skills reach both as sibling folders and stop when either is missing.
 - Why: the user asked for `baseline-core` to serve pack operations and `baseline-academic-core` to serve the sub-family.
 - What breaks if ignored: lesson rules in `baseline-core` load into every pack-writing skill that never uses them, and a copy in each academic skill drifts (`baselinedocs` BLD-D54).
 - Consequence: a second exception to the rule that a skill never requires a sibling's content, after `baseline-core`. `AGENTS.md` and the test that pins that rule change in the phase that builds the core, and a decision in `baselinedocs` records the second exception then.
@@ -106,7 +106,7 @@ code_ref: "02f17f4"
 
 ### ACA-D10: three ways to choose topics
 
-- Decision: one skill offers three modes. Project scoped: run inside one project repo, read only that repo's pack. Named topic: the user names a topic across several projects, and the skill finds the matching entries with `packtool.sh outline` and `find` instead of loading whole packs, so the context window is spared. Suggested topics: the user wants candidate topics across several projects, and explorer subagents load whole packs with `baselinedocs-load` and return only a topic list, which the user picks from before composing starts.
+- Decision: one skill offers three modes. Project scoped: run inside one project repo, read only that repo's pack. Named topic: the user names a topic across several projects, and the skill finds the matching entries with `bldh.sh outline` and `find` instead of loading whole packs, so the context window is spared. Suggested topics: the user wants candidate topics across several projects, and explorer subagents load whole packs with `baselinedocs-load` and return only a topic list, which the user picks from before composing starts.
 - Why: users forget what they did in a long project, so "all topics" means researching which topics are worth a lesson, not dumping every entry. The three modes trade context cost against how much the user already knows.
 - What breaks if ignored: a single mode either loads whole packs for a topic the user already named, or leaves a user who does not remember their own project with nothing to choose from.
 - Closes ACA-Q5.
@@ -159,7 +159,7 @@ code_ref: "02f17f4"
 - Why: naming a sibling skill for routing holds when it is absent, running it does not, and a fallback that loads packs itself spends the main context the mode exists to spare.
 - What breaks if ignored: whole packs from several projects fill the main context window.
 - Closes ACA-Q6.
-- Rejected: reading packs with `packtool.sh outline` as a fallback (suggestions rest on a partial read).
+- Rejected: reading packs with `bldh.sh outline` as a fallback (suggestions rest on a partial read).
 
 ### ACA-D17: project-scoped output is anonymized only when it will be shared
 
