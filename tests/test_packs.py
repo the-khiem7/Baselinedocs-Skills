@@ -34,6 +34,10 @@ CLOSED_WITHOUT_HEADING = {
     "ACA-Q1", "ACA-Q2", "ACA-Q3", "ACA-Q4", "ACA-Q5", "ACA-Q6", "ACA-Q7", "ACA-Q8",
 }
 
+# A deleted pack's identifiers stay cited as history in the packs that remain; its
+# documents are recoverable from git, so the citation is not dangling in practice.
+RETIRED_PREFIXES = {"SC"}
+
 # The documents recording the prefix rule quote the banned bare form as an
 # example. An exact (file, identifier) allowance, so the same bare form anywhere
 # else, or any other bare identifier in these files, still fails.
@@ -41,7 +45,6 @@ BARE_EXAMPLES = {
     "baseline-gateway.index.md": {"D16"},
     "baselinedocs.hallucination.md": {"D16", "D22"},
     "baselinedocs.roadmap.md": {"D16", "P8"},
-    "skill-consolidation.hallucination.md": {"D16"},
 }
 # README.md is checked for resolution only: its Mermaid node names (Q0, Q1, Q2)
 # are not pack identifiers.
@@ -124,7 +127,7 @@ def test_entry_index_lists_every_entry_and_nothing_else(path):
 
 
 def test_every_pack_prefix_is_declared_by_a_heading():
-    prefixes = {identifier.split("-")[0] for identifier in defined_identifiers()}
+    prefixes = {identifier.split("-")[0] for identifier in defined_identifiers()} | RETIRED_PREFIXES
     cited = {
         match.group(1)
         for path in CITING_FILES
@@ -153,6 +156,7 @@ def test_cited_identifiers_resolve_to_a_heading(path):
     cited = {
         f"{match.group(1)}-{match.group(2)}"
         for match in QUALIFIED.finditer(read_text(path))
+        if match.group(1) not in RETIRED_PREFIXES
     }
     assert cited <= defined, (
         f"{rel(path)} cites identifiers that name no heading: {sorted(cited - defined)}"
