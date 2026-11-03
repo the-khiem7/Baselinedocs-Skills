@@ -48,16 +48,16 @@ Verified against the repository, not against `DESIGN.md`.
 | Mandatory entry index and heading format | BLD-D42 | implemented | `contract/pack-contract.md`, `Entry index`; 14 packaged copies `cmp` clean; `tests/test_packs.py` has no threshold and fails a `hallucination` with no index |
 | Guide to the skills | BLD-D43 | implemented, selection unobserved | `baselinedocs-help/` with `references/guide.md`; `tests/test_references.py` `test_help_guide_names_every_skill` |
 | ADR from a closed decision | BLD-D44 | implemented, selection unobserved | `baselinedocs-adr/` with the unmodified AWS `references/template.md` and `process.md`; checksums in BLD-D44 |
-| Mechanical structure check | BLD-D46, BLD-D47 | implemented, CI matrix unobserved | `contract/packtool.sh` with byte-identical `scripts/packtool.sh` copies; commands `outline`, `find`, `next-id`, `close-plan`, `check`; gates pinned by `TOOL_SKILLS` in `tests/test_references.py`; `tests/test_packtool.py` builds one case per rule |
+| Mechanical structure check | BLD-D46, BLD-D47 | implemented, CI matrix unobserved | `contract/bldh.sh` with byte-identical `scripts/bldh.sh` copies; commands `outline`, `find`, `next-id`, `close-plan`, `check`; gates pinned by `TOOL_SKILLS` in `tests/test_references.py`; `tests/test_bldh.py` builds one case per rule |
 | Closed question keeps its number | BLD-D47 | implemented | contract `Entry index` states the `Closes` line; `close-plan` and WARN `identifier-gap` in the tool; `sync-decisions` and `save` run `close-plan`, pinned by `test_skills_that_close_questions_run_close_plan` |
 | Release version in the frontmatter | BLD-D45, BLD-Q6 | implemented, workflow unobserved | top-level `version:` in every `SKILL.md`; `scripts/stamp_version.py`; `tests/test_version.py`; `.github/workflows/release.yml` has not run on GitHub |
 | Commit skills | BLD-D48, BLD-D53 | moved to the `commit-composer` repository | no `commit-*` folder, contract file or test remains here; the history of those paths lives in the new repository |
 | Installed-skill upgrade | BLD-D49 | implemented, upgrade path unobserved | `baselinedocs-self-upgrade/` with `scripts/upgradekit.sh`; `tests/test_upgradekit.py` holds one case per rule; `OWN_SCRIPTS` in `tests/test_conventions.py`; `compare` run against this machine's 190 installs |
 | Onboard report as visuals | BLD-D51 | implemented, host render unobserved | `baselinedocs-onboard/SKILL.md`: no file record, no `Unresolved references` section, one `Not read:` line in `Caveats`, fixed chip table, HTML page with Mermaid only on request |
 | README illustrations | BLD-D50 | implemented, GitHub render unobserved | 34 WebP under `assets/` (17 light, 17 dark) rendered from `assets/source/*.html` with `shared.css`, `shared.js`, `finish.py`; `README.md` selects them with `<picture>`; `tests/test_readme_assets.py` pins one `data-skill` chip per skill in `family-map.html` |
-| `packtool.sh` on role-named files | BLD-D56 | implemented, CI matrix unobserved | `baseline-core/scripts/packtool.sh` `bare_baseline` and the `filename-mismatch` WARN; three cases in `tests/test_packtool.py`, which fail against the previous tool |
+| `bldh.sh` on role-named files | BLD-D56 | implemented, CI matrix unobserved | `baseline-core/scripts/bldh.sh` `bare_baseline` and the `filename-mismatch` WARN; three cases in `tests/test_bldh.py`, which fail against the previous tool |
 | Callout group across repositories | BLD-D57 | implemented, selection unobserved | `baselinedocs-callout/SKILL.md`, `A group across two repositories` and retiring step 3 |
-| Work ticket line | BLD-D58 | implemented, no pack carries one yet | `baseline-core/references/pack-contract.md` `Work tickets`; `ticketok` and `ticketline` in `packtool.sh`; two cases in `tests/test_packtool.py` |
+| Work ticket line | BLD-D58 | implemented, no pack carries one yet | `baseline-core/references/pack-contract.md` `Work tickets`; `ticketok` and `ticketline` in `bldh.sh`; two cases in `tests/test_bldh.py` |
 | Co-work mode and schema 3.0 | BLD-D59, BLD-D60, BLD-Q8 | in progress | BLD-P26 to BLD-P29 complete; BLD-P30 field test done, reinstall, Atlantic cleanup and a pack upgrade wait on the user |
 | Core skills load their rules, `recall` merged | BLD-D61, SC-D23 | implemented, selection unobserved | `baseline-core` and `baseline-academic-core` set `true`; `CORE_SKILLS` in `tests/test_skill_metadata.py`, `CORE_LOADER_SENTENCES` in `tests/test_references.py`; no `baselinedocs-recall` folder |
 
@@ -659,7 +659,7 @@ Opened and closed 2026-10-05. Settles BLD-Q6 as BLD-D45: a pushed `vMAJOR.MINOR.
 | Not observed | the workflow has never run: the push to `main` by the bot, the pytest step on a stamped tree, and the action tags are unverified |
 | Not verified first-hand | the Agent Skills specification and any installer's treatment of a top-level `version:` |
 
-## BLD-P17: add `packtool.sh`, a mechanical structure check
+## BLD-P17: add `bldh.sh`, a mechanical structure check
 
 Opened and closed 2026-10-05. Records BLD-D46 after five mistakes in an operate session elsewhere, each one scan away from being caught.
 
@@ -667,16 +667,16 @@ Opened and closed 2026-10-05. Records BLD-D46 after five mistakes in an operate 
 
 | Item | Result |
 |---|---|
-| Tool | `contract/packtool.sh`: `outline`, `find`, `next-id`, `check`; POSIX sh and awk, read-only, git read-only |
-| Copies | `scripts/packtool.sh` in every pack-writing skill, `baselinedocs-onboard`, `baselinedocs-audit-claims`, `baselinedocs-audit-drift` |
+| Tool | `contract/bldh.sh`: `outline`, `find`, `next-id`, `check`; POSIX sh and awk, read-only, git read-only |
+| Copies | `scripts/bldh.sh` in every pack-writing skill, `baselinedocs-onboard`, `baselinedocs-audit-claims`, `baselinedocs-audit-drift` |
 | Contract | `Editing a pack` added; packaged copies re-synced |
 | Gates | writer gate and report gate in each `SKILL.md`, pinned; `baselinedocs-save` workflow gains a check step |
-| Test | `tests/test_packtool.py`: clean pack, CRLF pack, one case per FAIL and WARN rule, the duplicate open-question identifier reproduced, `next-id` counting a closed question cited only in prose, dogfood `check docs/baseline` with no FAIL |
+| Test | `tests/test_bldh.py`: clean pack, CRLF pack, one case per FAIL and WARN rule, the duplicate open-question identifier reproduced, `next-id` counting a closed question cited only in prose, dogfood `check docs/baseline` with no FAIL |
 | Dogfood | `next-id docs/baseline/baselinedocs D` returned BLD-D46 before this entry was written, and the next number after it |
 | Suite | full suite green on Windows with Git for Windows sh and gawk |
 | Not observed | mawk on Ubuntu and BWK awk on macOS: `.github/workflows/tests.yml` now runs all three OS and has not run |
 
-## BLD-P18: act on the Atlantic use report of `packtool.sh`
+## BLD-P18: act on the Atlantic use report of `bldh.sh`
 
 Opened and closed 2026-10-07. Records BLD-D47 after a use report from another repository listed ten defects and frictions; the work ran in three steps, committed as `3766111` and `54522ef`.
 
@@ -686,8 +686,8 @@ Opened and closed 2026-10-07. Records BLD-D47 after a use report from another re
 |---|---|
 | Tool | `next-id` on an empty pack, `check .` from inside a pack, `directory-mismatch` as WARN, bold-label lines not counted as a hard wrap, `close-plan`, `identifier-gap` |
 | Contract | `Entry index` gains the level-3 decision rule and the `Closes` rule; 14 packaged copies re-synced |
-| Gates | 14 `SKILL.md` files call `<skill-dir>/scripts/packtool.sh`; `sync-decisions` and `save` gain the `close-plan` instruction; pinned in `tests/test_references.py` |
-| Test | `tests/test_packtool.py` gains empty pack, folder title, `check .`, bold labels, `Closes` reservation, `identifier-gap` and `close-plan`; 360 passed on Windows with Git for Windows sh and gawk |
+| Gates | 14 `SKILL.md` files call `<skill-dir>/scripts/bldh.sh`; `sync-decisions` and `save` gain the `close-plan` instruction; pinned in `tests/test_references.py` |
+| Test | `tests/test_bldh.py` gains empty pack, folder title, `check .`, bold labels, `Closes` reservation, `identifier-gap` and `close-plan`; 360 passed on Windows with Git for Windows sh and gawk |
 | Dogfood | `check docs/baseline` printed 0 FAIL before this phase's pack edits |
 | Not done | `code_ref` naming the inspected repository, BLD-Q7; heading and index examples in the contract were not added |
 | Not observed | mawk and BWK awk; any host other than Claude Code supplying the skill folder for `<skill-dir>`; a real `close-plan` run in the field |
@@ -698,7 +698,7 @@ Opened and closed 2026-10-07. BLD-D48 carries the reasoning, the rejected option
 
 Acceptance criteria:
 
-- both skills are user entrypoints outside the `baselinedocs-*` naming, each shipping byte-identical copies of the two canonical files and no pack contract, report style, or `packtool.sh`
+- both skills are user entrypoints outside the `baselinedocs-*` naming, each shipping byte-identical copies of the two canonical files and no pack contract, report style, or `bldh.sh`
 - the kit lists units, emits a patch for a subset that `git apply --cached --unidiff-zero` accepts, scans the staged diff without printing a value, and lints a message
 - a subset patch places a pure insertion correctly when an earlier hunk is skipped
 - the suite stays green, `test_no_typographic_dashes` included
@@ -732,7 +732,7 @@ Opened and closed 2026-10-09. BLD-D49 carries the reasoning, the rejected option
 
 Acceptance criteria:
 
-- a user entrypoint named `baselinedocs-self-upgrade` upgrades the installed skills and never a pack, shipping `report-style.md`, no `pack-contract.md`, and no `packtool.sh`
+- a user entrypoint named `baselinedocs-self-upgrade` upgrades the installed skills and never a pack, shipping `report-style.md`, no `pack-contract.md`, and no `bldh.sh`
 - `upgradekit.sh` lists every installed `baselinedocs-*` skill under a home directory at both depths, reads the version from the frontmatter only, compares numerically, never writes, and exits 1 only when a skill is behind or unparsable
 - the skill asks for confirmation before any write and never writes through a link or junction
 - the suite stays green, `test_no_typographic_dashes` included
@@ -777,7 +777,7 @@ Acceptance criteria:
 | Layout fixes found by viewing | workflow: the new-thread box touched the adr box; scenario-pressure: the brief card text overflowed its card; each strip had spare height |
 | Test added | `tests/test_readme_assets.py`: one `data-skill` case per `baselinedocs-*` skill |
 | Failure found by the suite | `tests/test_packs.py` failed twice: the `alt` text of `pack-anatomy` cited an example identifier that names no heading. Removed from the README |
-| Suite | `uvx --from "pytest>=8,<10" --with pyyaml pytest tests/ -q` green after the last edit to the pack documents. The pass count is not recorded. `packtool.sh check docs/baseline`: 0 FAIL |
+| Suite | `uvx --from "pytest>=8,<10" --with pyyaml pytest tests/ -q` green after the last edit to the pack documents. The pass count is not recorded. `bldh.sh check docs/baseline`: 0 FAIL |
 | Not observed | `<picture>` dark selection and WebP rendering on github.com, the navigation anchors, and any viewer other than github.com |
 | Commit | uncommitted. The new files appeared staged (`git status` showed `A`) although this session ran no `git add`; the cause was not investigated |
 
@@ -810,7 +810,7 @@ Acceptance criteria:
 |---|---|
 | Verification gate | see the Suite row |
 | Files changed | `baselinedocs-onboard/SKILL.md`; this pack |
-| Suite | `uvx --from "pytest>=8,<10" --with pyyaml pytest tests/ -q` and `packtool.sh check docs/baseline`, run after the last edit |
+| Suite | `uvx --from "pytest>=8,<10" --with pyyaml pytest tests/ -q` and `bldh.sh check docs/baseline`, run after the last edit |
 | Not observed | terminal width of the chips and box characters on a host other than this one; the HTML page; selection by a host |
 | Commit | uncommitted |
 
@@ -848,7 +848,7 @@ Changes:
 | `tests/helpers.py`, `AGENTS.md`, `README.md`, `assets/source/family-map.html`, `docs/onboarding/baselinedocs-daily-workflow.html` | commit-skill content removed |
 | `baselinedocs.hallucination.md`, `baselinedocs.introduction.md`, `baselinedocs.roadmap.md` | BLD-D53 and its row; BLD-D48 row and a moved line; one current-truth row; one design-area row; this phase |
 
-## BLD-P24: act on a use report of the callout skill and `packtool.sh`
+## BLD-P24: act on a use report of the callout skill and `bldh.sh`
 
 Opened and closed 2026-10-28. BLD-D56 and BLD-D57 carry the reasoning and the rejected options.
 
@@ -863,8 +863,8 @@ Acceptance criteria:
 
 | Item | Result |
 |---|---|
-| Verification gate | `uvx --from "pytest>=8,<10" --with pyyaml pytest tests/ -q` and `packtool.sh check docs/baseline`, run after the last edit |
-| Mutation check | the three new cases failed against the previous `packtool.sh`, then the new file was restored |
+| Verification gate | `uvx --from "pytest>=8,<10" --with pyyaml pytest tests/ -q` and `bldh.sh check docs/baseline`, run after the last edit |
+| Mutation check | the three new cases failed against the previous `bldh.sh`, then the new file was restored |
 | Not observed | mawk and BWK awk on `bare_baseline`; a host selecting the callout skill for a cross-repository group; the back-pointer written in a real second repository |
 | Commit | uncommitted |
 
@@ -872,8 +872,8 @@ Changes:
 
 | File | Change |
 |---|---|
-| `baseline-core/scripts/packtool.sh` | `bare_baseline`, bare names in `list_files`, `fdoc` from a bare name, `filename-mismatch` WARN for a bare name |
-| `tests/test_packtool.py` | `write_bare_pack`, three cases, `edit` accepts an empty pack name |
+| `baseline-core/scripts/bldh.sh` | `bare_baseline`, bare names in `list_files`, `fdoc` from a bare name, `filename-mismatch` WARN for a bare name |
+| `tests/test_bldh.py` | `write_bare_pack`, three cases, `edit` accepts an empty pack name |
 | `baselinedocs-callout/SKILL.md` | new section `A group across two repositories`; retiring step 3 |
 | `baselinedocs.hallucination.md`, `baselinedocs.roadmap.md` | BLD-D56, BLD-D57 and their rows; amendment lines under BLD-D38 and BLD-D46; this phase and two design-area rows |
 
@@ -892,7 +892,7 @@ Acceptance criteria:
 
 | Item | Result |
 |---|---|
-| Verification gate | `uvx --from "pytest>=8,<10" --with pyyaml pytest tests/ -q` and `packtool.sh check docs/baseline`, run after the last edit |
+| Verification gate | `uvx --from "pytest>=8,<10" --with pyyaml pytest tests/ -q` and `bldh.sh check docs/baseline`, run after the last edit |
 | Mutation check | with the `**Ticket:**` branch disabled both new cases failed, then the tool was restored and the suite passed: 513 passed, 2 skipped |
 | Field check | a ticket line added to a copy of a real role-named pack raised no new WARN |
 | Not observed | mawk and BWK awk on `ticketline`; a host writing or reporting the line |
@@ -903,8 +903,8 @@ Changes:
 |---|---|
 | `baseline-core/references/pack-contract.md` | new section `Work tickets` |
 | `baseline-core/references/report-style.md` | a ticket key is glossed with its subject; its URL goes under the table |
-| `baseline-core/scripts/packtool.sh` | `ticketok`, `ticketline`, `ticket-format` WARN, identifier matching skipped on the line |
-| `tests/test_packtool.py` | `ticket-format` WARN case; a valid line with a key shaped like a pack identifier |
+| `baseline-core/scripts/bldh.sh` | `ticketok`, `ticketline`, `ticket-format` WARN, identifier matching skipped on the line |
+| `tests/test_bldh.py` | `ticket-format` WARN case; a valid line with a key shaped like a pack identifier |
 | `baselinedocs-init`, `-save`, `-run`, `-brief`, `-onboard`, `-callout` `SKILL.md` | write, carry or report the line |
 | `baseline-academic-core/references/academic-contract.md` | ticket lines dropped from a shared lesson |
 | `baselinedocs-help/references/guide.md` | one sentence on the line |
@@ -928,9 +928,9 @@ Acceptance criteria:
 | Headings | 14 in `pack-contract.md`, none lost; 10 in `cowork-contract.md`, listed after the edit |
 | Changed files | `baseline-core/references/cowork-contract.md` (new, 114 lines); `baseline-core/references/pack-contract.md` (schema `3.0`, `cowork` document value, a `2.0` upgrade paragraph, one conditional-document bullet carrying the gate sentence) |
 | Design change | a phase's ranges are one per author for every kind, not separate decision and question ranges; the phase-owner table of the source skill is dropped because `**Owner:**` under the phase heading is the single record |
-| Unresolved risk | `packtool.sh` still FAILs `baseline_schema` other than `2.0` until BLD-P27, so a pack written from the new contract template fails `check` meanwhile |
+| Unresolved risk | `bldh.sh` still FAILs `baseline_schema` other than `2.0` until BLD-P27, so a pack written from the new contract template fails `check` meanwhile |
 
-## BLD-P27: `packtool.sh` understands co-work
+## BLD-P27: `bldh.sh` understands co-work
 
 Status: complete.
 
@@ -939,15 +939,15 @@ Acceptance criteria:
 - `2.0` draws WARN `schema-outdated`, `3.0` passes, `document: cowork` and the config and journal filenames are accepted
 - `## Open questions - <Name>` and `## Closed decisions - <Name>` match by prefix; `next-id <dir> <KIND> --author <handle>` allocates inside the author's range; `identifier-gap` skips gaps between ranges
 - FAIL on overlapping ranges, an identifier outside every range, a handle equal to a document name; WARN on a phase without `**Owner:**`; a reminder line on a co-worked pack
-- one case per rule in `tests/test_packtool.py`, each failing against the previous tool
+- one case per rule in `tests/test_bldh.py`, each failing against the previous tool
 
 ### Checkpoint: complete, mawk and BWK awk unobserved
 
 | Item | Result |
 |---|---|
 | Verification gate | `uvx --from "pytest>=8,<10" --with pyyaml pytest tests/ -q`: 534 passed, 2 skipped |
-| Mutation check | with the previous `packtool.sh` restored, 17 of the 22 selected cases failed; the other 5 assert a refusal or FAIL the previous tool also gives |
-| Changed files | `baseline-core/scripts/packtool.sh`; `tests/test_packtool.py` (21 new cases, helper packs now schema `3.0`) |
+| Mutation check | with the previous `bldh.sh` restored, 17 of the 22 selected cases failed; the other 5 assert a refusal or FAIL the previous tool also gives |
+| Changed files | `baseline-core/scripts/bldh.sh`; `tests/test_bldh.py` (21 new cases, helper packs now schema `3.0`) |
 | New rules | FAIL `range-format`, `range-unknown-author`, `range-missing`, `range-overlap`, `owner-count`, `identifier-out-of-range`, `cowork-handle`, `duplicate-author`; WARN `schema-outdated` (once per pack), `phase-without-owner`, `owner-not-author`, `journal-unknown-author`; `NOTE` line per co-worked pack, not counted as a finding |
 | Behaviour | `next-id --author <handle>` allocates inside that author's range; a bare `next-id` on a co-worked pack exits 2; `identifier-gap` is computed per range; `## Open questions - <Name>` is the open-questions group |
 | Not observed | mawk and BWK awk; the awk program contains a single-quote rule (no apostrophe inside it), which broke the first run |
@@ -960,7 +960,7 @@ Status: complete.
 Acceptance criteria:
 
 - `SKILL.md` covers enable, assign, fold, disable, chosen from pack state and the request; `agents/openai.yaml` sets `allow_implicit_invocation: false`
-- `references/config-template.md` and `references/journal-template.md`; gates for `<core-dir>`, both contracts, report style and `packtool.sh`
+- `references/config-template.md` and `references/journal-template.md`; gates for `<core-dir>`, both contracts, report style and `bldh.sh`
 - the test sets name the skill and the suite is green
 
 ### Checkpoint: complete, no host has selected the skill
@@ -1010,10 +1010,10 @@ Acceptance criteria:
 
 | Item | Result |
 |---|---|
-| Verification gate | `uvx --from "pytest>=8,<10" --with pyyaml pytest tests/ -q` and `packtool.sh check docs/baseline`, run after the last edit |
+| Verification gate | `uvx --from "pytest>=8,<10" --with pyyaml pytest tests/ -q` and `bldh.sh check docs/baseline`, run after the last edit |
 | Field test, plain | two clones, `alice@example.com` and `bob@example.com`, one local bare remote, one branch: each added a decision, a question, a phase line and a journal entry in their own regions; `git pull --rebase` merged with no conflict; `check` 0 FAIL, 0 WARN on both sides and after the merge; `next-id --author` gave decision number 4 to the owner and 201 to the co-author |
 | Field test, adjacent | owner and co-author appended index rows after the same last row: rebase stopped on a conflict at the index tail while `check` printed 0 FAIL on the conflicted file |
-| Fixes from the test | a co-author's index rows live in their own table under `### <Name>` inside `## Entry index` (`cowork-contract.md`, `baselinedocs-cowork` enable step 7); `check` FAILs `merge-conflict-marker`; two cases in `tests/test_packtool.py`; the adjacent scenario then merged clean |
+| Fixes from the test | a co-author's index rows live in their own table under `### <Name>` inside `## Entry index` (`cowork-contract.md`, `baselinedocs-cowork` enable step 7); `check` FAILs `merge-conflict-marker`; two cases in `tests/test_bldh.py`; the adjacent scenario then merged clean |
 | Revision of BLD-P27 | the conflict-marker rule and the per-author table case belong to the tool phase and are recorded here because the field test found them |
 | Not observed | a hosted remote and two machines; mawk and BWK awk; a host running `baselinedocs-cowork` on a real pack |
 | Not done, needs the user | a `2.0` pack upgraded to `3.0` (the user decides which and when); the family reinstalled on this machine (it rewrites every agent's skills, this session's own among them); the Atlantic copy deleted and the Terraform slice rule written into an Atlantic pack (that repository's pack, ticket line and commit rules apply; the copy goes only after the reinstall) |
@@ -1025,20 +1025,20 @@ Status: complete. BLD-D61 and `skill-consolidation` SC-D23 carry the reasoning.
 
 Acceptance criteria:
 
-- `baseline-core/SKILL.md` reads `references/pack-contract.md` and `references/report-style.md` in full, `references/cowork-contract.md` on a co-worked pack, gives the absolute path of `scripts/packtool.sh` with the `check` and `next-id` rule for the session, names an interrupted skill after a compaction, replies "Sẵn sàng." / "Ready."; selected inside a running skill, that skill continues; its description carries the load and recall vocabulary
+- `baseline-core/SKILL.md` reads `references/pack-contract.md` and `references/report-style.md` in full, `references/cowork-contract.md` on a co-worked pack, gives the absolute path of `scripts/bldh.sh` with the `check` and `next-id` rule for the session, names an interrupted skill after a compaction, replies "Sẵn sàng." / "Ready."; selected inside a running skill, that skill continues; its description carries the load and recall vocabulary
 - `baseline-academic-core/SKILL.md` does the same with `references/academic-contract.md` plus the two `baseline-core` files through `<core-dir>`
 - both `agents/openai.yaml` set `allow_implicit_invocation: true` and display names `Baseline Docs: Core` and `Baseline Docs: Academic Core`
 - `baselinedocs-recall/` deleted; no file outside the packs names it except as history
 - `tests/test_skill_metadata.py` and `tests/test_references.py` pin the loader sentences and the new policy; `RECALL_SKILLS` gone
 - `AGENTS.md`, `README.md`, `baselinedocs-help/references/guide.md`, `assets/source/family-map.html` with both images re-shot, `index.html` and `docs/onboarding/baselinedocs-daily-workflow.html` name `baseline-core` where they named `recall`
 - `introduction` and `sourcecode` of this pack and of `skill-consolidation` stop listing `recall` as a current skill
-- the suite is green and `packtool.sh check docs/baseline` prints no FAIL
+- the suite is green and `bldh.sh check docs/baseline` prints no FAIL
 
 ### Checkpoint: complete, no host has selected either loader
 
 | Item | Result |
 |---|---|
-| Verification gate | `uvx --from "pytest>=8,<10" --with pyyaml pytest tests/ -q`: 541 passed, 2 skipped; `packtool.sh check docs/baseline`: 0 FAIL |
+| Verification gate | `uvx --from "pytest>=8,<10" --with pyyaml pytest tests/ -q`: 541 passed, 2 skipped; `bldh.sh check docs/baseline`: 0 FAIL |
 | Skills | `baseline-core/SKILL.md` and `baseline-academic-core/SKILL.md` rewritten as loaders; both `agents/openai.yaml` set `true` and drop `Internal`; `baselinedocs-recall/` deleted |
 | Tests | `test_core_skills_are_selectable_rule_loaders` replaces `test_core_skills_are_not_workflows`; `test_core_skills_load_their_rules_in_full` pins the loader sentences; `RECALL_SKILLS`, both recall gates and `DISPLAY_NAME_EXCEPTIONS` removed |
 | Docs | `AGENTS.md` shared-core, pack-contract, academic-core and conventions sections; `README.md` table row, prose and image alt text; `guide.md` two rows; `index.html` and the onboarding page name `baseline-core` where they named `recall` |
@@ -1071,9 +1071,9 @@ One older open question remains in this pack: BLD-Q1 waits on a portable hidden-
 
 BLD-Q6 is closed by BLD-D45 and no longer waits on the user. To cut the first release, push the commit to `main`, then push the tag, for example `v1.0.0`, and `git pull` once the workflow's `release: vX.Y.Z` commit lands, since local `main` is then behind. Confirm the first `release.yml` run succeeded: it has never run, and its bot push to `main` is unobserved.
 
-BLD-P17 added `packtool.sh`: push and confirm the three-OS test matrix is green, since mawk and BWK awk have not run it. Reinstall the family on any machine that should pick up the tool and the new contract section.
+BLD-P17 added `bldh.sh`: push and confirm the three-OS test matrix is green, since mawk and BWK awk have not run it. Reinstall the family on any machine that should pick up the tool and the new contract section.
 
-BLD-P18 changed the tool, the contract and 14 gate sentences: reinstall again, because an installed skill still calls `sh scripts/packtool.sh` and carries the old tool. BLD-Q7 (`code_ref` naming the inspected repository) waits on the user and needs its own schema decision. Nothing else in BLD-P18 waits on the user.
+BLD-P18 changed the tool, the contract and 14 gate sentences: reinstall again, because an installed skill still calls `sh scripts/bldh.sh` and carries the old tool. BLD-Q7 (`code_ref` naming the inspected repository) waits on the user and needs its own schema decision. Nothing else in BLD-P18 waits on the user.
 
 BLD-P19 added the commit skills and BLD-P23 moved them to the `commit-composer` repository, which now owns their open items. Nothing in BLD-P23 waits on a user decision.
 
@@ -1081,12 +1081,12 @@ BLD-P21 rebuilt the README around images. After the user pushes, open the reposi
 
 BLD-P22 redrew the `onboard` report. Run `baselinedocs-onboard` on a real pack in the terminal you use and confirm the chips, the bar and the card line up; if a character is cut or misaligned, the chip table is the thing to change. Reinstall the family on any machine that should pick it up. Nothing in BLD-P22 waits on a user decision.
 
-BLD-P24 changed `baseline-core/scripts/packtool.sh` and `baselinedocs-callout`: reinstall on any machine that should pick them up, then run `check` on `atlantic-ingress` and `solace-broker-core` to confirm the WARN replaces `no baseline documents`. Nothing in BLD-P24 waits on a user decision.
+BLD-P24 changed `baseline-core/scripts/bldh.sh` and `baselinedocs-callout`: reinstall on any machine that should pick them up, then run `check` on `atlantic-ingress` and `solace-broker-core` to confirm the WARN replaces `no baseline documents`. Nothing in BLD-P24 waits on a user decision.
 
 BLD-P25 added the work ticket line. Reinstall on any machine that should pick it up, then add a `**Ticket:**` line to a real pack phase and run `check` on it. Nothing in BLD-P25 waits on a user decision.
 
 Co-work mode, recorded 2026-10-31: BLD-P26 to BLD-P29 are complete and the BLD-P30 field test is done; what remains of BLD-P30 waits on the user: reinstall the family on this machine, upgrade a chosen `2.0` pack to `3.0`, delete the Atlantic copy of the skill after the reinstall and write its Terraform slice rule into an Atlantic pack in order under continuous approval with a commit per phase, the user's choice for this run. BLD-Q8, the release number, waits on the user before the release.
 
-Core loaders, recorded 2026-11-02: BLD-P31 is complete. After the reinstall, start a free-form pack session and confirm the agent selects `baseline-core` on its own, reads the files in full and gives the `packtool.sh` path; on a machine upgraded in place, remove the leftover `baselinedocs-recall` folder by hand. It ships in the same release as co-work, so BLD-Q8 covers it.
+Core loaders, recorded 2026-11-02: BLD-P31 is complete. After the reinstall, start a free-form pack session and confirm the agent selects `baseline-core` on its own, reads the files in full and gives the `bldh.sh` path; on a machine upgraded in place, remove the leftover `baselinedocs-recall` folder by hand. It ships in the same release as co-work, so BLD-Q8 covers it.
 
 BLD-P20 added `baselinedocs-self-upgrade`. The first real use is its test: run it on a machine with a stale install, confirm `npx skills update -g -y` refreshes the linked folders, and confirm the clone fallback replaces a real copy such as `~/.gemini/config/skills` without touching a junction. Nothing in BLD-P20 waits on a user decision.

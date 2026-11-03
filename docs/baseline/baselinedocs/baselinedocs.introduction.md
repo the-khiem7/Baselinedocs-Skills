@@ -35,7 +35,7 @@ Verified against the working tree at `0cb913f`, not read off `DESIGN.md`.
 | one-time administration | none |
 | lifecycle skills, agent-selected | every other skill, all `true`. `recall` merged into `baseline-core`, BLD-D61 |
 | pack schema | `3.0` in the contract: three core documents, three conditional, `cowork` the new one. This repository's packs are still `2.0`; their upgrade waits on the user, BLD-D60 |
-| `baseline-core` | the only copy of `pack-contract.md`, `report-style.md`, `cowork-contract.md` and `packtool.sh`, read by every skill from `<skill-dir>/../baseline-core` and failing closed without it. BLD-D54. Also a rule loader an agent or a user selects (`true`, `Baseline Docs: Core`) before free-form pack work or after a compaction. BLD-D61 |
+| `baseline-core` | the only copy of `pack-contract.md`, `report-style.md`, `cowork-contract.md` and `bldh.sh`, read by every skill from `<skill-dir>/../baseline-core` and failing closed without it. BLD-D54. Also a rule loader an agent or a user selects (`true`, `Baseline Docs: Core`) before free-form pack work or after a compaction. BLD-D61 |
 | `baseline-academic-core` | the only copy of `academic-contract.md`, read from `<skill-dir>/../baseline-academic-core` by the `baselinedocs-academic-*` skills only, failing closed without it. BLD-D55. Also a selectable loader of the lesson rules and the two `baseline-core` files. BLD-D61 |
 | contract gate | `CONTRACT_SKILLS` (`tests/test_references.py`). Absent from `audit-claims`, `audit-drift`, `brief` |
 | report-style gate | every skill outside `REPORT_STYLE_EXEMPT`. Absent from `load` |
