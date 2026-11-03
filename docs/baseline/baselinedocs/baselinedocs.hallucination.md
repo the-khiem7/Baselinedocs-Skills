@@ -15,7 +15,7 @@ One row per entry. A row states what the entry is about and nothing more: never 
 
 Required by `contract/pack-contract.md` from the first entry. BLD-D42 records the decision.
 
-Every identifier in this initiative carries its pack's prefix: `BLD-` here, `SC-` in `skill-consolidation`. It is written that way everywhere, inside the pack as well as across packs, so a reference is unambiguous wherever it is read and greppable across the whole repository. BLD-D30 records the decision.
+Every identifier in this initiative carries its pack's prefix: `BLD-` here, `ACA-` in `academy`, and `SC-` for the deleted `skill-consolidation` pack. It is written that way everywhere, inside the pack as well as across packs, so a reference is unambiguous wherever it is read and greppable across the whole repository. BLD-D30 records the decision.
 
 | Entry | About | Status | Related |
 |---|---|---|---|
@@ -80,6 +80,9 @@ Every identifier in this initiative carries its pack's prefix: `BLD-` here, `SC-
 | BLD-D59 | adopting the Atlantic co-work skill as `baselinedocs-cowork`, its rules in a separate `cowork-contract.md` in `baseline-core` | current, planned in BLD-P26 to BLD-P30 | BLD-D38, BLD-D39, BLD-D40, BLD-D47, BLD-D53, BLD-D54, BLD-D58, BLD-D60, SC-D1 |
 | BLD-D60 | `baseline_schema` 3.0 adding the `cowork` document, a 2.0 pack warned and upgraded only on the user's consent | current, planned in BLD-P26 and BLD-P27 | BLD-D2, BLD-D42, BLD-D59, BLD-Q7, BLD-Q8 |
 | BLD-D61 | `baselinedocs-recall` merging into `baseline-core`, and both core skills loading their rules when an agent or a user selects them | current, planned in BLD-P31 | BLD-D1, BLD-D40, BLD-D54, BLD-D55, BLD-D59, SC-D1, SC-D23 |
+| BLD-D62 | the two-condition test that decides whether two skills merge | current | BLD-D61 |
+| BLD-D63 | which skills read the contract: writing, a full read, or loading the rules | current | BLD-D40, BLD-D54, BLD-D61, BLD-D64 |
+| BLD-D64 | report style as its own asset, separate from the contract | current | BLD-D54, BLD-D63 |
 | BLD-Q1 | hiding internal helpers at package level rather than by naming convention | open, deferred on a missing platform feature | BLD-D1 |
 | BLD-Q2 | installing checkpoint hooks across more than one repository | closed, hook mechanism removed | BLD-D6, BLD-D37 |
 | BLD-Q5 | who, if anyone, owns misfiled-content detection now that `onboard` no longer checks it | open, structural half covered by BLD-D46 | BLD-D34, BLD-D46 |
@@ -1027,6 +1030,44 @@ A new thread is the default once the pack is current, which after a save it is. 
 **Rejected: R1, `baseline-core` loads its rules only when the user names it, `recall` kept.** Two skills with one post-state, split only by who starts them; the agent still cannot select the loader for free-form work.
 
 **Rejected: R2, widen `recall` and route `baseline-core` to it.** A user who names `baseline-core` is told to name another skill, and an agent skipping the routing still guesses the path.
+
+## BLD-D62: two skills merge only when a two-condition test holds
+
+**Decided.** Merge two skills only when both hold: their trigger space overlaps in a way that survives a good-faith rewrite of both descriptions, and their bodies produce the same post-state. Nested concepts merge; nested wording gets rewritten.
+
+**Why.** Without the rewrite clause the test fires on a description defect: `audit-drift` and `audit-claims` once read as near-synonyms, and renaming separated them, while "one specific closed decision" sits literally inside "one or more", so `sync-decision` folded into `sync-decisions`.
+
+**What breaks if ignored.** Without the rewrite clause, any two carelessly described skills look mergeable and a real distinction is destroyed to fix a text problem. Without the post-state condition, a read-only reporter is merged into a writer, erasing a safety boundary the user can see.
+
+**Rejected: pointer reachability**, a skill named by no other skill's prose should be reached by a pointer rather than compete for a description match - description match is a first-class host selection mechanism, and whether another skill names it is an artifact of who wrote what. A skill nothing points at may be missing a pointer; that is never evidence it is unnecessary.
+
+**Rejected: merging by family prefix**, one skill each for the sync, audit and maintain families - a prefix is a naming artifact, not a property of the operation, and `maintain-split` shares no post-state with `maintain-compact`.
+
+## BLD-D63: a skill reads the contract when it writes a pack, reads one in full, or loads the rules
+
+**Decided.** A skill gates on `pack-contract.md` when it writes pack files, when it reads every document in full and reports placement (`onboard`), or when loading the rules is its whole job (`baseline-core` as a loader). `brief` and both `audit` skills do not. Each gate sentence is worded for what the skill does: before a write, or before reporting pack state.
+
+**Why.** Writing makes placement a decision, a full read makes it checkable; a reader without the role list sees only two statements that literally disagree, never correct content in the wrong file. A write-worded gate in a skill that never writes has a precondition it cannot meet and teaches the agent to treat gates as decoration.
+
+**What breaks if ignored.** An `onboard` run once reported its absent contract as an unreadable file and concluded every future write into the pack was blocked; both halves were wrong, and the two available repairs, adding the contract to skills that must not have it or skipping the gate, are both wrong too. A partial reader holding the contract reports conformance it never checked.
+
+**Rejected: gate only the writers** - leaves the only full reader unable to report misplaced content.
+
+**Rejected: gate every read-only skill** - `brief` reads nothing in full, and neither `audit` skill compares placement.
+
+**Rejected: a separate placement-audit skill** - the detect cell for a pack against itself is already held by `onboard` and `brief`, and a partial read cannot answer it.
+
+## BLD-D64: report style is its own asset, separate from the contract
+
+**Decided.** `report-style.md` governs what the agent says to the user, not what it writes into a pack, and every skill gates on reading it before it reports. It is a separate file from `pack-contract.md`, and the rule lives in the shipped asset, not only in a user's own instruction file.
+
+**Why.** The two files have different audiences: `brief` must not hold the contract (BLD-D63), yet it cites identifiers in every report. A rule placed only in per-user instructions gives one installer the behavior and every other installer the model default.
+
+**What breaks if ignored.** Folding report style into the contract either hands `brief` the role list or leaves the cheapest conversational skill outside the conversation rule. A bare identifier in a report costs the reader a scroll or a question, invisibly to the agent producing it.
+
+**Rejected: state it in the user's global instructions only** - works for one user on one machine, which defeats shipping a skill.
+
+**Rejected: a section of `pack-contract.md`** - one fewer file, wrong on audience.
 
 ## Open questions
 

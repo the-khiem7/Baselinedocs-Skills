@@ -19,10 +19,9 @@ Out of scope, and owned elsewhere:
 
 | Subject | Owner | Why not here |
 |---|---|---|
-| Which skills were merged, deleted, or renamed, and the criterion that decided each | `docs/baseline/skill-consolidation/` | That initiative has its own pack, with its own execution history and decisions. Restating any of it here would create a second copy that drifts |
 | The definitive rules a running agent obeys | `contract/pack-contract.md` and `contract/report-style.md` | Those files ship into skill folders. This pack records why they say what they say, never what they say |
 | How a user is taught to use the family | `README.md` | This pack records the decision that the README leads with the workflow, not the workflow itself |
-| Repository conventions for a contributor | `AGENTS.md` | Same boundary: the convention ships in `AGENTS.md`, the argument for it lives here or in `skill-consolidation` |
+| Repository conventions for a contributor | `AGENTS.md` | Same boundary: the convention ships in `AGENTS.md`, the argument for it lives here |
 
 ## Current truth
 
@@ -49,7 +48,8 @@ Verified against the working tree at `0cb913f`, not read off `DESIGN.md`.
 | installed-skill upgrade | `baselinedocs-self-upgrade`: a family skill that upgrades the installed baselinedocs skills in every agent on a machine, never a pack. Its read-only `scripts/upgradekit.sh` is the one script a single family skill owns. Tested by `tests/test_upgradekit.py`. BLD-D49 |
 | README illustrations | light and dark WebP pairs under `assets/`, rendered from `assets/source/*.html`; the README selects them with `<picture>` and has no Mermaid. `banner.png` is the one PNG and has no dark variant. Tested by `tests/test_readme_assets.py` against the family map source only. BLD-D50 |
 | onboard report | six sections drawn as visuals: `Needs you now`, `Progress`, `Doc pack introduction`, `Next actions`, `Pack map`, `Caveats`; no file record, no `Unresolved references` section. Not pinned by a test. BLD-D51 |
-| baseline packs in this repository | this one and `skill-consolidation`, routed by `docs/baseline/baseline-gateway.index.md` |
+| baseline packs in this repository | this one and `academy`, routed by `docs/baseline/baseline-gateway.index.md` |
+| `SC-` identifiers | cite the `skill-consolidation` pack (merges, deletions and renames of skills, SC-P1 to SC-P14), deleted 2026-11-03 and recoverable at `git show 84ae025:docs/baseline/skill-consolidation/skill-consolidation.hallucination.md` and its three sibling documents. The criteria still in force are BLD-D62, BLD-D63 and BLD-D64 |
 | source of this pack | `DESIGN.md`, 495 lines, 60,743 bytes. Deleted 2026-08-28 after coverage was verified, and recoverable at `git show 0cb913f:DESIGN.md`. BLD-D27 |
 
 ## Target
