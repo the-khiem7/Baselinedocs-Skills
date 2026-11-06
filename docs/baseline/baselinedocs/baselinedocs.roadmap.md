@@ -3,7 +3,7 @@ baseline_schema: "2.0"
 pack: "baselinedocs"
 document: "roadmap"
 status: "active"
-updated: "2026-11-02"
+updated: "2026-11-06"
 code_ref: "uncommitted"
 ---
 
@@ -60,6 +60,7 @@ Verified against the repository, not against `DESIGN.md`.
 | Work ticket line | BLD-D58 | implemented, no pack carries one yet | `baseline-core/references/pack-contract.md` `Work tickets`; `ticketok` and `ticketline` in `bldh.sh`; two cases in `tests/test_bldh.py` |
 | Co-work mode and schema 3.0 | BLD-D59, BLD-D60, BLD-Q8 | in progress | BLD-P26 to BLD-P29 complete; BLD-P30 field test done, reinstall, Atlantic cleanup and a pack upgrade wait on the user |
 | Core skills load their rules, `recall` merged | BLD-D61, SC-D23 | implemented, selection unobserved | `baseline-core` and `baseline-academic-core` set `true`; `CORE_SKILLS` in `tests/test_skill_metadata.py`, `CORE_LOADER_SENTENCES` in `tests/test_references.py`; no `baselinedocs-recall` folder |
+| Smart loading across indexes, entry scope | BLD-D65 | implemented, selection unobserved | `baselinedocs-load/SKILL.md` direct and smart modes with the manifest; `baselinedocs-onboard/SKILL.md` task routing, several indexes, entry scope; see BLD-P32 |
 
 ## BLD-P1: adopt `DESIGN.md` into this pack
 
@@ -1047,6 +1048,20 @@ Acceptance criteria:
 | Not observed | a host selecting `baseline-core` or `baseline-academic-core` on its own; a machine upgraded in place, where the old `baselinedocs-recall` folder stays (BLD-D61 accepted cost) |
 | Unresolved risk | `skill-consolidation.sourcecode.md` still describes per-skill contract copies, removed by BLD-D54 before this phase; a `sync-codebase` run owns that drift |
 
+## BLD-P32: smart loading across indexes, entry scope for an oversized journal
+
+Status: complete. BLD-D65 carries the reasoning.
+
+Acceptance criteria:
+
+- `baselinedocs-load/SKILL.md` separates direct mode (named packs, one-word reply) from smart mode (smartloading or dynamic loading said, or only index files given), accepts several indexes including ones in other repositories, routes on a quoted index sentence tied to the task, and prints the manifest table after the word in smart mode only; its description carries the smartloading vocabulary and stays within 1024 characters
+- `baselinedocs-onboard/SKILL.md` takes the same task routing, several indexes and entry scope, and its `Not read:` caveat names unloaded packs and unpicked journal entries
+- both skills state the size-gate narrowing order and the entry-scope rule: index in full, entries picked by row, amended or reversed entries added, each picked entry read whole, located with `bldh.sh outline`
+- neither shipped `SKILL.md` names a decision identifier or a pack path of this repository
+- `LOAD_GATE`, `READ_GATE` and `CORE_SENTENCE` still hold; the suite is green and `bldh.sh check docs/baseline` prints no FAIL
+
+Evidence, 2026-11-06: `uvx --from "pytest>=8,<10" --with pyyaml pytest tests/ -q`: 460 passed, 2 skipped; `bldh.sh check docs/baseline`: 0 FAIL, 10 WARN, none from this phase. Not observed: a host selecting smart mode on a real pair of indexes.
+
 ## Risks
 
 | Risk | Detail |
@@ -1088,5 +1103,7 @@ BLD-P25 added the work ticket line. Reinstall on any machine that should pick it
 Co-work mode, recorded 2026-10-31: BLD-P26 to BLD-P29 are complete and the BLD-P30 field test is done; what remains of BLD-P30 waits on the user: reinstall the family on this machine, upgrade a chosen `2.0` pack to `3.0`, delete the Atlantic copy of the skill after the reinstall and write its Terraform slice rule into an Atlantic pack in order under continuous approval with a commit per phase, the user's choice for this run. BLD-Q8, the release number, waits on the user before the release.
 
 Core loaders, recorded 2026-11-02: BLD-P31 is complete. After the reinstall, start a free-form pack session and confirm the agent selects `baseline-core` on its own, reads the files in full and gives the `bldh.sh` path; on a machine upgraded in place, remove the leftover `baselinedocs-recall` folder by hand. It ships in the same release as co-work, so BLD-Q8 covers it.
+
+Smart loading, recorded 2026-11-06: BLD-P32 changed `baselinedocs-load` and `baselinedocs-onboard`. After the reinstall, give `load` only two initiative index files and a task, and confirm the manifest lists every pack of both indexes with its quoted evidence; then name an oversized `hallucination` to confirm entry scope reads whole entries. It ships in the release BLD-Q8 covers. Nothing in BLD-P32 waits on a user decision.
 
 BLD-P20 added `baselinedocs-self-upgrade`. The first real use is its test: run it on a machine with a stale install, confirm `npx skills update -g -y` refreshes the linked folders, and confirm the clone fallback replaces a real copy such as `~/.gemini/config/skills` without touching a junction. Nothing in BLD-P20 waits on a user decision.

@@ -3,8 +3,8 @@ baseline_schema: "2.0"
 pack: "baselinedocs"
 document: "hallucination"
 status: "active"
-updated: "2026-11-02"
-code_ref: "60ac9c2"
+updated: "2026-11-06"
+code_ref: "uncommitted"
 ---
 
 # Family Design: Decisions and Open Questions
@@ -30,7 +30,7 @@ Every identifier in this initiative carries its pack's prefix: `BLD-` here, `ACA
 | BLD-D9 | what the README leads with | current, Mermaid format of the flowchart replaced by BLD-D50 | BLD-D1, BLD-D8, BLD-D50 |
 | BLD-D10 | how `onboard` avoids reading half a pack and believing it read all of it | current | BLD-D11, BLD-D17 |
 | BLD-D11 | what `onboard` loads when the target is an initiative rather than one pack | current | BLD-D10, BLD-D12, BLD-D24 |
-| BLD-D12 | when `onboard` may skip asking which sub-pack to load | current | BLD-D11 |
+| BLD-D12 | when `onboard` may skip asking which sub-pack to load | current, evidence rule amended by BLD-D65 | BLD-D11, BLD-D65 |
 | BLD-D13 | what `onboard` does when an initiative has sub-packs and no index | current | BLD-D11, BLD-D24 |
 | BLD-D14 | what a dependency edge tells a reader, and what it does not | current | BLD-D11, BLD-D24 |
 | BLD-D15 | what `onboard` does about a loaded pack leaning on one that was not loaded | current, report form amended by BLD-D51 | BLD-D10, BLD-D13, BLD-D51 |
@@ -57,7 +57,7 @@ Every identifier in this initiative carries its pack's prefix: `BLD-` here, `ACA
 | BLD-D36 | `hallucination` entries are written in a compact agent-directed register, not narrative prose | current | BLD-D7, BLD-D21 |
 | BLD-D37 | removing the automated checkpoint hook mechanism and setup-hooks skill | current | BLD-D6, BLD-Q2, BLD-D4 |
 | BLD-D38 | `baselinedocs-callout` as a seventh user entrypoint owning temporary routing groups | current, amended by BLD-D57 | BLD-D1, BLD-D16, BLD-D31, BLD-D57 |
-| BLD-D39 | silent pack loading with single-word confirmation output | current | BLD-D1, BLD-D10, BLD-D34 |
+| BLD-D39 | silent pack loading with single-word confirmation output | current, one-word output limited to direct mode by BLD-D65 | BLD-D1, BLD-D10, BLD-D34, BLD-D65 |
 | BLD-D40 | `baselinedocs-recall` re-reading the rule files after a context compaction | skill merged into `baseline-core` by BLD-D61, mechanism kept | BLD-D1, BLD-D7, BLD-D37, BLD-D39, BLD-D61 |
 | BLD-D41 | how the test suite is structured and which documented rules it enforces | current | BLD-D1, BLD-D7, BLD-D30 |
 | BLD-D42 | the entry index and entry headings are mandatory from the first entry, and the contract owns the heading format | current, reverses the conditional clause of SC-D19 | BLD-D30, BLD-D36, SC-D19, SC-Q6 |
@@ -83,6 +83,7 @@ Every identifier in this initiative carries its pack's prefix: `BLD-` here, `ACA
 | BLD-D62 | the two-condition test that decides whether two skills merge | current | BLD-D61 |
 | BLD-D63 | which skills read the contract: writing, a full read, or loading the rules | current | BLD-D40, BLD-D54, BLD-D61, BLD-D64 |
 | BLD-D64 | report style as its own asset, separate from the contract | current | BLD-D54, BLD-D63 |
+| BLD-D65 | `load` and `onboard` routing by task across several indexes, and entry scope for an oversized journal | current, planned in BLD-P32 | BLD-D10, BLD-D11, BLD-D12, BLD-D14, BLD-D39, BLD-D42, BLD-D57 |
 | BLD-Q1 | hiding internal helpers at package level rather than by naming convention | open, deferred on a missing platform feature | BLD-D1 |
 | BLD-Q2 | installing checkpoint hooks across more than one repository | closed, hook mechanism removed | BLD-D6, BLD-D37 |
 | BLD-Q5 | who, if anyone, owns misfiled-content detection now that `onboard` no longer checks it | open, structural half covered by BLD-D46 | BLD-D34, BLD-D46 |
@@ -1068,6 +1069,28 @@ A new thread is the default once the pack is current, which after a save it is. 
 **Rejected: state it in the user's global instructions only** - works for one user on one machine, which defeats shipping a skill.
 
 **Rejected: a section of `pack-contract.md`** - one fewer file, wrong on audience.
+
+## BLD-D65: `load` and `onboard` route by task across several indexes, and read an oversized journal by entry
+
+**Decided.** `baselinedocs-load` has two modes. Direct: the user names one or more packs, they are loaded as named, the reply is the one word of BLD-D39. Smart: the user says smartloading or dynamic loading, or gives only initiative index files and names no pack; the agent reads each index, selects packs on an index sentence that ties them to the user's task, and replies with the word plus one manifest table (pack, `full` / `entry scope` / `not loaded`, the quoted evidence or reason). More than one index is allowed, in different repositories, each routed on its own. A callout group row counts as routing evidence and may point into another repository (BLD-D57). A restriction the user states removes packs before matching. A dependency edge never selects a pack. `baselinedocs-onboard` takes the same task routing, multi-index input and entry scope; its `Caveats` `Not read:` line carries the manifest's job. The size gate gains a narrowing order: fewer packs, then entry scope for an oversized `hallucination` only. Entry scope reads the `## Entry index` in full, picks entries whose row ties to the task, adds every entry a picked row's status names as amending, superseding or reversing it, and reads each picked entry in full, located with `bldh.sh outline`. Amends BLD-D12 (routing evidence is now also an index sentence tied to the stated task) and BLD-D39 (the one-word output holds only in direct mode).
+
+**Why.** A user starting a task often knows the initiative, not which pack it lives in, and a task can span two repositories (an Atlantic index and a Solace index for one connection failure). BLD-D12 allowed a skip only when the index marked exactly one pack in progress, so the agent asked every time. The size gate offered only "ask" or "read the whole file", so one 280 KB journal (1696 lines) removed a whole pack from the load, and the user was told nothing, because BLD-D39 forbade output.
+
+**What breaks if ignored.** The agent either loads every pack of every index and trips the gate on each run, or stops to ask a question the user's own task already answers; and a journal too large to read whole is dropped silently, leaving an agent that believes it is primed on a pack it never read. Without the manifest, the user cannot tell a chosen pack from a skipped one.
+
+**Accepted cost.** Smart mode adds a table the direct mode never prints, and entry scope leaves unpicked entries unread, so an answer that turns on one is unbacked (BLD-D10). Entry scope reads index rows as locators and trusts the `About` and `Status` columns to be maintained; a journal in the older heading style with no status column gets picked by subject alone, which the skill forbids guessing, so such a journal goes back to the ask.
+
+**Rejected: load every pack of a given index when the user gives only the index.** Spends the context an index exists to conserve and trips the gate on every real initiative (BLD-D11).
+
+**Rejected: select a pack by dependency edge, or by which pack looks most important.** An edge is status, not reading order (BLD-D14), and importance is the guess BLD-D12 blocks.
+
+**Rejected: a `--smart` flag.** Flag parsing varies across hosts, the reason BLD-D39 rejected a `--silent` flag on `onboard`.
+
+**Rejected: skim the headings of an oversized journal.** Reading part of a selected document and believing it read all of it is the failure BLD-D10 designs out; entry scope is a declared scope with whole entries, not a partial read.
+
+**Rejected: entry scope for `roadmap` and other documents.** Only a `hallucination` carries a mandatory entry index and identifier headings (BLD-D42), so only there can a picked entry be located with certainty.
+
+**Rejected: always print the manifest.** Direct mode names the packs itself; a table there is the overhead BLD-D39 exists to remove.
 
 ## Open questions
 
