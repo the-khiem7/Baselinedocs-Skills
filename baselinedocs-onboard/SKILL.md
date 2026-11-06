@@ -20,19 +20,20 @@ Run `sh <core-dir>/scripts/bldh.sh check <pack-dir>` before reporting the pack s
 
 Determine or confirm:
 
-- the pack root or the initiative index path
+- the pack roots or initiative index paths. More than one is allowed, including indexes in different repositories
+- the task, in the user's words, when the user names no pack. A restriction the user states, such as one environment of an index, removes packs from the candidates before any matching
 - the scope. For an initiative the default is one domain pack, not the whole set
 - whether linked wiki articles are in scope
 - whether retained source material is in scope
 
 ## Workflow
 
-1. Classify the target: a single pack, an initiative with an index, or an initiative whose sub-packs have no index.
-2. Route before loading. A single pack needs no routing: go to step 4. For an initiative, read the index, stop, and read no sub-pack content yet. With no index, build the same view from each sub-pack's frontmatter and next action, report the missing index, and name `baselinedocs-maintain-split`. Never write the index: a reader can only record links it inferred, not the edges an author supplies.
-3. Select the scope. When the routing evidence names exactly one sub-pack in progress, load it and state what named it. Otherwise present the routing table and ask. Bypass the question only on stated evidence, never on which pack looks more important.
+1. Classify each target: a single pack, an initiative with an index, or an initiative whose sub-packs have no index. Classify each index on its own; a pack does not join the scope because it sits in a request beside another.
+2. Route before loading. Packs the user names need no routing: go to step 4. For an initiative, read the index, stop, and read no sub-pack content yet. With no index, build the same view from each sub-pack's frontmatter and next action, report the missing index, and name `baselinedocs-maintain-split`. Never write the index: a reader can only record links it inferred, not the edges an author supplies.
+3. Select the scope. When the user gave a task and no pack, select a pack only on a sentence the index records that ties it to the task: its scope cell, a routing table such as `Reading this initiative`, a callout group row (a group may point into another repository), or its next checkpoint; quote that sentence in `Caveats`. A dependency edge never selects a pack. Otherwise, when the routing evidence names exactly one sub-pack in progress, load it and state what named it. Several candidates or none: present the routing table and ask. Bypass the question only on stated evidence, never on which pack looks more important.
 4. Enumerate the selected scope and keep the list; do not report it.
-5. Apply the size gate. When you cannot say with confidence that the scope fits in remaining context, stop, present the total, propose a narrower scope, and wait. Uncertainty resolves toward asking, not toward starting.
-6. Read every file in the agreed scope in full. Do not truncate, skim headings, sample sections, or substitute a search for a read.
+5. Apply the size gate. When you cannot say with confidence that the scope fits in remaining context, stop, present the total, propose a narrower scope, and wait. The narrowing, in this order: fewer packs; then, for an oversized `hallucination` only, entry scope. Entry scope reads the `## Entry index` in full, picks the entries whose row ties to the task, adds every entry a picked row's status names as amending, superseding or reversing it, and reads each picked entry in full, located with `sh <core-dir>/scripts/bldh.sh outline <file>`; never pick by guessing from a subject. Uncertainty resolves toward asking, not toward starting.
+6. Read every file in the agreed scope in full; for a document in entry scope, the index and every picked entry in full. Do not truncate, skim headings, sample sections, or substitute a search for a read.
 7. Record provenance per document: `status`, `updated`, `code_ref`. `uncommitted` and `unknown` are provenance, not commits. A newer commit than a document's `code_ref` is the drift signal the contract describes, not a verdict to investigate here.
 8. Follow links out of the pack. Read a wiki article when it is in scope; otherwise leave it unread and do not treat it as loaded.
 9. Note every point where a loaded document leans on something outside the scope: a decision cited without its content, a term used undefined, a link into another pack.
@@ -41,7 +42,7 @@ Determine or confirm:
 
 ## Reading Rules
 
-- Complete means complete for the selected scope, not for everything reachable. Narrow openly before reading starts; never read part of what was then selected. An agent that believes it is loaded and is not is worse than one that knows it read nothing.
+- Complete means complete for the selected scope, not for everything reachable. Narrow openly before reading starts; never read part of what was then selected. Entry scope is a scope: a picked entry is read whole, and an entry not picked is unread, so an answer that turns on it is unbacked. An agent that believes it is loaded and is not is worse than one that knows it read nothing.
 - Never summarize a document from its headings.
 - Report state as the documents record it. Onboard describes; it does not assess progress, revise a status, or invent a next action. Counting recorded statuses is describing; a percentage, a forecast, or "on track" is assessing.
 - A dependency edge is status, not reading order. Report edges as stated; do not reorder reads around them, and do not pull in an excluded upstream pack.
@@ -91,7 +92,7 @@ Badge `updated` is the newest `updated` among the pack's documents. Chips follow
 `Pack map`: only when the scope sits inside a multi-pack initiative and the index records a dependency edge or a coupling note touching an in-scope pack. Draw the packs as boxes with their status chip, joined by arrows for the recorded edges, in a code block. Below it, bullets pairing the specific coupled entries or phases the index names, for example "`academy` ACA-D3 rests on `baselinedocs` BLD-D55," rather than merging both packs' phase tables into one timeline. Phases in different packs run on independent per-pack counters with no shared date at phase granularity, so pairing the named entries is the fusion this section offers, not a unified chronology. A terminal shows Mermaid as source text, so never emit it in the conversation.
 
 `Caveats`: only the lines that apply, each one line, the heading omitted when none does.
-- `Not read:` one line, in your own words, naming what a loaded document leans on that is outside the scope, and any retained source material or other exclusion the user may assume was read. Offer to load it.
+- `Not read:` one line, in your own words, naming what a loaded document leans on that is outside the scope, and any retained source material or other exclusion the user may assume was read, including every pack of a given index that was not loaded and every journal entry outside an entry scope. Offer to load it.
 - one line per contradiction found between documents, such as an index status against a pack's own, or a question closed in one place and open in another; name both places and choose neither
 - one line per FAIL or WARN from `bldh.sh check`, as findings
 

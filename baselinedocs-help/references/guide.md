@@ -13,7 +13,7 @@ The user names these. Each one is explicit-only, so none fires on its own.
 | `baselinedocs-save` | work is underway with no pack, or this thread established something the pack lacks | the pack written from the current thread |
 | `baselinedocs-run` | a roadmap exists and should be executed | phases implemented, roadmap checkpointed after each, under the approval and commit policy the user picks |
 | `baselinedocs-onboard` | starting work on an existing pack and wanting it fully read, with a report | every document read in full, then a five-section state report |
-| `baselinedocs-load` | same as onboard, with no report | every document read in full, then a one-word confirmation |
+| `baselinedocs-load` | same as onboard, with no report; or give it only initiative index files, or say smartloading, to have it pick the packs the task needs | named packs read in full, then a one-word confirmation; in smart mode also a table of what was and was not loaded |
 | `baselinedocs-brief` | mid-task or after a compaction, wanting to know where work stands | position, blockers, and what the thread holds that the pack does not, without loading the pack |
 | `baselinedocs-callout` | wanting a two-word name for a slice of the pack | a temporary named routing table inside `introduction` |
 | `baselinedocs-cowork` | several people will write one pack at once, or an existing co-worked pack needs its owners, ranges or journals changed | the cowork configuration and journals written, owners and identifier ranges assigned, journals folded; a pack owner's skill, co-authors use load, onboard and save as usual |
@@ -89,6 +89,6 @@ When a host cannot render the diagram, give the path in words: start with `init`
 | `brief` recovers detail | It is a diagnostic, not a restore. It reads frontmatter and the active roadmap sections and says so. It reports where work stands and whether the pack fell behind; `onboard` reads every document in full |
 | `save` is the step after `run` | `run` already checkpoints the roadmap each phase. `save` owns what a checkpoint does not: decisions closed, questions opened, scope moved |
 | one thing is called compact | Two are. Host `/compact` shrinks the conversation. `baselinedocs-maintain-compact` shrinks the pack, on a different axis: a pack gone noisy over months |
-| `onboard` and `load` are the same | Both read the pack in full. `onboard` then reports its state; `load` confirms in one word and nothing else |
+| `onboard` and `load` are the same | Both read the pack in full. `onboard` then reports its state; `load` confirms in one word, and prints a load table only when it chose the packs itself |
 | an ADR is written into the pack | It is not. `baselinedocs-adr` reads a closed decision and writes a file under `docs/adr/`; recording that the ADR exists in the pack is `baselinedocs-save` |
 | `self-upgrade` updates a pack | It does not. It upgrades the installed skills. Bringing a pack's documents up to the code is `baselinedocs-sync-codebase` |
