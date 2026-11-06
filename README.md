@@ -55,7 +55,7 @@ The full contract, including the frontmatter fields and the identifier rules, is
 | `brief` recovers detail            | It is a diagnostic, not a restore. It reads frontmatter and the active roadmap sections, and says so. It reports where work stands and whether the pack fell behind; `onboard` is what reads every document in full. |
 | `save` is the step after `run`     | `run` already checkpoints the roadmap each phase. `save` owns what a phase checkpoint does not: decisions closed, questions opened, scope moved.                                                                      |
 | one thing is called compact        | Two are. Host `/compact` shrinks the conversation. `baselinedocs-maintain-compact` shrinks the pack, on a different axis: not a full window, but a pack gone noisy over months.                                       |
-| `onboard` and `load` are the same  | Both read the pack in full. `onboard` then reports its state; `load` confirms in one word and nothing else.                                                                                                           |
+| `onboard` and `load` are the same  | Both read the pack in full. `onboard` then reports its state; `load` confirms in one word, and prints a load table only when it chose the packs itself.|
 | an ADR is written into the pack    | It is not. `baselinedocs-adr` reads a closed decision and writes a file under `docs/adr/`; recording that the ADR exists in the pack is `baselinedocs-save`.                                                          |
 
 ## Scenarios
