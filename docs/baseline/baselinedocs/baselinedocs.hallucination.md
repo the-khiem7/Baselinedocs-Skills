@@ -3,7 +3,7 @@ baseline_schema: "2.0"
 pack: "baselinedocs"
 document: "hallucination"
 status: "active"
-updated: "2026-11-06"
+updated: "2026-11-09"
 code_ref: "uncommitted"
 ---
 
@@ -84,6 +84,7 @@ Every identifier in this initiative carries its pack's prefix: `BLD-` here, `ACA
 | BLD-D63 | which skills read the contract: writing, a full read, or loading the rules | current | BLD-D40, BLD-D54, BLD-D61, BLD-D64 |
 | BLD-D64 | report style as its own asset, separate from the contract | current | BLD-D54, BLD-D63 |
 | BLD-D65 | `load` and `onboard` routing by task across several indexes, and entry scope for an oversized journal | current, planned in BLD-P32 | BLD-D10, BLD-D11, BLD-D12, BLD-D14, BLD-D39, BLD-D42, BLD-D57 |
+| BLD-D66 | who closes a decision, and the source tag on its Why and rejected alternatives | current | BLD-D42, BLD-D54, BLD-D63 |
 | BLD-Q1 | hiding internal helpers at package level rather than by naming convention | open, deferred on a missing platform feature | BLD-D1 |
 | BLD-Q2 | installing checkpoint hooks across more than one repository | closed, hook mechanism removed | BLD-D6, BLD-D37 |
 | BLD-Q5 | who, if anyone, owns misfiled-content detection now that `onboard` no longer checks it | open, structural half covered by BLD-D46 | BLD-D34, BLD-D46 |
@@ -1091,6 +1092,20 @@ A new thread is the default once the pack is current, which after a save it is. 
 **Rejected: entry scope for `roadmap` and other documents.** Only a `hallucination` carries a mandatory entry index and identifier headings (BLD-D42), so only there can a picked entry be located with certainty.
 
 **Rejected: always print the manifest.** Direct mode names the packs itself; a table there is the overhead BLD-D39 exists to remove.
+
+## BLD-D66: the user closes a decision, and a Why or rejected alternative carries a source tag
+
+**Decided** (user, 2026-11-09). A closed decision is closed only on the user's own words; its Decision line names who decided and the date. Every Why and every rejected alternative ends with `[user]` (the user stated or confirmed it) or `[agent]` (the agent wrote it, not confirmed); an untagged one in an older entry reads as `[agent]`. A choice between alternatives the user has not ruled on is an open question with a `Recommendation`. The rule sits in `pack-contract.md` for every pack-writing skill, and `baselinedocs-init` step 7 states the open-question half, replacing "record unresolved decisions only when evidence and business context do not support a safe choice". `[user]`
+
+**Why.** The user reported that init made arguments on its own, the user then had to reject them to state their own, and one choice ended as two decisions. `[user]`
+
+**What breaks if ignored.** An agent's argument sits in a closed entry looking as approved as the user's, so the next reader treats an unchecked rejection as settled and does not re-propose a path the user never ruled out.
+
+**Rejected: keep "record unresolved decisions only when no safe choice exists".** It leaves the agent to judge what is safe and close the entry itself, the behavior the user reported. `[user]`
+
+**Rejected: tag every existing entry retroactively.** The user ruled labeling old packs unnecessary; an untagged older entry reads as `[agent]`, which is the safe default. `[user]`
+
+**Enforcement (user, 2026-11-09).** `bldh.sh check` warns `decision-without-source-tag` on a decision entry with no `[user]` or `[agent]` anywhere in its body, and exempts an entry whose index status begins with `Lesson`. It is a warning, not a failure: every older pack lacks the tags, and the script cannot parse which clause a tag belongs to, so it checks the entry as a whole. Case: `tests/test_bldh.py`. `[user]`
 
 ## Open questions
 
