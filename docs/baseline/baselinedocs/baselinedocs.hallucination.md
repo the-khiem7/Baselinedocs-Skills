@@ -85,6 +85,7 @@ Every identifier in this initiative carries its pack's prefix: `BLD-` here, `ACA
 | BLD-D64 | report style as its own asset, separate from the contract | current | BLD-D54, BLD-D63 |
 | BLD-D65 | `load` and `onboard` routing by task across several indexes, and entry scope for an oversized journal | current, planned in BLD-P32 | BLD-D10, BLD-D11, BLD-D12, BLD-D14, BLD-D39, BLD-D42, BLD-D57 |
 | BLD-D66 | who closes a decision, and the source tag on its Why and rejected alternatives | current | BLD-D42, BLD-D54, BLD-D63 |
+| BLD-D67 | `bldh.sh check --quiet-known` hiding the two WARN rules a settled pack keeps | current | BLD-D66 |
 | BLD-Q1 | hiding internal helpers at package level rather than by naming convention | open, deferred on a missing platform feature | BLD-D1 |
 | BLD-Q2 | installing checkpoint hooks across more than one repository | closed, hook mechanism removed | BLD-D6, BLD-D37 |
 | BLD-Q5 | who, if anyone, owns misfiled-content detection now that `onboard` no longer checks it | open, structural half covered by BLD-D46 | BLD-D34, BLD-D46 |
@@ -1106,6 +1107,20 @@ A new thread is the default once the pack is current, which after a save it is. 
 **Rejected: tag every existing entry retroactively.** The user ruled labeling old packs unnecessary; an untagged older entry reads as `[agent]`, which is the safe default. `[user]`
 
 **Enforcement (user, 2026-11-09).** `bldh.sh check` warns `decision-without-source-tag` on a decision entry with no `[user]` or `[agent]` anywhere in its body, and exempts an entry whose index status begins with `Lesson`. It is a warning, not a failure: every older pack lacks the tags, and the script cannot parse which clause a tag belongs to, so it checks the entry as a whole. Case: `tests/test_bldh.py`. `[user]`
+
+## BLD-D67: `bldh.sh check --quiet-known` hides the two WARN rules a settled pack keeps
+
+**Decided** (user, 2026-11-09, option b of three). `sh bldh.sh check <dir> --quiet-known` omits the WARN findings of rules `directory-mismatch` and `decision-without-source-tag`, counts them, and ends its summary line with `(N known WARN hidden)`. It accepts no other flag; FAIL findings and every other WARN rule print as before and the exit status does not change. `[user]`
+
+**Why.** A readable folder title and older untagged decision entries (BLD-D66) are accepted, so a settled pack keeps those two WARN for good: 37 of the 39 WARN on a real pack, which buries a new WARN that an edit has just caused. `[agent]`
+
+**What breaks if ignored.** A new WARN such as `identifier-gap` or `unresolved-citation` sits among dozens of accepted ones and the check stops being read.
+
+**Rejected: a baseline file listing the known findings (option a).** It keeps a genuine finding of the same rule visible, but adds a tracked file per pack that must follow every edit. `[agent]`
+
+**Rejected: leave the WARN as they are (option c).** The noise is the problem being fixed. `[agent]`
+
+**Cost.** The flag also hides a genuine `decision-without-source-tag` on a new entry, so a pack edit that adds a decision is checked without the flag. Case: `test_quiet_known_hides_only_the_two_settled_warn_rules` in `tests/test_bldh.py`. `[agent]`
 
 ## Open questions
 

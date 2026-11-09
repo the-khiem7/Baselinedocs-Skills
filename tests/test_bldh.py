@@ -255,6 +255,20 @@ def test_folder_title_differs_from_pack_id_only_warns(tmp_path):
     assert "directory-mismatch" in rules(result, "WARN"), result.stdout
 
 
+# A settled pack keeps two WARN rules for good; --quiet-known hides only those, counts them, and refuses any other flag.
+def test_quiet_known_hides_only_the_two_settled_warn_rules(tmp_path):
+    folder = write_pack(tmp_path)
+    edit(folder, "hallucination", "Decided: expire telemetry after 30 days. [agent]", "Decided: expire telemetry after 30 days.")
+    folder.rename(tmp_path / "TB Broker Fleet")
+    plain = run(tmp_path, "check", "TB Broker Fleet")
+    assert {"directory-mismatch", "decision-without-source-tag"} <= set(rules(plain, "WARN")), plain.stdout
+    quiet = run(tmp_path, "check", "TB Broker Fleet", "--quiet-known")
+    assert quiet.returncode == 0, quiet.stdout
+    assert not {"directory-mismatch", "decision-without-source-tag"} & set(rules(quiet, "WARN")), quiet.stdout
+    assert "known WARN hidden" in quiet.stdout, quiet.stdout
+    assert run(tmp_path, "check", "TB Broker Fleet", "--bogus").returncode == 2
+
+
 # A pack written before the filename shape was fixed names its files introduction.md, roadmap.md and so on.
 def write_bare_pack(root, name="tb"):
     folder = write_pack(root, name)

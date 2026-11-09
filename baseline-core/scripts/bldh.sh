@@ -10,7 +10,7 @@
 #   sh bldh.sh find    <dir> <ID>              every occurrence of one identifier
 #   sh bldh.sh next-id <dir> <D|Q|P> [PREFIX] [--author <handle>]  the next free identifier
 #   sh bldh.sh close-plan <dir> <Q-ID> <D-ID>  the edits that close a question into a decision
-#   sh bldh.sh check   <dir>                   FAIL and WARN findings
+#   sh bldh.sh check   <dir> [--quiet-known]   FAIL and WARN findings; the flag hides the two WARN rules a settled pack keeps
 #
 # Line numbers describe the file as it is now and go stale on the next write.
 # Exit status: 0 clean (find, close-plan: found), 1 FAIL present (find, close-plan:
@@ -27,7 +27,7 @@ usage: sh bldh.sh outline <file|dir>
        sh bldh.sh find    <dir> <ID>
        sh bldh.sh next-id <dir> <D|Q|P> [PREFIX] [--author <handle>]
        sh bldh.sh close-plan <dir> <Q-ID> <D-ID>
-       sh bldh.sh check   <dir>
+       sh bldh.sh check   <dir> [--quiet-known]
 EOF
   exit 2
 }
@@ -70,8 +70,12 @@ arg=
 prefix=
 closer=
 author=
+quiet=0
 case $cmd in
-  outline|check) [ $# -eq 2 ] || usage ;;
+  outline) [ $# -eq 2 ] || usage ;;
+  check)
+    [ $# -eq 2 ] || { [ $# -eq 3 ] && [ "$3" = --quiet-known ] || usage; }
+    [ $# -eq 3 ] && quiet=1 ;;
   find)
     [ $# -eq 3 ] || usage
     arg=$3
@@ -169,6 +173,7 @@ EOF
 
 PROG='
 function report(level, where, rule, msg) {
+  if (quiet == 1 && level == "WARN" && (rule == "directory-mismatch" || rule == "decision-without-source-tag")) { nhidden++; return }
   print level " " where " " rule " " msg
   if (level == "FAIL") nfail++; else nwarn++
 }
@@ -630,9 +635,9 @@ END {
     }
   }
   coworkchecks()
-  print "BaselineDocs Harness check: " nfail + 0 " FAIL, " nwarn + 0 " WARN in " nfiles " documents"
+  print "BaselineDocs Harness check: " nfail + 0 " FAIL, " nwarn + 0 " WARN in " nfiles " documents" (quiet == 1 ? " (" nhidden + 0 " known WARN hidden)" : "")
   exit (nfail > 0)
 }
 '
 
-exec "$AWK" -v mode="$cmd" -v target="$arg" -v prefix="$prefix" -v closer="$closer" -v author="$author" -v git_head="$git_head" -v git_state="$git_state" "$PROG" "$@"
+exec "$AWK" -v mode="$cmd" -v target="$arg" -v prefix="$prefix" -v closer="$closer" -v author="$author" -v quiet="$quiet" -v git_head="$git_head" -v git_state="$git_state" "$PROG" "$@"
