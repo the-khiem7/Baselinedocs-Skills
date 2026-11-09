@@ -35,6 +35,8 @@ Schema `3.0` adds the `cowork` document. A `2.0` document stays valid and readab
 
 A closed decision records four things: what was decided, why, what breaks if it is ignored, and which alternatives were rejected with their reasons. A decision recorded without its reasoning is one the next reader optimizes away, because nothing tells them what it was protecting. A rejected alternative that is not written down gets proposed again.
 
+The user closes a decision, never the agent. Its Decision line names who decided and the date. Its Why and each rejected alternative end with a source tag: `[user]` when the user stated or confirmed it, `[agent]` when the agent wrote it and the user has not confirmed it; an untagged one in an entry written before this rule reads as `[agent]`. A choice between alternatives the user has not ruled on is an open question carrying the agent's `Recommendation`, never a decision. An agent-made decision forces the user to reject it before stating their own, and the pack then holds two decisions for one choice.
+
 A roadmap organizes work into sequential units named `Phase <N>` (e.g. `Phase 1`, `Phase 2`). Do not invent alternative grouping names like `Block`, `Step`, or `Track` - downstream tools and checkpoints parse the phase prefix.
 
 ## Register

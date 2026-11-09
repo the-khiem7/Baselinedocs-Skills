@@ -36,7 +36,7 @@ Run `sh <core-dir>/scripts/bldh.sh check <pack-dir>` after every pack write and 
 4. Create the three core documents.
 5. Add `sourcecode` and `useguide` only when their roles are applicable.
 6. Write roadmap phases with dependencies, acceptance criteria, verification gates, and one exact next action. Give a phase the contract's ticket line when its ticket is known.
-7. Record unresolved decisions only when evidence and business context do not support a safe choice.
+7. Record every choice between alternatives the user has not ruled on as an open question with a `Recommendation`. Close a decision only on the user's own words, with who and when. An agent-made decision makes the user reject it before stating their own, and the pack then holds two decisions for one choice.
 8. Mark every claim as implemented, planned, unverified, or decided as appropriate.
 
 ## Writing Rules
