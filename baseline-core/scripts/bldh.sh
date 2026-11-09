@@ -252,6 +252,7 @@ function heading(id, lv,   k, p, pk, d) {
     if (!((file, id) in hfile)) { hk[++nhk] = file SUBSEP id; hfirst[file, id] = loc }
     hfile[file, id]++
   }
+  if (d == "hallucination" && k == "D" && !((file, id) in dloc)) { dd[++ndd] = file SUBSEP id; dloc[file, id] = loc; curD = id; curDlv = lv }
 }
 
 function checkfm(where,   i, k, v) {
@@ -310,7 +311,7 @@ function endrun() {
 function startfile(   b) {
   file = FILENAME
   nfiles++
-  fm = 0; fence = 0; section = ""; doc = ""; pack = ""; has_index = 0; run = 0; phopen = 0
+  fm = 0; fence = 0; section = ""; doc = ""; pack = ""; has_index = 0; run = 0; phopen = 0; curD = ""
   split("", fmv); split("", fmn)
   b = base(file); fdoc = ""; fhandle = ""
   if (match(b, /\.cowork\.[a-z0-9-]+\.md$/)) { fdoc = "cowork"; fhandle = substr(b, RSTART + 8, RLENGTH - 11) }
@@ -486,6 +487,7 @@ FNR == 1 { if (nfiles) endfile(); startfile() }
     text = trim(substr(line, lv + 1))
     if (mode == "outline") { print loc "\t" line; next }
     if (lv == 2) { section = text; if (text == "Entry index") has_index = 1 }
+    if (curD != "" && lv <= curDlv) curD = ""
     own = ""
     if (lv >= 2 && lv <= 4 && match(text, /^[A-Z][A-Z][A-Z]?-[DQP][0-9]+/) && substr(text, RLENGTH + 1, 1) !~ /[A-Za-z0-9_-]/) {
       own = substr(text, 1, RLENGTH)
@@ -521,6 +523,7 @@ FNR == 1 { if (nfiles) endfile(); startfile() }
   if (mode != "check") next
 
   if (match(line, /^\*\*[A-Z][A-Z][A-Z]?-[DQP][0-9]+(:|\*\*)/)) report("FAIL", loc, "bold-heading", "bold text is not a heading; write ## <PREFIX>-<KIND><N>: <subject>")
+  if (curD != "" && (index(line, "[user]") || index(line, "[agent]"))) dtag[file, curD] = 1
 
   if (line ~ /^[ \t]*$/ || line ~ /^([ \t]|#|\||>|[-*+][ \t]|[0-9]+[.)][ \t]|<|---|===)/) endrun()
   else {
@@ -600,6 +603,11 @@ END {
   for (i = 1; i <= nqk; i++) {
     split(qk[i], kv, SUBSEP)
     if ((qk[i] in rstat) && tolower(rstat[qk[i]]) !~ /^open/) report("WARN", qloc[kv[1], kv[2]], "closed-question-under-open-questions", kv[2] " has index status \"" rstat[qk[i]] "\" but sits under ## Open questions")
+  }
+  # A lesson entry records a mistake, not a ruling, so only its status exempts it from the tag.
+  for (i = 1; i <= ndd; i++) {
+    split(dd[i], kv, SUBSEP)
+    if (!(dd[i] in dtag) && tolower(rstat[dd[i]]) !~ /^lesson/) report("WARN", dloc[kv[1], kv[2]], "decision-without-source-tag", kv[2] " carries no [user] or [agent] tag; the user closes a decision, and its Why and rejected alternatives end with the tag of who stated them")
   }
   for (i = 1; i <= ncd; i++) {
     id = cord[i]

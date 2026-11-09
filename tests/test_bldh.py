@@ -38,11 +38,11 @@ HALLUCINATION = """
 
 ## TB-D1: broker disk size
 
-Decided: grow the volume.
+Decided: grow the volume. [user]
 
 ## TB-D2: telemetry TTL
 
-Decided: expire telemetry after 30 days.
+Decided: expire telemetry after 30 days. [agent]
 
 ## Open questions
 
@@ -191,6 +191,18 @@ def test_heuristic_rule_warns_without_failing(tmp_path, rule):
     assert result.returncode == 0, result.stdout
     assert rule in rules(result, "WARN"), result.stdout
 
+
+
+# A tag in a neighbouring entry does not cover an entry that has none, and a lesson records a mistake, not a ruling.
+def test_source_tag_is_read_per_entry_and_a_lesson_is_exempt(tmp_path):
+    folder = write_pack(tmp_path)
+    edit(folder, "hallucination", "Decided: expire telemetry after 30 days. [agent]", "Decided: expire telemetry after 30 days.")
+    result = run(tmp_path, "check", "tb")
+    warned = [line for line in result.stdout.splitlines() if "decision-without-source-tag" in line]
+    assert len(warned) == 1 and "TB-D2" in warned[0], result.stdout
+    edit(folder, "hallucination", "| TB-D2 | telemetry TTL | current |", "| TB-D2 | telemetry TTL | Lesson |")
+    result = run(tmp_path, "check", "tb")
+    assert "decision-without-source-tag" not in rules(result, "WARN"), result.stdout
 
 
 # A ticket key comes from an external tracker. One shaped like a pack identifier must not be counted as one.
