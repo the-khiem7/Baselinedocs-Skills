@@ -86,6 +86,7 @@ Every identifier in this initiative carries its pack's prefix: `BLD-` here, `ACA
 | BLD-D65 | `load` and `onboard` routing by task across several indexes, and entry scope for an oversized journal | current, planned in BLD-P32 | BLD-D10, BLD-D11, BLD-D12, BLD-D14, BLD-D39, BLD-D42, BLD-D57 |
 | BLD-D66 | who closes a decision, and the source tag on its Why and rejected alternatives | current | BLD-D42, BLD-D54, BLD-D63 |
 | BLD-D67 | `bldh.sh check --quiet-known` hiding the two WARN rules a settled pack keeps | current | BLD-D66 |
+| BLD-D68 | a closed decision changed by direct in-place edit when the user orders it, instead of an overriding entry | current | BLD-D66 |
 | BLD-Q1 | hiding internal helpers at package level rather than by naming convention | open, deferred on a missing platform feature | BLD-D1 |
 | BLD-Q2 | installing checkpoint hooks across more than one repository | closed, hook mechanism removed | BLD-D6, BLD-D37 |
 | BLD-Q5 | who, if anyone, owns misfiled-content detection now that `onboard` no longer checks it | open, structural half covered by BLD-D46 | BLD-D34, BLD-D46 |
@@ -1121,6 +1122,18 @@ A new thread is the default once the pack is current, which after a save it is. 
 **Rejected: leave the WARN as they are (option c).** The noise is the problem being fixed. `[agent]`
 
 **Cost.** The flag also hides a genuine `decision-without-source-tag` on a new entry, so a pack edit that adds a decision is checked without the flag. Case: `test_quiet_known_hides_only_the_two_settled_warn_rules` in `tests/test_bldh.py`. `[agent]`
+
+## BLD-D68: a closed decision is changed in place when the user orders a direct change
+
+**Decided** (user, 2026-11-15). When the user orders a direct change to a closed decision, the entry is rewritten in place under the same identifier: Decision, Why and What breaks carry the new choice, the old choice becomes a `Rejected` line with its reason, and the index row and every citation follow in the same edit. No second entry overrides it and no `superseded` status is used. Without that order the entry stays and a new decision records the change, the old index status saying it was reversed. The rule sits in `pack-contract.md`, and `baselinedocs-sync-decisions` points to it. `[user]`
+
+**Why.** In a pack written before the first line of code, an agent that added a decision to override an earlier one and marked the earlier one `superseded` left two entries for one choice, and the user had to ask for the old one to be edited directly. `[user]`
+
+**What breaks if ignored.** A pack still at its starting point fills with chains of overriding entries that a reader must follow to find the live choice, and citations point at entries that no longer hold.
+
+**Rejected: always edit in place.** After work has relied on a decision, rewriting it erases the reason the work took its shape; the in-place edit applies only on the user's order. `[agent]`
+
+**Rejected: always add an overriding entry.** It is the behavior the user reported, and it doubles the entries for one choice. `[user]`
 
 ## Open questions
 
