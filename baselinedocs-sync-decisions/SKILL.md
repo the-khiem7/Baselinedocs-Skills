@@ -33,7 +33,7 @@ When a decision closes an open question, run `sh <core-dir>/scripts/bldh.sh clos
 2. Identify every affected baseline file and section, whether that is one section or many.
 3. Propagate the chosen direction into the pack.
 4. Patch only the sections the decision reaches. An agent that has just read the pack will see other things worth fixing; folding them into this pass makes the change impossible to review against the decision that motivated it.
-5. Preserve decision history while removing active ambiguity.
+5. Preserve decision history while removing active ambiguity. When the user ordered a direct change to a closed decision, follow the contract's direct-change rule: rewrite that entry in place and never add an overriding entry.
 6. Refresh `updated` and `code_ref` only in documents that changed, and only where implementation evidence was rechecked.
 
 ## Primary Output
